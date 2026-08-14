@@ -7,13 +7,28 @@ The dungeon/map system described here is a new ORIGINS implementation and must b
 Repository: `DiaburN/Origins`
 Branch for this work: `map-engine-v1`
 
-Before changing code, read:
-- `docs/MAP_ENGINE_V1.md`
-- `origins/map-engine/themes/zuma/theme.json`
-- `origins/map-engine/themes/zuma/rooms/standard-long-01.json`
-- `origins/map-engine/themes/zuma/rooms/king-room-01.json`
-- `tools/crystal-map-importer/`
-- `.github/workflows/extract-zuma.yml`
+## Mandatory first reads
+
+Before changing code, read in this order:
+1. `.cursor/rules/00-project-safety.mdc`
+2. `.cursor/rules/10-game-architecture.mdc`
+3. `docs/GAME_ARCHITECTURE_V1.md`
+4. `docs/MAP_ENGINE_V1.md`
+5. `origins/map-engine/themes/zuma/theme.json`
+6. `origins/map-engine/themes/zuma/rooms/standard-long-01.json`
+7. `origins/map-engine/themes/zuma/rooms/king-room-01.json`
+8. `tools/crystal-map-importer/`
+9. `.github/workflows/extract-zuma.yml`
+
+The `.cursor/rules` files are mandatory project rules. Follow them on every task.
+
+## Repository preservation
+
+This project must evolve incrementally.
+
+Do NOT delete, rename, move, replace or broadly refactor existing files/folders without explicit approval from the project owner.
+
+Existing `origins/map-engine/` research data and `tools/crystal-map-importer/` tooling are valid source/provenance work and must remain intact while the runtime implementation is added under the canonical architecture from `docs/GAME_ARCHITECTURE_V1.md`.
 
 ## Authoritative external sources
 
@@ -94,7 +109,6 @@ Do not redesign this into a different art style.
 Build a REAL asset-based web preview from the extracted `zuma_gray` pieces. Do not generate a fake full-room image and call it implemented.
 
 Target output:
-
 1. `ZUMA_GRAY_STANDARD_ROOM_01`
 2. `ZUMA_GRAY_KING_ROOM_01`
 
@@ -107,17 +121,15 @@ For the first proof, keep implementation minimal and inspectable:
 - no unrelated systems;
 - no premature architecture rewrite.
 
-Suggested project location:
+Canonical runtime locations are defined in `docs/GAME_ARCHITECTURE_V1.md`:
+- executable web client: `apps/web/`
+- map runtime: `packages/map-engine/`
+- dungeon flow: `packages/gameplay/`
+- manifests/data: `packages/content/`
+- rendering: `packages/rendering/`
+- runtime assets: `assets/game/dungeons/zuma_gray/`
 
-`origins/web-map-prototype/`
-
-Expected minimum output:
-- `index.html`
-- JS/TS room renderer
-- theme/room JSON loader
-- asset loader
-- Standard/KR toggle
-- optional collision debug toggle
+Do not create an alternative `web-map-prototype` or second engine tree.
 
 ## Source extraction
 
@@ -134,11 +146,12 @@ The current map parser/render work already supports the Mir2 2010 data used for 
 - Do not hardcode random asset IDs without documenting source library + image index.
 - Keep room geometry, visual theme, collision and gameplay markers separate.
 - Every reusable shape should eventually retain: `shape_id`, `theme_id`, `source_map`, `source_library`, `source_image`, role, anchor/size and collision.
+- Use small commits and report exactly what changed.
+- If a requested task appears to require deleting/moving an existing path, stop and ask first.
 
 ## First success criterion
 
 Opening the web prototype must allow us to visually inspect:
-
 - one Standard `zuma_gray` floor with SOUTH entrance + NORTH exit;
 - one `zuma_gray` KingRoom with SOUTH entrance only + closed North wall + altar area;
 - both visibly belonging to exactly the same gray dungeon family.
