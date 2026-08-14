@@ -35,11 +35,27 @@
     "source_map_is_reference_not_room_geometry": true
   },
   "room_flow": {
-    "direction": "BOTTOM_TO_TOP",
-    "default_entry": "BOTTOM_CENTER",
-    "default_exit": "TOP_CENTER",
-    "top_door_required": true,
-    "lock_top_door_during_combat": true
+    "direction": "SOUTH_TO_NORTH",
+    "standard_floor": {
+      "entry": "SOUTH_CENTER",
+      "exit": "NORTH_CENTER",
+      "north_door_required": true,
+      "south_entry_visible": true,
+      "transition_rule": "THE_NORTH_DOOR_OF_FLOOR_N_BECOMES_THE_VISIBLE_SOUTH_ENTRY_OF_FLOOR_N_PLUS_1",
+      "lock_north_door_during_combat": true
+    },
+    "first_floor": {
+      "south_entry_can_represent_dungeon_entrance": true,
+      "north_door_required": true
+    },
+    "king_room": {
+      "terminal": true,
+      "entry": "SOUTH_CENTER_ONLY",
+      "south_entry_visible": true,
+      "north_door": false,
+      "north_exit": false,
+      "perimeter_closed_except_south_entry": true
+    }
   },
   "floor_progression": {
     "ordinary_floor_variation": [
