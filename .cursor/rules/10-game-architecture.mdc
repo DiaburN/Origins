@@ -1,0 +1,32 @@
+---
+description: ORIGINS V1 architecture boundaries and folder ownership
+alwaysApply: true
+---
+
+# ORIGINS architecture guardrails
+
+Follow `docs/GAME_ARCHITECTURE_V1.md` as the canonical layout.
+
+## Folder ownership
+- Browser executable code: `apps/web/`
+- Reusable game primitives: `packages/game-core/`
+- Room/cell/collision/door engine: `packages/map-engine/`
+- Dungeon progression and encounter flow: `packages/gameplay/`
+- Declarative manifests/data: `packages/content/`
+- Rendering adapters: `packages/rendering/`
+- Generic shared helpers only: `packages/shared/`
+- Approved runtime assets: `assets/game/`
+- Source/provenance assets: `assets/source/`
+- Existing map research recipes: `origins/map-engine/` — preserve
+- Crystal extraction tools: `tools/crystal-map-importer/` — preserve
+
+## Boundaries
+- Do not put core game rules inside React/UI components.
+- Do not put DOM/browser-specific code in `game-core` or pure map data modules.
+- Do not hardcode dungeon asset paths throughout gameplay logic; use manifests.
+- Do not create a second map engine in another folder.
+- Do not import source-analysis tools into runtime code.
+
+## Current milestone scope
+Only build the web shell, map engine skeleton, `zuma_gray` runtime theme, Standard Room, KingRoom, collision and door-state preview.
+Do not add player systems, monsters, combat, spells, inventory, networking or unrelated UI yet.
