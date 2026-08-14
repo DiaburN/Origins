@@ -1,0 +1,30 @@
+{
+  "theme_id": "replace_me",
+  "display_name": "Replace Me",
+  "source_family": "WemadeMir2",
+  "rules": {
+    "allow_cross_theme_assets": false,
+    "entry_side": "BOTTOM",
+    "exit_side": "TOP",
+    "king_room_required": true
+  },
+  "shape_groups": {
+    "floor": [],
+    "wall_top": [],
+    "wall_bottom": [],
+    "wall_left": [],
+    "wall_right": [],
+    "corners": [],
+    "door_top": [],
+    "obstacles": [],
+    "pillars": [],
+    "decorations": [],
+    "hazards": [],
+    "king_room": {
+      "altars": [],
+      "thrones": [],
+      "portals": [],
+      "decorations": []
+    }
+  }
+}
