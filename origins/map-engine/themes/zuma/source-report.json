@@ -1,6 +1,6 @@
 {
   "theme_id": "zuma",
-  "status": "SOURCE_IDENTIFIED",
+  "status": "ASSET_IDS_IDENTIFIED",
   "source_family": "WemadeMir2",
   "reference_maps": [
     {
@@ -20,12 +20,40 @@
   ],
   "required_libraries": [
     "Map/WemadeMir2/Tiles.Lib",
-    "Map/WemadeMir2/Smtiles.Lib",
-    "Map/WemadeMir2/Objects.Lib",
     "Map/WemadeMir2/Objects2.Lib",
     "Map/WemadeMir2/Objects6.Lib"
   ],
-  "library_slots": [0, 1, 2, 3, 7],
+  "library_slots": {
+    "0": "Tiles.Lib",
+    "3": "Objects2.Lib",
+    "7": "Objects6.Lib"
+  },
+  "observed_unique_assets": {
+    "Tiles.Lib": {
+      "union": 50,
+      "common": 12,
+      "standard_only": 37,
+      "kingroom_only": 1
+    },
+    "Objects2.Lib": {
+      "union": 14,
+      "common": 8,
+      "standard_only": 6,
+      "kingroom_only": 0
+    },
+    "Objects6.Lib": {
+      "union": 624,
+      "common": 52,
+      "standard_only": 398,
+      "kingroom_only": 174
+    }
+  },
+  "notes": [
+    "SmTiles.Lib and Objects.Lib are not referenced by d501/d515 and are not required for this first Zuma extraction.",
+    "kingroom_only IDs are candidates for altar, boss-room architecture and special decoration; visual validation is still mandatory.",
+    "standard_only IDs are candidates for ordinary floor variations and obstacles; visual validation is still mandatory.",
+    "The uploaded WemadeMir2(1).zip is a fragment of a multipart ZIP, so its central directory can be listed but its .Lib payloads cannot be extracted standalone. The local extractor is intended to run directly against the user's real Crystal Data folder through Cursor."
+  ],
   "rules": {
     "same_theme_only": true,
     "use_source_maps_as_visual_reference_only": true,
@@ -34,5 +62,5 @@
     "exit_side": "TOP",
     "king_room_uses_same_theme_landmark": true
   },
-  "next_step": "EXTRACT_AND_CLASSIFY_SHAPES_FROM_REQUIRED_LIBRARIES"
+  "next_step": "RUN_LOCAL_EXTRACTOR_AND_VISUALLY_CLASSIFY_COMMON_STANDARD_ONLY_KINGROOM_ONLY_ASSETS"
 }
