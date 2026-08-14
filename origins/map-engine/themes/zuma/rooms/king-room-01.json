@@ -2,19 +2,37 @@
   "room_id": "zuma_king_room_01",
   "room_type": "KING_ROOM",
   "theme_id": "zuma",
+  "theme_variant": "GREY_ONLY",
   "size": { "width_cells": 17, "height_cells": 31 },
-  "entry": { "side": "BOTTOM", "x": 8, "y": 29 },
-  "exit": { "side": "TOP", "x": 8, "y": 1, "door": true },
+  "entry": {
+    "side": "BOTTOM",
+    "x": 8,
+    "y": 29,
+    "door": true,
+    "visual_role": "DOOR_SOUTH",
+    "meaning": "VISIBLE_ENTRY_FROM_PREVIOUS_FLOOR"
+  },
+  "exit": null,
+  "terminal_room_rule": {
+    "is_terminal": true,
+    "south_entry_only": true,
+    "north_door_allowed": false,
+    "north_wall_closed": true,
+    "left_wall_closed": true,
+    "right_wall_closed": true,
+    "bottom_wall_closed_except_entry": true
+  },
   "playable_rect": { "x": 2, "y": 4, "width": 13, "height": 23 },
   "visual_recipe": {
     "floor": "FLOOR|FLOOR_VARIANT",
-    "top_edge": "WALL_TOP",
+    "top_edge": "WALL_TOP_CLOSED",
     "bottom_edge": "WALL_BOTTOM",
     "left_edge": "WALL_LEFT",
     "right_edge": "WALL_RIGHT",
     "corners": ["CORNER_TL", "CORNER_TR", "CORNER_BL", "CORNER_BR"],
-    "top_door": "DOOR_TOP",
-    "theme_filter": "zuma"
+    "south_door": "DOOR_SOUTH",
+    "theme_filter": "zuma",
+    "variant_filter": "GREY_ONLY"
   },
   "king_landmark_zone": {
     "rect": { "x": 5, "y": 5, "width": 7, "height": 5 },
@@ -26,8 +44,8 @@
     "outside_playable_rect": "BLOCKED",
     "playable_rect": "WALKABLE",
     "landmark_collision": "FROM_SHAPE",
-    "top_door_when_locked": "BLOCKED",
-    "top_door_when_open": "WALKABLE"
+    "all_perimeter_walls": "BLOCKED",
+    "south_entry_after_spawn": "BLOCKED_OR_VISUAL_ONLY"
   },
   "variation_slots": {
     "pillars": [
@@ -42,8 +60,7 @@
   "gameplay_markers": {
     "player_spawn": { "x": 8, "y": 26 },
     "boss_spawn": { "x": 8, "y": 14 },
-    "landmark_focus": { "x": 8, "y": 7 },
-    "exit_trigger": { "x": 8, "y": 2 }
+    "landmark_focus": { "x": 8, "y": 7 }
   },
-  "status": "WAITING_FOR_ZUMA_SHAPE_CLASSIFICATION"
+  "status": "WAITING_FOR_ZUMA_GREY_SHAPE_CLASSIFICATION"
 }
