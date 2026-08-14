@@ -1,0 +1,49 @@
+{
+  "room_id": "zuma_king_room_01",
+  "room_type": "KING_ROOM",
+  "theme_id": "zuma",
+  "size": { "width_cells": 17, "height_cells": 31 },
+  "entry": { "side": "BOTTOM", "x": 8, "y": 29 },
+  "exit": { "side": "TOP", "x": 8, "y": 1, "door": true },
+  "playable_rect": { "x": 2, "y": 4, "width": 13, "height": 23 },
+  "visual_recipe": {
+    "floor": "FLOOR|FLOOR_VARIANT",
+    "top_edge": "WALL_TOP",
+    "bottom_edge": "WALL_BOTTOM",
+    "left_edge": "WALL_LEFT",
+    "right_edge": "WALL_RIGHT",
+    "corners": ["CORNER_TL", "CORNER_TR", "CORNER_BL", "CORNER_BR"],
+    "top_door": "DOOR_TOP",
+    "theme_filter": "zuma"
+  },
+  "king_landmark_zone": {
+    "rect": { "x": 5, "y": 5, "width": 7, "height": 5 },
+    "allowed_roles": ["ALTAR", "KINGROOM_DECOR", "PORTAL", "THRONE"],
+    "prefer_source_group": "KINGROOM_ONLY",
+    "required": true
+  },
+  "collision_recipe": {
+    "outside_playable_rect": "BLOCKED",
+    "playable_rect": "WALKABLE",
+    "landmark_collision": "FROM_SHAPE",
+    "top_door_when_locked": "BLOCKED",
+    "top_door_when_open": "WALKABLE"
+  },
+  "variation_slots": {
+    "pillars": [
+      { "x": 4, "y": 12 },
+      { "x": 12, "y": 12 },
+      { "x": 4, "y": 20 },
+      { "x": 12, "y": 20 }
+    ],
+    "decorations": "KINGROOM_SAFE_CELLS",
+    "hazards": "OPTIONAL"
+  },
+  "gameplay_markers": {
+    "player_spawn": { "x": 8, "y": 26 },
+    "boss_spawn": { "x": 8, "y": 14 },
+    "landmark_focus": { "x": 8, "y": 7 },
+    "exit_trigger": { "x": 8, "y": 2 }
+  },
+  "status": "WAITING_FOR_ZUMA_SHAPE_CLASSIFICATION"
+}
