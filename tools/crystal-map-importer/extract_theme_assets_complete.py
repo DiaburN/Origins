@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """Complete ORIGINS Mir2 2010 extraction including Back, Middle and Front layers.
 
-This is a thin compatibility wrapper around extract_theme_assets.py. It patches
-its Mir2 2010 parser so the Crystal MiddleIndex/MiddleImage layer (SmTiles.Lib)
-is included exactly as defined by Suprcode/Crystal MapCode.cs.
+This wrapper follows Suprcode/Crystal MapCode.cs for map decoding and the
+official Crystal.MapEditor drawing convention: map image values are 1-based,
+while .Lib image arrays are 0-based, so every drawable image uses value - 1.
 """
 
 from __future__ import annotations
@@ -19,7 +19,6 @@ spec = importlib.util.spec_from_file_location("origins_theme_extractor", BASE_PA
 if spec is None or spec.loader is None:
     raise RuntimeError(f"Could not load {BASE_PATH}")
 base = importlib.util.module_from_spec(spec)
-# Python 3.12 dataclasses expects the executing module to already exist here.
 sys.modules[spec.name] = base
 spec.loader.exec_module(base)
 
@@ -43,8 +42,10 @@ def parse_mir2_2010_complete(path: Path) -> Tuple[int, int, Dict[int, Counter], 
     if len(data) < expected:
         raise ValueError(f"{path.name}: truncated map ({len(data)} < {expected})")
 
-    # Crystal MapCode LoadMapType1:
+    # Crystal LoadMapType1:
     # BackIndex=0 (Tiles), MiddleIndex=1 (SmTiles), FrontIndex=byte+2.
+    # Crystal.MapEditor then draws BackImage-1, MiddleImage-1 and
+    # (FrontImage & 0x7FFF)-1 from their respective .Lib arrays.
     used: Dict[int, Counter] = {0: Counter(), 1: Counter()}
     doors: Counter = Counter()
     offset = 54
@@ -53,7 +54,7 @@ def parse_mir2_2010_complete(path: Path) -> Tuple[int, int, Dict[int, Counter], 
         for _y in range(height):
             back_image = (base.u32(data, offset) ^ 0xAA38AA38) & 0xFFFFFFFF
             middle_image = signed_i16(base.u16(data, offset + 4) ^ xor_value)
-            front_image = signed_i16(base.u16(data, offset + 6) ^ xor_value)
+            front_image_raw = (base.u16(data, offset + 6) ^ xor_value) & 0xFFFF
             door_index = data[offset + 8] & 0x7F
             front_index = data[offset + 12] + 2
 
@@ -62,15 +63,17 @@ def parse_mir2_2010_complete(path: Path) -> Tuple[int, int, Dict[int, Counter], 
             if front_index >= 255:
                 front_index = -1
 
-            tile_id = back_image & 0x1FFFFFFF
-            if tile_id > 0:
+            tile_id = (back_image & 0x1FFFFFFF) - 1
+            if tile_id >= 0:
                 used[0][tile_id] += 1
 
-            if middle_image > 0:
-                used[1][middle_image] += 1
+            middle_id = middle_image - 1
+            if middle_id >= 0:
+                used[1][middle_id] += 1
 
-            if front_index >= 0 and front_image > 0:
-                used.setdefault(front_index, Counter())[front_image] += 1
+            front_id = (front_image_raw & 0x7FFF) - 1
+            if front_index >= 0 and front_id >= 0:
+                used.setdefault(front_index, Counter())[front_id] += 1
 
             doors[door_index] += 1
             offset += 15
