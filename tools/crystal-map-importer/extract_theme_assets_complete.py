@@ -9,7 +9,7 @@ is included exactly as defined by Suprcode/Crystal MapCode.cs.
 from __future__ import annotations
 
 import importlib.util
-import struct
+import sys
 from collections import Counter
 from pathlib import Path
 from typing import Dict, Tuple
@@ -19,6 +19,8 @@ spec = importlib.util.spec_from_file_location("origins_theme_extractor", BASE_PA
 if spec is None or spec.loader is None:
     raise RuntimeError(f"Could not load {BASE_PATH}")
 base = importlib.util.module_from_spec(spec)
+# Python 3.12 dataclasses expects the executing module to already exist here.
+sys.modules[spec.name] = base
 spec.loader.exec_module(base)
 
 
@@ -60,16 +62,13 @@ def parse_mir2_2010_complete(path: Path) -> Tuple[int, int, Dict[int, Counter], 
             if front_index >= 255:
                 front_index = -1
 
-            # BackImage can carry Crystal's blocked flag in high bits.
             tile_id = back_image & 0x1FFFFFFF
             if tile_id > 0:
                 used[0][tile_id] += 1
 
-            # MiddleImage is a signed short in Crystal; negative/zero means no drawable image.
             if middle_image > 0:
                 used[1][middle_image] += 1
 
-            # FrontImage is likewise a signed short; only positive image IDs are drawable.
             if front_index >= 0 and front_image > 0:
                 used.setdefault(front_index, Counter())[front_image] += 1
 
