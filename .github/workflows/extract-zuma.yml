@@ -42,7 +42,7 @@ jobs:
         run: |
           BASE="https://files.lomcn.co.uk/resources/mir2/crystal/patch_oldversion/Data/Map/WeMade-Mir2"
           UA="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 Chrome/126 Safari/537.36"
-          for LIB in Objects2 Objects6 Tiles; do
+          for LIB in SmTiles Objects2 Objects6 Tiles; do
             echo "Downloading ${LIB}.Lib.gz"
             curl -fL --retry 5 --retry-delay 4 -A "$UA" \
               "$BASE/${LIB}.Lib.gz" \
@@ -55,15 +55,16 @@ jobs:
           ls -lh .source/WemadeMir2
           ls -lh .source/maps
           test -s .source/WemadeMir2/Tiles.Lib
+          test -s .source/WemadeMir2/SmTiles.Lib
           test -s .source/WemadeMir2/Objects2.Lib
           test -s .source/WemadeMir2/Objects6.Lib
           test -s .source/maps/d501.map
           test -s .source/maps/d515.map
 
-      - name: Extract Zuma images actually referenced by the maps
+      - name: Extract Zuma images actually referenced by all map layers
         run: |
           rm -rf origins/map-engine/themes/zuma/extracted
-          python3 tools/crystal-map-importer/extract_theme_assets.py \
+          python3 tools/crystal-map-importer/extract_theme_assets_complete.py \
             --data .source/WemadeMir2 \
             --maps .source/maps \
             --standard d501.map \
