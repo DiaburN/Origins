@@ -1,5 +1,6 @@
 name: Extract Zuma assets
 
+# ORIGINS Map Engine V1 automated source extraction
 on:
   push:
     branches:
