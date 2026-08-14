@@ -72,6 +72,19 @@ jobs:
             --theme zuma \
             --out origins/map-engine/themes/zuma/extracted
 
+      - name: Render Crystal reference maps
+        run: |
+          mkdir -p origins/map-engine/themes/zuma/extracted/reference
+          python3 tools/crystal-map-importer/render_mir2_2010_reference.py \
+            --data .source/WemadeMir2 \
+            --map .source/maps/d515.map \
+            --out origins/map-engine/themes/zuma/extracted/reference/d515-full.png
+          python3 tools/crystal-map-importer/render_mir2_2010_reference.py \
+            --data .source/WemadeMir2 \
+            --map .source/maps/d501.map \
+            --crop 150 195 36 42 \
+            --out origins/map-engine/themes/zuma/extracted/reference/d501-entry-crop.png
+
       - name: Summarize extraction
         run: |
           python3 - <<'PY'
@@ -84,8 +97,9 @@ jobs:
               print(name, lib['counts'])
           PY
           du -sh origins/map-engine/themes/zuma/extracted
+          ls -lh origins/map-engine/themes/zuma/extracted/reference
 
-      - name: Upload Zuma gallery and extracted PNGs
+      - name: Upload Zuma gallery, reference renders and extracted PNGs
         uses: actions/upload-artifact@v4
         with:
           name: zuma-extracted
