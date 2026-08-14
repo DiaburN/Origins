@@ -4,7 +4,6 @@ from __future__ import annotations
 import argparse
 import importlib.util
 import json
-import struct
 import sys
 from pathlib import Path
 
@@ -42,12 +41,16 @@ LIBRARIES = {
         2012, (2015, 2029), (2034, 2065),
         (2090, 2104),
         (2164, 2169),
-        2190, 2193, 2247,
+        2190, 2193,
+        (2200, 2230),
+        2247,
     ),
-    "Prguse2.Lib": expand((307, 307), (360, 368), (1200, 1205)),
+    "Prguse2.Lib": expand(307, (360, 368), (1200, 1205)),
     "Title.Lib": expand(
         168, 169, (196, 198), (483, 485),
-        (500, 508), 737, 738, 739,
+        (500, 508), 567,
+        (633, 680),
+        737, 738, 739,
     ),
     # Optional in the old public mirror. It is only used here for alternate
     # high-weight bar artwork; the base HUD remains exact without it.
