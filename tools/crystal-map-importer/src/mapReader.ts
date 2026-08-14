@@ -8,6 +8,14 @@ function u16(view: DataView, offset: number): number {
   return view.getUint16(offset, true);
 }
 
+function i32(view: DataView, offset: number): number {
+  return view.getInt32(offset, true);
+}
+
+function asI16(value: number): number {
+  return (value << 16) >> 16;
+}
+
 function emptyCell(x: number, y: number): MapCell {
   return {
     x,
@@ -60,6 +68,8 @@ export function parseMap(bytes: Uint8Array): ParsedMap {
   switch (format) {
     case "MIR2_CLASSIC":
       return parseMir2Classic(bytes);
+    case "MIR2_2010":
+      return parseMir22010(bytes);
     case "WEMADE_MIR3":
       return parseWemadeMir3(bytes);
     default:
@@ -106,6 +116,56 @@ function parseMir2Classic(bytes: Uint8Array): ParsedMap {
   }
 
   return { format: "MIR2_CLASSIC", width, height, cells };
+}
+
+function parseMir22010(bytes: Uint8Array): ParsedMap {
+  const view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
+
+  let cursor = 21;
+  const encodedWidth = i16(view, cursor); cursor += 2;
+  const xorKey = i16(view, cursor); cursor += 2;
+  const encodedHeight = i16(view, cursor);
+
+  const width = encodedWidth ^ xorKey;
+  const height = encodedHeight ^ xorKey;
+  let offset = 54;
+  const cells: MapCell[] = [];
+
+  if (width <= 0 || height <= 0) throw new Error("Invalid Mir2 2010 map dimensions.");
+  if (offset + width * height * 15 > bytes.length) throw new Error("Truncated Mir2 2010 map.");
+
+  for (let x = 0; x < width; x++) {
+    for (let y = 0; y < height; y++) {
+      const cell = emptyCell(x, y);
+      cell.backIndex = 0;
+      cell.middleIndex = 1;
+
+      cell.backImage = i32(view, offset) ^ 0xaa38aa38;
+      offset += 4;
+      cell.middleImage = asI16(i16(view, offset) ^ xorKey);
+      offset += 2;
+      cell.frontImage = asI16(i16(view, offset) ^ xorKey);
+      offset += 2;
+
+      cell.doorIndex = bytes[offset++] & 0x7f;
+      cell.doorOffset = bytes[offset++];
+      cell.frontAnimationFrame = bytes[offset++];
+      cell.frontAnimationTick = bytes[offset++];
+      cell.frontIndex = bytes[offset++] + 2;
+      cell.light = bytes[offset++];
+      offset++; // unknown byte
+
+      if (cell.frontIndex === 102) cell.frontIndex = 90;
+      if (cell.frontIndex >= 255) cell.frontIndex = -1;
+
+      // Preserve raw map data. ORIGINS creates a new collision layer when composing rooms.
+      cell.sourceBlocked = false;
+      cell.fishingCell = cell.light >= 100 && cell.light <= 119;
+      cells.push(cell);
+    }
+  }
+
+  return { format: "MIR2_2010", width, height, cells };
 }
 
 function parseWemadeMir3(bytes: Uint8Array): ParsedMap {
