@@ -47,15 +47,10 @@ LIBRARIES = {
         168, 169, (196, 198), (483, 485),
         (500, 508), 737, 738, 739,
     ),
+    # Optional in the old public mirror. It is only used here for alternate
+    # high-weight bar artwork; the base HUD remains exact without it.
     "UI_32bit.Lib": expand((470, 473)),
 }
-
-
-def png_dimensions(path: Path):
-    data = path.read_bytes()
-    if data[:8] != b"\x89PNG\r\n\x1a\n":
-        return [0, 0]
-    return list(struct.unpack(">II", data[16:24]))
 
 
 def main():
@@ -74,7 +69,9 @@ def main():
     for lib_name, ids in LIBRARIES.items():
         path = args.data / lib_name
         if not path.exists():
-            raise FileNotFoundError(path)
+            print(f"OPTIONAL LIB NOT PRESENT: {path}")
+            manifest["libraries"][lib_name] = {}
+            continue
         reader = CrystalLib(path)
         lib_out = args.out / "assets" / path.stem
         entries = {}
