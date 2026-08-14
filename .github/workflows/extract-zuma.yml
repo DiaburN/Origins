@@ -85,6 +85,17 @@ jobs:
             --crop 150 195 36 42 \
             --out origins/map-engine/themes/zuma/extracted/reference/d501-entry-crop.png
 
+      - name: Export exact source placements
+        run: |
+          python3 tools/crystal-map-importer/export_mir2_2010_placements.py \
+            --data .source/WemadeMir2 \
+            --map .source/maps/d515.map \
+            --out origins/map-engine/themes/zuma/extracted/reference/d515-placements.json
+          python3 tools/crystal-map-importer/export_mir2_2010_placements.py \
+            --data .source/WemadeMir2 \
+            --map .source/maps/d501.map \
+            --out origins/map-engine/themes/zuma/extracted/reference/d501-placements.json
+
       - name: Summarize extraction
         run: |
           python3 - <<'PY'
