@@ -2,44 +2,46 @@
 
 Work only on branch `map-engine-v1`.
 
+## Authoritative sources only
+
+Do NOT use any ZIP previously uploaded in ChatGPT.
+
+Use only:
+
+- `Suprcode/Crystal` for Crystal map/library format behavior.
+- `Suprcode/Crystal.Database` for Jev `.map` files.
+- MirFiles Crystal patch data for real Mir2 `.Lib` graphics.
+
+Public MirFiles map root:
+
+`https://mirfiles.co.uk/resources/mir2/crystal/patch/Data/Map/`
+
+First asset family:
+
+`WemadeMir2/`
+
 ## Objective
 
-Extract the exact Crystal graphics referenced by the Zuma reference maps without copying the full Crystal client into ORIGINS.
+Extract the exact public Mir2 graphics referenced by the Zuma reference maps without copying a complete Crystal client into ORIGINS.
 
-Reference maps:
+Reference maps from `Suprcode/Crystal.Database/Jev/Maps`:
 
 - `d501.map` = normal Zuma floor reference
 - `d515.map` = Zuma KingRoom reference
 
-The analysis already proves these maps only require:
+Analysis shows these maps require only:
 
-- `Data/Map/WemadeMir2/Tiles.Lib`
-- `Data/Map/WemadeMir2/Objects2.Lib`
-- `Data/Map/WemadeMir2/Objects6.Lib`
+- `WemadeMir2/Tiles.Lib`
+- `WemadeMir2/Objects2.Lib`
+- `WemadeMir2/Objects6.Lib`
 
-Do **not** copy the whole `Data` directory into this repository.
+Fetch/use those libraries from the MirFiles Crystal patch source, not from the user's previous chat uploads.
 
-## Run
+## Extraction
 
-Use the user's local Crystal client and local Crystal.Database checkout/folder.
+Use `tools/crystal-map-importer/extract_theme_assets.py` against the three fetched public `.Lib` files and the two Jev maps.
 
-From the ORIGINS repository root run:
-
-```powershell
-python tools/crystal-map-importer/extract_theme_assets.py `
-  --data "C:\PATH\TO\CRYSTAL\Client\Data" `
-  --maps "C:\PATH\TO\Crystal.Database\Jev\Maps" `
-  --standard d501.map `
-  --king d515.map `
-  --theme zuma `
-  --out origins\map-engine\themes\zuma\extracted
-```
-
-If the executable client has `Data` somewhere else, point `--data` to that Data folder. The script also accepts a direct path to `Data/Map/WemadeMir2`.
-
-The extractor uses Python standard library only. Do not install image packages unless a real incompatibility is found.
-
-## Expected output
+Expected output:
 
 ```text
 origins/map-engine/themes/zuma/extracted/
@@ -58,13 +60,11 @@ origins/map-engine/themes/zuma/extracted/
   gallery.html
 ```
 
-Open `gallery.html` locally in a browser.
-
 ## Important classification rule
 
 Do not automatically call every `kingroom_only` image an altar. `kingroom_only` only means the image is present in `d515` but not `d501`.
 
-Visually classify extracted images into these roles:
+Visually classify extracted images into:
 
 - `FLOOR`
 - `FLOOR_VARIANT`
@@ -91,25 +91,23 @@ Never mix an image from another cave/theme into Zuma.
 
 ## First visual target
 
-Do not build a giant Mir map.
-
-Build only these two ORIGINS rooms from the classified Zuma shapes:
+Build only these two ORIGINS rooms from classified Zuma shapes:
 
 1. `origins/map-engine/themes/zuma/rooms/standard-long-01.json`
 2. `origins/map-engine/themes/zuma/rooms/king-room-01.json`
 
-The standard room is vertical with entry at the bottom and a door at the top. The KingRoom is the final floor and must contain a Zuma-specific landmark (altar/ritual/portal/etc.) selected from the same theme.
+The standard room is vertical with entry at the bottom and a door at the top. The KingRoom is the final floor and must contain a Zuma-specific landmark selected from the same theme.
 
 ## Commit policy
 
-Do not commit any complete Crystal client or complete `.Lib` archive to ORIGINS.
+Do not commit a complete Crystal client or full MirFiles library collection into ORIGINS.
 
 Commit only:
 
 - ORIGINS code
 - manifests
 - classification metadata
-- the minimal extracted PNG assets actually selected for ORIGINS rooms
+- minimal extracted PNG assets actually selected for ORIGINS rooms
 - generated room data required by the prototype
 
-Keep source library name and source image ID in every selected shape's metadata so provenance is never lost.
+Every selected shape must retain source family, source library and source image ID.
