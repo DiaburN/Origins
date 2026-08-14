@@ -1,0 +1,41 @@
+{
+  "room_id": "zuma_standard_long_01",
+  "room_type": "STANDARD_LONG",
+  "theme_id": "zuma",
+  "size": { "width_cells": 15, "height_cells": 31 },
+  "entry": { "side": "BOTTOM", "x": 7, "y": 29 },
+  "exit": { "side": "TOP", "x": 7, "y": 1, "door": true },
+  "playable_rect": { "x": 2, "y": 3, "width": 11, "height": 25 },
+  "visual_recipe": {
+    "floor": "FLOOR|FLOOR_VARIANT",
+    "top_edge": "WALL_TOP",
+    "bottom_edge": "WALL_BOTTOM",
+    "left_edge": "WALL_LEFT",
+    "right_edge": "WALL_RIGHT",
+    "corners": ["CORNER_TL", "CORNER_TR", "CORNER_BL", "CORNER_BR"],
+    "top_door": "DOOR_TOP",
+    "theme_filter": "zuma"
+  },
+  "collision_recipe": {
+    "outside_playable_rect": "BLOCKED",
+    "playable_rect": "WALKABLE",
+    "top_door_when_locked": "BLOCKED",
+    "top_door_when_open": "WALKABLE"
+  },
+  "variation_slots": {
+    "obstacles": [
+      { "x": 4, "y": 10 },
+      { "x": 10, "y": 10 },
+      { "x": 5, "y": 19 },
+      { "x": 9, "y": 19 }
+    ],
+    "decorations": "RANDOM_SAFE_CELLS",
+    "hazards": "OPTIONAL"
+  },
+  "gameplay_markers": {
+    "player_spawn": { "x": 7, "y": 26 },
+    "encounter_center": { "x": 7, "y": 15 },
+    "exit_trigger": { "x": 7, "y": 2 }
+  },
+  "status": "WAITING_FOR_ZUMA_SHAPE_CLASSIFICATION"
+}
