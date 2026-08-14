@@ -22,18 +22,19 @@ jobs:
 
       - name: Prepare folders
         run: |
-          mkdir -p .source/ui .source/downloads .source/WemadeMir2 .source/maps
+          mkdir -p .source/ui .source/WemadeMir2 .source/maps
           rm -rf .build/crystal-ui
           mkdir -p .build/crystal-ui/reference
 
-      - name: Download public Crystal UI libraries
+      - name: Download CURRENT public Crystal UI libraries
         run: |
-          BASE="https://files.lomcn.co.uk/resources/mir2/crystal/patch_oldversion/Data"
+          BASE="https://files.lomcn.co.uk/resources/mir2/crystal/patch/Data"
           UA="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 Chrome/126 Safari/537.36"
-          for LIB in Prguse Prguse2 Title; do
-            echo "Downloading ${LIB}.Lib.gz"
-            curl -fL --retry 5 --retry-delay 3 -A "$UA" "$BASE/${LIB}.Lib.gz" -o ".source/downloads/${LIB}.Lib.gz"
-            gzip -dc ".source/downloads/${LIB}.Lib.gz" > ".source/ui/${LIB}.Lib"
+          for LIB in Prguse Prguse2 Title UI_32bit; do
+            echo "Downloading current ${LIB}.Lib"
+            curl -fL --retry 5 --retry-delay 3 -A "$UA" \
+              "$BASE/${LIB}.Lib" \
+              -o ".source/ui/${LIB}.Lib"
           done
           ls -lh .source/ui
 
@@ -41,14 +42,18 @@ jobs:
         run: |
           python3 tools/crystal-ui-importer/extract_ui_assets.py --data .source/ui --out .build/crystal-ui
 
-      - name: Download Zuma reference map sources
+      - name: Download current Zuma reference sources
         run: |
-          curl -fL --retry 4 --retry-delay 3 https://raw.githubusercontent.com/Suprcode/Crystal.Database/main/Jev/Maps/d515.map -o .source/maps/d515.map
-          BASE="https://files.lomcn.co.uk/resources/mir2/crystal/patch_oldversion/Data/Map/WeMade-Mir2"
+          curl -fL --retry 4 --retry-delay 3 \
+            https://raw.githubusercontent.com/Suprcode/Crystal.Database/main/Jev/Maps/d515.map \
+            -o .source/maps/d515.map
+          BASE="https://files.lomcn.co.uk/resources/mir2/crystal/patch/Data/Map/WemadeMir2"
           UA="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 Chrome/126 Safari/537.36"
           for LIB in SmTiles Objects2 Objects6 Tiles; do
-            curl -fL --retry 5 --retry-delay 3 -A "$UA" "$BASE/${LIB}.Lib.gz" -o ".source/downloads/${LIB}.Lib.gz"
-            gzip -dc ".source/downloads/${LIB}.Lib.gz" > ".source/WemadeMir2/${LIB}.Lib"
+            echo "Downloading current ${LIB}.Lib"
+            curl -fL --retry 5 --retry-delay 3 -A "$UA" \
+              "$BASE/${LIB}.Lib" \
+              -o ".source/WemadeMir2/${LIB}.Lib"
           done
 
       - name: Render real d515 Zuma background
