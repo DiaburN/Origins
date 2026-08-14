@@ -1,0 +1,91 @@
+name: Extract Zuma assets
+
+on:
+  push:
+    branches:
+      - map-engine-v1
+    paths:
+      - ".github/workflows/extract-zuma.yml"
+      - "tools/crystal-map-importer/**"
+      - "origins/map-engine/themes/zuma/**"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  extract-zuma:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout ORIGINS
+        uses: actions/checkout@v4
+
+      - name: Prepare source folders
+        run: |
+          mkdir -p .source/WemadeMir2
+          mkdir -p .source/maps
+
+      - name: Download Crystal Database maps
+        run: |
+          curl -fL --retry 4 --retry-delay 3 \
+            https://raw.githubusercontent.com/Suprcode/Crystal.Database/main/Jev/Maps/d501.map \
+            -o .source/maps/d501.map
+          curl -fL --retry 4 --retry-delay 3 \
+            https://raw.githubusercontent.com/Suprcode/Crystal.Database/main/Jev/Maps/d515.map \
+            -o .source/maps/d515.map
+
+      - name: Download public WemadeMir2 libraries
+        run: |
+          curl -fL --retry 4 --retry-delay 5 \
+            https://mirfiles.com/resources/mir2/crystal/patch/Data/Map/WemadeMir2/Objects2.Lib \
+            -o .source/WemadeMir2/Objects2.Lib
+          curl -fL --retry 4 --retry-delay 5 \
+            https://mirfiles.com/resources/mir2/crystal/patch/Data/Map/WemadeMir2/Objects6.Lib \
+            -o .source/WemadeMir2/Objects6.Lib
+          curl -fL --retry 4 --retry-delay 5 \
+            https://mirfiles.com/resources/mir2/crystal/patch/Data/Map/WemadeMir2/Tiles.Lib \
+            -o .source/WemadeMir2/Tiles.Lib
+
+      - name: Verify source files
+        run: |
+          ls -lh .source/WemadeMir2
+          ls -lh .source/maps
+          test -s .source/WemadeMir2/Tiles.Lib
+          test -s .source/WemadeMir2/Objects2.Lib
+          test -s .source/WemadeMir2/Objects6.Lib
+          test -s .source/maps/d501.map
+          test -s .source/maps/d515.map
+
+      - name: Extract Zuma images actually referenced by the maps
+        run: |
+          rm -rf origins/map-engine/themes/zuma/extracted
+          python3 tools/crystal-map-importer/extract_theme_assets.py \
+            --data .source/WemadeMir2 \
+            --maps .source/maps \
+            --standard d501.map \
+            --king d515.map \
+            --theme zuma \
+            --out origins/map-engine/themes/zuma/extracted
+
+      - name: Summarize extraction
+        run: |
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          p = Path('origins/map-engine/themes/zuma/extracted/manifest.json')
+          d = json.loads(p.read_text())
+          print('Theme:', d['theme_id'])
+          for name, lib in d['libraries'].items():
+              print(name, lib['counts'])
+          PY
+          du -sh origins/map-engine/themes/zuma/extracted
+
+      - name: Upload Zuma gallery and extracted PNGs
+        uses: actions/upload-artifact@v4
+        with:
+          name: zuma-extracted
+          path: origins/map-engine/themes/zuma/extracted
+          if-no-files-found: error
+          retention-days: 14
