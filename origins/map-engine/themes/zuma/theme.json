@@ -1,0 +1,42 @@
+{
+  "theme_id": "zuma",
+  "display_name": "Zuma Temple",
+  "source_family": "WemadeMir2",
+  "source_maps": {
+    "standard_reference": "d501.map",
+    "kingroom_reference": "d515.map"
+  },
+  "source_libraries": [
+    "Tiles.Lib",
+    "Objects2.Lib",
+    "Objects6.Lib"
+  ],
+  "integrity": {
+    "same_theme_only": true,
+    "allow_cross_theme_shapes": false,
+    "source_map_is_reference_not_room_geometry": true
+  },
+  "room_flow": {
+    "direction": "BOTTOM_TO_TOP",
+    "default_entry": "BOTTOM_CENTER",
+    "default_exit": "TOP_CENTER",
+    "top_door_required": true,
+    "lock_top_door_during_combat": true
+  },
+  "floor_progression": {
+    "ordinary_floor_variation": [
+      "FLOOR_VARIANT",
+      "DECORATION_FLOOR",
+      "PILLAR",
+      "OBSTACLE",
+      "HAZARD"
+    ],
+    "king_room": {
+      "required": true,
+      "preferred_landmarks": ["ALTAR", "KINGROOM_DECOR", "PORTAL", "THRONE"],
+      "use_kingroom_only_candidates_first": true
+    }
+  },
+  "classification_status": "PENDING_VISUAL_REVIEW",
+  "classification_queue": "classification-queue.json"
+}
