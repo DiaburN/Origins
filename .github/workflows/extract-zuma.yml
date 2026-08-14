@@ -27,6 +27,7 @@ jobs:
         run: |
           mkdir -p .source/WemadeMir2
           mkdir -p .source/maps
+          mkdir -p .source/downloads
 
       - name: Download Crystal Database maps
         run: |
@@ -37,17 +38,17 @@ jobs:
             https://raw.githubusercontent.com/Suprcode/Crystal.Database/main/Jev/Maps/d515.map \
             -o .source/maps/d515.map
 
-      - name: Download public WemadeMir2 libraries
+      - name: Download public WemadeMir2 libraries from LOMCN mirror
         run: |
-          curl -fL --retry 4 --retry-delay 5 \
-            https://mirfiles.com/resources/mir2/crystal/patch/Data/Map/WemadeMir2/Objects2.Lib \
-            -o .source/WemadeMir2/Objects2.Lib
-          curl -fL --retry 4 --retry-delay 5 \
-            https://mirfiles.com/resources/mir2/crystal/patch/Data/Map/WemadeMir2/Objects6.Lib \
-            -o .source/WemadeMir2/Objects6.Lib
-          curl -fL --retry 4 --retry-delay 5 \
-            https://mirfiles.com/resources/mir2/crystal/patch/Data/Map/WemadeMir2/Tiles.Lib \
-            -o .source/WemadeMir2/Tiles.Lib
+          BASE="https://files.lomcn.co.uk/resources/mir2/crystal/patch_oldversion/Data/Map/WeMade-Mir2"
+          UA="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 Chrome/126 Safari/537.36"
+          for LIB in Objects2 Objects6 Tiles; do
+            echo "Downloading ${LIB}.Lib.gz"
+            curl -fL --retry 5 --retry-delay 4 -A "$UA" \
+              "$BASE/${LIB}.Lib.gz" \
+              -o ".source/downloads/${LIB}.Lib.gz"
+            gzip -dc ".source/downloads/${LIB}.Lib.gz" > ".source/WemadeMir2/${LIB}.Lib"
+          done
 
       - name: Verify source files
         run: |
