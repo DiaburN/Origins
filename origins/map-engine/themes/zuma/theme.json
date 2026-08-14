@@ -2,18 +2,36 @@
   "theme_id": "zuma",
   "display_name": "Zuma Temple",
   "source_family": "WemadeMir2",
+  "visual_variants": {
+    "zuma_gray": {
+      "status": "ACTIVE_V1",
+      "reference_map": "d515.map",
+      "description": "Gray carved-stone Zuma chamber. Used for the first ORIGINS dungeon prototype so ordinary floors and KingRoom share exactly the same visual language.",
+      "allow_assets_from_variants": []
+    },
+    "zuma_tan": {
+      "status": "REFERENCE_ONLY",
+      "reference_map": "d501.map",
+      "description": "Tan/yellow Zuma temple architecture. Kept separate and must not be mixed into zuma_gray rooms.",
+      "allow_assets_from_variants": []
+    }
+  },
+  "active_variant": "zuma_gray",
   "source_maps": {
-    "standard_reference": "d501.map",
-    "kingroom_reference": "d515.map"
+    "tan_reference": "d501.map",
+    "gray_reference_and_kingroom": "d515.map"
   },
   "source_libraries": [
     "Tiles.Lib",
+    "SmTiles.Lib",
     "Objects2.Lib",
     "Objects6.Lib"
   ],
   "integrity": {
     "same_theme_only": true,
+    "same_visual_variant_only": true,
     "allow_cross_theme_shapes": false,
+    "allow_cross_variant_shapes": false,
     "source_map_is_reference_not_room_geometry": true
   },
   "room_flow": {
@@ -33,10 +51,10 @@
     ],
     "king_room": {
       "required": true,
-      "preferred_landmarks": ["ALTAR", "KINGROOM_DECOR", "PORTAL", "THRONE"],
-      "use_kingroom_only_candidates_first": true
+      "landmark": "zuma_gray_altar_01",
+      "same_visual_variant_required": true
     }
   },
-  "classification_status": "PENDING_VISUAL_REVIEW",
-  "classification_queue": "classification-queue.json"
+  "classification_status": "ZUMA_GRAY_CORE_CONFIRMED",
+  "shape_catalog": "shapes.json"
 }
