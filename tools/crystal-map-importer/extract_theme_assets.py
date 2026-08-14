@@ -3,6 +3,9 @@
 
 Designed for ORIGINS Map Engine V1. No third-party Python packages required.
 
+Supports Crystal Lib v1 (DXT1 payloads) and v2/v3 (GZip BGRA payloads).
+The v1 reader follows Suprcode/Crystal's historical LibraryEditor format.
+
 Example (Windows / Cursor terminal):
     python tools/crystal-map-importer/extract_theme_assets.py \
       --data "D:\\Crystal\\Client\\Data" \
@@ -91,6 +94,79 @@ def bgra_to_rgba(raw: bytes, width: int, height: int) -> bytes:
     return bytes(out)
 
 
+def _rgb565(value: int) -> Tuple[int, int, int, int]:
+    r = ((value >> 11) & 0x1F) * 255 // 31
+    g = ((value >> 5) & 0x3F) * 255 // 63
+    b = (value & 0x1F) * 255 // 31
+    return r, g, b, 255
+
+
+def decompress_dxt1(payload: bytes, width: int, height: int) -> bytes:
+    """Decode a Crystal Lib v1 DXT1 image to cropped RGBA.
+
+    Historical Crystal padded v1 images to 4x4 block boundaries before DXT1
+    compression. The metadata keeps the logical Width/Height, so decode the
+    padded surface and crop back to those logical dimensions.
+    """
+    if width <= 0 or height <= 0:
+        return b""
+
+    padded_w = (width + 3) & ~3
+    padded_h = (height + 3) & ~3
+    blocks_x = padded_w // 4
+    blocks_y = padded_h // 4
+    required = blocks_x * blocks_y * 8
+    if len(payload) < required:
+        raise ValueError(f"DXT1 payload too short: {len(payload)} < {required}")
+
+    surface = bytearray(padded_w * padded_h * 4)
+    src = 0
+
+    for block_y in range(blocks_y):
+        for block_x in range(blocks_x):
+            c0, c1, indices = struct.unpack_from("<HHI", payload, src)
+            src += 8
+
+            p0 = _rgb565(c0)
+            p1 = _rgb565(c1)
+            if c0 > c1:
+                p2 = (
+                    (2 * p0[0] + p1[0]) // 3,
+                    (2 * p0[1] + p1[1]) // 3,
+                    (2 * p0[2] + p1[2]) // 3,
+                    255,
+                )
+                p3 = (
+                    (p0[0] + 2 * p1[0]) // 3,
+                    (p0[1] + 2 * p1[1]) // 3,
+                    (p0[2] + 2 * p1[2]) // 3,
+                    255,
+                )
+            else:
+                p2 = (
+                    (p0[0] + p1[0]) // 2,
+                    (p0[1] + p1[1]) // 2,
+                    (p0[2] + p1[2]) // 2,
+                    255,
+                )
+                p3 = (0, 0, 0, 0)
+
+            palette = (p0, p1, p2, p3)
+            for pixel in range(16):
+                colour = palette[(indices >> (2 * pixel)) & 0x03]
+                px = block_x * 4 + (pixel & 3)
+                py = block_y * 4 + (pixel >> 2)
+                dst = (py * padded_w + px) * 4
+                surface[dst : dst + 4] = bytes(colour)
+
+    cropped = bytearray(width * height * 4)
+    row_src = padded_w * 4
+    row_dst = width * 4
+    for y in range(height):
+        cropped[y * row_dst : (y + 1) * row_dst] = surface[y * row_src : y * row_src + row_dst]
+    return bytes(cropped)
+
+
 def resolve_wemade_mir2_dir(data_arg: Path) -> Path:
     candidates = [
         data_arg,
@@ -169,9 +245,11 @@ class CrystalLib:
         self.path = path
         self.file = path.open("rb")
         self.version = self._read_i32()
-        if self.version < 2:
+        if self.version not in (1, 2, 3):
             raise ValueError(f"{path.name}: unsupported Lib version {self.version}")
         self.count = self._read_i32()
+        if self.count < 0 or self.count > 10_000_000:
+            raise ValueError(f"{path.name}: invalid image count {self.count}")
         self.frame_seek = self._read_i32() if self.version >= 3 else 0
         self.offsets = [self._read_i32() for _ in range(self.count)]
 
@@ -203,8 +281,12 @@ class CrystalLib:
         compressed = self.file.read(length)
         if len(compressed) != length:
             raise EOFError(f"{self.path.name}: truncated image payload {image_id}")
-        raw = gzip.decompress(compressed)
-        rgba = bgra_to_rgba(raw, width, height)
+
+        if self.version == 1:
+            rgba = decompress_dxt1(compressed, width, height)
+        else:
+            raw = gzip.decompress(compressed)
+            rgba = bgra_to_rgba(raw, width, height)
         return width, height, x, y, shadow_x, shadow_y, shadow, rgba
 
 
