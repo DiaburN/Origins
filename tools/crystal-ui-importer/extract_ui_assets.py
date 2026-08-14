@@ -28,29 +28,40 @@ def expand(*values):
             out.update(range(a, b + 1))
     return sorted(out)
 
-# Exact indices referenced by the Crystal 1024x768 gameplay HUD and the first
-# primary gameplay windows. These are source indices, not hand-drawn replacements.
+# Exact indices referenced by the Crystal 1024x768 gameplay HUD and primary
+# gameplay windows. These are source indices, never hand-drawn replacements.
 LIBRARIES = {
     "Prguse.Lib": expand(
-        1, 4, 8, 24, 76, 100, 340, 544,
+        1, 4, 8, 20, 24, 76, 100, 340, 544,
         (826, 828),
+        950, 960, 961,
         (1900, 1914),
         (1923, 1945),
-        (1960, 1962),
-        (2004, 2006),
+        (1960, 2006),
         2012, (2015, 2029), (2034, 2065),
-        (2090, 2104),
-        (2164, 2169),
+        (2090, 2105), (2111, 2113),
+        (2161, 2169),
         2190, 2193,
         (2200, 2230),
         2247,
     ),
-    "Prguse2.Lib": expand(307, (360, 368), (1200, 1205)),
+    "Prguse2.Lib": expand(
+        (197, 209), (257, 259), 307,
+        (360, 368),
+        (431, 468),
+        (1200, 1205),
+    ),
     "Title.Lib": expand(
-        168, 169, (196, 198), (483, 485),
-        (500, 508), 567,
-        (633, 680),
+        14, 16,
+        168, 169, (193, 198), (203, 205), (270, 278),
+        411,
+        (483, 485),
+        (500, 508),
+        516, 517, 567,
+        (616, 680),
+        710,
         737, 738, 739,
+        (848, 853),
     ),
     # Optional in the old public mirror. It is only used here for alternate
     # high-weight bar artwork; the base HUD remains exact without it.
