@@ -30,7 +30,7 @@ jobs:
         run: |
           BASE="https://files.lomcn.co.uk/resources/mir2/crystal/patch_oldversion/Data"
           UA="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 Chrome/126 Safari/537.36"
-          for LIB in Prguse Prguse2 Title UI_32bit; do
+          for LIB in Prguse Prguse2 Title; do
             echo "Downloading ${LIB}.Lib.gz"
             curl -fL --retry 5 --retry-delay 3 -A "$UA" "$BASE/${LIB}.Lib.gz" -o ".source/downloads/${LIB}.Lib.gz"
             gzip -dc ".source/downloads/${LIB}.Lib.gz" > ".source/ui/${LIB}.Lib"
