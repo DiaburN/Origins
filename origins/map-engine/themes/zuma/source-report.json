@@ -1,0 +1,38 @@
+{
+  "theme_id": "zuma",
+  "status": "SOURCE_IDENTIFIED",
+  "source_family": "WemadeMir2",
+  "reference_maps": [
+    {
+      "map": "d501.map",
+      "role": "STANDARD_FLOOR_REFERENCE",
+      "format": "MIR2_2010",
+      "width": 400,
+      "height": 400
+    },
+    {
+      "map": "d515.map",
+      "role": "KING_ROOM_REFERENCE",
+      "format": "MIR2_2010",
+      "width": 40,
+      "height": 40
+    }
+  ],
+  "required_libraries": [
+    "Map/WemadeMir2/Tiles.Lib",
+    "Map/WemadeMir2/Smtiles.Lib",
+    "Map/WemadeMir2/Objects.Lib",
+    "Map/WemadeMir2/Objects2.Lib",
+    "Map/WemadeMir2/Objects6.Lib"
+  ],
+  "library_slots": [0, 1, 2, 3, 7],
+  "rules": {
+    "same_theme_only": true,
+    "use_source_maps_as_visual_reference_only": true,
+    "rebuild_as_vertical_origins_rooms": true,
+    "entry_side": "BOTTOM",
+    "exit_side": "TOP",
+    "king_room_uses_same_theme_landmark": true
+  },
+  "next_step": "EXTRACT_AND_CLASSIFY_SHAPES_FROM_REQUIRED_LIBRARIES"
+}
