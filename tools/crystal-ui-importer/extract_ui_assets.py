@@ -5,6 +5,7 @@ import argparse
 import importlib.util
 import json
 import struct
+import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -12,6 +13,7 @@ BASE_EXTRACTOR = ROOT / "tools" / "crystal-map-importer" / "extract_theme_assets
 spec = importlib.util.spec_from_file_location("crystal_lib_reader", BASE_EXTRACTOR)
 mod = importlib.util.module_from_spec(spec)
 assert spec and spec.loader
+sys.modules[spec.name] = mod
 spec.loader.exec_module(mod)
 CrystalLib = mod.CrystalLib
 write_rgba_png = mod.write_rgba_png
