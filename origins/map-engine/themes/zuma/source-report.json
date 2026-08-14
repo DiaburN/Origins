@@ -2,9 +2,16 @@
   "theme_id": "zuma",
   "status": "ASSET_IDS_IDENTIFIED",
   "source_family": "WemadeMir2",
+  "authoritative_sources": {
+    "engine_reference": "Suprcode/Crystal",
+    "map_database": "Suprcode/Crystal.Database/Jev/Maps",
+    "asset_library_root": "https://mirfiles.co.uk/resources/mir2/crystal/patch/Data/Map/WemadeMir2/",
+    "chat_uploads_allowed": false
+  },
   "reference_maps": [
     {
       "map": "d501.map",
+      "source": "Suprcode/Crystal.Database/Jev/Maps/d501.map",
       "role": "STANDARD_FLOOR_REFERENCE",
       "format": "MIR2_2010",
       "width": 400,
@@ -12,6 +19,7 @@
     },
     {
       "map": "d515.map",
+      "source": "Suprcode/Crystal.Database/Jev/Maps/d515.map",
       "role": "KING_ROOM_REFERENCE",
       "format": "MIR2_2010",
       "width": 40,
@@ -19,9 +27,9 @@
     }
   ],
   "required_libraries": [
-    "Map/WemadeMir2/Tiles.Lib",
-    "Map/WemadeMir2/Objects2.Lib",
-    "Map/WemadeMir2/Objects6.Lib"
+    "Tiles.Lib",
+    "Objects2.Lib",
+    "Objects6.Lib"
   ],
   "library_slots": {
     "0": "Tiles.Lib",
@@ -49,10 +57,13 @@
     }
   },
   "notes": [
-    "SmTiles.Lib and Objects.Lib are not referenced by d501/d515 and are not required for this first Zuma extraction.",
-    "kingroom_only IDs are candidates for altar, boss-room architecture and special decoration; visual validation is still mandatory.",
-    "standard_only IDs are candidates for ordinary floor variations and obstacles; visual validation is still mandatory.",
-    "The uploaded WemadeMir2(1).zip is a fragment of a multipart ZIP, so its central directory can be listed but its .Lib payloads cannot be extracted standalone. The local extractor is intended to run directly against the user's real Crystal Data folder through Cursor."
+    "The previously uploaded multipart WemadeMir2 ZIP is explicitly excluded and must not be used.",
+    "All map IDs come from Suprcode/Crystal.Database Jev maps.",
+    "All Crystal library-index behavior comes from Suprcode/Crystal source.",
+    "Actual WemadeMir2 graphic libraries must come from the public MirFiles Crystal patch tree.",
+    "SmTiles.Lib and Objects.Lib are not referenced by d501/d515 and are not required for the first Zuma extraction.",
+    "kingroom_only IDs are candidates for altar, boss-room architecture and special decoration; visual validation is mandatory.",
+    "standard_only IDs are candidates for ordinary floor variations and obstacles; visual validation is mandatory."
   ],
   "rules": {
     "same_theme_only": true,
@@ -62,5 +73,5 @@
     "exit_side": "TOP",
     "king_room_uses_same_theme_landmark": true
   },
-  "next_step": "RUN_LOCAL_EXTRACTOR_AND_VISUALLY_CLASSIFY_COMMON_STANDARD_ONLY_KINGROOM_ONLY_ASSETS"
+  "next_step": "FETCH_REQUIRED_WEMADEMIR2_LIBRARIES_FROM_MIRFILES_AND_EXTRACT_REFERENCED_ZUMA_IMAGES"
 }
