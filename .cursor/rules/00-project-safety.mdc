@@ -1,0 +1,35 @@
+---
+description: ORIGINS repository safety and change-control rules
+alwaysApply: true
+---
+
+# ORIGINS — mandatory safety rules
+
+This repository is the canonical project source. Preserve working material and make incremental changes.
+
+## Never do these without explicit user approval
+- Do not delete existing files or folders.
+- Do not rename or move existing files or folders.
+- Do not replace an existing subsystem with a new architecture just because it seems cleaner.
+- Do not rewrite unrelated files while implementing a task.
+- Do not discard existing assets, manifests, source references, docs, or tools.
+- Do not merge visual themes or asset families.
+- Do not copy legacy ORIGINS/GameInter/chat-upload material into the new implementation unless explicitly requested.
+- Do not force-push or rewrite Git history.
+
+## Required working method
+1. Read `CURSOR_START_HERE.md` and `docs/GAME_ARCHITECTURE_V1.md` before significant work.
+2. Inspect the current tree before editing.
+3. Reuse existing modules and paths when they already satisfy the architecture.
+4. Add new files in their assigned folder instead of creating parallel duplicate systems.
+5. Touch the smallest possible set of files for each task.
+6. Keep changes incremental and reversible.
+7. Use small, descriptive commits. One logical change per commit when practical.
+8. Before a destructive operation, stop and ask for approval.
+9. When a task is complete, report files created/modified and explicitly state that no unrelated files were removed.
+
+## Preservation rule
+If an existing file appears obsolete but is not blocking the requested task, leave it in place and document it for later review. Never remove it opportunistically.
+
+## Source-of-truth rule
+When documentation and code disagree, do not silently choose one. Report the conflict and preserve both until the project owner decides.
