@@ -52,6 +52,7 @@ All new integrated work belongs on `origins-game-v1` until a later milestone exp
 - Main Zircon HUD source is `Client/Scenes/Views/MainPanel.cs`, using `GameInter #50` as the main panel.
 - Current Zircon third resource bar is Focus (`FP` / `Stat.Focus`). ORIGINS has not yet locked its final gameplay meaning. Do not rename or remove it in the desktop reference reconstruction without approval.
 - The desktop reference must retain the **complete Zircon GameScene UI inventory**. Product removals happen only through the ORIGINS decision matrix after review.
+- Source language expressions remain provenance. The reference build may resolve them to real Zircon English strings for sizing/rendering, but must not erase the original expression.
 
 ## 3. Authoritative external sources
 
@@ -61,7 +62,7 @@ All new integrated work belongs on `origins-game-v1` until a later milestone exp
 - Public Mir2 Crystal asset mirrors (MirFiles/LOMCN) — source graphics libraries.
 
 ### Zircon / Mir3
-- `Suprcode/Zircon` — exact current UI class structure, positions and library indices.
+- `Suprcode/Zircon` — exact current UI class structure, positions, language expressions and library indices.
 - Public Zircon patch mirrors (MirFiles/LOMCN) — `.Zl` UI libraries.
 
 ### Forbidden source
@@ -83,7 +84,7 @@ The complete desktop Zircon GameScene reconstruction/reference harness. It is de
 Reserved for the integrated playable ORIGINS web client. Cursor will implement the playable runtime here.
 
 ### `tools/`
-Importers/extractors and source analyzers. Tools are source pipeline code, not runtime code. Do not delete them after extraction.
+Importers/extractors, source analyzers, geometry validation and language augmentation. Tools are source pipeline code, not runtime code. Do not delete them after extraction.
 
 ### `.source/`
 Local-only downloaded source libraries. Must not be committed by default.
@@ -111,25 +112,44 @@ Approved runtime-ready assets copied/normalized from the extraction pipeline. Th
 ### UI
 - Zircon `.Zl` extractor with DXT1, DXT5, BGRA32, PNG and BC7 decoding required by the current UI data.
 - Automatic parser of the current `Suprcode/Zircon` `GameScene` and registered UI source classes.
-- Complete GameScene registry: **65/65 source-resolved UI/HUD components** in the validated CI build.
+- Complete GameScene registry: **65/65 source-resolved UI/HUD components**.
+- Parsed current GameScene control inventory: **1,014 controls**.
 - No missing public UI libraries in the validated complete build.
 - Validated complete build extracted **416 real source PNGs** required by the current reference set.
 - Searchable/category-based 1024x768 desktop reference harness under `apps/zircon-ui-reference/`.
+- Active source-geometry renderer: `apps/zircon-ui-reference/app-layout.js`.
+- Geometry engine: `apps/zircon-ui-reference/layout-resolver.js`.
+- The generated manifest embeds source PNG dimensions for **8 libraries** so window/control sizes can be resolved without guessing.
+- Complete `Point`/`Size` expressions are preserved by the parser; truncated geometry is CI-failing.
+- Named-control geometry resolves before root `Size`/`DisplayArea` tokens, preventing suffix corruption such as `CloseButton.Size.Width`.
+- Parent/child and forward-reference geometry is re-linked where the source can be resolved deterministically.
+- Current validated explicit source locations: **742**; special/unresolved source-location fallbacks: **50**, regression-guarded in CI.
 - Explicit rendering policy for **21/21 DX control types currently discovered** in those 65 components.
 - Reusable Zircon controls use source-defined skins/geometry where available: generated buttons/tabs, checkbox, scroll/list/tree chrome, combo arrow, number box buttons, item-cell geometry and sound bar assets.
 - `apps/zircon-ui-reference/control-render-policy.json` is machine-checked in CI. A newly discovered DX control type without a policy fails the build.
+- Zircon English language source is parsed from `Client/Envir/Translations/EnglishMessages.cs`.
+- Current validated language extraction: **764 English messages**, **314 UI controls** with resolved visible text, **0 missing referenced language keys**.
+- The derived render manifest uses resolved English display text for text-dependent sizing/rendering while preserving `sourceTextExpression`, `sourceTextProperty` and language key provenance.
 - Exact image-backed reconstruction foundation for MainPanel and major image-backed dialogs plus source-driven reusable `DXWindow` reconstruction for the rest.
 - Complete scope documentation: `docs/ZIRCON_UI_FULL_SCOPE.md`.
 - Owner review/removal matrix: `docs/ZIRCON_UI_DECISIONS.md`.
 
 Latest validated CI reference build:
-- workflow run: `31911631944`
-- GameScene source entries: `65`
+- workflow run: `31913248672`
 - source-resolved: `65/65`
 - DX control type render coverage: `21/21`
+- parsed controls: `1,014`
+- explicit source locations: `742`
+- suspicious source-location fallbacks: `50`
+- complete Point expressions: `722`
+- complete Size expressions: `358`
+- English messages parsed: `764`
+- controls with resolved English display text: `314`
+- unresolved referenced language keys: `0`
+- asset-size libraries: `8`
 - missing public UI libraries: `0`
 - extracted PNGs: `416`
-- artifact ID: `9253818411`
+- artifact ID: `9254245393`
 
 ## 6. What is and is not considered complete
 
@@ -139,9 +159,13 @@ Latest validated CI reference build:
 - public `.Zl` dependency extraction for the reference set;
 - BC7-capable Zircon UI extraction;
 - explicit rendering policy for every currently discovered DX control type;
+- source geometry parser with no truncated Point/Size expressions;
+- source PNG dimensions embedded in the derived reference manifest;
+- English runtime UI text extraction with provenance-preserving resolved rendering;
 - navigable desktop catalog foundation for reviewing the full interface.
 
-### Still requires visual/product approval or runtime integration
+### Still requires fidelity work, visual/product approval or runtime integration
+- deterministic resolution of the remaining **50** constructor-local/runtime geometry cases without inventing coordinates;
 - visual review of all 65 components by the owner;
 - live runtime data inside lists, trees, minimap/map, inventory contents, item icons, names and values;
 - behavior-level parity for every event/callback/modal in Zircon;
@@ -164,10 +188,11 @@ Do not claim that every dynamic Zircon window behavior has been ported into ORIG
 - Prefer small, reversible commits.
 - Every implementation task must finish with a changed-files summary and test result.
 - Do not remove a Zircon reference window because ORIGINS later chooses not to use it; record that decision in `docs/ZIRCON_UI_DECISIONS.md`.
+- Do not convert unresolved geometry into hard-coded coordinates merely to make a preview look complete. Resolve it from source or leave it explicitly pending.
 
 ## 8. Next integrated milestone
 
-Review the complete Zircon desktop reference window-by-window and record product decisions, while preparing the browser-playable vertical slice in `apps/game-web` that combines:
+Continue the fidelity pass by resolving constructor-local/runtime geometry expressions that are deterministic in source, then review the complete Zircon desktop reference window-by-window and record product decisions. After desktop approval, prepare the browser-playable vertical slice in `apps/game-web` that combines:
 1. the approved grey Zuma room;
 2. the real Crystal player locomotion;
 3. collision and SOUTH/NORTH transition logic;
