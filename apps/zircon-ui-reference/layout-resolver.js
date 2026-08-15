@@ -50,6 +50,9 @@ function constantsFrom(spec) {
     DefaultHeight:h(16)||20,
     TabHeight:h(19)||22,
     SmallButtonHeight:h(41)||18,
+    ComboBoxDefaultNormalHeight:16,
+    ItemCellWidth:36,
+    ItemCellHeight:36,
     HeaderBarSize:h(0)||7,
     HeaderSize:(h(0)+h(3))||35,
     NoHeaderSize:h(2)||8,
@@ -135,18 +138,18 @@ function geometryRef(env,name) {
 function replaceReferences(expr,env) {
   let s=expr;
   const root=env.root,client=env.client,c=env.constants;
-  const simple={
-    'Size.Width':root.width,'Size.Height':root.height,
-    'DisplayArea.Width':root.width,'DisplayArea.Height':root.height,
-    'DisplayArea.X':0,'DisplayArea.Y':0,'DisplayArea.Left':0,'DisplayArea.Top':0,
-    'DisplayArea.Right':root.width,'DisplayArea.Bottom':root.height,
-    'ClientArea.X':client.x,'ClientArea.Y':client.y,'ClientArea.Left':client.left,'ClientArea.Top':client.top,
-    'ClientArea.Right':client.right,'ClientArea.Bottom':client.bottom,'ClientArea.Width':client.width,'ClientArea.Height':client.height,
-    'ClientArea.Location.X':client.x,'ClientArea.Location.Y':client.y,
-    DefaultHeight:c.DefaultHeight,TabHeight:c.TabHeight,SmallButtonHeight:c.SmallButtonHeight,
-  };
-  for(const [key,val] of Object.entries(simple))s=s.replace(new RegExp(`\\b${key.replace(/\./g,'\\.')}\\b`,'g'),String(val));
 
+  // Resolve named controls first. Root tokens such as `Size.Width` are also
+  // suffixes of `CloseButton.Size.Width`; replacing the root token first would
+  // corrupt the named expression before we get a chance to resolve it.
+  s=s.replace(/\b([A-Za-z_][A-Za-z0-9_]*)\.ValueTextBox\.Location\.(X|Y)\b/g,(all,name,dim)=>{
+    const g=geometryRef(env,name);if(!g)return all;
+    return String(dim==='X'?19:1);
+  });
+  s=s.replace(/\b([A-Za-z_][A-Za-z0-9_]*)\.ValueTextBox\.Size\.(Width|Height)\b/g,(all,name,dim)=>{
+    const g=geometryRef(env,name);if(!g)return all;
+    return String(dim==='Width'?50:20);
+  });
   s=s.replace(/\b([A-Za-z_][A-Za-z0-9_]*)\.Size\.(Width|Height)\b/g,(all,name,dim)=>{
     const g=geometryRef(env,name);return g?String(dim==='Width'?g.width:g.height):all;
   });
@@ -158,6 +161,25 @@ function replaceReferences(expr,env) {
     const values={X:g.x,Y:g.y,Left:g.x,Top:g.y,Right:g.x+g.width,Bottom:g.y+g.height,Width:g.width,Height:g.height};
     return String(values[dim]);
   });
+
+  const simple={
+    'Size.Width':root.width,'Size.Height':root.height,
+    'DisplayArea.Width':root.width,'DisplayArea.Height':root.height,
+    'DisplayArea.X':0,'DisplayArea.Y':0,'DisplayArea.Left':0,'DisplayArea.Top':0,
+    'DisplayArea.Right':root.width,'DisplayArea.Bottom':root.height,
+    'ClientArea.X':client.x,'ClientArea.Y':client.y,'ClientArea.Left':client.left,'ClientArea.Top':client.top,
+    'ClientArea.Right':client.right,'ClientArea.Bottom':client.bottom,'ClientArea.Width':client.width,'ClientArea.Height':client.height,
+    'ClientArea.Location.X':client.x,'ClientArea.Location.Y':client.y,
+    'DXComboBox.DefaultNormalHeight':c.ComboBoxDefaultNormalHeight,
+    'DXItemCell.CellWidth':c.ItemCellWidth,'DXItemCell.CellHeight':c.ItemCellHeight,
+    DefaultHeight:c.DefaultHeight,TabHeight:c.TabHeight,SmallButtonHeight:c.SmallButtonHeight,
+  };
+  for(const [key,val] of Object.entries(simple)){
+    const escaped=key.replace(/\./g,'\\.');
+    // Root Size/DisplayArea tokens must not match a suffix of NamedControl.Size.
+    const prefix=(key.startsWith('Size.')||key.startsWith('DisplayArea.'))?'(?<!\\.)':'\\b';
+    s=s.replace(new RegExp(`${prefix}${escaped}\\b`,'g'),String(val));
+  }
   return s;
 }
 function evaluateNumber(expr,env) {
@@ -282,5 +304,5 @@ export function buildWindowLayout(spec,item) {
 
 export function resolveRootAsset(spec,item) {
   const lib=libraryFrom(item.root?.LibraryFile),index=indexFrom(item.root?.Index);
-  return{library:lib,index,size:getAssetSize(spec,lib,index)};
+  return{library:lib,index,size:getAssetSize(spec,lib,idx)};
 }
