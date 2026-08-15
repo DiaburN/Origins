@@ -53,6 +53,21 @@ jobs:
           print('Character root index expression:', expression)
           if '115' not in expression or '110' not in expression:
               raise SystemExit('Root parser lost CharacterDialog conditional index')
+          main=next(w for w in d['windows'] if w['field']=='MainPanel')
+          char_button=next(c for c in main['controls'] if c['name']=='CharacterButton')
+          if char_button['properties'].get('Location') != 'new Point(650, 23)':
+              raise SystemExit('MainPanel CharacterButton geometry was not preserved exactly')
+          truncated=[]
+          for w in d['windows']:
+              for c in w.get('controls',[]):
+                  for k,v in c.get('properties',{}).items():
+                      s=str(v)
+                      if ('new Point(' in s or 'new Size(' in s) and ')' not in s:
+                          truncated.append((w['field'],c['name'],k,s))
+          print('Truncated Point/Size expressions:', len(truncated))
+          if truncated:
+              print(truncated[:20])
+              raise SystemExit('Geometry parser emitted truncated Point/Size expressions')
           PY
 
       - name: Validate discovered control type coverage
@@ -86,10 +101,30 @@ jobs:
           cp apps/zircon-ui-reference/index.html .build/zircon-ui/index.html
           cp apps/zircon-ui-reference/styles.css .build/zircon-ui/styles.css
           cp apps/zircon-ui-reference/app.js .build/zircon-ui/app.js
+          cp apps/zircon-ui-reference/app-layout.js .build/zircon-ui/app-layout.js
+          cp apps/zircon-ui-reference/layout-resolver.js .build/zircon-ui/layout-resolver.js
           cp apps/zircon-ui-reference/game-scene-windows.js .build/zircon-ui/game-scene-windows.js
           cp apps/zircon-ui-reference/control-render-policy.json .build/zircon-ui/control-render-policy.json
           node --check .build/zircon-ui/app.js
+          node --check .build/zircon-ui/app-layout.js
+          node --check .build/zircon-ui/layout-resolver.js
           node --check .build/zircon-ui/game-scene-windows.js
+          node tools/zircon-ui-importer/validate_layout_resolver.mjs \
+            .build/zircon-ui/ui-source-spec.json \
+            .build/zircon-ui/layout-resolver.js
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          spec=json.loads(Path('.build/zircon-ui/ui-source-spec.json').read_text())
+          sizes=spec.get('assetSizes',{})
+          if not sizes:
+              raise SystemExit('assetSizes missing from built UI source spec')
+          for lib,index in [('Interface','16'),('GameInter','82')]:
+              size=sizes.get(lib,{}).get(index)
+              print('asset size',lib,index,size)
+              if not size or size[0] <= 0 or size[1] <= 0:
+                  raise SystemExit(f'missing embedded asset size for {lib} {index}')
+          PY
           test -s .build/zircon-ui/ui-source-spec.json
           test -s .build/zircon-ui/assets/GameInter/00050.png
           test -s .build/zircon-ui/assets/GameInter/00161.png
@@ -120,7 +155,7 @@ jobs:
       - name: Report reconstruction coverage
         run: |
           python3 - <<'PY'
-          import json
+          import json,re
           from pathlib import Path
           root=Path('.build/zircon-ui')
           spec=json.loads((root/'ui-source-spec.json').read_text())
@@ -130,8 +165,25 @@ jobs:
           missing=[k for k,v in assets.items() if v.get('missing')]
           discovered={c['type'] for w in spec['windows'] for c in w.get('controls',[])}
           covered=set(policy['policies'])
+          controls=sum(len(w.get('controls',[])) for w in spec['windows'])
+          locations=location_literal=sizes=size_literal=0
+          for w in spec['windows']:
+              for c in w.get('controls',[]):
+                  p=c.get('properties',{})
+                  if 'Location' in p:
+                      locations+=1
+                      if re.fullmatch(r'new Point\(\s*-?\d+\s*,\s*-?\d+\s*\)',str(p['Location'])):
+                          location_literal+=1
+                  if 'Size' in p:
+                      sizes+=1
+                      if re.fullmatch(r'new Size\(\s*-?\d+\s*,\s*-?\d+\s*\)',str(p['Size'])):
+                          size_literal+=1
           print(f"Source-resolved windows: {exact}/{spec['windowCount']}")
           print(f"Control type render coverage: {len(discovered & covered)}/{len(discovered)}")
+          print('Parsed controls:',controls)
+          print(f'Literal source locations: {location_literal}/{locations}')
+          print(f'Literal source sizes: {size_literal}/{sizes}')
+          print('Asset-size libraries:',len(spec.get('assetSizes',{})))
           print('Missing public UI libraries:', missing)
           print('Extracted PNG files:', len(list((root/'assets').rglob('*.png'))))
           if exact != spec['windowCount'] or missing or discovered-covered:
