@@ -7,6 +7,7 @@ import gzip
 import json
 import subprocess
 import sys
+import tempfile
 import urllib.request
 from pathlib import Path
 
@@ -36,9 +37,25 @@ def download(remote: str, target: Path) -> None:
     target.parent.mkdir(parents=True, exist_ok=True)
     url = f"{BASE}/{remote}.gz"
     print("DOWNLOAD", url)
-    req = urllib.request.Request(url, headers={"User-Agent": UA})
-    with urllib.request.urlopen(req, timeout=120) as response:
-        payload = response.read()
+    payload = None
+    try:
+        req = urllib.request.Request(url, headers={"User-Agent": UA})
+        with urllib.request.urlopen(req, timeout=120) as response:
+            payload = response.read()
+    except Exception as first_error:
+        print("urllib failed; trying curl:", first_error)
+        with tempfile.NamedTemporaryFile(suffix=".gz", delete=False) as tmp:
+            tmp_path = Path(tmp.name)
+        try:
+            subprocess.run([
+                "curl", "-fL", "--retry", "5", "--retry-delay", "3",
+                "-A", UA, url, "-o", str(tmp_path)
+            ], check=True)
+            payload = tmp_path.read_bytes()
+        finally:
+            tmp_path.unlink(missing_ok=True)
+    if not payload:
+        raise RuntimeError(f"empty download: {url}")
     target.write_bytes(gzip.decompress(payload))
     if not target.stat().st_size:
         raise RuntimeError(f"empty Zircon library: {target}")
@@ -67,8 +84,7 @@ def main() -> None:
         try:
             download(remote, target)
         except Exception as exc:
-            # A missing peripheral library must remain visible in the build report;
-            # never silently substitute another art source.
+            # A missing peripheral library remains explicit in the report. Never substitute art.
             print("MISSING", enum_name, filename, exc)
             built[enum_name] = {"file": filename, "missing": True, "ids": ids}
             continue
