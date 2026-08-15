@@ -1,1 +1,0 @@
-Local resolver validation: suspicious explicit Location fallbacks reduced from 331 to 61 after named-control-before-root token resolution. Canonical resolver update pending CI.
