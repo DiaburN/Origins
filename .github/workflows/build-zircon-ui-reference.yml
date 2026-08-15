@@ -48,6 +48,13 @@ jobs:
           print('Missing source classes:', [w['class'] for w in missing])
           if d['windowCount'] < 60:
               raise SystemExit('GameScene UI inventory unexpectedly incomplete')
+          character=next(w for w in d['windows'] if w['field']=='CharacterBox')
+          expression=character.get('root',{}).get('Index','')
+          print('Character root index expression:', expression)
+          if '115' not in expression or '110' not in expression:
+              raise SystemExit('Root parser lost CharacterDialog conditional index')
+          if 161 not in d['assetRefs'].get('GameInter',[]) or 162 not in d['assetRefs'].get('GameInter',[]):
+              raise SystemExit('DXCheckBox GameInter skin indices are missing')
           PY
 
       - name: Download and extract exact referenced Zircon UI artwork
@@ -63,10 +70,20 @@ jobs:
           cp apps/zircon-ui-reference/styles.css .build/zircon-ui/styles.css
           cp apps/zircon-ui-reference/app.js .build/zircon-ui/app.js
           cp apps/zircon-ui-reference/game-scene-windows.js .build/zircon-ui/game-scene-windows.js
+          node --check .build/zircon-ui/app.js
+          node --check .build/zircon-ui/game-scene-windows.js
           test -s .build/zircon-ui/ui-source-spec.json
           test -s .build/zircon-ui/assets/GameInter/00050.png
+          test -s .build/zircon-ui/assets/GameInter/00161.png
+          test -s .build/zircon-ui/assets/GameInter/00162.png
+          test -s .build/zircon-ui/assets/Interface/00016.png
+          test -s .build/zircon-ui/assets/Interface/00041.png
+          test -s .build/zircon-ui/assets/Interface/00044.png
+          test -s .build/zircon-ui/assets/Interface/00053.png
+          test -s .build/zircon-ui/assets/Interface/00056.png
           test -s .build/zircon-ui/assets/Interface/00110.png
           test -s .build/zircon-ui/assets/Interface/00130.png
+          test -s .build/zircon-ui/assets/Interface/00241.png
           test -s .build/zircon-ui/assets/Interface/00291.png
 
       - name: Report reconstruction coverage
