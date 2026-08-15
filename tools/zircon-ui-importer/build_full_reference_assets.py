@@ -22,6 +22,7 @@ CONTROL_ASSET_REFS: dict[str, set[int]] = {
     "GameInter": {
         161, 162,             # DXCheckBox
         795,                  # DXComboBox down arrow
+        1010, 1011,           # DXNumberBox up/down
         4740, 4741, 4742, 4743, 4745, 4746,  # DXSoundBar
     },
     "Interface": {
