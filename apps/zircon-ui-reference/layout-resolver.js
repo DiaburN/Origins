@@ -98,7 +98,12 @@ function getClientArea(size,flags,c) {
 }
 
 function sanitiseMath(expr) {
-  return expr.replace(/\((?:int|float|double|decimal)\)/g,'').replace(/\bf\b/gi,'');
+  return expr
+    .replace(/\((?:int|float|double|decimal)\)/g,'')
+    .replace(/\bf\b/gi,'')
+    // C# accepts decimal integer literals with leading zeroes (e.g. 094).
+    // Strict JavaScript does not, so normalise them before safe arithmetic.
+    .replace(/\b0+(\d+)\b/g,(_,digits)=>String(Number(digits)));
 }
 function safeMath(expr) {
   const s=sanitiseMath(expr).trim();
@@ -169,6 +174,7 @@ function replaceReferences(expr,env) {
     'DisplayArea.Right':root.width,'DisplayArea.Bottom':root.height,
     'ClientArea.X':client.x,'ClientArea.Y':client.y,'ClientArea.Left':client.left,'ClientArea.Top':client.top,
     'ClientArea.Right':client.right,'ClientArea.Bottom':client.bottom,'ClientArea.Width':client.width,'ClientArea.Height':client.height,
+    'ClientArea.Size.Width':client.width,'ClientArea.Size.Height':client.height,
     'ClientArea.Location.X':client.x,'ClientArea.Location.Y':client.y,
     'DXComboBox.DefaultNormalHeight':c.ComboBoxDefaultNormalHeight,
     'DXItemCell.CellWidth':c.ItemCellWidth,'DXItemCell.CellHeight':c.ItemCellHeight,
@@ -293,7 +299,33 @@ export function buildWindowLayout(spec,item) {
     nodes.push(provisional);
   }
 
-  // A child of a hidden tab/container is hidden too. Re-run after all parent links exist.
+  // Re-link parents that were declared later and retry only source locations that
+  // previously fell back to (0,0). This resolves forward references without
+  // disturbing already-resolved expressions or repeated local variable names.
+  for(let guard=0;guard<3;guard++){
+    let changed=false;
+    for(const node of nodes){
+      if(node.parentName){
+        const target=env.byName.get(node.parentName);
+        if(target&&node.parent!==target){node.parent=target;changed=true}
+      }
+      const p=node.control?.properties||{};
+      const raw=String(p.Location??'').trim();
+      const explicitZero=/^(Point\.Empty|new Point\(\s*0\s*,\s*0\s*\))$/.test(raw);
+      if(raw&&!explicitZero&&node.localX===0&&node.localY===0){
+        const local=evaluatePair(p.Location,'Point',env);
+        if(local&&(local[0]!==0||local[1]!==0)){
+          node.localX=local[0];node.localY=local[1];changed=true;
+        }
+      }
+      const parent=node.parent||root;
+      const nx=parent.x+node.localX,ny=parent.y+node.localY;
+      if(node.x!==nx||node.y!==ny){node.x=nx;node.y=ny;changed=true}
+    }
+    if(!changed)break;
+  }
+
+  // A child of a hidden tab/container is hidden too.
   for(const node of nodes){
     let parent=node.parent,visible=node.visible;
     while(parent&&parent!==root){visible=visible&&parent.visible!==false;parent=parent.parent}
@@ -304,5 +336,5 @@ export function buildWindowLayout(spec,item) {
 
 export function resolveRootAsset(spec,item) {
   const lib=libraryFrom(item.root?.LibraryFile),index=indexFrom(item.root?.Index);
-  return{library:lib,index,size:getAssetSize(spec,lib,idx)};
+  return{library:lib,index,size:getAssetSize(spec,lib,index)};
 }
