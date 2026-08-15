@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>ORIGINS — Complete Zircon GameInter Reference</title>
+  <link rel="stylesheet" href="styles.css" />
+  <script type="importmap">
+  {
+    "imports": {
+      "./layout-resolver.js": "./layout-resolver-derived.js"
+    }
+  }
+  </script>
+</head>
+<body>
+  <main class="reference-shell">
+    <header class="topbar">
+      <div>
+        <strong>ORIGINS — Zircon GameInter complete reference</strong>
+        <span id="source-status">loading source specification…</span>
+      </div>
+      <div class="top-actions">
+        <button data-close-all>Close windows</button>
+        <button id="reset-layout">Reset desktop</button>
+      </div>
+    </header>
+    <div class="workspace">
+      <aside class="catalog">
+        <input id="window-search" type="search" placeholder="Search Zircon window…" autocomplete="off" />
+        <div id="category-filters" class="category-filters"></div>
+        <div id="window-list" class="window-list"></div>
+      </aside>
+      <section class="desktop-wrap">
+        <div id="stage" class="stage" aria-label="1024 by 768 Zircon desktop reference"></div>
+        <div id="selection-info" class="selection-info">Select any Zircon GameScene window from the catalog.</div>
+      </section>
+    </div>
+    <p class="note">Reference rule: artwork comes from current public Zircon .Zl libraries and geometry comes from Suprcode/Zircon source. Runtime sample text is not burned into source PNGs.</p>
+  </main>
+  <script type="module" src="app-layout.js"></script>
+</body>
+</html>
