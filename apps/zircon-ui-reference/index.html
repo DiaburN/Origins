@@ -3,22 +3,39 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>ORIGINS — Zircon UI Reference</title>
+  <title>ORIGINS — Complete Zircon GameInter Reference</title>
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <main>
-    <div class="toolbar">
-      <strong>Zircon UI reference</strong>
-      <button data-open="character">Character</button>
-      <button data-open="inventory">Inventory</button>
-      <button data-open="magic">Magic</button>
-      <button data-open="quest">Quest</button>
-      <button data-open="menu">Menu</button>
-      <button data-close-all>Close windows</button>
+  <main class="reference-shell">
+    <header class="topbar">
+      <div>
+        <strong>ORIGINS — Zircon GameInter complete reference</strong>
+        <span id="source-status">loading source specification…</span>
+      </div>
+      <div class="top-actions">
+        <button data-close-all>Close windows</button>
+        <button id="reset-layout">Reset desktop</button>
+      </div>
+    </header>
+
+    <div class="workspace">
+      <aside class="catalog">
+        <input id="window-search" type="search" placeholder="Search Zircon window…" autocomplete="off" />
+        <div id="category-filters" class="category-filters"></div>
+        <div id="window-list" class="window-list"></div>
+      </aside>
+
+      <section class="desktop-wrap">
+        <div id="stage" class="stage" aria-label="1024 by 768 Zircon desktop reference"></div>
+        <div id="selection-info" class="selection-info">Select any Zircon GameScene window from the catalog.</div>
+      </section>
     </div>
-    <div id="stage" class="stage" aria-label="1024 by 768 Zircon desktop reference"></div>
-    <p class="note">All visible UI artwork in this harness is extracted from the current Zircon .Zl libraries. Text and sample values are runtime overlays.</p>
+
+    <p class="note">
+      Reference rule: artwork comes from the current public Zircon .Zl libraries and geometry comes from Suprcode/Zircon source.
+      Runtime sample text is not burned into source PNGs. No ORIGINS mobile redesign is applied in this viewer.
+    </p>
   </main>
   <script type="module" src="app.js"></script>
 </body>
