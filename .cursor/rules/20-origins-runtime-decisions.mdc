@@ -1,0 +1,22 @@
+---
+description: Locked ORIGINS runtime decisions for the current integration milestone
+alwaysApply: true
+---
+
+# ORIGINS runtime decisions
+
+- Authoritative integration branch is `origins-game-v1`.
+- Do not use the previous ChatGPT multipart WemadeMir2 ZIP as an asset source.
+- Use public Suprcode Crystal/Crystal.Database references and public Mir2 asset mirrors for map/player source material.
+- Use `Suprcode/Zircon` plus matching public Zircon `.Zl` assets for GameInter/UI reconstruction.
+- Selected interface family is Zircon. Crystal GameInter is reference/history only.
+- First dungeon theme is coherent grey Zuma (`zuma_gray`). Do not mix unrelated cave art.
+- STANDARD room: SOUTH entrance + NORTH exit.
+- Every normal floor reuses the STANDARD room architecture; controlled decoration/obstacle variation is allowed later.
+- KING_ROOM: SOUTH entrance only, no NORTH exit, closed perimeter.
+- Player locomotion uses Crystal 8-direction standing/walk/run source frames and existing ORIGINS movement controller.
+- Preserve the Zircon Focus/FP resource in desktop reconstruction until its ORIGINS gameplay role is explicitly decided.
+- Desktop reconstruction first; mobile redesign later.
+- No generated/redrawn substitute art when real source assets exist.
+- No monsters, combat, spells or networking in the first integrated vertical slice.
+- Never delete/move/rename existing project files without explicit approval.
