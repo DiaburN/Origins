@@ -48,7 +48,7 @@ def download(urls: list[str], target: Path, gz: bool = False) -> None:
                 raise RuntimeError("download produced an empty file")
             print(f"[ok]  {target.relative_to(ROOT)} ({target.stat().st_size:,} bytes)")
             return
-        except Exception as exc:  # try public fallback mirror/path
+        except Exception as exc:
             last_error = exc
             print(f"[retry] {exc}")
 
@@ -56,7 +56,12 @@ def download(urls: list[str], target: Path, gz: bool = False) -> None:
 
 
 def run(*args: str) -> None:
-    cmd = [sys.executable if args[0].endswith(".py") else args[0], *args[1:]]
+    if not args:
+        raise ValueError("run() requires a command")
+    if args[0].endswith(".py"):
+        cmd = [sys.executable, args[0], *args[1:]]
+    else:
+        cmd = list(args)
     print("[run]", " ".join(cmd))
     subprocess.run(cmd, cwd=ROOT, check=True)
 
