@@ -17,6 +17,11 @@ Authoritative branch: `origins-game-v1`
 - [x] validated reference extraction: **416 real PNG assets**
 - [x] searchable/category-based Zircon desktop UI reference harness
 - [x] explicit renderer policy for **21/21 discovered DX control types**
+- [x] source-geometry resolver using parent/child relationships and extracted PNG dimensions
+- [x] geometry regression validation in CI
+- [x] Zircon English runtime language extraction: **764 messages**
+- [x] **314 UI controls** resolved to real English display text, with original C# expression preserved
+- [x] resolved English text now drives the reference render and text-dependent sizing
 - [x] CI fails if a newly discovered Zircon control type has no renderer policy
 - [x] complete Zircon UI scope document
 - [x] owner UI approval/keep-remove matrix
@@ -29,7 +34,7 @@ Authoritative branch: `origins-game-v1`
 
 ## Current UI fidelity pass
 
-The complete source/interface/control inventory is captured and every currently discovered DX control type has an explicit rendering policy. This does **not** mean every runtime-populated list, map, item icon, tree row or live value is baked into the reference; those remain runtime data by design.
+The complete source/interface/control inventory is captured and every currently discovered DX control type has an explicit rendering policy. Runtime-populated lists, maps, item icons, tree rows and live values remain runtime data by design.
 
 - [x] complete GameScene component inventory
 - [x] exact `.Zl` source dependency extraction
@@ -49,19 +54,38 @@ The complete source/interface/control inventory is captured and every currently 
 - [x] reproduce number-box controls (`GameInter 1010/1011`)
 - [x] reproduce sound-bar source assets (`GameInter 4740-4746`)
 - [x] explicit policy for all **21/21** currently discovered DX control types
+- [x] preserve complete `Point` / `Size` expressions without truncation
+- [x] resolve named-control geometry before root `Size`/`DisplayArea` tokens
+- [x] resolve forward parent/control references used by the current validation set
+- [x] embed asset dimensions for **8 source libraries**
+- [x] extract **764** English Zircon messages
+- [x] resolve **314** visible control labels with **0 missing referenced language keys**
+- [x] preserve original language expressions as provenance while using real text in rendering
+- [x] suspicious explicit source-location fallbacks reduced to **50 / 742** and regression-guarded in CI
+- [ ] resolve remaining constructor-local/runtime geometry cases without inventing coordinates
 - [ ] visual owner pass of all 65 GameScene components
 - [ ] owner reviews components and updates `docs/ZIRCON_UI_DECISIONS.md`
 
 ## Latest validated complete reference build
 
-- workflow run: `31911631944`
+- workflow run: `31913248672`
 - source-resolved windows: `65/65`
 - control type render coverage: `21/21`
+- parsed controls: `1,014`
+- explicit source locations: `742`
+- suspicious source-location fallbacks: `50`
+- complete `Point` expressions: `722`
+- complete `Size` expressions: `358`
+- English messages parsed: `764`
+- controls using resolved English display text: `314`
+- unresolved referenced language keys: `0`
+- asset-size libraries: `8`
 - missing public UI libraries: `0`
 - extracted source PNGs: `416`
 - JS syntax validation: passed
+- source-geometry validation: passed
 - artifact: `zircon-ui-reference-complete`
-- artifact ID: `9253818411`
+- artifact ID: `9254245393`
 
 ## Playable runtime target after desktop UI review
 
