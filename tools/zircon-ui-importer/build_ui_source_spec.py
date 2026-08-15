@@ -3,11 +3,11 @@
 
 The source of truth is the current Suprcode/Zircon C# client. This script does
 not attempt to translate the game client; it inventories GameScene windows and
-extracts the declarative geometry/art references that are useful to the ORIGINS
-HTML reference renderer.
+extracts declarative geometry/art references useful to the ORIGINS HTML
+reference renderer.
 
-It intentionally keeps C# expressions as strings when they cannot be reduced
-safely. That is preferable to silently inventing a coordinate or image index.
+C# expressions are kept as strings when they cannot be reduced safely. That is
+preferable to silently inventing a coordinate or image index.
 """
 from __future__ import annotations
 
@@ -31,14 +31,39 @@ def match_brace(text: str, opening: int) -> int:
     depth = 0
     in_string = False
     verbatim = False
+    in_char = False
     escaped = False
+    line_comment = False
+    block_comment = False
     i = opening
     while i < len(text):
         c = text[i]
+        n = text[i + 1] if i + 1 < len(text) else ""
+        if line_comment:
+            if c == "\n":
+                line_comment = False
+            i += 1
+            continue
+        if block_comment:
+            if c == "*" and n == "/":
+                block_comment = False
+                i += 2
+                continue
+            i += 1
+            continue
+        if in_char:
+            if escaped:
+                escaped = False
+            elif c == "\\":
+                escaped = True
+            elif c == "'":
+                in_char = False
+            i += 1
+            continue
         if in_string:
             if verbatim:
                 if c == '"':
-                    if i + 1 < len(text) and text[i + 1] == '"':
+                    if n == '"':
                         i += 2
                         continue
                     in_string = False
@@ -52,13 +77,25 @@ def match_brace(text: str, opening: int) -> int:
                     in_string = False
             i += 1
             continue
-        if c == '@' and i + 1 < len(text) and text[i + 1] == '"':
+        if c == "/" and n == "/":
+            line_comment = True
+            i += 2
+            continue
+        if c == "/" and n == "*":
+            block_comment = True
+            i += 2
+            continue
+        if c == '@' and n == '"':
             in_string = True
             verbatim = True
             i += 2
             continue
         if c == '"':
             in_string = True
+            i += 1
+            continue
+        if c == "'":
+            in_char = True
             i += 1
             continue
         if c == '{':
@@ -90,8 +127,13 @@ def named_method_body(text: str, method_name: str) -> str:
     return text[opening + 1:match_brace(text, opening)]
 
 
-def top_level_statements(body: str) -> list[str]:
-    """Return semicolon-terminated statements at the current block's depth zero."""
+def split_top_level(text: str, delimiter: str) -> list[str]:
+    """Split on a delimiter only when outside nested C# syntax.
+
+    This is deliberately a small lexical scanner rather than a C# parser. It
+    preserves commas inside Point/Size constructors, method calls, nested
+    object initializers, lambdas, arrays, strings, chars and comments.
+    """
     out: list[str] = []
     start = 0
     braces = 0
@@ -99,14 +141,39 @@ def top_level_statements(body: str) -> list[str]:
     brackets = 0
     in_string = False
     verbatim = False
+    in_char = False
     escaped = False
+    line_comment = False
+    block_comment = False
     i = 0
-    while i < len(body):
-        c = body[i]
+    while i < len(text):
+        c = text[i]
+        n = text[i + 1] if i + 1 < len(text) else ""
+        if line_comment:
+            if c == "\n":
+                line_comment = False
+            i += 1
+            continue
+        if block_comment:
+            if c == "*" and n == "/":
+                block_comment = False
+                i += 2
+                continue
+            i += 1
+            continue
+        if in_char:
+            if escaped:
+                escaped = False
+            elif c == "\\":
+                escaped = True
+            elif c == "'":
+                in_char = False
+            i += 1
+            continue
         if in_string:
             if verbatim:
                 if c == '"':
-                    if i + 1 < len(body) and body[i + 1] == '"':
+                    if n == '"':
                         i += 2
                         continue
                     in_string = False
@@ -120,13 +187,25 @@ def top_level_statements(body: str) -> list[str]:
                     in_string = False
             i += 1
             continue
-        if c == '@' and i + 1 < len(body) and body[i + 1] == '"':
+        if c == "/" and n == "/":
+            line_comment = True
+            i += 2
+            continue
+        if c == "/" and n == "*":
+            block_comment = True
+            i += 2
+            continue
+        if c == '@' and n == '"':
             in_string = True
             verbatim = True
             i += 2
             continue
         if c == '"':
             in_string = True
+            i += 1
+            continue
+        if c == "'":
+            in_char = True
             i += 1
             continue
         if c == '{':
@@ -141,13 +220,16 @@ def top_level_statements(body: str) -> list[str]:
             brackets += 1
         elif c == ']':
             brackets = max(0, brackets - 1)
-        elif c == ';' and braces == 0 and parens == 0 and brackets == 0:
-            statement = body[start:i].strip()
-            if statement:
-                out.append(statement)
+        elif c == delimiter and braces == 0 and parens == 0 and brackets == 0:
+            out.append(text[start:i])
             start = i + 1
         i += 1
+    out.append(text[start:])
     return out
+
+
+def top_level_statements(body: str) -> list[str]:
+    return [part.strip() for part in split_top_level(body, ';') if part.strip()]
 
 
 def strip_leading_comments(statement: str) -> str:
@@ -178,7 +260,7 @@ def simple_assignments(body: str, allowed: set[str] | None = None) -> dict[str, 
             key, value = m.group(1), " ".join(m.group(2).split())
             if allowed is None or key in allowed:
                 out[key] = value
-        m = re.match(r"\s*SetClientSize\s*\(\s*new\s+Size\s*\(([^)]*)\)\s*\)\s*$", statement, re.S)
+        m = re.match(r"\s*SetClientSize\s*\(\s*new\s+Size\s*\((.*)\)\s*\)\s*$", statement, re.S)
         if m:
             out["ClientSize"] = f"new Size({' '.join(m.group(1).split())})"
     return out
@@ -198,24 +280,14 @@ def object_initializers(body: str) -> list[dict]:
             continue
         chunk = body[opening + 1:closing]
         props: dict[str, str] = {}
-        depth = 0
-        start = 0
-        entries: list[str] = []
-        for i, c in enumerate(chunk):
-            if c == '{':
-                depth += 1
-            elif c == '}':
-                depth = max(0, depth - 1)
-            elif c == ',' and depth == 0:
-                entries.append(chunk[start:i])
-                start = i + 1
-        entries.append(chunk[start:])
-        for entry in entries:
+        for entry in split_top_level(chunk, ','):
             mm = re.match(r"\s*([A-Za-z_][A-Za-z0-9_]*)\s*=\s*(.+?)\s*$", entry, re.S)
             if mm:
                 props[mm.group(1)] = " ".join(mm.group(2).split())
         controls.append({"name": m.group(1), "type": m.group(2), "properties": props})
 
+    # Enrich only from constructor-level assignments. Event-handler changes are
+    # later runtime states and must not overwrite the initial visual state.
     by_name = {c["name"]: c for c in controls}
     for raw in top_level_statements(body):
         statement = strip_leading_comments(raw)
@@ -348,6 +420,7 @@ def build_spec(zircon_root: Path) -> dict:
             if lib:
                 asset_refs.setdefault(lib, set()).update(literal_indices(m.group(2)))
 
+    # Stable common ranges/reference-only icons used by the desktop harness.
     asset_refs.setdefault("GameInter", set()).update(range(50, 130))
     asset_refs["GameInter"].update({161, 162, 240, 241, 358, 360, 364, 960, 1298})
     asset_refs.setdefault("Interface", set()).update(range(0, 320))
