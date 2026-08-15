@@ -1,0 +1,108 @@
+name: Validate derived Zircon UI geometry
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [origins-game-v1]
+    paths:
+      - ".github/workflows/build-zircon-ui-reference-derived.yml"
+      - "tools/zircon-ui-importer/**"
+      - "apps/zircon-ui-reference/**"
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 -m pip install --user Pillow
+      - name: Checkout Zircon
+        run: |
+          rm -rf .source/Zircon
+          git clone --depth 1 https://github.com/Suprcode/Zircon.git .source/Zircon
+
+      - name: Build and augment UI manifest
+        run: |
+          rm -rf .build/zircon-ui-derived .source/zircon-ui-derived-libraries
+          mkdir -p .build/zircon-ui-derived .source/zircon-ui-derived-libraries
+          python3 tools/zircon-ui-importer/build_ui_source_spec.py \
+            --zircon-root .source/Zircon \
+            --out .build/zircon-ui-derived/ui-source-spec.json
+          python3 tools/zircon-ui-importer/augment_ui_language.py \
+            --spec .build/zircon-ui-derived/ui-source-spec.json \
+            --english-messages .source/Zircon/Client/Envir/Translations/EnglishMessages.cs
+          python3 tools/zircon-ui-importer/augment_ui_symbols.py \
+            --spec .build/zircon-ui-derived/ui-source-spec.json \
+            --zircon-root .source/Zircon
+          python3 tools/zircon-ui-importer/augment_ui_derived_geometry.py \
+            --spec .build/zircon-ui-derived/ui-source-spec.json \
+            --zircon-root .source/Zircon
+          python3 tools/zircon-ui-importer/build_full_reference_assets.py \
+            --spec .build/zircon-ui-derived/ui-source-spec.json \
+            --source-dir .source/zircon-ui-derived-libraries \
+            --out .build/zircon-ui-derived
+
+      - name: Assemble derived viewer
+        run: |
+          cp apps/zircon-ui-reference/index-derived.html .build/zircon-ui-derived/index.html
+          cp apps/zircon-ui-reference/styles.css .build/zircon-ui-derived/styles.css
+          cp apps/zircon-ui-reference/app-layout.js .build/zircon-ui-derived/app-layout.js
+          cp apps/zircon-ui-reference/game-scene-windows.js .build/zircon-ui-derived/game-scene-windows.js
+          cp apps/zircon-ui-reference/control-render-policy.json .build/zircon-ui-derived/control-render-policy.json
+          cp apps/zircon-ui-reference/layout-resolver.js .build/zircon-ui-derived/layout-resolver-base.js
+          cp apps/zircon-ui-reference/layout-resolver-derived.js .build/zircon-ui-derived/layout-resolver-derived.js
+          node --check .build/zircon-ui-derived/app-layout.js
+          node --check .build/zircon-ui-derived/layout-resolver-base.js
+          node --check .build/zircon-ui-derived/layout-resolver-derived.js
+
+      - name: Validate final fallback count
+        run: |
+          cat > .build/zircon-ui-derived/validate-derived.mjs <<'JS'
+          import fs from 'node:fs';
+          import { pathToFileURL } from 'node:url';
+          const root='.build/zircon-ui-derived';
+          const spec=JSON.parse(fs.readFileSync(`${root}/ui-source-spec.json`,'utf8'));
+          const {buildWindowLayout}=await import(pathToFileURL(`${process.cwd()}/${root}/layout-resolver-derived.js`).href);
+          const rows=[]; let explicit=0;
+          for(const window of spec.windows){
+            const layout=buildWindowLayout(spec,window);
+            for(let i=0;i<(window.controls||[]).length;i++){
+              const control=window.controls[i], props=control.properties||{}, node=layout.nodes[i];
+              if(!('Location' in props)) continue;
+              explicit++;
+              const source=String(props.Location).trim();
+              const explicitZero=/^(Point\.Empty|new Point\(\s*0\s*,\s*0\s*\))$/.test(source);
+              if(node && node.localX===0 && node.localY===0 && !explicitZero){
+                rows.push({window:window.field,control:control.name,source,original:control.sourceLocationExpression||null});
+              }
+            }
+          }
+          console.log('source-resolved windows:',spec.windows.filter(w=>w.sourcePath).length,'/',spec.windowCount);
+          console.log('explicit Locations:',explicit);
+          console.log('remaining suspicious fallbacks:',rows.length);
+          console.log(JSON.stringify(rows,null,2));
+          console.log('derived pass:',JSON.stringify(spec.derivedGeometryPass||{}));
+          console.log('asset PNGs:',Object.values(spec.assetSizes||{}).reduce((n,lib)=>n+Object.keys(lib).length,0));
+          if(spec.windowCount!==65) throw new Error('GameScene window count changed');
+          if(rows.length>4) throw new Error(`derived geometry still has ${rows.length} suspicious fallbacks`);
+          const ranking=spec.windows.find(w=>w.field==='RankingBox');
+          const last=ranking.controls.find(c=>c.name==='LastUpdate');
+          if(String(last.properties.Location).includes('fullRanking')) throw new Error('Ranking constructor argument unresolved');
+          const mini=spec.windows.find(w=>w.field==='MiniMapBox');
+          const panel=mini.controls.find(c=>c.name==='Panel');
+          if(panel.properties.Location==='Area.Location') throw new Error('MiniMap Area alias unresolved');
+          const milestone=spec.windows.find(w=>w.field==='MilestoneAchievedBox');
+          const bg=milestone.controls.find(c=>c.name==='Background');
+          if(!String(bg.properties.Location).includes('AssetSize.GameInter2.500')) throw new Error('Milestone source asset size dependency unresolved');
+          JS
+          node .build/zircon-ui-derived/validate-derived.mjs
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: zircon-ui-reference-derived
+          path: .build/zircon-ui-derived
+          if-no-files-found: error
+          retention-days: 14
