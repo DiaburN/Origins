@@ -14,8 +14,10 @@ Authoritative branch: `origins-game-v1`
 - [x] automatic Zircon `GameScene` UI source analyzer
 - [x] complete Zircon GameScene registry: **65/65 source-resolved components**
 - [x] complete UI reference dependency build: **0 missing public UI libraries**
-- [x] validated reference extraction: **410 real PNG assets**
+- [x] validated reference extraction: **416 real PNG assets**
 - [x] searchable/category-based Zircon desktop UI reference harness
+- [x] explicit renderer policy for **21/21 discovered DX control types**
+- [x] CI fails if a newly discovered Zircon control type has no renderer policy
 - [x] complete Zircon UI scope document
 - [x] owner UI approval/keep-remove matrix
 - [x] Zircon public-source CI
@@ -27,7 +29,7 @@ Authoritative branch: `origins-game-v1`
 
 ## Current UI fidelity pass
 
-The full source/interface inventory is now captured. Do not confuse that with every complex runtime control being visually signed off.
+The complete source/interface/control inventory is captured and every currently discovered DX control type has an explicit rendering policy. This does **not** mean every runtime-populated list, map, item icon, tree row or live value is baked into the reference; those remain runtime data by design.
 
 - [x] complete GameScene component inventory
 - [x] exact `.Zl` source dependency extraction
@@ -37,14 +39,29 @@ The full source/interface inventory is now captured. Do not confuse that with ev
 - [x] Magic reference foundation
 - [x] image-backed Quest reference foundation
 - [x] image-backed Menu reference foundation
-- [ ] reproduce reusable `DXButton` skins/states exactly from `Interface.Zl`
-- [ ] reproduce `DXTab` / `DXTabControl` visual states exactly
-- [ ] reproduce `DXCheckBox` exactly
-- [ ] reproduce text boxes / borders exactly
-- [ ] reproduce scrollbars/list boxes exactly
-- [ ] reproduce item grids/cells exactly
-- [ ] visual pass of all 65 GameScene components
+- [x] reproduce reusable `DXButton` source skins from `Interface.Zl`
+- [x] reproduce `DXTab` / `DXTabControl` chrome policy
+- [x] reproduce `DXCheckBox` source skin (`GameInter 161/162`)
+- [x] reproduce text/number field border policy
+- [x] reproduce scrollbar/list/tree chrome from source indices
+- [x] reproduce item grid/cell geometry (`36x36`)
+- [x] reproduce combo-box arrow (`GameInter 795`)
+- [x] reproduce number-box controls (`GameInter 1010/1011`)
+- [x] reproduce sound-bar source assets (`GameInter 4740-4746`)
+- [x] explicit policy for all **21/21** currently discovered DX control types
+- [ ] visual owner pass of all 65 GameScene components
 - [ ] owner reviews components and updates `docs/ZIRCON_UI_DECISIONS.md`
+
+## Latest validated complete reference build
+
+- workflow run: `31911631944`
+- source-resolved windows: `65/65`
+- control type render coverage: `21/21`
+- missing public UI libraries: `0`
+- extracted source PNGs: `416`
+- JS syntax validation: passed
+- artifact: `zircon-ui-reference-complete`
+- artifact ID: `9253818411`
 
 ## Playable runtime target after desktop UI review
 
