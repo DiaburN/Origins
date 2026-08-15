@@ -1,0 +1,56 @@
+name: Fetch Zircon UI data
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [zircon-ui-v1]
+    paths:
+      - ".github/workflows/fetch-zircon-ui-data.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  fetch-ui:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download current public Zircon UI libraries
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p .build/zircon-ui-data
+          BASE="https://mirfiles.co.uk/resources/mir3/zircon/patch"
+          UA="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 Chrome/126 Safari/537.36"
+
+          for REMOTE in \
+            Data-GameInter.Zl \
+            Data-GameInter2.Zl \
+            Data-Interface.Zl \
+            Data-Equip.Zl \
+            Data-Inventory.Zl \
+            Data-MIcon.Zl \
+            Data-QuestIcons.Zl \
+            Data-MiniMapIcon.Zl \
+            Data-CBIcons.Zl
+          do
+            NAME="${REMOTE#Data-}"
+            echo "Downloading ${REMOTE}.gz -> ${NAME}"
+            curl -fL --retry 5 --retry-delay 3 -A "$UA" \
+              "$BASE/${REMOTE}.gz" \
+              -o ".build/zircon-ui-data/${NAME}.gz"
+            gzip -dc ".build/zircon-ui-data/${NAME}.gz" > ".build/zircon-ui-data/${NAME}"
+            rm ".build/zircon-ui-data/${NAME}.gz"
+          done
+
+          ls -lh .build/zircon-ui-data
+
+      - name: Upload exact Zircon UI source libraries
+        uses: actions/upload-artifact@v4
+        with:
+          name: zircon-ui-source-libraries
+          path: .build/zircon-ui-data
+          if-no-files-found: error
+          retention-days: 7
