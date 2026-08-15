@@ -113,18 +113,23 @@ Approved runtime-ready assets copied/normalized from the extraction pipeline. Th
 - Automatic parser of the current `Suprcode/Zircon` `GameScene` and registered UI source classes.
 - Complete GameScene registry: **65/65 source-resolved UI/HUD components** in the validated CI build.
 - No missing public UI libraries in the validated complete build.
-- Validated complete build extracted **410 real source PNGs** required by the current reference set.
+- Validated complete build extracted **416 real source PNGs** required by the current reference set.
 - Searchable/category-based 1024x768 desktop reference harness under `apps/zircon-ui-reference/`.
+- Explicit rendering policy for **21/21 DX control types currently discovered** in those 65 components.
+- Reusable Zircon controls use source-defined skins/geometry where available: generated buttons/tabs, checkbox, scroll/list/tree chrome, combo arrow, number box buttons, item-cell geometry and sound bar assets.
+- `apps/zircon-ui-reference/control-render-policy.json` is machine-checked in CI. A newly discovered DX control type without a policy fails the build.
 - Exact image-backed reconstruction foundation for MainPanel and major image-backed dialogs plus source-driven reusable `DXWindow` reconstruction for the rest.
 - Complete scope documentation: `docs/ZIRCON_UI_FULL_SCOPE.md`.
 - Owner review/removal matrix: `docs/ZIRCON_UI_DECISIONS.md`.
 
-Validated CI reference build:
-- workflow: `Build complete Zircon UI reference`
+Latest validated CI reference build:
+- workflow run: `31911631944`
 - GameScene source entries: `65`
 - source-resolved: `65/65`
+- DX control type render coverage: `21/21`
 - missing public UI libraries: `0`
-- extracted PNGs: `410`
+- extracted PNGs: `416`
+- artifact ID: `9253818411`
 
 ## 6. What is and is not considered complete
 
@@ -133,10 +138,13 @@ Validated CI reference build:
 - current source-class resolution for every registered GameScene component;
 - public `.Zl` dependency extraction for the reference set;
 - BC7-capable Zircon UI extraction;
+- explicit rendering policy for every currently discovered DX control type;
 - navigable desktop catalog foundation for reviewing the full interface.
 
 ### Still requires visual/product approval or runtime integration
-- pixel-level review of every complex source-driven Zircon dialog against its C# runtime behavior;
+- visual review of all 65 components by the owner;
+- live runtime data inside lists, trees, minimap/map, inventory contents, item icons, names and values;
+- behavior-level parity for every event/callback/modal in Zircon;
 - final ORIGINS `KEEP / REMOVE / MERGE / MOBILE_REDESIGN / DEFER` decisions;
 - final STANDARD room runtime renderer;
 - final KING_ROOM runtime renderer;
@@ -145,7 +153,7 @@ Validated CI reference build:
 - mobile-adapted interface;
 - monsters/combat/spells/networking/server.
 
-Do not claim that every dynamic Zircon window behavior has been ported into ORIGINS merely because its source and graphical reference are reconstructed. The reference is intentionally separated from final game implementation.
+Do not claim that every dynamic Zircon window behavior has been ported into ORIGINS merely because its source, graphical assets and control chrome are reconstructed. Runtime-populated content must remain runtime and the owner still has to approve what ORIGINS keeps.
 
 ## 7. Development safety
 
@@ -159,7 +167,7 @@ Do not claim that every dynamic Zircon window behavior has been ported into ORIG
 
 ## 8. Next integrated milestone
 
-Continue validating the complete Zircon desktop reference window-by-window, while preparing the browser-playable vertical slice in `apps/game-web` that combines:
+Review the complete Zircon desktop reference window-by-window and record product decisions, while preparing the browser-playable vertical slice in `apps/game-web` that combines:
 1. the approved grey Zuma room;
 2. the real Crystal player locomotion;
 3. collision and SOUTH/NORTH transition logic;
