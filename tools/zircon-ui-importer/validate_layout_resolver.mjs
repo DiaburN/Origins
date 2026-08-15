@@ -49,6 +49,14 @@ assertPair(settings,26,40,'Menu.SettingsButton');
 assertEqual(settings.width,100,'Menu.SettingsButton width');
 if (settings.height <= 0) throw new Error('Menu.SettingsButton DefaultHeight was not resolved');
 
+const chat = buildWindowLayout(spec,windowByField('ChatTextBox'));
+const chatOptions = nodeByName(chat,'OptionsButton');
+assertPair(chatOptions,429,8,'ChatTextBox.OptionsButton forward reference');
+
+const fortune = buildWindowLayout(spec,windowByField('FortuneCheckerBox'));
+const searchScrollBar = nodeByName(fortune,'SearchScrollBar');
+assertPair(searchScrollBar,480,68,'FortuneChecker.SearchScrollBar ClientArea.Size');
+
 const interface16 = getAssetSize(spec,'Interface',16);
 if (!interface16 || interface16[0] <= 0 || interface16[1] <= 0) throw new Error('assetSizes missing Interface 16');
 const gameInter82 = getAssetSize(spec,'GameInter',82);
@@ -58,9 +66,31 @@ let pointExpressions = 0;
 let pointTruncated = 0;
 let sizeExpressions = 0;
 let sizeTruncated = 0;
+let explicitLocations = 0;
+const suspiciousLocationFallbacks = [];
+
 for (const window of spec.windows) {
-  for (const control of window.controls || []) {
-    for (const [key,value] of Object.entries(control.properties || {})) {
+  const layout = buildWindowLayout(spec,window);
+  for (let index=0; index < (window.controls || []).length; index++) {
+    const control = window.controls[index];
+    const properties = control.properties || {};
+    const node = layout.nodes[index];
+
+    if ('Location' in properties) {
+      explicitLocations++;
+      const source = String(properties.Location).trim();
+      const explicitZero = /^(Point\.Empty|new Point\(\s*0\s*,\s*0\s*\))$/.test(source);
+      if (node && node.localX === 0 && node.localY === 0 && !explicitZero) {
+        suspiciousLocationFallbacks.push({
+          window: window.field,
+          control: control.name,
+          type: control.type,
+          source,
+        });
+      }
+    }
+
+    for (const value of Object.values(properties)) {
       const text = String(value);
       if (text.includes('new Point(')) {
         pointExpressions++;
@@ -73,7 +103,19 @@ for (const window of spec.windows) {
     }
   }
 }
-if (pointTruncated || sizeTruncated) throw new Error(`truncated geometry expressions: points=${pointTruncated}, sizes=${sizeTruncated}`);
+
+if (pointTruncated || sizeTruncated) {
+  throw new Error(`truncated geometry expressions: points=${pointTruncated}, sizes=${sizeTruncated}`);
+}
+
+// Current remaining fallbacks are constructor-local variables, runtime-selected
+// branches or special composite areas. Keep a small allowance so a harmless
+// upstream source change does not immediately break CI, but fail on regression.
+const MAX_SUSPICIOUS_LOCATION_FALLBACKS = 55;
+if (suspiciousLocationFallbacks.length > MAX_SUSPICIOUS_LOCATION_FALLBACKS) {
+  console.error('first suspicious fallbacks:', suspiciousLocationFallbacks.slice(0,20));
+  throw new Error(`source Location fallback regression: ${suspiciousLocationFallbacks.length} > ${MAX_SUSPICIOUS_LOCATION_FALLBACKS}`);
+}
 
 console.log('layout resolver validation passed');
 console.log('MainPanel root size:', main.rootSize);
@@ -81,5 +123,9 @@ console.log('CharacterButton:', characterButton.x, characterButton.y, characterB
 console.log('NewMailIcon:', newMailIcon.x, newMailIcon.y, newMailIcon.width, newMailIcon.height);
 console.log('HealthBar:', healthBar.x, healthBar.y, healthBar.width, healthBar.height);
 console.log('Menu SettingsButton:', settings.x, settings.y, settings.width, settings.height);
+console.log('Chat OptionsButton:', chatOptions.x, chatOptions.y);
+console.log('Fortune SearchScrollBar:', searchScrollBar.x, searchScrollBar.y);
 console.log('complete Point expressions:', pointExpressions);
 console.log('complete Size expressions:', sizeExpressions);
+console.log('explicit source Locations:', explicitLocations);
+console.log('suspicious source Location fallbacks:', suspiciousLocationFallbacks.length);
