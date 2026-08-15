@@ -1,0 +1,28 @@
+name: Verify ORIGINS integration
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [origins-game-v1]
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify repository anchors
+        run: python3 scripts/verify_repository.py
+      - name: Compile bootstrap scripts
+        run: python3 -m py_compile scripts/bootstrap_sources.py scripts/verify_repository.py
+      - name: Prevent upstream source libraries from being committed
+        shell: bash
+        run: |
+          if git ls-files | grep -Ei '\.(lib|zl)$'; then
+            echo 'Upstream .Lib/.Zl source library committed to repository.' >&2
+            exit 1
+          fi
+          echo 'No upstream .Lib/.Zl files tracked.'
