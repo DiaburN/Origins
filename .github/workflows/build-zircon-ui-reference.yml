@@ -89,6 +89,27 @@ jobs:
               raise SystemExit('Too few UI controls received resolved English text')
           PY
 
+      - name: Resolve deterministic Zircon geometry symbols
+        run: |
+          python3 tools/zircon-ui-importer/augment_ui_symbols.py \
+            --spec .build/zircon-ui/ui-source-spec.json \
+            --zircon-root .source/Zircon
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          spec=json.loads(Path('.build/zircon-ui/ui-source-spec.json').read_text())
+          info=spec.get('geometrySymbols',{})
+          print('Windows changed by symbols:', info.get('windowsChanged'))
+          print('Geometry properties simplified:', info.get('propertiesSimplified'))
+          if info.get('propertiesSimplified',0) < 5:
+              raise SystemExit('Deterministic geometry symbol pass resolved unexpectedly few properties')
+          fishing=next(w for w in spec['windows'] if w['field']=='FishingCatchBox')
+          throw_pointer=next(c for c in fishing['controls'] if c['name']=='ThrowDistancePointer')
+          print('Fishing ThrowDistancePointer:', throw_pointer['properties'].get('Location'))
+          if 'PointerXStart' in str(throw_pointer['properties'].get('Location')):
+              raise SystemExit('Fishing class constants were not substituted')
+          PY
+
       - name: Validate discovered control type coverage
         run: |
           python3 - <<'PY'
@@ -198,12 +219,14 @@ jobs:
                       if re.fullmatch(r'new Size\(\s*-?\d+\s*,\s*-?\d+\s*\)',str(p['Size'])):
                           size_literal+=1
           language=spec.get('language',{})
+          symbols=spec.get('geometrySymbols',{})
           print(f"Source-resolved windows: {exact}/{spec['windowCount']}")
           print(f"Control type render coverage: {len(discovered & covered)}/{len(discovered)}")
           print('Parsed controls:',controls)
           print(f'Literal source locations: {location_literal}/{locations}')
           print(f'Literal source sizes: {size_literal}/{sizes}')
           print('Resolved English control labels:',language.get('resolvedControlCount',0))
+          print('Deterministic geometry properties simplified:',symbols.get('propertiesSimplified',0))
           print('Asset-size libraries:',len(spec.get('assetSizes',{})))
           print('Missing public UI libraries:', missing)
           print('Extracted PNG files:', len(list((root/'assets').rglob('*.png'))))
