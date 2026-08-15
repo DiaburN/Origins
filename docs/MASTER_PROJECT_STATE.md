@@ -45,12 +45,13 @@ All new integrated work belongs on `origins-game-v1` until a later milestone exp
 
 ### Game interface
 - Selected UI reference: `Suprcode/Zircon`, not Crystal GameInter.
-- Reconstruct Zircon desktop UI first from actual `.Zl` assets and source-code positions.
+- Reconstruct Zircon desktop UI first from actual `.Zl` assets and source-code geometry.
 - Do not redraw or generate replacements for Zircon UI during reconstruction.
 - Dynamic labels/numbers remain runtime text.
 - Relevant Zircon UI sources include `GameInter.Zl`, `Interface.Zl`, `GameInter2.Zl`, `MIcon.Zl`, `MiniMapIcon.Zl`, etc.
 - Main Zircon HUD source is `Client/Scenes/Views/MainPanel.cs`, using `GameInter #50` as the main panel.
 - Current Zircon third resource bar is Focus (`FP` / `Stat.Focus`). ORIGINS has not yet locked its final gameplay meaning. Do not rename or remove it in the desktop reference reconstruction without approval.
+- The desktop reference must retain the **complete Zircon GameScene UI inventory**. Product removals happen only through the ORIGINS decision matrix after review.
 
 ## 3. Authoritative external sources
 
@@ -76,13 +77,13 @@ Research/content recipes and map-theme metadata. Preserve it.
 Reusable runtime logic. Currently contains player movement under `packages/game-core`.
 
 ### `apps/zircon-ui-reference/`
-A reconstruction/reference harness. It is not the final ORIGINS game runtime.
+The complete desktop Zircon GameScene reconstruction/reference harness. It is deliberately kept separate from final ORIGINS product decisions.
 
 ### `apps/game-web/`
-Reserved for the integrated playable ORIGINS web client. Cursor will implement the first runtime here.
+Reserved for the integrated playable ORIGINS web client. Cursor will implement the playable runtime here.
 
 ### `tools/`
-Importers/extractors. Tools are source pipeline code, not runtime code. Do not delete them after extraction.
+Importers/extractors and source analyzers. Tools are source pipeline code, not runtime code. Do not delete them after extraction.
 
 ### `.source/`
 Local-only downloaded source libraries. Must not be committed by default.
@@ -105,24 +106,46 @@ Approved runtime-ready assets copied/normalized from the extraction pipeline. Th
 - `CharacterMovementController`.
 - 8-way direction helpers.
 - Crystal locomotion animation profile and resolver.
-- real Crystal `CArmour/00` extraction tool/workflow.
+- Real Crystal `CArmour/00` extraction tool/workflow.
 
 ### UI
-- Zircon `.Zl` extractor.
-- Zircon UI public-source workflows.
-- Navigable desktop UI reference harness.
-- MainPanel, Character, Inventory, Magic, Quest and Menu reconstruction foundation.
+- Zircon `.Zl` extractor with DXT1, DXT5, BGRA32, PNG and BC7 decoding required by the current UI data.
+- Automatic parser of the current `Suprcode/Zircon` `GameScene` and registered UI source classes.
+- Complete GameScene registry: **65/65 source-resolved UI/HUD components** in the validated CI build.
+- No missing public UI libraries in the validated complete build.
+- Validated complete build extracted **410 real source PNGs** required by the current reference set.
+- Searchable/category-based 1024x768 desktop reference harness under `apps/zircon-ui-reference/`.
+- Exact image-backed reconstruction foundation for MainPanel and major image-backed dialogs plus source-driven reusable `DXWindow` reconstruction for the rest.
+- Complete scope documentation: `docs/ZIRCON_UI_FULL_SCOPE.md`.
+- Owner review/removal matrix: `docs/ZIRCON_UI_DECISIONS.md`.
 
-## 6. Not yet considered complete
+Validated CI reference build:
+- workflow: `Build complete Zircon UI reference`
+- GameScene source entries: `65`
+- source-resolved: `65/65`
+- missing public UI libraries: `0`
+- extracted PNGs: `410`
 
-Do not claim the following are finished yet:
+## 6. What is and is not considered complete
+
+### Complete as a source/reference foundation
+- complete Zircon GameScene component inventory;
+- current source-class resolution for every registered GameScene component;
+- public `.Zl` dependency extraction for the reference set;
+- BC7-capable Zircon UI extraction;
+- navigable desktop catalog foundation for reviewing the full interface.
+
+### Still requires visual/product approval or runtime integration
+- pixel-level review of every complex source-driven Zircon dialog against its C# runtime behavior;
+- final ORIGINS `KEEP / REMOVE / MERGE / MOBILE_REDESIGN / DEFER` decisions;
 - final STANDARD room runtime renderer;
 - final KING_ROOM runtime renderer;
 - collision integration between room recipes and movement;
 - actual player sprite layering inside the final web runtime;
-- complete Zircon `GameScene` window set;
 - mobile-adapted interface;
 - monsters/combat/spells/networking/server.
+
+Do not claim that every dynamic Zircon window behavior has been ported into ORIGINS merely because its source and graphical reference are reconstructed. The reference is intentionally separated from final game implementation.
 
 ## 7. Development safety
 
@@ -132,14 +155,15 @@ Do not claim the following are finished yet:
 - Keep source/importer/reference/runtime concerns separated.
 - Prefer small, reversible commits.
 - Every implementation task must finish with a changed-files summary and test result.
+- Do not remove a Zircon reference window because ORIGINS later chooses not to use it; record that decision in `docs/ZIRCON_UI_DECISIONS.md`.
 
 ## 8. Next integrated milestone
 
-Build one browser-playable vertical slice in `apps/game-web` that combines:
+Continue validating the complete Zircon desktop reference window-by-window, while preparing the browser-playable vertical slice in `apps/game-web` that combines:
 1. the approved grey Zuma room;
 2. the real Crystal player locomotion;
 3. collision and SOUTH/NORTH transition logic;
 4. the reconstructed Zircon desktop HUD;
-5. clickable Zircon Character, Inventory, Magic, Quest and Menu windows.
+5. the approved Zircon windows required for the first playable slice.
 
-No monsters, combat, spells or mobile adaptation are required for this first integrated slice.
+No mobile redesign should begin until the desktop reference and initial keep/remove decisions are approved.
