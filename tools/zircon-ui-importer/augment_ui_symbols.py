@@ -31,7 +31,6 @@ POINT_SIZE_FIELD_RE = re.compile(
 )
 LOCAL_DECL_RE = re.compile(r"^(?:const\s+)?(int|float|double|decimal|Point|Size)\s+(.+)$", re.S)
 LOCAL_ASSIGN_RE = re.compile(r"^([A-Za-z_][A-Za-z0-9_]*)\s*(\+=|-=|=)\s*(.+)$", re.S)
-IDENTIFIER_RE = re.compile(r"^[A-Za-z_][A-Za-z0-9_]*$")
 
 # Inherited deterministic control constants used by GameScene views.
 COMMON_SYMBOLS: dict[str, str] = {
@@ -52,7 +51,6 @@ def statement_spans(body: str) -> list[tuple[int, str]]:
         if not raw.strip():
             cursor += len(raw) + 1
             continue
-        # split_top_level returns exact slices, so cursor is the start offset.
         result.append((cursor, raw.strip()))
         cursor += len(raw) + 1
     return result
@@ -104,12 +102,13 @@ def substitute_symbols(expression: str, symbols: dict[str, str]) -> str:
                 value = re.sub(rf"\b{re.escape(name)}\.Width\b", f"({size[0]})", value)
                 value = re.sub(rf"\b{re.escape(name)}\.Height\b", f"({size[1]})", value)
 
-        # Replace scalar identifiers only. Point/Size objects must stay intact
-        # unless a component is requested.
+        # Replace standalone scalar identifiers only. Never replace a property
+        # suffix after '.', e.g. a class constant named Width must not mutate
+        # `Size.Width` or `CloseButton.Size.Width`.
         for name, symbol_expression in list(symbols.items()):
             if pair_components(symbol_expression, "Point") or pair_components(symbol_expression, "Size"):
                 continue
-            value = re.sub(rf"\b{re.escape(name)}\b", f"({symbol_expression})", value)
+            value = re.sub(rf"(?<!\.)\b{re.escape(name)}\b", f"({symbol_expression})", value)
 
         if value == before:
             break
@@ -146,7 +145,6 @@ def control_offsets(body: str) -> list[int]:
 def symbol_snapshots(body: str, class_symbols: dict[str, str], control_count: int) -> list[dict[str, str]]:
     offsets = control_offsets(body)
     if len(offsets) < control_count:
-        # Keep a deterministic fallback rather than guessing correspondence.
         offsets += [len(body)] * (control_count - len(offsets))
     offsets = offsets[:control_count]
 
