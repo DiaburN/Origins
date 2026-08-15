@@ -3,7 +3,7 @@ name: Build Zircon UI reference
 on:
   workflow_dispatch:
   push:
-    branches: [zircon-ui-v1]
+    branches: [zircon-ui-v1, origins-game-v1]
     paths:
       - ".github/workflows/build-zircon-ui-reference.yml"
       - "tools/zircon-ui-importer/**"
@@ -18,35 +18,27 @@ jobs:
     timeout-minutes: 25
     steps:
       - uses: actions/checkout@v4
-
       - name: Install Pillow
         run: python3 -m pip install --user Pillow
-
       - name: Download matching current Zircon UI libraries
         shell: bash
         run: |
           set -euo pipefail
           mkdir -p .source/zircon
           BASE="https://files.lomcn.co.uk/resources/mir3/zircon/patch"
-          UA="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 Chrome/126 Safari/537.36"
+          UA="Mozilla/5.0 (ORIGINS CI)"
           for REMOTE in Data-GameInter.Zl Data-Interface.Zl Data-MIcon.Zl; do
             NAME="${REMOTE#Data-}"
             curl -fL --retry 5 --retry-delay 3 -A "$UA" "$BASE/${REMOTE}.gz" -o ".source/zircon/${NAME}.gz"
             gzip -dc ".source/zircon/${NAME}.gz" > ".source/zircon/${NAME}"
           done
-
       - name: Extract real Zircon UI artwork
-        shell: bash
         run: |
-          set -euo pipefail
           rm -rf .build/zircon-ui
           mkdir -p .build/zircon-ui/assets/GameInter .build/zircon-ui/assets/Interface .build/zircon-ui/assets/MIcon
           python3 tools/zircon-ui-importer/extract_zl_assets.py .source/zircon/GameInter.Zl .build/zircon-ui/assets/GameInter --ids "0-300,350-370,960-970,1290-1310,6580-6610"
           python3 tools/zircon-ui-importer/extract_zl_assets.py .source/zircon/Interface.Zl .build/zircon-ui/assets/Interface --ids "0-310"
           python3 tools/zircon-ui-importer/extract_zl_assets.py .source/zircon/MIcon.Zl .build/zircon-ui/assets/MIcon --ids "0-200"
-
-      - name: Assemble navigable reference
-        run: |
           cp apps/zircon-ui-reference/index.html .build/zircon-ui/index.html
           cp apps/zircon-ui-reference/styles.css .build/zircon-ui/styles.css
           cp apps/zircon-ui-reference/app.js .build/zircon-ui/app.js
@@ -54,9 +46,7 @@ jobs:
           test -s .build/zircon-ui/assets/Interface/00110.png
           test -s .build/zircon-ui/assets/Interface/00130.png
           test -s .build/zircon-ui/assets/Interface/00291.png
-
-      - name: Upload reference
-        uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v4
         with:
           name: zircon-ui-reference
           path: .build/zircon-ui

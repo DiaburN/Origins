@@ -1,10 +1,11 @@
 name: Extract Zuma assets
 
-# ORIGINS Map Engine V1 automated source extraction
+# ORIGINS Map Engine public-source extraction
 on:
   push:
     branches:
       - map-engine-v1
+      - origins-game-v1
     paths:
       - ".github/workflows/extract-zuma.yml"
       - "tools/crystal-map-importer/**"
@@ -18,102 +19,32 @@ jobs:
   extract-zuma:
     runs-on: ubuntu-latest
     timeout-minutes: 30
-
     steps:
-      - name: Checkout ORIGINS
-        uses: actions/checkout@v4
-
+      - uses: actions/checkout@v4
       - name: Prepare source folders
-        run: |
-          mkdir -p .source/WemadeMir2
-          mkdir -p .source/maps
-          mkdir -p .source/downloads
-
+        run: mkdir -p .source/WemadeMir2 .source/maps .source/downloads
       - name: Download Crystal Database maps
         run: |
-          curl -fL --retry 4 --retry-delay 3 \
-            https://raw.githubusercontent.com/Suprcode/Crystal.Database/main/Jev/Maps/d501.map \
-            -o .source/maps/d501.map
-          curl -fL --retry 4 --retry-delay 3 \
-            https://raw.githubusercontent.com/Suprcode/Crystal.Database/main/Jev/Maps/d515.map \
-            -o .source/maps/d515.map
-
-      - name: Download public WemadeMir2 libraries from LOMCN mirror
+          curl -fL --retry 4 --retry-delay 3 https://raw.githubusercontent.com/Suprcode/Crystal.Database/main/Jev/Maps/d501.map -o .source/maps/d501.map
+          curl -fL --retry 4 --retry-delay 3 https://raw.githubusercontent.com/Suprcode/Crystal.Database/main/Jev/Maps/d515.map -o .source/maps/d515.map
+      - name: Download public WemadeMir2 libraries
         run: |
           BASE="https://files.lomcn.co.uk/resources/mir2/crystal/patch_oldversion/Data/Map/WeMade-Mir2"
-          UA="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 Chrome/126 Safari/537.36"
+          UA="Mozilla/5.0 (ORIGINS CI)"
           for LIB in SmTiles Objects2 Objects6 Tiles; do
-            echo "Downloading ${LIB}.Lib.gz"
-            curl -fL --retry 5 --retry-delay 4 -A "$UA" \
-              "$BASE/${LIB}.Lib.gz" \
-              -o ".source/downloads/${LIB}.Lib.gz"
+            curl -fL --retry 5 --retry-delay 4 -A "$UA" "$BASE/${LIB}.Lib.gz" -o ".source/downloads/${LIB}.Lib.gz"
             gzip -dc ".source/downloads/${LIB}.Lib.gz" > ".source/WemadeMir2/${LIB}.Lib"
           done
-
-      - name: Verify source files
+      - name: Extract Zuma source images
         run: |
-          ls -lh .source/WemadeMir2
-          ls -lh .source/maps
-          test -s .source/WemadeMir2/Tiles.Lib
-          test -s .source/WemadeMir2/SmTiles.Lib
-          test -s .source/WemadeMir2/Objects2.Lib
-          test -s .source/WemadeMir2/Objects6.Lib
-          test -s .source/maps/d501.map
-          test -s .source/maps/d515.map
-
-      - name: Extract Zuma images actually referenced by all map layers
-        run: |
-          rm -rf origins/map-engine/themes/zuma/extracted
-          python3 tools/crystal-map-importer/extract_theme_assets_complete.py \
-            --data .source/WemadeMir2 \
-            --maps .source/maps \
-            --standard d501.map \
-            --king d515.map \
-            --theme zuma \
-            --out origins/map-engine/themes/zuma/extracted
-
-      - name: Render Crystal reference maps
-        run: |
-          mkdir -p origins/map-engine/themes/zuma/extracted/reference
-          python3 tools/crystal-map-importer/render_mir2_2010_reference.py \
-            --data .source/WemadeMir2 \
-            --map .source/maps/d515.map \
-            --out origins/map-engine/themes/zuma/extracted/reference/d515-full.png
-          python3 tools/crystal-map-importer/render_mir2_2010_reference.py \
-            --data .source/WemadeMir2 \
-            --map .source/maps/d501.map \
-            --crop 150 195 36 42 \
-            --out origins/map-engine/themes/zuma/extracted/reference/d501-entry-crop.png
-
-      - name: Export exact source placements
-        run: |
-          python3 tools/crystal-map-importer/export_mir2_2010_placements.py \
-            --data .source/WemadeMir2 \
-            --map .source/maps/d515.map \
-            --out origins/map-engine/themes/zuma/extracted/reference/d515-placements.json
-          python3 tools/crystal-map-importer/export_mir2_2010_placements.py \
-            --data .source/WemadeMir2 \
-            --map .source/maps/d501.map \
-            --out origins/map-engine/themes/zuma/extracted/reference/d501-placements.json
-
-      - name: Summarize extraction
-        run: |
-          python3 - <<'PY'
-          import json
-          from pathlib import Path
-          p = Path('origins/map-engine/themes/zuma/extracted/manifest.json')
-          d = json.loads(p.read_text())
-          print('Theme:', d['theme_id'])
-          for name, lib in d['libraries'].items():
-              print(name, lib['counts'])
-          PY
-          du -sh origins/map-engine/themes/zuma/extracted
-          ls -lh origins/map-engine/themes/zuma/extracted/reference
-
-      - name: Upload Zuma gallery, reference renders and extracted PNGs
-        uses: actions/upload-artifact@v4
+          rm -rf artifacts/zuma
+          python3 tools/crystal-map-importer/extract_theme_assets_complete.py --data .source/WemadeMir2 --maps .source/maps --standard d501.map --king d515.map --theme zuma_gray --out artifacts/zuma
+          mkdir -p artifacts/zuma/reference
+          python3 tools/crystal-map-importer/render_mir2_2010_reference.py --data .source/WemadeMir2 --map .source/maps/d515.map --out artifacts/zuma/reference/d515-full.png
+          python3 tools/crystal-map-importer/export_mir2_2010_placements.py --data .source/WemadeMir2 --map .source/maps/d515.map --out artifacts/zuma/reference/d515-placements.json
+      - uses: actions/upload-artifact@v4
         with:
           name: zuma-extracted
-          path: origins/map-engine/themes/zuma/extracted
+          path: artifacts/zuma
           if-no-files-found: error
           retention-days: 14

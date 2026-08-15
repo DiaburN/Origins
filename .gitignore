@@ -1,0 +1,29 @@
+# Dependencies / build
+node_modules/
+dist/
+build/
+coverage/
+.vite/
+
+# Local source libraries downloaded from public mirrors
+.source/
+*.Lib
+*.lib
+*.Zl
+*.zl
+
+# Generated validation/build artifacts
+artifacts/
+.build/
+.tmp/
+.cache/
+
+# Local environment / IDE
+.env
+.env.*
+!.env.example
+.DS_Store
+Thumbs.db
+
+# Keep repository-authored runtime assets when explicitly placed under assets/game.
+# Do not blanket-ignore PNG/JSON because approved runtime content belongs in Git.

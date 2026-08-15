@@ -4,10 +4,10 @@ on:
   push:
     branches:
       - character-movement-v1
+      - origins-game-v1
     paths:
       - ".github/workflows/extract-player-locomotion.yml"
       - "tools/crystal-character-importer/**"
-      - "tools/crystal-map-importer/extract_theme_assets.py"
   workflow_dispatch:
 
 permissions:
@@ -17,46 +17,31 @@ jobs:
   extract-player:
     runs-on: ubuntu-latest
     timeout-minutes: 15
-
     steps:
-      - name: Checkout ORIGINS
-        uses: actions/checkout@v4
-
-      - name: Download public Crystal CArmour 00 library
+      - uses: actions/checkout@v4
+      - name: Download public Crystal CArmour 00
         shell: bash
         run: |
           set -euo pipefail
           mkdir -p .source/CArmour .source/downloads
-          UA="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 Chrome/126 Safari/537.36"
+          UA="Mozilla/5.0 (ORIGINS CI)"
           URLS=(
-            "https://files.lomcn.co.uk/resources/mir2/crystal/patch_oldversion/Data/CArmour/00.Lib.gz"
             "https://files.lomcn.co.uk/resources/mir2/crystal/patch/Data/CArmour/00.Lib.gz"
+            "https://files.lomcn.co.uk/resources/mir2/crystal/patch_oldversion/Data/CArmour/00.Lib.gz"
           )
           ok=0
           for url in "${URLS[@]}"; do
-            echo "Trying $url"
-            if curl -fL --retry 3 --retry-delay 2 -A "$UA" "$url" -o .source/downloads/00.Lib.gz; then
-              ok=1
-              break
-            fi
+            if curl -fL --retry 3 --retry-delay 2 -A "$UA" "$url" -o .source/downloads/00.Lib.gz; then ok=1; break; fi
           done
           test "$ok" -eq 1
           gzip -dc .source/downloads/00.Lib.gz > .source/CArmour/00.Lib
-          test -s .source/CArmour/00.Lib
-          ls -lh .source/CArmour/00.Lib
-
-      - name: Extract and align movement frames
+      - name: Extract movement frames
         run: |
           rm -rf artifacts/player-locomotion
-          python3 tools/crystal-character-importer/extract_player_locomotion.py \
-            --lib .source/CArmour/00.Lib \
-            --out artifacts/player-locomotion
-          du -sh artifacts/player-locomotion
+          python3 tools/crystal-character-importer/extract_player_locomotion.py --lib .source/CArmour/00.Lib --out artifacts/player-locomotion
           test -s artifacts/player-locomotion/preview.html
           test -s artifacts/player-locomotion/manifest.json
-
-      - name: Upload real player movement preview
-        uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v4
         with:
           name: crystal-player-locomotion
           path: artifacts/player-locomotion
