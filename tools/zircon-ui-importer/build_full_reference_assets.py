@@ -14,6 +14,28 @@ from pathlib import Path
 BASE = "https://files.lomcn.co.uk/resources/mir3/zircon/patch"
 UA = "Mozilla/5.0 (X11; Linux x86_64) ORIGINS-Zircon-UI-Reference"
 
+# Some reusable controls draw their own chrome in their control classes rather
+# than declaring the LibraryFile/Index in each GameScene view. Keep those
+# source-defined dependencies explicit here so the reference artifact remains
+# self contained without extracting entire libraries.
+CONTROL_ASSET_REFS: dict[str, set[int]] = {
+    "GameInter": {
+        161, 162,             # DXCheckBox
+        795,                  # DXComboBox down arrow
+        4740, 4741, 4742, 4743, 4745, 4746,  # DXSoundBar
+    },
+    "Interface": {
+        16, 17, 18,           # default generated button
+        41, 42, 43,           # small button
+        44, 45, 46,           # standard scroll bar
+        53, 54, 55,           # deselected tab
+        56, 57, 58,           # selected tab
+        59, 60, 61, 62,       # tree/scroll background + controls
+        206,                  # combo background (normally hidden)
+        241, 242, 243, 245,   # generated special buttons
+    },
+}
+
 
 def ranges(values: list[int]) -> str:
     if not values:
@@ -61,6 +83,14 @@ def download(remote: str, target: Path) -> None:
         raise RuntimeError(f"empty Zircon library: {target}")
 
 
+def merge_control_asset_refs(spec: dict) -> None:
+    refs = spec.setdefault("assetRefs", {})
+    for library, ids in CONTROL_ASSET_REFS.items():
+        merged = {int(value) for value in refs.get(library, [])}
+        merged.update(ids)
+        refs[library] = sorted(merged)
+
+
 def main() -> None:
     p = argparse.ArgumentParser()
     p.add_argument("--spec", type=Path, required=True)
@@ -69,6 +99,7 @@ def main() -> None:
     args = p.parse_args()
 
     spec = json.loads(args.spec.read_text(encoding="utf-8"))
+    merge_control_asset_refs(spec)
     extractor = Path(__file__).with_name("extract_zl_assets.py")
     args.out.mkdir(parents=True, exist_ok=True)
 
