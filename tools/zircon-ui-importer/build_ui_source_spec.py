@@ -22,7 +22,7 @@ INTEGER = re.compile(r"(?<![A-Za-z_])\d+(?![A-Za-z_])")
 
 ROOT_PROPS = {
     "LibraryFile", "Index", "Size", "Location", "Visible", "Movable", "Sort",
-    "DropShadow", "Opacity", "HasTitle", "HasFooter", "HasTopBorder",
+    "DropShadow", "Opacity", "HasTitle", "HasFooter", "HasTopBorder", "SlimFooter",
     "AllowResize", "CanResizeWidth", "CanResizeHeight", "PassThrough",
 }
 
@@ -83,14 +83,90 @@ def constructor_body(text: str, class_name: str) -> str:
     return text[opening + 1:match_brace(text, opening)]
 
 
+def named_method_body(text: str, method_name: str) -> str:
+    m = re.search(rf"\b{re.escape(method_name)}\s*\([^)]*\)\s*\{{", text)
+    if not m:
+        return ""
+    opening = text.find("{", m.start())
+    return text[opening + 1:match_brace(text, opening)]
+
+
+def top_level_statements(body: str) -> list[str]:
+    """Return statements terminated at constructor/method block depth zero.
+
+    This prevents assignments inside object initializers, event lambdas, loops,
+    tab callbacks or conditional blocks from being mistaken for root window
+    properties.
+    """
+    out: list[str] = []
+    start = 0
+    braces = 0
+    parens = 0
+    brackets = 0
+    in_string = False
+    verbatim = False
+    escaped = False
+    i = 0
+    while i < len(body):
+        c = body[i]
+        if in_string:
+            if verbatim:
+                if c == '"':
+                    if i + 1 < len(body) and body[i + 1] == '"':
+                        i += 2
+                        continue
+                    in_string = False
+                    verbatim = False
+            else:
+                if escaped:
+                    escaped = False
+                elif c == "\\":
+                    escaped = True
+                elif c == '"':
+                    in_string = False
+            i += 1
+            continue
+        if c == '@' and i + 1 < len(body) and body[i + 1] == '"':
+            in_string = True
+            verbatim = True
+            i += 2
+            continue
+        if c == '"':
+            in_string = True
+            i += 1
+            continue
+        if c == '{':
+            braces += 1
+        elif c == '}':
+            braces = max(0, braces - 1)
+        elif c == '(':
+            parens += 1
+        elif c == ')':
+            parens = max(0, parens - 1)
+        elif c == '[':
+            brackets += 1
+        elif c == ']':
+            brackets = max(0, brackets - 1)
+        elif c == ';' and braces == 0 and parens == 0 and brackets == 0:
+            statement = body[start:i].strip()
+            if statement:
+                out.append(statement)
+            start = i + 1
+        i += 1
+    return out
+
+
 def simple_assignments(body: str, allowed: set[str] | None = None) -> dict[str, str]:
     out: dict[str, str] = {}
-    for m in re.finditer(r"(?m)^\s*([A-Za-z_][A-Za-z0-9_]*)\s*=\s*([^;\n]+);", body):
-        key, value = m.group(1), m.group(2).strip()
-        if allowed is None or key in allowed:
-            out[key] = value
-    for m in re.finditer(r"\bSetClientSize\s*\(\s*new\s+Size\s*\(([^)]*)\)\s*\)\s*;", body):
-        out["ClientSize"] = f"new Size({m.group(1).strip()})"
+    for statement in top_level_statements(body):
+        m = re.search(r"(?:^|\n)\s*([A-Za-z_][A-Za-z0-9_]*)\s*=\s*(.+)\s*$", statement, re.S)
+        if m:
+            key, value = m.group(1), " ".join(m.group(2).split())
+            if allowed is None or key in allowed:
+                out[key] = value
+        m = re.search(r"\bSetClientSize\s*\(\s*new\s+Size\s*\(([^)]*)\)\s*\)\s*$", statement, re.S)
+        if m:
+            out["ClientSize"] = f"new Size({' '.join(m.group(1).split())})"
     return out
 
 
@@ -126,12 +202,19 @@ def object_initializers(body: str) -> list[dict]:
                 props[mm.group(1)] = " ".join(mm.group(2).split())
         controls.append({"name": m.group(1), "type": m.group(2), "properties": props})
 
+    # Only enrich from assignments at the constructor's top level. Assignments
+    # inside event handlers commonly change Index/Visible later and must not
+    # overwrite the initial visual state.
     by_name = {c["name"]: c for c in controls}
-    for m in re.finditer(
-        r"(?m)^\s*([A-Za-z_][A-Za-z0-9_]*)\.(Location|Size|Index|Visible|LibraryFile|Opacity)\s*=\s*([^;]+);",
-        body,
-    ):
-        name, prop, value = m.group(1), m.group(2), m.group(3).strip()
+    for statement in top_level_statements(body):
+        m = re.search(
+            r"(?:^|\n)\s*([A-Za-z_][A-Za-z0-9_]*)\.(Location|Size|Index|Visible|LibraryFile|Opacity|ButtonType|Checked)\s*=\s*(.+)\s*$",
+            statement,
+            re.S,
+        )
+        if not m:
+            continue
+        name, prop, value = m.group(1), m.group(2), " ".join(m.group(3).split())
         if name in by_name:
             by_name[name]["properties"][prop] = value
     return controls
@@ -191,13 +274,12 @@ def game_scene_registry(zircon_root: Path) -> list[dict]:
         items.append({"field": field, "class": cls, "defaultVisible": visible})
         seen.add(field)
 
-    locs = {
-        name: " ".join(expr.split())
-        for name, expr in re.findall(
-            r"(?m)^\s*([A-Za-z_][A-Za-z0-9_]*)\.Location\s*=\s*([^;]+);",
-            text,
-        )
-    }
+    defaults = named_method_body(text, "SetDefaultLocations")
+    locs: dict[str, str] = {}
+    for statement in top_level_statements(defaults):
+        m = re.search(r"(?:^|\n)\s*([A-Za-z_][A-Za-z0-9_]*)\.Location\s*=\s*(.+)\s*$", statement, re.S)
+        if m:
+            locs[m.group(1)] = " ".join(m.group(2).split())
     for item in items:
         if item["field"] in locs:
             item["defaultLocationExpression"] = locs[item["field"]]
@@ -252,17 +334,18 @@ def build_spec(zircon_root: Path) -> dict:
             libs = LIB_FILE.findall(control["properties"].get("LibraryFile", ""))
             if libs:
                 control_lib[control["name"]] = libs[0]
-        for name, expr in re.findall(
-            r"(?m)^\s*([A-Za-z_][A-Za-z0-9_]*)\.Index\s*=\s*([^;]+);",
-            body,
-        ):
-            lib = control_lib.get(name)
+        for statement in top_level_statements(body):
+            m = re.search(r"(?:^|\n)\s*([A-Za-z_][A-Za-z0-9_]*)\.Index\s*=\s*(.+)\s*$", statement, re.S)
+            if not m:
+                continue
+            lib = control_lib.get(m.group(1))
             if lib:
-                asset_refs.setdefault(lib, set()).update(literal_indices(expr))
+                asset_refs.setdefault(lib, set()).update(literal_indices(m.group(2)))
 
-    # Stable common UI ranges / known runtime-drawn indices used by the reference harness.
+    # Stable common UI ranges / known runtime-drawn indices used by Zircon's
+    # generated controls and by the reference harness.
     asset_refs.setdefault("GameInter", set()).update(range(50, 130))
-    asset_refs["GameInter"].update({240, 241, 358, 360, 364, 960, 1298})
+    asset_refs["GameInter"].update({161, 162, 240, 241, 358, 360, 364, 960, 1298})
     asset_refs.setdefault("Interface", set()).update(range(0, 320))
     asset_refs.setdefault("MagicIcon", set()).update({0, 8, 10, 14, 18, 20, 30, 38, 40, 44, 52, 64})
 
