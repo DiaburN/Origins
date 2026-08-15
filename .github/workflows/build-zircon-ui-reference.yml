@@ -1,9 +1,9 @@
-name: Build Zircon UI reference
+name: Build complete Zircon UI reference
 
 on:
   workflow_dispatch:
   push:
-    branches: [zircon-ui-v1, origins-game-v1]
+    branches: [origins-game-v1]
     paths:
       - ".github/workflows/build-zircon-ui-reference.yml"
       - "tools/zircon-ui-importer/**"
@@ -15,40 +15,79 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-latest
-    timeout-minutes: 25
+    timeout-minutes: 45
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout ORIGINS
+        uses: actions/checkout@v4
+
       - name: Install Pillow
         run: python3 -m pip install --user Pillow
-      - name: Download matching current Zircon UI libraries
+
+      - name: Checkout matching Zircon source specification
         shell: bash
         run: |
           set -euo pipefail
-          mkdir -p .source/zircon
-          BASE="https://files.lomcn.co.uk/resources/mir3/zircon/patch"
-          UA="Mozilla/5.0 (ORIGINS CI)"
-          for REMOTE in Data-GameInter.Zl Data-Interface.Zl Data-MIcon.Zl; do
-            NAME="${REMOTE#Data-}"
-            curl -fL --retry 5 --retry-delay 3 -A "$UA" "$BASE/${REMOTE}.gz" -o ".source/zircon/${NAME}.gz"
-            gzip -dc ".source/zircon/${NAME}.gz" > ".source/zircon/${NAME}"
-          done
-      - name: Extract real Zircon UI artwork
+          rm -rf .source/Zircon
+          git clone --depth 1 https://github.com/Suprcode/Zircon.git .source/Zircon
+          git -C .source/Zircon rev-parse HEAD
+
+      - name: Build complete GameScene UI source manifest
         run: |
           rm -rf .build/zircon-ui
-          mkdir -p .build/zircon-ui/assets/GameInter .build/zircon-ui/assets/Interface .build/zircon-ui/assets/MIcon
-          python3 tools/zircon-ui-importer/extract_zl_assets.py .source/zircon/GameInter.Zl .build/zircon-ui/assets/GameInter --ids "0-300,350-370,960-970,1290-1310,6580-6610"
-          python3 tools/zircon-ui-importer/extract_zl_assets.py .source/zircon/Interface.Zl .build/zircon-ui/assets/Interface --ids "0-310"
-          python3 tools/zircon-ui-importer/extract_zl_assets.py .source/zircon/MIcon.Zl .build/zircon-ui/assets/MIcon --ids "0-200"
+          mkdir -p .build/zircon-ui .source/zircon-ui-libraries
+          python3 tools/zircon-ui-importer/build_ui_source_spec.py \
+            --zircon-root .source/Zircon \
+            --out .build/zircon-ui/ui-source-spec.json
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          p=Path('.build/zircon-ui/ui-source-spec.json')
+          d=json.loads(p.read_text())
+          print('GameScene entries:', d['windowCount'])
+          missing=[w for w in d['windows'] if w.get('sourceMissing')]
+          print('Missing source classes:', [w['class'] for w in missing])
+          if d['windowCount'] < 60:
+              raise SystemExit('GameScene UI inventory unexpectedly incomplete')
+          PY
+
+      - name: Download and extract exact referenced Zircon UI artwork
+        run: |
+          python3 tools/zircon-ui-importer/build_full_reference_assets.py \
+            --spec .build/zircon-ui/ui-source-spec.json \
+            --source-dir .source/zircon-ui-libraries \
+            --out .build/zircon-ui
+
+      - name: Assemble complete navigable reference
+        run: |
           cp apps/zircon-ui-reference/index.html .build/zircon-ui/index.html
           cp apps/zircon-ui-reference/styles.css .build/zircon-ui/styles.css
           cp apps/zircon-ui-reference/app.js .build/zircon-ui/app.js
+          cp apps/zircon-ui-reference/game-scene-windows.js .build/zircon-ui/game-scene-windows.js
+          test -s .build/zircon-ui/ui-source-spec.json
           test -s .build/zircon-ui/assets/GameInter/00050.png
           test -s .build/zircon-ui/assets/Interface/00110.png
           test -s .build/zircon-ui/assets/Interface/00130.png
           test -s .build/zircon-ui/assets/Interface/00291.png
-      - uses: actions/upload-artifact@v4
+
+      - name: Report reconstruction coverage
+        run: |
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          root=Path('.build/zircon-ui')
+          spec=json.loads((root/'ui-source-spec.json').read_text())
+          assets=json.loads((root/'asset-build.json').read_text())
+          exact=sum(1 for w in spec['windows'] if w.get('sourcePath'))
+          missing=[k for k,v in assets.items() if v.get('missing')]
+          print(f"Source-resolved windows: {exact}/{spec['windowCount']}")
+          print('Missing public UI libraries:', missing)
+          print('Extracted PNG files:', len(list((root/'assets').rglob('*.png'))))
+          PY
+
+      - name: Upload complete Zircon GameScene UI reference
+        uses: actions/upload-artifact@v4
         with:
-          name: zircon-ui-reference
+          name: zircon-ui-reference-complete
           path: .build/zircon-ui
           if-no-files-found: error
           retention-days: 14
