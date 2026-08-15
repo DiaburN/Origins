@@ -53,8 +53,25 @@ jobs:
           print('Character root index expression:', expression)
           if '115' not in expression or '110' not in expression:
               raise SystemExit('Root parser lost CharacterDialog conditional index')
-          if 161 not in d['assetRefs'].get('GameInter',[]) or 162 not in d['assetRefs'].get('GameInter',[]):
-              raise SystemExit('DXCheckBox GameInter skin indices are missing')
+          PY
+
+      - name: Validate discovered control type coverage
+        run: |
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          spec=json.loads(Path('.build/zircon-ui/ui-source-spec.json').read_text())
+          policy=json.loads(Path('apps/zircon-ui-reference/control-render-policy.json').read_text())
+          discovered=sorted({c['type'] for w in spec['windows'] for c in w.get('controls',[])})
+          covered=sorted(policy['policies'])
+          missing=sorted(set(discovered)-set(covered))
+          stale=sorted(set(covered)-set(discovered))
+          print('Discovered DX control types:', len(discovered), discovered)
+          print('Explicit render policies:', len(covered))
+          print('Unmapped control types:', missing)
+          print('Policy entries not currently discovered:', stale)
+          if missing:
+              raise SystemExit('A Zircon DX control type has no explicit render policy')
           PY
 
       - name: Download and extract exact referenced Zircon UI artwork
@@ -70,17 +87,31 @@ jobs:
           cp apps/zircon-ui-reference/styles.css .build/zircon-ui/styles.css
           cp apps/zircon-ui-reference/app.js .build/zircon-ui/app.js
           cp apps/zircon-ui-reference/game-scene-windows.js .build/zircon-ui/game-scene-windows.js
+          cp apps/zircon-ui-reference/control-render-policy.json .build/zircon-ui/control-render-policy.json
           node --check .build/zircon-ui/app.js
           node --check .build/zircon-ui/game-scene-windows.js
           test -s .build/zircon-ui/ui-source-spec.json
           test -s .build/zircon-ui/assets/GameInter/00050.png
           test -s .build/zircon-ui/assets/GameInter/00161.png
           test -s .build/zircon-ui/assets/GameInter/00162.png
+          test -s .build/zircon-ui/assets/GameInter/00795.png
+          test -s .build/zircon-ui/assets/GameInter/01010.png
+          test -s .build/zircon-ui/assets/GameInter/01011.png
+          test -s .build/zircon-ui/assets/GameInter/04740.png
+          test -s .build/zircon-ui/assets/GameInter/04741.png
+          test -s .build/zircon-ui/assets/GameInter/04742.png
+          test -s .build/zircon-ui/assets/GameInter/04743.png
+          test -s .build/zircon-ui/assets/GameInter/04745.png
+          test -s .build/zircon-ui/assets/GameInter/04746.png
           test -s .build/zircon-ui/assets/Interface/00016.png
           test -s .build/zircon-ui/assets/Interface/00041.png
           test -s .build/zircon-ui/assets/Interface/00044.png
           test -s .build/zircon-ui/assets/Interface/00053.png
           test -s .build/zircon-ui/assets/Interface/00056.png
+          test -s .build/zircon-ui/assets/Interface/00059.png
+          test -s .build/zircon-ui/assets/Interface/00060.png
+          test -s .build/zircon-ui/assets/Interface/00061.png
+          test -s .build/zircon-ui/assets/Interface/00062.png
           test -s .build/zircon-ui/assets/Interface/00110.png
           test -s .build/zircon-ui/assets/Interface/00130.png
           test -s .build/zircon-ui/assets/Interface/00241.png
@@ -94,11 +125,17 @@ jobs:
           root=Path('.build/zircon-ui')
           spec=json.loads((root/'ui-source-spec.json').read_text())
           assets=json.loads((root/'asset-build.json').read_text())
+          policy=json.loads((root/'control-render-policy.json').read_text())
           exact=sum(1 for w in spec['windows'] if w.get('sourcePath'))
           missing=[k for k,v in assets.items() if v.get('missing')]
+          discovered={c['type'] for w in spec['windows'] for c in w.get('controls',[])}
+          covered=set(policy['policies'])
           print(f"Source-resolved windows: {exact}/{spec['windowCount']}")
+          print(f"Control type render coverage: {len(discovered & covered)}/{len(discovered)}")
           print('Missing public UI libraries:', missing)
           print('Extracted PNG files:', len(list((root/'assets').rglob('*.png'))))
+          if exact != spec['windowCount'] or missing or discovered-covered:
+              raise SystemExit('Zircon UI reference coverage check failed')
           PY
 
       - name: Upload complete Zircon GameScene UI reference
