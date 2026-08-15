@@ -1,0 +1,1 @@
+The executable geometry resolver remains `apps/zircon-ui-reference/layout-resolver.js`. Geometry hardening is CI-validated before owner UI approval. Do not use fallback coordinates as approved geometry when a Zircon source expression is available.
