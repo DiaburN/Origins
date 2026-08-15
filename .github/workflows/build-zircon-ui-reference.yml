@@ -70,6 +70,25 @@ jobs:
               raise SystemExit('Geometry parser emitted truncated Point/Size expressions')
           PY
 
+      - name: Resolve Zircon English UI labels
+        run: |
+          python3 tools/zircon-ui-importer/augment_ui_language.py \
+            --spec .build/zircon-ui/ui-source-spec.json \
+            --english-messages .source/Zircon/Client/Envir/Translations/EnglishMessages.cs
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          spec=json.loads(Path('.build/zircon-ui/ui-source-spec.json').read_text())
+          language=spec.get('language',{})
+          print('English messages:', language.get('messageCount'))
+          print('Controls with resolved text:', language.get('resolvedControlCount'))
+          print('Unresolved referenced keys:', len(language.get('unresolvedReferencedKeys',[])))
+          if language.get('messageCount',0) < 300:
+              raise SystemExit('EnglishMessages extraction unexpectedly incomplete')
+          if language.get('resolvedControlCount',0) < 50:
+              raise SystemExit('Too few UI controls received resolved English text')
+          PY
+
       - name: Validate discovered control type coverage
         run: |
           python3 - <<'PY'
@@ -178,11 +197,13 @@ jobs:
                       sizes+=1
                       if re.fullmatch(r'new Size\(\s*-?\d+\s*,\s*-?\d+\s*\)',str(p['Size'])):
                           size_literal+=1
+          language=spec.get('language',{})
           print(f"Source-resolved windows: {exact}/{spec['windowCount']}")
           print(f"Control type render coverage: {len(discovered & covered)}/{len(discovered)}")
           print('Parsed controls:',controls)
           print(f'Literal source locations: {location_literal}/{locations}')
           print(f'Literal source sizes: {size_literal}/{sizes}')
+          print('Resolved English control labels:',language.get('resolvedControlCount',0))
           print('Asset-size libraries:',len(spec.get('assetSizes',{})))
           print('Missing public UI libraries:', missing)
           print('Extracted PNG files:', len(list((root/'assets').rglob('*.png'))))
