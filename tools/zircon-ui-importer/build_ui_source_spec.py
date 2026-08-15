@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 """Build a machine-readable specification of Zircon's complete in-game UI.
 
-The source of truth is the current Suprcode/Zircon C# client.  This script does
+The source of truth is the current Suprcode/Zircon C# client. This script does
 not attempt to translate the game client; it inventories GameScene windows and
 extracts the declarative geometry/art references that are useful to the ORIGINS
 HTML reference renderer.
 
 It intentionally keeps C# expressions as strings when they cannot be reduced
-safely.  That is preferable to silently inventing a coordinate or image index.
+safely. That is preferable to silently inventing a coordinate or image index.
 """
 from __future__ import annotations
 
@@ -15,10 +15,8 @@ import argparse
 import json
 import re
 from pathlib import Path
-from typing import Iterable
 
 GAME_SCENE_FIELDS = re.compile(r"\b([A-Za-z_][A-Za-z0-9_]*)\s*=\s*new\s+([A-Za-z_][A-Za-z0-9_]*)")
-CLASS_DECL = re.compile(r"\bclass\s+([A-Za-z_][A-Za-z0-9_]*)\s*:\s*([A-Za-z_][A-Za-z0-9_<>, ]*)")
 LIB_FILE = re.compile(r"LibraryFile\.([A-Za-z_][A-Za-z0-9_]*)")
 INTEGER = re.compile(r"(?<![A-Za-z_])\d+(?![A-Za-z_])")
 
@@ -74,8 +72,11 @@ def match_brace(text: str, opening: int) -> int:
 
 
 def constructor_body(text: str, class_name: str) -> str:
-    # Constructors may have parameters; avoid matching methods returning the class.
-    m = re.search(rf"\bpublic\s+{re.escape(class_name)}\s*\([^)]*\)\s*\{{", text)
+    # Constructors may use an initializer such as `: base(size)` before the body.
+    m = re.search(
+        rf"\bpublic\s+{re.escape(class_name)}\s*\([^)]*\)\s*(?::\s*[^{{]+)?\{{",
+        text,
+    )
     if not m:
         return ""
     opening = text.find("{", m.start())
@@ -84,7 +85,6 @@ def constructor_body(text: str, class_name: str) -> str:
 
 def simple_assignments(body: str, allowed: set[str] | None = None) -> dict[str, str]:
     out: dict[str, str] = {}
-    # Restrict to line-oriented direct assignments. Child initializers are handled separately.
     for m in re.finditer(r"(?m)^\s*([A-Za-z_][A-Za-z0-9_]*)\s*=\s*([^;\n]+);", body):
         key, value = m.group(1), m.group(2).strip()
         if allowed is None or key in allowed:
@@ -96,7 +96,6 @@ def simple_assignments(body: str, allowed: set[str] | None = None) -> dict[str, 
 
 def object_initializers(body: str) -> list[dict]:
     controls: list[dict] = []
-    # Find every `name = new DXType { ... }` or `DXType name = new DXType { ... }`.
     pat = re.compile(
         r"(?:(?:[A-Za-z_][A-Za-z0-9_<>]*\s+)?([A-Za-z_][A-Za-z0-9_]*)\s*=\s*)"
         r"new\s+(DX[A-Za-z_][A-Za-z0-9_]*)\s*\{"
@@ -109,13 +108,14 @@ def object_initializers(body: str) -> list[dict]:
             continue
         chunk = body[opening + 1:closing]
         props: dict[str, str] = {}
-        # Only take first-level simple key=value entries. Nested Label={...} remains raw.
         depth = 0
         start = 0
         entries: list[str] = []
         for i, c in enumerate(chunk):
-            if c == '{': depth += 1
-            elif c == '}': depth = max(0, depth - 1)
+            if c == '{':
+                depth += 1
+            elif c == '}':
+                depth = max(0, depth - 1)
             elif c == ',' and depth == 0:
                 entries.append(chunk[start:i])
                 start = i + 1
@@ -126,9 +126,11 @@ def object_initializers(body: str) -> list[dict]:
                 props[mm.group(1)] = " ".join(mm.group(2).split())
         controls.append({"name": m.group(1), "type": m.group(2), "properties": props})
 
-    # Enrich with common assignments made immediately after initializers.
     by_name = {c["name"]: c for c in controls}
-    for m in re.finditer(r"(?m)^\s*([A-Za-z_][A-Za-z0-9_]*)\.(Location|Size|Index|Visible|LibraryFile|Opacity)\s*=\s*([^;]+);", body):
+    for m in re.finditer(
+        r"(?m)^\s*([A-Za-z_][A-Za-z0-9_]*)\.(Location|Size|Index|Visible|LibraryFile|Opacity)\s*=\s*([^;]+);",
+        body,
+    ):
         name, prop, value = m.group(1), m.group(2), m.group(3).strip()
         if name in by_name:
             by_name[name]["properties"][prop] = value
@@ -141,7 +143,7 @@ def literal_indices(expr: str | None) -> list[int]:
     return sorted({int(x) for x in INTEGER.findall(expr)})
 
 
-def find_source(source_root: Path, class_name: str, cache: dict[str, tuple[Path, str]]) -> tuple[Path | None, str]:
+def find_source(source_root: Path, class_name: str, cache: dict[str, tuple[Path | None, str]]) -> tuple[Path | None, str]:
     if class_name in cache:
         return cache[class_name]
     for path in source_root.rglob("*.cs"):
@@ -160,13 +162,19 @@ def parse_library_map(zircon_root: Path) -> dict[str, str]:
     text = (zircon_root / "LibraryCore" / "Libraries.cs").read_text(encoding="utf-8-sig")
     return {
         enum: value.replace("\\", "/")
-        for enum, value in re.findall(r"\[LibraryFile\.([A-Za-z0-9_]+)\]\s*=\s*@\"([^\"]+\.Zl)\"", text)
+        for enum, value in re.findall(
+            r"\[LibraryFile\.([A-Za-z0-9_]+)\]\s*=\s*@\"([^\"]+\.Zl)\"",
+            text,
+        )
     }
 
 
 def game_scene_registry(zircon_root: Path) -> list[dict]:
     text = (zircon_root / "Client" / "Scenes" / "GameScene.cs").read_text(encoding="utf-8-sig")
     ctor = constructor_body(text, "GameScene")
+    if not ctor:
+        raise RuntimeError("Unable to locate Zircon GameScene constructor body")
+
     items: list[dict] = [{
         "field": "MainPanel", "class": "MainPanel", "defaultVisible": True,
     }]
@@ -175,19 +183,20 @@ def game_scene_registry(zircon_root: Path) -> list[dict]:
         field, cls = m.group(1), m.group(2)
         if field in seen or field in {"MapControl"}:
             continue
-        # GameScene contains non-UI local object creations later; keep Box/Dialog/panel controls only.
         if not (field.endswith("Box") or field in {"ChatTextBox", "BeltBox", "MiniMapBox", "BuffBox", "TimerBox"}):
             continue
-        tail = ctor[m.end():m.end()+300]
+        tail = ctor[m.end():m.end() + 300]
         vm = re.search(r"Visible\s*=\s*(true|false)", tail)
         visible = (vm.group(1) == "true") if vm else True
         items.append({"field": field, "class": cls, "defaultVisible": visible})
         seen.add(field)
 
-    # Exact default-location expressions from SetDefaultLocations.
     locs = {
         name: " ".join(expr.split())
-        for name, expr in re.findall(r"(?m)^\s*([A-Za-z_][A-Za-z0-9_]*)\.Location\s*=\s*([^;]+);", text)
+        for name, expr in re.findall(
+            r"(?m)^\s*([A-Za-z_][A-Za-z0-9_]*)\.Location\s*=\s*([^;]+);",
+            text,
+        )
     }
     for item in items:
         if item["field"] in locs:
@@ -205,8 +214,13 @@ def build_spec(zircon_root: Path) -> dict:
     for item in registry:
         path, text = find_source(source_root, item["class"], cache)
         if not path:
-            # Some shared windows live outside Client/ (unlikely); retain entry rather than dropping it.
-            item.update({"sourcePath": None, "baseClass": None, "root": {}, "controls": [], "sourceMissing": True})
+            item.update({
+                "sourcePath": None,
+                "baseClass": None,
+                "root": {},
+                "controls": [],
+                "sourceMissing": True,
+            })
             continue
         decl = re.search(rf"\bclass\s+{re.escape(item['class'])}\s*:\s*([^\n\{{]+)", text)
         base_class = decl.group(1).strip() if decl else None
@@ -221,13 +235,11 @@ def build_spec(zircon_root: Path) -> dict:
             "sourceMissing": False,
         })
 
-        # Root image references.
         root_libs = LIB_FILE.findall(root.get("LibraryFile", ""))
         root_indices = literal_indices(root.get("Index"))
         for lib in root_libs:
             asset_refs.setdefault(lib, set()).update(root_indices)
 
-        # Child image/button references.
         for control in controls:
             p = control["properties"]
             libs = LIB_FILE.findall(p.get("LibraryFile", ""))
@@ -235,20 +247,24 @@ def build_spec(zircon_root: Path) -> dict:
             for lib in libs:
                 asset_refs.setdefault(lib, set()).update(ids)
 
-        # Catch later `SomeControl.Index = N` assignments where the control's library was declarative.
         control_lib = {}
         for control in controls:
             libs = LIB_FILE.findall(control["properties"].get("LibraryFile", ""))
             if libs:
                 control_lib[control["name"]] = libs[0]
-        for name, expr in re.findall(r"(?m)^\s*([A-Za-z_][A-Za-z0-9_]*)\.Index\s*=\s*([^;]+);", body):
+        for name, expr in re.findall(
+            r"(?m)^\s*([A-Za-z_][A-Za-z0-9_]*)\.Index\s*=\s*([^;]+);",
+            body,
+        ):
             lib = control_lib.get(name)
             if lib:
                 asset_refs.setdefault(lib, set()).update(literal_indices(expr))
 
-    # MainPanel and generic controls use these known libraries even when some IDs are selected dynamically.
+    # Stable common UI ranges / known runtime-drawn indices used by the reference harness.
     asset_refs.setdefault("GameInter", set()).update(range(50, 130))
+    asset_refs["GameInter"].update({240, 241, 358, 360, 364, 960, 1298})
     asset_refs.setdefault("Interface", set()).update(range(0, 320))
+    asset_refs.setdefault("MagicIcon", set()).update({0, 8, 10, 14, 18, 20, 30, 38, 40, 44, 52, 64})
 
     return {
         "sourceRepository": "https://github.com/Suprcode/Zircon",
