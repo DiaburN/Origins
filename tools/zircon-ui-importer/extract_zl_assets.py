@@ -37,6 +37,35 @@ def _dds(raw: bytes, width: int, height: int, fourcc: bytes) -> bytes:
     return bytes(out) + raw
 
 
+def _dds_bc7(raw: bytes, width: int, height: int) -> bytes:
+    """Wrap raw BC7 blocks in a DDS DX10 header Pillow can decode.
+
+    DXGI_FORMAT_BC7_UNORM = 98, D3D10_RESOURCE_DIMENSION_TEXTURE2D = 3.
+    """
+    linear = max(1, (width + 3) // 4) * max(1, (height + 3) // 4) * 16
+    out = bytearray(b"DDS ")
+    out += struct.pack("<I", 124)
+    out += struct.pack("<I", 0x0002100F)
+    out += struct.pack("<I", height)
+    out += struct.pack("<I", width)
+    out += struct.pack("<I", linear)
+    out += struct.pack("<I", 0) * 2
+    out += b"\0" * 44
+    out += struct.pack("<I", 32)
+    out += struct.pack("<I", 4)
+    out += b"DX10"
+    out += struct.pack("<I", 0) * 5
+    out += struct.pack("<I", 0x1000)
+    out += struct.pack("<I", 0) * 4
+    # DDS_HEADER_DXT10
+    out += struct.pack("<I", 98)  # DXGI_FORMAT_BC7_UNORM
+    out += struct.pack("<I", 3)   # D3D10_RESOURCE_DIMENSION_TEXTURE2D
+    out += struct.pack("<I", 0)   # miscFlag
+    out += struct.pack("<I", 1)   # arraySize
+    out += struct.pack("<I", 0)   # miscFlags2
+    return bytes(out) + raw
+
+
 def _decode(raw: bytes, width: int, height: int, codec: int) -> Image.Image:
     if codec == CODEC_PNG:
         return Image.open(io.BytesIO(raw)).convert("RGBA")
@@ -45,7 +74,9 @@ def _decode(raw: bytes, width: int, height: int, codec: int) -> Image.Image:
     if codec in (CODEC_DXT1, CODEC_DXT5):
         fourcc = b"DXT1" if codec == CODEC_DXT1 else b"DXT5"
         return Image.open(io.BytesIO(_dds(raw, width, height, fourcc))).convert("RGBA")
-    raise NotImplementedError("BC7-only source payload is not decoded by this lightweight importer")
+    if codec == CODEC_BC7:
+        return Image.open(io.BytesIO(_dds_bc7(raw, width, height))).convert("RGBA")
+    raise NotImplementedError(f"Unsupported Zircon image codec {codec}")
 
 
 def _block_size(width: int, height: int, codec: int) -> int:
@@ -219,11 +250,11 @@ class ZL2:
         if codec == CODEC_PNG:
             length = info["stored_image_size"]
             raw = payload[:length] if length else payload
-        elif codec in (CODEC_DXT1, CODEC_DXT5, CODEC_BGRA):
+        elif codec in (CODEC_DXT1, CODEC_DXT5, CODEC_BGRA, CODEC_BC7):
             length = info["stored_image_size"] or _block_size(info["width"], info["height"], codec)
             raw = payload[:length]
         else:
-            raise NotImplementedError(f"BC7-only image {index}")
+            raise NotImplementedError(f"Unsupported image codec {codec} at image {index}")
 
         return _decode(raw, info["width"], info["height"], codec), {
             **info,
