@@ -99,23 +99,29 @@ def as_tab_control(instance: dict, source_kind: str) -> dict:
 
 def add_quest_tabs(window: dict, source: str, custom_tab_types: set[str]) -> int:
     body = constructor_body(source, window["class"])
-    instances = parse_initializers(body, custom_tab_types)
+    instances = [
+        instance for instance in parse_initializers(body, custom_tab_types)
+        if instance["properties"].get("Parent") == "TabControl"
+    ]
     existing = {control["name"] for control in window.get("controls", [])}
-    added = 0
-    for instance in instances:
-        parent = instance["properties"].get("Parent")
-        if parent != "TabControl" or instance["name"] in existing:
-            continue
-        window["controls"].append(as_tab_control(instance, "window-constructor-custom-tab"))
-        existing.add(instance["name"])
-        added += 1
-    if added:
+    controls = [as_tab_control(instance, "window-constructor-custom-tab") for instance in instances if instance["name"] not in existing]
+
+    # DXTabControl completely removes non-user-visible tab buttons from its
+    # horizontal layout. The base reference resolver is a flat source geometry
+    # pass, so append currently visible tabs first to reproduce the same visible
+    # ordering without allocating a fake gap for Completed/Mission.
+    controls.sort(key=lambda control: 0 if control["tabButtonVisible"] else 1)
+    window["controls"].extend(controls)
+
+    if controls:
         window["customTabModel"] = {
             "kind": "static-custom-tabs",
             "sourceBacked": True,
+            "sourceOrder": [instance["name"] for instance in instances],
+            "renderOrder": [control["name"] for control in controls],
             "defaultSelectionRule": "DXTabControl selects first user-visible tab",
         }
-    return added
+    return len(controls)
 
 
 def guild_default_visibility(name: str) -> tuple[bool, str]:
@@ -134,20 +140,18 @@ def add_guild_tabs(window: dict, source: str) -> int:
     existing = {control["name"] for control in window.get("controls", [])}
     added = 0
     state_rows = []
+    pending = []
     for helper in helper_calls:
         body = named_method_body(source, helper)
         for instance in parse_initializers(body, {"DXTab"}):
-            if instance["name"] in existing:
-                continue
-            parent = instance["properties"].get("Parent")
-            if parent != "GuildTabs":
+            if instance["name"] in existing or instance["properties"].get("Parent") != "GuildTabs":
                 continue
             visible, runtime_expression = guild_default_visibility(instance["name"])
             control = as_tab_control(instance, f"helper:{helper}")
             control["properties"]["Visible"] = "true" if visible else "false"
             control["tabButtonVisible"] = visible
             control["sourceRuntimeVisibilityExpression"] = runtime_expression
-            window["controls"].append(control)
+            pending.append(control)
             existing.add(instance["name"])
             state_rows.append({
                 "tab": instance["name"],
@@ -155,6 +159,8 @@ def add_guild_tabs(window: dict, source: str) -> int:
                 "runtimeVisibility": runtime_expression,
             })
             added += 1
+    pending.sort(key=lambda control: 0 if control["tabButtonVisible"] else 1)
+    window["controls"].extend(pending)
     if added:
         window["customTabModel"] = {
             "kind": "source-state-tabs",
@@ -169,8 +175,7 @@ def add_guild_tabs(window: dict, source: str) -> int:
 def add_magic_templates(window: dict, source: str) -> int:
     # Magic tabs are created only after runtime MagicInfo + player class filtering.
     # Record the exact source artwork per school without claiming any are active.
-    class_match = re.search(r"\bclass\s+MagicTab\s*:\s*DXTab\b", source)
-    if not class_match:
+    if not re.search(r"\bclass\s+MagicTab\s*:\s*DXTab\b", source):
         return 0
     ctor = constructor_body(source, "MagicTab")
     templates = []
