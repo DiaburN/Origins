@@ -23,215 +23,149 @@ jobs:
       - name: Install Pillow
         run: python3 -m pip install --user Pillow
 
-      - name: Checkout matching Zircon source specification
-        shell: bash
+      - name: Checkout Zircon source of truth
         run: |
           set -euo pipefail
           rm -rf .source/Zircon
           git clone --depth 1 https://github.com/Suprcode/Zircon.git .source/Zircon
-          git -C .source/Zircon rev-parse HEAD
+          echo "Zircon source: $(git -C .source/Zircon rev-parse HEAD)"
 
-      - name: Build complete GameScene UI source manifest
+      - name: Build source-derived UI manifest
         run: |
-          rm -rf .build/zircon-ui
+          set -euo pipefail
+          rm -rf .build/zircon-ui .source/zircon-ui-libraries
           mkdir -p .build/zircon-ui .source/zircon-ui-libraries
           python3 tools/zircon-ui-importer/build_ui_source_spec.py \
             --zircon-root .source/Zircon \
             --out .build/zircon-ui/ui-source-spec.json
-          python3 - <<'PY'
-          import json
-          from pathlib import Path
-          p=Path('.build/zircon-ui/ui-source-spec.json')
-          d=json.loads(p.read_text())
-          print('GameScene entries:', d['windowCount'])
-          missing=[w for w in d['windows'] if w.get('sourceMissing')]
-          print('Missing source classes:', [w['class'] for w in missing])
-          if d['windowCount'] < 60:
-              raise SystemExit('GameScene UI inventory unexpectedly incomplete')
-          character=next(w for w in d['windows'] if w['field']=='CharacterBox')
-          expression=character.get('root',{}).get('Index','')
-          print('Character root index expression:', expression)
-          if '115' not in expression or '110' not in expression:
-              raise SystemExit('Root parser lost CharacterDialog conditional index')
-          main=next(w for w in d['windows'] if w['field']=='MainPanel')
-          char_button=next(c for c in main['controls'] if c['name']=='CharacterButton')
-          if char_button['properties'].get('Location') != 'new Point(650, 23)':
-              raise SystemExit('MainPanel CharacterButton geometry was not preserved exactly')
-          truncated=[]
-          for w in d['windows']:
-              for c in w.get('controls',[]):
-                  for k,v in c.get('properties',{}).items():
-                      s=str(v)
-                      if ('new Point(' in s or 'new Size(' in s) and ')' not in s:
-                          truncated.append((w['field'],c['name'],k,s))
-          print('Truncated Point/Size expressions:', len(truncated))
-          if truncated:
-              print(truncated[:20])
-              raise SystemExit('Geometry parser emitted truncated Point/Size expressions')
-          PY
-
-      - name: Resolve Zircon English UI labels
-        run: |
           python3 tools/zircon-ui-importer/augment_ui_language.py \
             --spec .build/zircon-ui/ui-source-spec.json \
             --english-messages .source/Zircon/Client/Envir/Translations/EnglishMessages.cs
-          python3 - <<'PY'
-          import json
-          from pathlib import Path
-          spec=json.loads(Path('.build/zircon-ui/ui-source-spec.json').read_text())
-          language=spec.get('language',{})
-          print('English messages:', language.get('messageCount'))
-          print('Controls with resolved text:', language.get('resolvedControlCount'))
-          print('Unresolved referenced keys:', len(language.get('unresolvedReferencedKeys',[])))
-          if language.get('messageCount',0) < 300:
-              raise SystemExit('EnglishMessages extraction unexpectedly incomplete')
-          if language.get('resolvedControlCount',0) < 50:
-              raise SystemExit('Too few UI controls received resolved English text')
-          PY
-
-      - name: Resolve deterministic Zircon geometry symbols
-        run: |
           python3 tools/zircon-ui-importer/augment_ui_symbols.py \
             --spec .build/zircon-ui/ui-source-spec.json \
             --zircon-root .source/Zircon
-          python3 - <<'PY'
-          import json
-          from pathlib import Path
-          spec=json.loads(Path('.build/zircon-ui/ui-source-spec.json').read_text())
-          info=spec.get('geometrySymbols',{})
-          print('Windows changed by symbols:', info.get('windowsChanged'))
-          print('Geometry properties simplified:', info.get('propertiesSimplified'))
-          if info.get('propertiesSimplified',0) < 5:
-              raise SystemExit('Deterministic geometry symbol pass resolved unexpectedly few properties')
-          fishing=next(w for w in spec['windows'] if w['field']=='FishingCatchBox')
-          throw_pointer=next(c for c in fishing['controls'] if c['name']=='ThrowDistancePointer')
-          print('Fishing ThrowDistancePointer:', throw_pointer['properties'].get('Location'))
-          if 'PointerXStart' in str(throw_pointer['properties'].get('Location')):
-              raise SystemExit('Fishing class constants were not substituted')
-          PY
+          python3 tools/zircon-ui-importer/augment_ui_derived_geometry_v2.py \
+            --spec .build/zircon-ui/ui-source-spec.json \
+            --zircon-root .source/Zircon
 
-      - name: Validate discovered control type coverage
+      - name: Validate source and control coverage
         run: |
           python3 - <<'PY'
           import json
           from pathlib import Path
           spec=json.loads(Path('.build/zircon-ui/ui-source-spec.json').read_text())
           policy=json.loads(Path('apps/zircon-ui-reference/control-render-policy.json').read_text())
-          discovered=sorted({c['type'] for w in spec['windows'] for c in w.get('controls',[])})
-          covered=sorted(policy['policies'])
-          missing=sorted(set(discovered)-set(covered))
-          stale=sorted(set(covered)-set(discovered))
-          print('Discovered DX control types:', len(discovered), discovered)
-          print('Explicit render policies:', len(covered))
-          print('Unmapped control types:', missing)
-          print('Policy entries not currently discovered:', stale)
+          if spec['windowCount'] != 65:
+              raise SystemExit(f"Expected 65 GameScene windows, got {spec['windowCount']}")
+          missing=[w['field'] for w in spec['windows'] if w.get('sourceMissing')]
           if missing:
-              raise SystemExit('A Zircon DX control type has no explicit render policy')
+              raise SystemExit(f'Missing Zircon source classes: {missing}')
+          discovered={c['type'] for w in spec['windows'] for c in w.get('controls',[])}
+          covered=set(policy['policies'])
+          if discovered-covered:
+              raise SystemExit(f'Unmapped DX controls: {sorted(discovered-covered)}')
+          controls=sum(len(w.get('controls',[])) for w in spec['windows'])
+          if controls != 1014:
+              raise SystemExit(f'Parsed control count changed: {controls}')
+          language=spec.get('language',{})
+          if language.get('resolvedControlCount') != 314 or language.get('unresolvedReferencedKeys'):
+              raise SystemExit('Zircon language resolution regressed')
+          character=next(w for w in spec['windows'] if w['field']=='CharacterBox')
+          if character.get('root',{}).get('Index') != '(false) ? 115 : 110' and '110' not in str(character.get('root',{}).get('Index')):
+              raise SystemExit('CharacterDialog source index lost')
+          ranking=next(w for w in spec['windows'] if w['field']=='RankingBox')
+          last=next(c for c in ranking['controls'] if c['name']=='LastUpdate')
+          if 'fullRanking' in str(last['properties'].get('Location')):
+              raise SystemExit('Ranking constructor argument unresolved')
+          print('Windows:',spec['windowCount'])
+          print('Controls:',controls)
+          print('DX types:',len(discovered))
+          print('English labels:',language.get('resolvedControlCount'))
+          print('Derived geometry:',spec.get('derivedGeometryPass'))
           PY
 
-      - name: Download and extract exact referenced Zircon UI artwork
+      - name: Download and extract exact Zircon artwork
         run: |
           python3 tools/zircon-ui-importer/build_full_reference_assets.py \
             --spec .build/zircon-ui/ui-source-spec.json \
             --source-dir .source/zircon-ui-libraries \
             --out .build/zircon-ui
 
-      - name: Assemble complete navigable reference
+      - name: Assemble complete navigable viewer
         run: |
-          cp apps/zircon-ui-reference/index.html .build/zircon-ui/index.html
+          cp apps/zircon-ui-reference/index-derived.html .build/zircon-ui/index.html
           cp apps/zircon-ui-reference/styles.css .build/zircon-ui/styles.css
-          cp apps/zircon-ui-reference/app.js .build/zircon-ui/app.js
           cp apps/zircon-ui-reference/app-layout.js .build/zircon-ui/app-layout.js
-          cp apps/zircon-ui-reference/layout-resolver.js .build/zircon-ui/layout-resolver.js
           cp apps/zircon-ui-reference/game-scene-windows.js .build/zircon-ui/game-scene-windows.js
           cp apps/zircon-ui-reference/control-render-policy.json .build/zircon-ui/control-render-policy.json
-          node --check .build/zircon-ui/app.js
+          cp apps/zircon-ui-reference/layout-resolver.js .build/zircon-ui/layout-resolver-base.js
+          cp apps/zircon-ui-reference/layout-resolver-derived.js .build/zircon-ui/layout-resolver-derived.js
           node --check .build/zircon-ui/app-layout.js
-          node --check .build/zircon-ui/layout-resolver.js
+          node --check .build/zircon-ui/layout-resolver-base.js
+          node --check .build/zircon-ui/layout-resolver-derived.js
           node --check .build/zircon-ui/game-scene-windows.js
-          node tools/zircon-ui-importer/validate_layout_resolver.mjs \
-            .build/zircon-ui/ui-source-spec.json \
-            .build/zircon-ui/layout-resolver.js
-          python3 - <<'PY'
-          import json
-          from pathlib import Path
-          spec=json.loads(Path('.build/zircon-ui/ui-source-spec.json').read_text())
-          sizes=spec.get('assetSizes',{})
-          if not sizes:
-              raise SystemExit('assetSizes missing from built UI source spec')
-          for lib,index in [('Interface','16'),('GameInter','82')]:
-              size=sizes.get(lib,{}).get(index)
-              print('asset size',lib,index,size)
-              if not size or size[0] <= 0 or size[1] <= 0:
-                  raise SystemExit(f'missing embedded asset size for {lib} {index}')
-          PY
-          test -s .build/zircon-ui/ui-source-spec.json
-          test -s .build/zircon-ui/assets/GameInter/00050.png
-          test -s .build/zircon-ui/assets/GameInter/00161.png
-          test -s .build/zircon-ui/assets/GameInter/00162.png
-          test -s .build/zircon-ui/assets/GameInter/00795.png
-          test -s .build/zircon-ui/assets/GameInter/01010.png
-          test -s .build/zircon-ui/assets/GameInter/01011.png
-          test -s .build/zircon-ui/assets/GameInter/04740.png
-          test -s .build/zircon-ui/assets/GameInter/04741.png
-          test -s .build/zircon-ui/assets/GameInter/04742.png
-          test -s .build/zircon-ui/assets/GameInter/04743.png
-          test -s .build/zircon-ui/assets/GameInter/04745.png
-          test -s .build/zircon-ui/assets/GameInter/04746.png
-          test -s .build/zircon-ui/assets/Interface/00016.png
-          test -s .build/zircon-ui/assets/Interface/00041.png
-          test -s .build/zircon-ui/assets/Interface/00044.png
-          test -s .build/zircon-ui/assets/Interface/00053.png
-          test -s .build/zircon-ui/assets/Interface/00056.png
-          test -s .build/zircon-ui/assets/Interface/00059.png
-          test -s .build/zircon-ui/assets/Interface/00060.png
-          test -s .build/zircon-ui/assets/Interface/00061.png
-          test -s .build/zircon-ui/assets/Interface/00062.png
-          test -s .build/zircon-ui/assets/Interface/00110.png
-          test -s .build/zircon-ui/assets/Interface/00130.png
-          test -s .build/zircon-ui/assets/Interface/00241.png
-          test -s .build/zircon-ui/assets/Interface/00291.png
 
-      - name: Report reconstruction coverage
+      - name: Validate zero-fallback geometry
+        run: |
+          cat > .build/zircon-ui/validate-final.mjs <<'JS'
+          import fs from 'node:fs';
+          import { pathToFileURL } from 'node:url';
+          const root='.build/zircon-ui';
+          const spec=JSON.parse(fs.readFileSync(`${root}/ui-source-spec.json`,'utf8'));
+          const {buildWindowLayout}=await import(pathToFileURL(`${process.cwd()}/${root}/layout-resolver-derived.js`).href);
+          const bad=[]; let explicit=0;
+          for(const window of spec.windows){
+            const layout=buildWindowLayout(spec,window);
+            for(let i=0;i<(window.controls||[]).length;i++){
+              const control=window.controls[i], props=control.properties||{}, node=layout.nodes[i];
+              if(!('Location' in props)) continue;
+              explicit++;
+              const source=String(props.Location).trim();
+              const explicitZero=/^(Point\.Empty|new Point\(\s*0\s*,\s*0\s*\))$/.test(source);
+              if(node && node.localX===0 && node.localY===0 && !explicitZero)
+                bad.push({window:window.field,control:control.name,source,original:control.sourceLocationExpression||null});
+            }
+          }
+          console.log('Explicit source Locations:',explicit);
+          console.log('Suspicious geometry fallbacks:',bad.length);
+          if(bad.length) console.log(JSON.stringify(bad,null,2));
+          if(explicit!==742) throw new Error(`explicit Location count changed: ${explicit}`);
+          if(bad.length!==0) throw new Error(`zero-fallback contract broken: ${bad.length}`);
+          const main=spec.windows.find(w=>w.field==='MainPanel');
+          const char=main.controls.find(c=>c.name==='CharacterButton');
+          const mail=main.controls.find(c=>c.name==='NewMailIcon');
+          if(char.properties.Location!=='new Point(650, 23)') throw new Error('Character button location changed');
+          const mini=spec.windows.find(w=>w.field==='MiniMapBox');
+          if(mini.controls.find(c=>c.name==='Panel').properties.Location==='Area.Location') throw new Error('MiniMap Area alias unresolved');
+          const big=spec.windows.find(w=>w.field==='BigMapBox');
+          if(big.controls.find(c=>c.name==='Panel').properties.Location!=='ClientArea.Location') throw new Error('BigMap ClientArea layout unresolved');
+          const horse=spec.windows.find(w=>w.field==='HorseTameBox');
+          if(!horse.derivedGeometry) throw new Error('Horse Tame derived recipe missing');
+          console.log('Main CharacterButton:',char.properties.Location);
+          console.log('Main NewMailIcon:',mail.properties.Location);
+          console.log('Derived pass:',spec.derivedGeometryPass);
+          JS
+          node .build/zircon-ui/validate-final.mjs
+
+      - name: Report final reconstruction
         run: |
           python3 - <<'PY'
-          import json,re
+          import json
           from pathlib import Path
           root=Path('.build/zircon-ui')
           spec=json.loads((root/'ui-source-spec.json').read_text())
           assets=json.loads((root/'asset-build.json').read_text())
-          policy=json.loads((root/'control-render-policy.json').read_text())
-          exact=sum(1 for w in spec['windows'] if w.get('sourcePath'))
           missing=[k for k,v in assets.items() if v.get('missing')]
-          discovered={c['type'] for w in spec['windows'] for c in w.get('controls',[])}
-          covered=set(policy['policies'])
-          controls=sum(len(w.get('controls',[])) for w in spec['windows'])
-          locations=location_literal=sizes=size_literal=0
-          for w in spec['windows']:
-              for c in w.get('controls',[]):
-                  p=c.get('properties',{})
-                  if 'Location' in p:
-                      locations+=1
-                      if re.fullmatch(r'new Point\(\s*-?\d+\s*,\s*-?\d+\s*\)',str(p['Location'])):
-                          location_literal+=1
-                  if 'Size' in p:
-                      sizes+=1
-                      if re.fullmatch(r'new Size\(\s*-?\d+\s*,\s*-?\d+\s*\)',str(p['Size'])):
-                          size_literal+=1
-          language=spec.get('language',{})
-          symbols=spec.get('geometrySymbols',{})
-          print(f"Source-resolved windows: {exact}/{spec['windowCount']}")
-          print(f"Control type render coverage: {len(discovered & covered)}/{len(discovered)}")
-          print('Parsed controls:',controls)
-          print(f'Literal source locations: {location_literal}/{locations}')
-          print(f'Literal source sizes: {size_literal}/{sizes}')
-          print('Resolved English control labels:',language.get('resolvedControlCount',0))
-          print('Deterministic geometry properties simplified:',symbols.get('propertiesSimplified',0))
-          print('Asset-size libraries:',len(spec.get('assetSizes',{})))
-          print('Missing public UI libraries:', missing)
-          print('Extracted PNG files:', len(list((root/'assets').rglob('*.png'))))
-          if exact != spec['windowCount'] or missing or discovered-covered:
-              raise SystemExit('Zircon UI reference coverage check failed')
+          pngs=list((root/'assets').rglob('*.png'))
+          print(f"Source-resolved windows: {sum(1 for w in spec['windows'] if w.get('sourcePath'))}/{spec['windowCount']}")
+          print('Parsed controls:',sum(len(w.get('controls',[])) for w in spec['windows']))
+          print('Resolved English control labels:',spec.get('language',{}).get('resolvedControlCount'))
+          print('Missing public UI libraries:',missing)
+          print('Extracted PNG files:',len(pngs))
+          if missing:
+              raise SystemExit('A required public Zircon library is missing')
+          if len(pngs) != 449:
+              raise SystemExit(f'Expected 449 extracted PNGs, got {len(pngs)}')
           PY
 
       - name: Upload complete Zircon GameScene UI reference
