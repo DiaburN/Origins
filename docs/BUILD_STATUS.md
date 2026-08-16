@@ -22,10 +22,10 @@ Authoritative branch: `origins-game-v1`
 - [x] deterministic `ClientArea`/`Area` geometry resolution
 - [x] asset-size-derived geometry (`GetSize(...)`) resolution
 - [x] Horse Tame composite geometry recipe from real image bounds
-- [x] **742/742 explicit source Locations resolved with 0 suspicious fallbacks**
+- [x] **754 explicit source Locations resolved with 0 suspicious fallbacks**
 - [x] zero-fallback geometry regression validation in CI
 - [x] Zircon English runtime language extraction: **764 messages**
-- [x] **314 UI controls** resolved to real English display text, with original C# expression preserved
+- [x] **325 UI controls** resolved to real English display text, with original C# expression preserved
 - [x] resolved English text drives the reference render and text-dependent sizing
 - [x] CI fails if a newly discovered Zircon control type has no renderer policy
 - [x] single promoted official Zircon UI build workflow
@@ -34,6 +34,10 @@ Authoritative branch: `origins-game-v1`
 - [x] draggable dialog windows with position persistence
 - [x] source-backed direct window interactions: **14 MouseClick links extracted from Zircon**
 - [x] Menu internal navigation validated: Settings / Help / Guild / Storage / Ranking / Companion / Exit
+- [x] static captured DXTab selected-state/content switching
+- [x] Quest custom tab instances imported: **5**
+- [x] Guild helper-built tab instances imported: **7**
+- [x] Magic source tab templates imported: **16**, visibility remains runtime/data-driven
 - [x] complete Zircon UI scope document
 - [x] owner UI approval/keep-remove matrix
 - [x] Zircon public-source CI
@@ -45,7 +49,7 @@ Authoritative branch: `origins-game-v1`
 
 ## Current UI fidelity pass
 
-The complete source/interface/control inventory is captured. Every currently discovered DX control type has an explicit rendering policy and every explicit `Location` in the current 65-window GameScene inventory resolves without falling back to an invented `(0,0)` coordinate. Runtime-populated lists, maps, item icons, tree rows and live values remain runtime data by design.
+The complete source/interface/control inventory is captured. Every currently discovered DX control type has an explicit rendering policy and every explicit `Location` currently emitted into the 65-window GameScene reference resolves without falling back to an invented `(0,0)` coordinate. Runtime-populated lists, maps, item icons, tree rows and live values remain runtime data by design.
 
 - [x] complete GameScene component inventory
 - [x] exact `.Zl` source dependency extraction
@@ -70,32 +74,41 @@ The complete source/interface/control inventory is captured. Every currently dis
 - [x] resolve forward parent/control references used by the current validation set
 - [x] embed asset dimensions and offsets for **8 source libraries**
 - [x] extract **764** English Zircon messages
-- [x] resolve **314** visible control labels with **0 missing referenced language keys**
+- [x] resolve **325** visible control labels with **0 missing referenced language keys**
 - [x] preserve original language expressions as provenance while using real text in rendering
 - [x] constructor arguments with default values resolved from actual `GameScene` calls
 - [x] MiniMap/BigMap `ClientArea` layout relationships resolved from source
 - [x] Milestone `GameInter2.GetSize(500)` dependency resolved from source asset dimensions
 - [x] Horse Tame animation/progress geometry derived from real Zircon image bounds
-- [x] suspicious explicit source-location fallbacks: **0 / 742**
+- [x] suspicious explicit source-location fallbacks: **0 / 754**
 - [x] multi-window desktop behavior: coexistence, focus/z-order and drag
 - [x] direct source-derived internal window/button navigation: **14 validated links**
-- [ ] real DXTab selected-state/content switching
+- [x] static/renderable tab runtime: **15 DXTabControls / 50 tabs**
+- [x] Quest visible initial tabs: Current / Available / Milestone; Completed and Mission retained hidden per source
+- [x] Guild initial source state: Create tab visible in `noGuild` state; other tabs retained with runtime visibility provenance
+- [x] Magic dynamic tab artwork/state templates: **16 schools/cases**, no active-school state invented
+- [ ] expand custom tab composite children (Quest / Milestone / Mission)
+- [ ] expand Guild helper-built tab contents
+- [ ] runtime Magic school population from actual player/magic data
 - [ ] complex source actions beyond direct window visibility
 - [ ] visual owner pass of all 65 GameScene components
 - [ ] owner reviews components and updates `docs/ZIRCON_UI_DECISIONS.md`
 
 ## Latest validated complete reference build
 
-- workflow run: `31969180213`
+- workflow run: `31970020674`
 - source-resolved windows: `65/65`
 - control type render coverage: `21/21`
-- parsed controls: `1,014`
-- explicit source locations: `742`
+- parsed/renderable controls: `1,026`
+- explicit source locations: `754`
 - suspicious source-location fallbacks: **`0`**
 - English messages parsed: `764`
-- controls using resolved English display text: `314`
+- controls using resolved English display text: `325`
 - unresolved referenced language keys: `0`
 - source-backed direct window interactions: **`14`**
+- DXTabControls: `15`
+- static/renderable tabs: `50`
+- Magic dynamic tab templates: `16`
 - asset-size/metadata libraries: `8`
 - missing public UI libraries: `0`
 - extracted source PNGs: **`449`**
@@ -103,9 +116,10 @@ The complete source/interface/control inventory is captured. Every currently dis
 - zero-fallback geometry validation: passed
 - multi-window runtime static validation: passed
 - source-interaction validation: passed
+- custom-tab source validation: passed
 - official artifact: `zircon-ui-reference-complete`
-- artifact ID: `9269309979`
-- artifact SHA256: `440b087511d2d60460140d611da5a75fec641fd86d31d5900b8d45f40c143d59`
+- artifact ID: `9269531505`
+- artifact SHA256: `4e59a5ef766ad4bfb8f354c8c6e29ff7f01adfd3eb5b043977c2217c6f751e43`
 
 ## Playable runtime target after desktop UI review
 
