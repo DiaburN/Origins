@@ -1,6 +1,11 @@
 #!/usr/bin/env python3
 """Augment a generated Zircon UI manifest with real English runtime labels.
 
+Before language resolution this phase also applies the source-backed
+DXConfigSection automatic layout. That layout synthesizes section/title labels,
+so running it here ensures those new labels receive the same EnglishMessages
+resolution as every other Zircon control.
+
 The visual source uses expressions such as `CEnvir.Language.MenuDialogSettingsButton`.
 Those expressions remain available as provenance while this script attaches the
 actual EnglishMessages.cs value and prepares a render-facing copy of the relevant
@@ -13,6 +18,8 @@ import json
 import re
 from pathlib import Path
 
+from augment_ui_config_sections import apply as apply_config_sections
+
 PROPERTY_RE = re.compile(
     r'public\s+override\s+string\s+([A-Za-z_][A-Za-z0-9_]*)\s*'
     r'\{\s*get;\s*set;\s*\}\s*=\s*"((?:\\.|[^"\\])*)"\s*;',
@@ -23,8 +30,6 @@ VISIBLE_TEXT_KEYS = ('Text', 'Label', 'TabButton', 'Title', 'Caption')
 
 
 def decode_csharp_string(raw: str) -> str:
-    # The current EnglishMessages file uses standard C# escape sequences that
-    # overlap with JSON for the strings relevant to UI labels.
     try:
         return json.loads('"' + raw + '"')
     except json.JSONDecodeError:
@@ -38,7 +43,6 @@ def decode_csharp_string(raw: str) -> str:
 
 
 def render_literal(value: str) -> str:
-    """Return a JSON/C#-compatible quoted literal for the browser manifest."""
     return json.dumps(value, ensure_ascii=False)
 
 
@@ -61,12 +65,6 @@ def resolve_expression(expression: object, messages: dict[str, str]) -> tuple[st
 
 
 def augment_properties(owner: dict, properties: dict, messages: dict[str, str]) -> bool:
-    """Resolve the first visible language property and preserve its source expression.
-
-    The generated manifest is a derived artifact, so replacing its render-facing
-    property is safe as long as provenance is kept explicitly. This makes the
-    existing renderer and geometry resolver consume the same text Zircon displays.
-    """
     for property_name in VISIBLE_TEXT_KEYS:
         expression = properties.get(property_name)
         resolved = resolve_expression(expression, messages)
@@ -90,6 +88,14 @@ def main() -> None:
     args = parser.parse_args()
 
     spec = json.loads(args.spec.read_text(encoding='utf-8'))
+
+    # .source/Zircon/Client/Envir/Translations/EnglishMessages.cs -> Zircon root.
+    zircon_root = args.english_messages.parents[3]
+    if 'configSectionPass' not in spec:
+        config_report = apply_config_sections(spec, zircon_root)
+        print('Config sections reconstructed before language:', config_report.get('sections', 0))
+        print('Config controls source-positioned:', config_report.get('controlsPlaced', 0))
+
     messages = parse_messages(args.english_messages)
     if not messages:
         raise SystemExit('No EnglishMessages properties were parsed')
@@ -108,7 +114,6 @@ def main() -> None:
             if augment_properties(control, properties, messages):
                 resolved_controls += 1
 
-            # Search both the derived properties and preserved source expression.
             values = list(properties.values())
             if control.get('sourceTextExpression') is not None:
                 values.append(control['sourceTextExpression'])
