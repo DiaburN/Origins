@@ -172,16 +172,10 @@ def namespace_children(children: list[dict], parent_name: str) -> list[dict]:
 
 
 def namespace_helper_descendants(children: list[dict], root_source_name: str, root_instance_name: str) -> list[dict]:
-    """Namespace a Guild helper and retain only proven descendants of its tab.
-
-    In a helper method `this` is GuildDialog, not the tab, so unlike constructor
-    expansion it remains the window root. The existing top-level tab instance is
-    injected as an external alias. Any temporary controls without a Parent chain
-    leading to that tab are discarded.
-    """
+    """Namespace a Guild helper and retain only proven descendants of its tab."""
     root_rows=[child for child in children if child['sourceName']==root_source_name and child['type']=='DXTab']
-    root_offsets={id(child) for child in root_rows}
-    candidates=[child for child in children if id(child) not in root_offsets]
+    root_ids={id(child) for child in root_rows}
+    candidates=[child for child in children if id(child) not in root_ids]
     occurrences=assign_names(candidates,root_instance_name)
     external={root_source_name:root_instance_name}
 
@@ -307,8 +301,22 @@ def main() -> None:
         }
         add_asset_refs(spec,additions); guild_total=len(additions)
 
+    # Freeze the current public Zircon helper structure. If upstream changes a
+    # helper, CI should force us to inspect the new source instead of silently
+    # dropping or fabricating controls.
+    expected_guild={
+        'CreateTab':17,'HomeTab':18,'MemberTab':1,'StorageTab':8,
+        'WarTab':0,'StyleTab':6,'CastleTab':0,
+    }
+    if guild_by_tab and guild_by_tab != expected_guild:
+        raise SystemExit(f'Guild helper structure changed: {guild_by_tab}')
+    if guild_by_tab and guild_runtime_only != ['WarTab','CastleTab']:
+        raise SystemExit(f'Guild runtime-only helper state changed: {guild_runtime_only}')
+
     spec['compositePass']={
         'sourceBacked':True,
+        # Legacy alias kept until the workflow/doc validators are migrated.
+        'childrenByTab':quest_by_tab,
         'questChildrenAdded':quest_total,
         'questChildrenByTab':quest_by_tab,
         'questRuntimeOnlyTabs':quest_runtime_only,
