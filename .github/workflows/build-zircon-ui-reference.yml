@@ -92,9 +92,11 @@ jobs:
           if composite.get('questChildrenAdded',0) <= 0:
               raise SystemExit('Quest custom tab child constructors were not expanded')
           children=composite.get('childrenByTab',{})
-          for tab in ('CurrentTab','AvailableTab','CompletedTab','MilestoneTab','MissionTab'):
+          for tab in ('CurrentTab','AvailableTab','CompletedTab','MilestoneTab'):
               if children.get(tab,0) <= 0:
-                  raise SystemExit(f'Quest composite tab has no source children: {tab} -> {children}')
+                  raise SystemExit(f'Quest source composite tab has no constructor children: {tab} -> {children}')
+          if children.get('MissionTab') != 0 or composite.get('questRuntimeOnlyTabs') != ['MissionTab']:
+              raise SystemExit(f'MissionTab must remain explicitly runtime-only: {composite}')
 
           character=next(w for w in spec['windows'] if w['field']=='CharacterBox')
           if '110' not in str(character.get('root',{}).get('Index')):
@@ -156,6 +158,7 @@ jobs:
           print('Static/renderable tabs:',len(tabs))
           print('Quest composite children:',composite.get('questChildrenAdded'))
           print('Quest children by tab:',children)
+          print('Quest runtime-only tabs:',composite.get('questRuntimeOnlyTabs'))
           print('Magic dynamic templates:',len(magic.get('templates',[])))
           print('Windows:',spec['windowCount'])
           print('Controls:',controls)
