@@ -20,6 +20,12 @@ function simpleParent(expression) {
   return /^[A-Za-z_][A-Za-z0-9_]*$/.test(value) ? value : null;
 }
 
+function sourceVisible(control) {
+  if (!control) return false;
+  if (control.tabButtonVisible === false) return false;
+  return String(control.properties?.Visible ?? 'true').trim().toLowerCase() !== 'false';
+}
+
 function buildModel(window) {
   const controls = window.controls || [];
   const namedContainers = new Map();
@@ -63,6 +69,7 @@ function controlVisibleThroughTabs(control, model, selected) {
     const parent = model.namedContainers.get(parentName);
     if (!parent) return true;
     if (parent.type === 'DXTab' || parent.type === 'DXConfigTab') {
+      if (!sourceVisible(parent)) return false;
       const tabControlName = simpleParent(parent.properties?.Parent);
       if (tabControlName && selected.get(tabControlName) !== parent.name) return false;
     }
@@ -81,10 +88,10 @@ function applyWindowTabs(root, model, selected) {
     const isTab = control.type === 'DXTab' || control.type === 'DXConfigTab';
     if (isTab) {
       const tabControlName = simpleParent(control.properties?.Parent);
-      setTabSkin(element, selected.get(tabControlName) === control.name);
+      setTabSkin(element, sourceVisible(control) && selected.get(tabControlName) === control.name);
     }
 
-    element.hidden = !controlVisibleThroughTabs(control, model, selected);
+    element.hidden = !sourceVisible(control) || !controlVisibleThroughTabs(control, model, selected);
   }
 }
 
@@ -100,7 +107,8 @@ function initializeWindow(root) {
 
   const selected = new Map();
   for (const [tabControlName, tabs] of model.tabGroups) {
-    if (tabs.length) selected.set(tabControlName, tabs[0]);
+    const firstVisible = tabs.find(name => sourceVisible(model.namedContainers.get(name)));
+    if (firstVisible) selected.set(tabControlName, firstVisible);
   }
   selectedByWindow.set(root, {window, model, selected});
   root.dataset.originsTabsInitialized = '1';
@@ -116,7 +124,7 @@ function scan(node) {
 stage.addEventListener('click', event => {
   if (!(event.target instanceof Element)) return;
   const tabElement = event.target.closest('[data-control-type="DXTab"],[data-control-type="DXConfigTab"]');
-  if (!tabElement) return;
+  if (!tabElement || tabElement.hidden) return;
   const root = tabElement.closest('.window,.generic-window');
   if (!root) return;
   initializeWindow(root);
@@ -125,7 +133,7 @@ stage.addEventListener('click', event => {
 
   const index = Number.parseInt(tabElement.dataset.controlIndex || '', 10);
   const tab = Number.isInteger(index) ? state.model.controls[index] : null;
-  if (!tab || (tab.type !== 'DXTab' && tab.type !== 'DXConfigTab')) return;
+  if (!tab || !sourceVisible(tab) || (tab.type !== 'DXTab' && tab.type !== 'DXConfigTab')) return;
   const tabControlName = simpleParent(tab.properties?.Parent);
   if (!tabControlName || !state.model.tabGroups.get(tabControlName)?.includes(tab.name)) return;
 
