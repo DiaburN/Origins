@@ -39,6 +39,9 @@ Authoritative branch: `origins-game-v1`
 - [x] Quest static composite contents imported: **76 controls**
 - [x] Guild helper-built tab instances imported: **7**
 - [x] Guild static composite contents imported: **50 controls**
+- [x] Guild reference-state inspection selector outside game desktop
+- [x] `DXNumberBox` real 1011/1010 decrement/increment behavior
+- [x] constructor-level number-control state preservation
 - [x] Magic source tab templates imported: **16**, visibility remains runtime/data-driven
 - [x] complete Zircon UI scope document
 - [x] owner UI approval/keep-remove matrix
@@ -63,12 +66,14 @@ The complete source/interface/control inventory is captured. Every currently dis
 - [x] image-backed Menu reference foundation
 - [x] reproduce reusable `DXButton` source skins from `Interface.Zl`
 - [x] reproduce `DXTab` / `DXTabControl` chrome policy
-- [x] reproduce `DXCheckBox` source skin (`GameInter 161/162`)
+- [x] reproduce `DXCheckBox` source skin (`GameInter 161/162`) and checked toggle behavior
 - [x] reproduce text/number field border policy
 - [x] reproduce scrollbar/list/tree chrome from source indices
 - [x] reproduce item grid/cell geometry (`36x36`)
 - [x] reproduce combo-box arrow (`GameInter 795`)
 - [x] reproduce number-box controls (`GameInter 1010/1011`)
+- [x] reproduce number-box `Change / MinValue / MaxValue / Value` behavior
+- [x] preserve post-initializer number state assignment(s) from Zircon constructors
 - [x] reproduce sound-bar source assets (`GameInter 4740-4746`)
 - [x] explicit policy for all **21/21** currently discovered DX control types
 - [x] preserve complete `Point` / `Size` expressions without truncation
@@ -92,8 +97,9 @@ The complete source/interface/control inventory is captured. Every currently dis
 - [x] Guild initial source state: Create tab visible in `noGuild` state; other tabs retained with runtime visibility provenance
 - [x] Guild constructor/helper-defined contents: Create `17`, Home `18`, Member `1`, Storage `8`, Style `6`
 - [x] Guild War and Castle explicitly runtime/data-only in current source inventory; no fabricated content
+- [x] reference-only Guild states: `noGuild`, `hasGuild`, `ownsCastle`; selector remains outside 1024×768 game HUD
 - [x] Magic dynamic tab artwork/state templates: **16 schools/cases**, no active-school state invented
-- [ ] reference-only Guild state selector (`noGuild` / `hasGuild` / `ownsCastle`) outside game HUD
+- [ ] interactive `DXSoundBar`
 - [ ] runtime Magic school population from actual player/magic data
 - [ ] complex source actions beyond direct window visibility
 - [ ] visual owner pass of all 65 GameScene components
@@ -101,7 +107,7 @@ The complete source/interface/control inventory is captured. Every currently dis
 
 ## Latest validated complete reference build
 
-- workflow run: `31970717601`
+- workflow run: `31971321187`
 - source-resolved windows: `65/65`
 - control type render coverage: `21/21`
 - parsed/renderable controls: **`1,152`**
@@ -117,18 +123,21 @@ The complete source/interface/control inventory is captured. Every currently dis
 - Guild composite children: **`50`**
 - Guild children by tab: Create `17`, Home `18`, Member `1`, Storage `8`, War `0`, Style `6`, Castle `0`
 - Magic dynamic tab templates: `16`
+- number-control constructor state assignments applied: **`1`**
 - asset-size/metadata libraries: `8`
 - missing public UI libraries: `0`
 - extracted source PNGs: **`449`**
 - JS syntax validation: passed
 - zero-fallback geometry validation: passed
 - multi-window runtime static validation: passed
+- Guild reference-state runtime: passed JS validation
+- interactive `DXNumberBox` patch: passed JS validation
 - source-interaction validation: passed
 - custom-tab source validation: passed
 - Quest/Guild composite validation: passed
 - official artifact: `zircon-ui-reference-complete`
-- artifact ID: `9269712848`
-- artifact SHA256: `86036d14fc49b644b7240e73e8236cfd45332d744f67cc5dbc0eed35ffd08243`
+- artifact ID: `9269869050`
+- artifact SHA256: `6db88b31eb37483f7e5d7fa76ac15e72c6fa45457609149fa3691cbf04153256`
 
 ## Playable runtime target after desktop UI review
 
