@@ -14,7 +14,7 @@ from __future__ import annotations
 import argparse
 import json
 import re
-from collections import Counter
+from collections import Counter, defaultdict
 from pathlib import Path
 
 from build_ui_source_spec import (
@@ -120,24 +120,48 @@ def replace_known_names(expression: str, mapping: dict[str,str]) -> str:
 
 
 def namespace_children(children: list[dict], parent_name: str) -> list[dict]:
+    """Namespace controls while preserving C# local-variable temporal scope.
+
+    Zircon intentionally reuses locals such as `label` and `panel`. In an
+    expression inside a later initializer, `label.Location` means the latest
+    object assigned to `label` before that source offset. A global name map is
+    therefore incorrect. Build a source-ordered occurrence table and resolve
+    every property against the most recent preceding assignment, exactly as the
+    constructor executes. Unique forward references remain resolvable too.
+    """
     counts=Counter(child['sourceName'] for child in children)
-    sequence=Counter(); unique_map={}
+    sequence=Counter()
+    occurrences: dict[str,list[tuple[int,str]]] = defaultdict(list)
+
     for child in children:
         source_name=child['sourceName']; sequence[source_name]+=1
         suffix='' if counts[source_name]==1 else f'__{sequence[source_name]}'
         child['name']=f'{parent_name}__{source_name}{suffix}'
-        if counts[source_name]==1:
-            unique_map[source_name]=child['name']
+        occurrences[source_name].append((int(child.get('sourceOffset',0)),child['name']))
+
+    def mapping_at(offset: int) -> dict[str,str]:
+        mapping: dict[str,str] = {}
+        for source_name,rows in occurrences.items():
+            previous=[namespaced for source_offset,namespaced in rows if source_offset < offset]
+            if previous:
+                mapping[source_name]=previous[-1]
+            elif len(rows)==1:
+                # Preserve deterministic unique forward references used by a
+                # few Zircon constructors without guessing repeated aliases.
+                mapping[source_name]=rows[0][1]
+        return mapping
 
     for child in children:
+        mapping=mapping_at(int(child.get('sourceOffset',0)))
         props=child['properties']; parent=normalise(str(props.get('Parent','this')))
         if parent=='this':
             props['Parent']=parent_name
-        elif parent in unique_map:
-            props['Parent']=unique_map[parent]
+        elif parent in mapping:
+            props['Parent']=mapping[parent]
         for key,value in list(props.items()):
             if key=='Parent': continue
-            props[key]=replace_known_names(value,unique_map)
+            props[key]=replace_known_names(value,mapping)
+        child['constructorAliasScopeResolved']=True
     return children
 
 
@@ -211,6 +235,7 @@ def main() -> None:
             'maxDepth':args.max_depth,
             'childrenByTab':by_tab,
             'runtimeOnlyTabs':runtime_only,
+            'constructorAliasScope':'source-ordered latest assignment',
             'runtimeRowsInvented':False,
         }
         add_asset_refs(spec,additions)
@@ -221,12 +246,14 @@ def main() -> None:
         'questChildrenAdded':total,
         'childrenByTab':by_tab,
         'questRuntimeOnlyTabs':runtime_only,
+        'constructorAliasScope':'source-ordered latest assignment',
         'runtimeRowsInvented':False,
     }
     args.spec.write_text(json.dumps(spec,indent=2,ensure_ascii=False),encoding='utf-8')
     print('Quest composite children added:',total)
     print('Quest children by tab:',by_tab)
     print('Quest runtime-only tabs:',runtime_only)
+    print('Constructor alias scope: source-ordered latest assignment')
 
 
 if __name__=='__main__':
