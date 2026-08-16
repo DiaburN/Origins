@@ -51,7 +51,7 @@ jobs:
             --spec .build/zircon-ui/ui-source-spec.json \
             --zircon-root .source/Zircon
 
-      - name: Validate source, controls and interactions
+      - name: Validate source, controls, tabs and interactions
         run: |
           python3 - <<'PY'
           import json
@@ -95,10 +95,30 @@ jobs:
               'CompanionButton':('toggle','CompanionBox'),
               'LeaveButton':('open','ExitBox'),
           }
-          print('Menu source interactions:',menu)
           if menu != expected:
               raise SystemExit(f'Menu interaction extraction mismatch: {menu}')
+
+          all_controls=[c for w in spec['windows'] for c in w.get('controls',[])]
+          tab_controls=[c for c in all_controls if c['type']=='DXTabControl']
+          tabs=[c for c in all_controls if c['type'] in ('DXTab','DXConfigTab')]
+          if len(tab_controls) != 15 or len(tabs) != 38:
+              raise SystemExit(f'Tab inventory changed: {len(tab_controls)} controls / {len(tabs)} tabs')
+
+          def tab_children(field, tab_control):
+              window=next(w for w in spec['windows'] if w['field']==field)
+              return [c['name'] for c in window['controls'] if c['type'] in ('DXTab','DXConfigTab') and c.get('properties',{}).get('Parent')==tab_control]
+          if tab_children('ConfigBox','TabControl') != ['GraphicsTab','SoundTab','GameTab','NetworkTab','UITab']:
+              raise SystemExit('Config tab hierarchy changed')
+          if tab_children('CharacterBox','TabControl') != ['CharacterTab','DisciplineTab','HermitTab']:
+              raise SystemExit('Character primary tab hierarchy changed')
+          if len(tab_children('CharacterBox','StatsTabControl')) != 7:
+              raise SystemExit('Character stats tab hierarchy changed')
+          if tab_children('StorageBox','TabControl') != ['StorageTab','PartsTab']:
+              raise SystemExit('Storage tab hierarchy changed')
+
           print('Source-backed interactions:',len(spec.get('interactions',[])))
+          print('DXTabControls:',len(tab_controls))
+          print('DXTab/DXConfigTab:',len(tabs))
           print('Windows:',spec['windowCount'])
           print('Controls:',controls)
           print('DX types:',len(discovered))
@@ -120,6 +140,7 @@ jobs:
           cp apps/zircon-ui-reference/app-layout.js .build/zircon-ui/app-layout.js
           cp apps/zircon-ui-reference/window-runtime.js .build/zircon-ui/window-runtime.js
           cp apps/zircon-ui-reference/interaction-runtime.js .build/zircon-ui/interaction-runtime.js
+          cp apps/zircon-ui-reference/tab-runtime.js .build/zircon-ui/tab-runtime.js
           cp apps/zircon-ui-reference/game-scene-windows.js .build/zircon-ui/game-scene-windows.js
           cp apps/zircon-ui-reference/control-render-policy.json .build/zircon-ui/control-render-policy.json
           cp apps/zircon-ui-reference/layout-resolver.js .build/zircon-ui/layout-resolver-base.js
@@ -128,13 +149,16 @@ jobs:
           node --check .build/zircon-ui/app-layout.js
           node --check .build/zircon-ui/window-runtime.js
           node --check .build/zircon-ui/interaction-runtime.js
+          node --check .build/zircon-ui/tab-runtime.js
           node --check .build/zircon-ui/layout-resolver-base.js
           node --check .build/zircon-ui/layout-resolver-derived.js
           node --check .build/zircon-ui/game-scene-windows.js
           grep -Fq "existing?.isConnected" .build/zircon-ui/app-layout.js
-          grep -Fq "dataset.controlName" .build/zircon-ui/app-layout.js
+          grep -Fq "dataset.controlIndex" .build/zircon-ui/app-layout.js
+          grep -Fq "dataset.parentControl" .build/zircon-ui/app-layout.js
           grep -Fq "window-runtime.js" .build/zircon-ui/index.html
           grep -Fq "interaction-runtime.js" .build/zircon-ui/index.html
+          grep -Fq "tab-runtime.js" .build/zircon-ui/index.html
 
       - name: Validate zero-fallback geometry
         run: |
@@ -164,7 +188,6 @@ jobs:
           if(bad.length!==0) throw new Error(`zero-fallback contract broken: ${bad.length}`);
           const main=spec.windows.find(w=>w.field==='MainPanel');
           const char=main.controls.find(c=>c.name==='CharacterButton');
-          const mail=main.controls.find(c=>c.name==='NewMailIcon');
           if(char.properties.Location!=='new Point(650, 23)') throw new Error('Character button location changed');
           const mini=spec.windows.find(w=>w.field==='MiniMapBox');
           if(mini.controls.find(c=>c.name==='Panel').properties.Location==='Area.Location') throw new Error('MiniMap Area alias unresolved');
@@ -172,9 +195,6 @@ jobs:
           if(big.controls.find(c=>c.name==='Panel').properties.Location!=='ClientArea.Location') throw new Error('BigMap ClientArea layout unresolved');
           const horse=spec.windows.find(w=>w.field==='HorseTameBox');
           if(!horse.derivedGeometry) throw new Error('Horse Tame derived recipe missing');
-          console.log('Main CharacterButton:',char.properties.Location);
-          console.log('Main NewMailIcon:',mail.properties.Location);
-          console.log('Derived pass:',spec.derivedGeometryPass);
           JS
           node .build/zircon-ui/validate-final.mjs
 
@@ -188,10 +208,13 @@ jobs:
           assets=json.loads((root/'asset-build.json').read_text())
           missing=[k for k,v in assets.items() if v.get('missing')]
           pngs=list((root/'assets').rglob('*.png'))
+          all_controls=[c for w in spec['windows'] for c in w.get('controls',[])]
           print(f"Source-resolved windows: {sum(1 for w in spec['windows'] if w.get('sourcePath'))}/{spec['windowCount']}")
           print('Parsed controls:',sum(len(w.get('controls',[])) for w in spec['windows']))
           print('Resolved English control labels:',spec.get('language',{}).get('resolvedControlCount'))
           print('Source-backed interactions:',len(spec.get('interactions',[])))
+          print('DXTabControls:',sum(c['type']=='DXTabControl' for c in all_controls))
+          print('DXTabs:',sum(c['type'] in ('DXTab','DXConfigTab') for c in all_controls))
           print('Missing public UI libraries:',missing)
           print('Extracted PNG files:',len(pngs))
           if missing:
