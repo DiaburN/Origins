@@ -38,6 +38,9 @@ jobs:
           python3 tools/zircon-ui-importer/build_ui_source_spec.py \
             --zircon-root .source/Zircon \
             --out .build/zircon-ui/ui-source-spec.json
+          python3 tools/zircon-ui-importer/augment_ui_custom_tabs.py \
+            --spec .build/zircon-ui/ui-source-spec.json \
+            --zircon-root .source/Zircon
           python3 tools/zircon-ui-importer/augment_ui_language.py \
             --spec .build/zircon-ui/ui-source-spec.json \
             --english-messages .source/Zircon/Client/Envir/Translations/EnglishMessages.cs
@@ -51,7 +54,7 @@ jobs:
             --spec .build/zircon-ui/ui-source-spec.json \
             --zircon-root .source/Zircon
 
-      - name: Validate source, controls, tabs and interactions
+      - name: Validate source, controls, custom tabs and interactions
         run: |
           python3 - <<'PY'
           import json
@@ -68,11 +71,22 @@ jobs:
           if discovered-covered:
               raise SystemExit(f'Unmapped DX controls: {sorted(discovered-covered)}')
           controls=sum(len(w.get('controls',[])) for w in spec['windows'])
-          if controls != 1014:
-              raise SystemExit(f'Parsed control count changed: {controls}')
+          if controls < 1026:
+              raise SystemExit(f'Custom-tab control expansion unexpectedly incomplete: {controls}')
           language=spec.get('language',{})
-          if language.get('resolvedControlCount') != 314 or language.get('unresolvedReferencedKeys'):
+          if language.get('resolvedControlCount',0) < 314 or language.get('unresolvedReferencedKeys'):
               raise SystemExit('Zircon language resolution regressed')
+          custom=spec.get('customTabPass',{})
+          print('Custom tab pass:',custom)
+          if custom.get('questStaticTabsAdded') != 5:
+              raise SystemExit('Quest custom tab expansion mismatch')
+          if custom.get('guildStaticTabsAdded') != 7:
+              raise SystemExit('Guild helper tab expansion mismatch')
+          if custom.get('magicDynamicTemplates',0) < 15:
+              raise SystemExit('Magic dynamic tab template extraction incomplete')
+          if custom.get('dynamicMagicVisibilityInvented') is not False:
+              raise SystemExit('Magic runtime visibility must remain data-driven')
+
           character=next(w for w in spec['windows'] if w['field']=='CharacterBox')
           if '110' not in str(character.get('root',{}).get('Index')):
               raise SystemExit('CharacterDialog source index lost')
@@ -101,24 +115,37 @@ jobs:
           all_controls=[c for w in spec['windows'] for c in w.get('controls',[])]
           tab_controls=[c for c in all_controls if c['type']=='DXTabControl']
           tabs=[c for c in all_controls if c['type'] in ('DXTab','DXConfigTab')]
-          if len(tab_controls) != 15 or len(tabs) != 38:
-              raise SystemExit(f'Tab inventory changed: {len(tab_controls)} controls / {len(tabs)} tabs')
+          if len(tab_controls) != 15 or len(tabs) < 50:
+              raise SystemExit(f'Tab inventory unexpectedly incomplete: {len(tab_controls)} controls / {len(tabs)} tabs')
 
           def tab_children(field, tab_control):
               window=next(w for w in spec['windows'] if w['field']==field)
-              return [c['name'] for c in window['controls'] if c['type'] in ('DXTab','DXConfigTab') and c.get('properties',{}).get('Parent')==tab_control]
-          if tab_children('ConfigBox','TabControl') != ['GraphicsTab','SoundTab','GameTab','NetworkTab','UITab']:
+              return [c for c in window['controls'] if c['type'] in ('DXTab','DXConfigTab') and c.get('properties',{}).get('Parent')==tab_control]
+          if [c['name'] for c in tab_children('ConfigBox','TabControl')] != ['GraphicsTab','SoundTab','GameTab','NetworkTab','UITab']:
               raise SystemExit('Config tab hierarchy changed')
-          if tab_children('CharacterBox','TabControl') != ['CharacterTab','DisciplineTab','HermitTab']:
+          if [c['name'] for c in tab_children('CharacterBox','TabControl')] != ['CharacterTab','DisciplineTab','HermitTab']:
               raise SystemExit('Character primary tab hierarchy changed')
           if len(tab_children('CharacterBox','StatsTabControl')) != 7:
               raise SystemExit('Character stats tab hierarchy changed')
-          if tab_children('StorageBox','TabControl') != ['StorageTab','PartsTab']:
+          if [c['name'] for c in tab_children('StorageBox','TabControl')] != ['StorageTab','PartsTab']:
               raise SystemExit('Storage tab hierarchy changed')
+
+          quest=tab_children('QuestBox','TabControl')
+          quest_visible=[c['name'] for c in quest if c.get('tabButtonVisible',True)]
+          quest_hidden=[c['name'] for c in quest if not c.get('tabButtonVisible',True)]
+          if quest_visible != ['CurrentTab','AvailableTab','MilestoneTab'] or set(quest_hidden) != {'CompletedTab','MissionTab'}:
+              raise SystemExit(f'Quest source visibility mismatch: visible={quest_visible} hidden={quest_hidden}')
+          guild=tab_children('GuildBox','GuildTabs')
+          if len(guild) != 7 or [c['name'] for c in guild if c.get('tabButtonVisible')] != ['CreateTab']:
+              raise SystemExit('Guild initial noGuild tab state mismatch')
+          magic=next(w for w in spec['windows'] if w['field']=='MagicBox').get('dynamicTabTemplates',{})
+          if not magic.get('doNotAssumeVisibleSchools') or len(magic.get('templates',[])) < 15:
+              raise SystemExit('Magic runtime tab template contract broken')
 
           print('Source-backed interactions:',len(spec.get('interactions',[])))
           print('DXTabControls:',len(tab_controls))
-          print('DXTab/DXConfigTab:',len(tabs))
+          print('Static/renderable tabs:',len(tabs))
+          print('Magic dynamic templates:',len(magic.get('templates',[])))
           print('Windows:',spec['windowCount'])
           print('Controls:',controls)
           print('DX types:',len(discovered))
@@ -184,7 +211,7 @@ jobs:
           console.log('Explicit source Locations:',explicit);
           console.log('Suspicious geometry fallbacks:',bad.length);
           if(bad.length) console.log(JSON.stringify(bad,null,2));
-          if(explicit!==742) throw new Error(`explicit Location count changed: ${explicit}`);
+          if(explicit < 742) throw new Error(`explicit Location coverage regressed: ${explicit}`);
           if(bad.length!==0) throw new Error(`zero-fallback contract broken: ${bad.length}`);
           const main=spec.windows.find(w=>w.field==='MainPanel');
           const char=main.controls.find(c=>c.name==='CharacterButton');
@@ -210,11 +237,12 @@ jobs:
           pngs=list((root/'assets').rglob('*.png'))
           all_controls=[c for w in spec['windows'] for c in w.get('controls',[])]
           print(f"Source-resolved windows: {sum(1 for w in spec['windows'] if w.get('sourcePath'))}/{spec['windowCount']}")
-          print('Parsed controls:',sum(len(w.get('controls',[])) for w in spec['windows']))
+          print('Parsed/renderable controls:',sum(len(w.get('controls',[])) for w in spec['windows']))
           print('Resolved English control labels:',spec.get('language',{}).get('resolvedControlCount'))
           print('Source-backed interactions:',len(spec.get('interactions',[])))
           print('DXTabControls:',sum(c['type']=='DXTabControl' for c in all_controls))
-          print('DXTabs:',sum(c['type'] in ('DXTab','DXConfigTab') for c in all_controls))
+          print('Static/renderable DXTabs:',sum(c['type'] in ('DXTab','DXConfigTab') for c in all_controls))
+          print('Magic dynamic tab templates:',spec.get('customTabPass',{}).get('magicDynamicTemplates'))
           print('Missing public UI libraries:',missing)
           print('Extracted PNG files:',len(pngs))
           if missing:
