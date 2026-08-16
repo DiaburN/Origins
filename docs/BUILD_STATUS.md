@@ -32,6 +32,8 @@ Authoritative branch: `origins-game-v1`
 - [x] simultaneous desktop windows
 - [x] desktop focus / z-order
 - [x] draggable dialog windows with position persistence
+- [x] source-backed direct window interactions: **14 MouseClick links extracted from Zircon**
+- [x] Menu internal navigation validated: Settings / Help / Guild / Storage / Ranking / Companion / Exit
 - [x] complete Zircon UI scope document
 - [x] owner UI approval/keep-remove matrix
 - [x] Zircon public-source CI
@@ -76,13 +78,15 @@ The complete source/interface/control inventory is captured. Every currently dis
 - [x] Horse Tame animation/progress geometry derived from real Zircon image bounds
 - [x] suspicious explicit source-location fallbacks: **0 / 742**
 - [x] multi-window desktop behavior: coexistence, focus/z-order and drag
-- [ ] source-derived internal window/button navigation
+- [x] direct source-derived internal window/button navigation: **14 validated links**
+- [ ] real DXTab selected-state/content switching
+- [ ] complex source actions beyond direct window visibility
 - [ ] visual owner pass of all 65 GameScene components
 - [ ] owner reviews components and updates `docs/ZIRCON_UI_DECISIONS.md`
 
 ## Latest validated complete reference build
 
-- workflow run: `31968909610`
+- workflow run: `31969180213`
 - source-resolved windows: `65/65`
 - control type render coverage: `21/21`
 - parsed controls: `1,014`
@@ -91,15 +95,17 @@ The complete source/interface/control inventory is captured. Every currently dis
 - English messages parsed: `764`
 - controls using resolved English display text: `314`
 - unresolved referenced language keys: `0`
+- source-backed direct window interactions: **`14`**
 - asset-size/metadata libraries: `8`
 - missing public UI libraries: `0`
 - extracted source PNGs: **`449`**
 - JS syntax validation: passed
 - zero-fallback geometry validation: passed
 - multi-window runtime static validation: passed
+- source-interaction validation: passed
 - official artifact: `zircon-ui-reference-complete`
-- artifact ID: `9269244939`
-- artifact SHA256: `40613ef1b0b48f9086a5066846d62261a1510c8a7001261fa0f22d6222de1f16`
+- artifact ID: `9269309979`
+- artifact SHA256: `440b087511d2d60460140d611da5a75fec641fd86d31d5900b8d45f40c143d59`
 
 ## Playable runtime target after desktop UI review
 
