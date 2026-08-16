@@ -41,6 +41,12 @@ function savePosition(root) {
   sessionStorage.setItem(key, JSON.stringify({x, y}));
 }
 
+function clearCatalogState(root) {
+  if (!isWindow(root) || !root.id?.startsWith('w-')) return;
+  const id = root.id.slice(2);
+  document.querySelector(`[data-window-id="${CSS.escape(id)}"]`)?.classList.remove('active');
+}
+
 function isInteractiveTarget(target) {
   return target instanceof Element && Boolean(target.closest('button,input,textarea,select,.close,.ui-button,.dx-generated-button,.dx-checkbox,.dx-scrollbar'));
 }
@@ -101,9 +107,16 @@ function scan(node) {
   node.querySelectorAll?.('.window,.generic-window').forEach(installDrag);
 }
 
+function scanRemoved(node) {
+  if (!(node instanceof Element)) return;
+  if (isWindow(node)) clearCatalogState(node);
+  node.querySelectorAll?.('.window,.generic-window').forEach(clearCatalogState);
+}
+
 new MutationObserver(records => {
   for (const record of records) {
     record.addedNodes.forEach(scan);
+    record.removedNodes.forEach(scanRemoved);
   }
 }).observe(stage, {childList: true, subtree: true});
 
