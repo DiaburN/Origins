@@ -5,9 +5,9 @@ Phase 1 intentionally targets QuestBox custom DXTab instances. Each custom tab
 constructor is expanded into source-backed, namespaced child controls so Current,
 Available, Milestone and the retained hidden tabs are not empty shells.
 
-Runtime-created data rows/items are NOT fabricated. Only constructor-defined
-controls are expanded. Custom child composites are recursively expanded to a
-small bounded depth when their constructor is parameterless.
+Runtime-created data rows/items are NOT fabricated. Tabs with no parameterless
+constructor-defined controls are explicitly recorded as runtime-only instead of
+being filled with guessed UI.
 """
 from __future__ import annotations
 
@@ -114,8 +114,6 @@ def component_defaults(source_type: str, sources: dict[str,Path], texts: dict[Pa
 
 def replace_known_names(expression: str, mapping: dict[str,str]) -> str:
     value=str(expression)
-    # Longest-first avoids partial identifier surprises; negative dot protects
-    # property suffixes while still remapping Control.Size / Parent = Control.
     for old in sorted(mapping,key=len,reverse=True):
         value=re.sub(rf'(?<!\.)\b{re.escape(old)}\b',mapping[old],value)
     return normalise(value)
@@ -156,10 +154,7 @@ def add_asset_refs(spec: dict, controls: list[dict]) -> None:
             refs[lib]=sorted(bucket)
 
 
-def expand_instance(
-    instance: dict, bases: dict[str,str], sources: dict[str,Path], texts: dict[Path,str],
-    depth: int, max_depth: int,
-) -> list[dict]:
+def expand_instance(instance: dict, bases: dict[str,str], sources: dict[str,Path], texts: dict[Path,str], depth: int, max_depth: int) -> list[dict]:
     source_type=instance.get('sourceType')
     path=sources.get(source_type)
     if not path or depth>max_depth: return []
@@ -197,7 +192,7 @@ def main() -> None:
 
     spec=json.loads(args.spec.read_text(encoding='utf-8'))
     bases,sources,texts=build_class_index(args.zircon_root)
-    total=0; by_tab={}
+    total=0; by_tab={}; runtime_only=[]
 
     quest=next((w for w in spec.get('windows',[]) if w.get('field')=='QuestBox'),None)
     if quest:
@@ -205,6 +200,9 @@ def main() -> None:
         for tab in [c for c in quest.get('controls',[]) if c.get('customTab') and c.get('sourceType')]:
             children=expand_instance(tab,bases,sources,texts,1,args.max_depth)
             by_tab[tab['name']]=len(children)
+            if not children:
+                runtime_only.append(tab['name'])
+                tab['compositeRuntimeOnly']=True
             additions.extend(children)
         quest['controls'].extend(additions)
         quest['compositeExpansion']={
@@ -212,6 +210,7 @@ def main() -> None:
             'scope':'constructor-defined Quest custom tab children only',
             'maxDepth':args.max_depth,
             'childrenByTab':by_tab,
+            'runtimeOnlyTabs':runtime_only,
             'runtimeRowsInvented':False,
         }
         add_asset_refs(spec,additions)
@@ -221,11 +220,13 @@ def main() -> None:
         'sourceBacked':True,
         'questChildrenAdded':total,
         'childrenByTab':by_tab,
+        'questRuntimeOnlyTabs':runtime_only,
         'runtimeRowsInvented':False,
     }
     args.spec.write_text(json.dumps(spec,indent=2,ensure_ascii=False),encoding='utf-8')
     print('Quest composite children added:',total)
     print('Quest children by tab:',by_tab)
+    print('Quest runtime-only tabs:',runtime_only)
 
 
 if __name__=='__main__':
