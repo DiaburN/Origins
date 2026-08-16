@@ -71,7 +71,7 @@ jobs:
           if language.get('resolvedControlCount') != 314 or language.get('unresolvedReferencedKeys'):
               raise SystemExit('Zircon language resolution regressed')
           character=next(w for w in spec['windows'] if w['field']=='CharacterBox')
-          if character.get('root',{}).get('Index') != '(false) ? 115 : 110' and '110' not in str(character.get('root',{}).get('Index')):
+          if '110' not in str(character.get('root',{}).get('Index')):
               raise SystemExit('CharacterDialog source index lost')
           ranking=next(w for w in spec['windows'] if w['field']=='RankingBox')
           last=next(c for c in ranking['controls'] if c['name']=='LastUpdate')
@@ -96,14 +96,19 @@ jobs:
           cp apps/zircon-ui-reference/index-derived.html .build/zircon-ui/index.html
           cp apps/zircon-ui-reference/styles.css .build/zircon-ui/styles.css
           cp apps/zircon-ui-reference/app-layout.js .build/zircon-ui/app-layout.js
+          cp apps/zircon-ui-reference/window-runtime.js .build/zircon-ui/window-runtime.js
           cp apps/zircon-ui-reference/game-scene-windows.js .build/zircon-ui/game-scene-windows.js
           cp apps/zircon-ui-reference/control-render-policy.json .build/zircon-ui/control-render-policy.json
           cp apps/zircon-ui-reference/layout-resolver.js .build/zircon-ui/layout-resolver-base.js
           cp apps/zircon-ui-reference/layout-resolver-derived.js .build/zircon-ui/layout-resolver-derived.js
+          python3 tools/zircon-ui-importer/patch_multiwindow_runtime.py .build/zircon-ui/app-layout.js
           node --check .build/zircon-ui/app-layout.js
+          node --check .build/zircon-ui/window-runtime.js
           node --check .build/zircon-ui/layout-resolver-base.js
           node --check .build/zircon-ui/layout-resolver-derived.js
           node --check .build/zircon-ui/game-scene-windows.js
+          grep -Fq "existing?.isConnected" .build/zircon-ui/app-layout.js
+          grep -Fq "window-runtime.js" .build/zircon-ui/index.html
 
       - name: Validate zero-fallback geometry
         run: |
