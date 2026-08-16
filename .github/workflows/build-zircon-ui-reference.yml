@@ -47,8 +47,11 @@ jobs:
           python3 tools/zircon-ui-importer/augment_ui_derived_geometry_v2.py \
             --spec .build/zircon-ui/ui-source-spec.json \
             --zircon-root .source/Zircon
+          python3 tools/zircon-ui-importer/augment_ui_interactions.py \
+            --spec .build/zircon-ui/ui-source-spec.json \
+            --zircon-root .source/Zircon
 
-      - name: Validate source and control coverage
+      - name: Validate source, controls and interactions
         run: |
           python3 - <<'PY'
           import json
@@ -77,6 +80,25 @@ jobs:
           last=next(c for c in ranking['controls'] if c['name']=='LastUpdate')
           if 'fullRanking' in str(last['properties'].get('Location')):
               raise SystemExit('Ranking constructor argument unresolved')
+
+          menu={
+              item['control']:(item['action'],item['targetField'])
+              for item in spec.get('interactions',[])
+              if item['sourceField']=='MenuBox'
+          }
+          expected={
+              'SettingsButton':('toggle','ConfigBox'),
+              'HelpButton':('toggle','HelpBox'),
+              'GuildButton':('toggle','GuildBox'),
+              'StorageButton':('toggle','StorageBox'),
+              'RankingButton':('toggle','RankingBox'),
+              'CompanionButton':('toggle','CompanionBox'),
+              'LeaveButton':('open','ExitBox'),
+          }
+          print('Menu source interactions:',menu)
+          if menu != expected:
+              raise SystemExit(f'Menu interaction extraction mismatch: {menu}')
+          print('Source-backed interactions:',len(spec.get('interactions',[])))
           print('Windows:',spec['windowCount'])
           print('Controls:',controls)
           print('DX types:',len(discovered))
@@ -97,6 +119,7 @@ jobs:
           cp apps/zircon-ui-reference/styles.css .build/zircon-ui/styles.css
           cp apps/zircon-ui-reference/app-layout.js .build/zircon-ui/app-layout.js
           cp apps/zircon-ui-reference/window-runtime.js .build/zircon-ui/window-runtime.js
+          cp apps/zircon-ui-reference/interaction-runtime.js .build/zircon-ui/interaction-runtime.js
           cp apps/zircon-ui-reference/game-scene-windows.js .build/zircon-ui/game-scene-windows.js
           cp apps/zircon-ui-reference/control-render-policy.json .build/zircon-ui/control-render-policy.json
           cp apps/zircon-ui-reference/layout-resolver.js .build/zircon-ui/layout-resolver-base.js
@@ -104,11 +127,14 @@ jobs:
           python3 tools/zircon-ui-importer/patch_multiwindow_runtime.py .build/zircon-ui/app-layout.js
           node --check .build/zircon-ui/app-layout.js
           node --check .build/zircon-ui/window-runtime.js
+          node --check .build/zircon-ui/interaction-runtime.js
           node --check .build/zircon-ui/layout-resolver-base.js
           node --check .build/zircon-ui/layout-resolver-derived.js
           node --check .build/zircon-ui/game-scene-windows.js
           grep -Fq "existing?.isConnected" .build/zircon-ui/app-layout.js
+          grep -Fq "dataset.controlName" .build/zircon-ui/app-layout.js
           grep -Fq "window-runtime.js" .build/zircon-ui/index.html
+          grep -Fq "interaction-runtime.js" .build/zircon-ui/index.html
 
       - name: Validate zero-fallback geometry
         run: |
@@ -165,6 +191,7 @@ jobs:
           print(f"Source-resolved windows: {sum(1 for w in spec['windows'] if w.get('sourcePath'))}/{spec['windowCount']}")
           print('Parsed controls:',sum(len(w.get('controls',[])) for w in spec['windows']))
           print('Resolved English control labels:',spec.get('language',{}).get('resolvedControlCount'))
+          print('Source-backed interactions:',len(spec.get('interactions',[])))
           print('Missing public UI libraries:',missing)
           print('Extracted PNG files:',len(pngs))
           if missing:
