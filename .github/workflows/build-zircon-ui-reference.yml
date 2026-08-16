@@ -41,6 +41,10 @@ jobs:
           python3 tools/zircon-ui-importer/augment_ui_custom_tabs.py \
             --spec .build/zircon-ui/ui-source-spec.json \
             --zircon-root .source/Zircon
+          python3 tools/zircon-ui-importer/augment_ui_composites.py \
+            --spec .build/zircon-ui/ui-source-spec.json \
+            --zircon-root .source/Zircon \
+            --max-depth 2
           python3 tools/zircon-ui-importer/augment_ui_language.py \
             --spec .build/zircon-ui/ui-source-spec.json \
             --english-messages .source/Zircon/Client/Envir/Translations/EnglishMessages.cs
@@ -54,7 +58,7 @@ jobs:
             --spec .build/zircon-ui/ui-source-spec.json \
             --zircon-root .source/Zircon
 
-      - name: Validate source, controls, custom tabs and interactions
+      - name: Validate source, controls, composites, tabs and interactions
         run: |
           python3 - <<'PY'
           import json
@@ -69,23 +73,28 @@ jobs:
           discovered={c['type'] for w in spec['windows'] for c in w.get('controls',[])}
           covered=set(policy['policies'])
           if discovered-covered:
-              raise SystemExit(f'Unmapped DX controls: {sorted(discovered-covered)}')
+              raise SystemExit(f'Unmapped DX controls after composite expansion: {sorted(discovered-covered)}')
           controls=sum(len(w.get('controls',[])) for w in spec['windows'])
-          if controls < 1026:
-              raise SystemExit(f'Custom-tab control expansion unexpectedly incomplete: {controls}')
+          if controls <= 1026:
+              raise SystemExit(f'Quest composite expansion added no controls: {controls}')
           language=spec.get('language',{})
-          if language.get('resolvedControlCount',0) < 314 or language.get('unresolvedReferencedKeys'):
+          if language.get('resolvedControlCount',0) < 325 or language.get('unresolvedReferencedKeys'):
               raise SystemExit('Zircon language resolution regressed')
+
           custom=spec.get('customTabPass',{})
-          print('Custom tab pass:',custom)
-          if custom.get('questStaticTabsAdded') != 5:
-              raise SystemExit('Quest custom tab expansion mismatch')
-          if custom.get('guildStaticTabsAdded') != 7:
-              raise SystemExit('Guild helper tab expansion mismatch')
-          if custom.get('magicDynamicTemplates',0) < 15:
-              raise SystemExit('Magic dynamic tab template extraction incomplete')
-          if custom.get('dynamicMagicVisibilityInvented') is not False:
-              raise SystemExit('Magic runtime visibility must remain data-driven')
+          if custom.get('questStaticTabsAdded') != 5 or custom.get('guildStaticTabsAdded') != 7:
+              raise SystemExit(f'Custom tab expansion mismatch: {custom}')
+          if custom.get('magicDynamicTemplates') != 16 or custom.get('dynamicMagicVisibilityInvented') is not False:
+              raise SystemExit(f'Magic dynamic tab contract mismatch: {custom}')
+
+          composite=spec.get('compositePass',{})
+          print('Composite pass:',composite)
+          if composite.get('questChildrenAdded',0) <= 0:
+              raise SystemExit('Quest custom tab child constructors were not expanded')
+          children=composite.get('childrenByTab',{})
+          for tab in ('CurrentTab','AvailableTab','CompletedTab','MilestoneTab','MissionTab'):
+              if children.get(tab,0) <= 0:
+                  raise SystemExit(f'Quest composite tab has no source children: {tab} -> {children}')
 
           character=next(w for w in spec['windows'] if w['field']=='CharacterBox')
           if '110' not in str(character.get('root',{}).get('Index')):
@@ -115,7 +124,7 @@ jobs:
           all_controls=[c for w in spec['windows'] for c in w.get('controls',[])]
           tab_controls=[c for c in all_controls if c['type']=='DXTabControl']
           tabs=[c for c in all_controls if c['type'] in ('DXTab','DXConfigTab')]
-          if len(tab_controls) != 15 or len(tabs) < 50:
+          if len(tab_controls) < 15 or len(tabs) < 50:
               raise SystemExit(f'Tab inventory unexpectedly incomplete: {len(tab_controls)} controls / {len(tabs)} tabs')
 
           def tab_children(field, tab_control):
@@ -139,12 +148,14 @@ jobs:
           if len(guild) != 7 or [c['name'] for c in guild if c.get('tabButtonVisible')] != ['CreateTab']:
               raise SystemExit('Guild initial noGuild tab state mismatch')
           magic=next(w for w in spec['windows'] if w['field']=='MagicBox').get('dynamicTabTemplates',{})
-          if not magic.get('doNotAssumeVisibleSchools') or len(magic.get('templates',[])) < 15:
+          if not magic.get('doNotAssumeVisibleSchools') or len(magic.get('templates',[])) != 16:
               raise SystemExit('Magic runtime tab template contract broken')
 
           print('Source-backed interactions:',len(spec.get('interactions',[])))
           print('DXTabControls:',len(tab_controls))
           print('Static/renderable tabs:',len(tabs))
+          print('Quest composite children:',composite.get('questChildrenAdded'))
+          print('Quest children by tab:',children)
           print('Magic dynamic templates:',len(magic.get('templates',[])))
           print('Windows:',spec['windowCount'])
           print('Controls:',controls)
@@ -210,8 +221,8 @@ jobs:
           }
           console.log('Explicit source Locations:',explicit);
           console.log('Suspicious geometry fallbacks:',bad.length);
-          if(bad.length) console.log(JSON.stringify(bad,null,2));
-          if(explicit < 742) throw new Error(`explicit Location coverage regressed: ${explicit}`);
+          if(bad.length) console.log(JSON.stringify(bad.slice(0,50),null,2));
+          if(explicit < 754) throw new Error(`explicit Location coverage regressed: ${explicit}`);
           if(bad.length!==0) throw new Error(`zero-fallback contract broken: ${bad.length}`);
           const main=spec.windows.find(w=>w.field==='MainPanel');
           const char=main.controls.find(c=>c.name==='CharacterButton');
@@ -240,6 +251,7 @@ jobs:
           print('Parsed/renderable controls:',sum(len(w.get('controls',[])) for w in spec['windows']))
           print('Resolved English control labels:',spec.get('language',{}).get('resolvedControlCount'))
           print('Source-backed interactions:',len(spec.get('interactions',[])))
+          print('Quest composite children:',spec.get('compositePass',{}).get('questChildrenAdded'))
           print('DXTabControls:',sum(c['type']=='DXTabControl' for c in all_controls))
           print('Static/renderable DXTabs:',sum(c['type'] in ('DXTab','DXConfigTab') for c in all_controls))
           print('Magic dynamic tab templates:',spec.get('customTabPass',{}).get('magicDynamicTemplates'))
@@ -247,8 +259,8 @@ jobs:
           print('Extracted PNG files:',len(pngs))
           if missing:
               raise SystemExit('A required public Zircon library is missing')
-          if len(pngs) != 449:
-              raise SystemExit(f'Expected 449 extracted PNGs, got {len(pngs)}')
+          if len(pngs) < 449:
+              raise SystemExit(f'Extracted PNG coverage regressed: {len(pngs)}')
           PY
 
       - name: Upload complete Zircon GameScene UI reference
