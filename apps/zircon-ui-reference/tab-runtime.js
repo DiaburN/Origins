@@ -22,11 +22,10 @@ function simpleParent(expression) {
 
 function buildModel(window) {
   const controls = window.controls || [];
-  const byName = new Map();
+  const namedContainers = new Map();
   for (const control of controls) {
-    // Repeated local names such as `label` are not safe ancestry anchors. Named
-    // tabs and tab controls are unique in the windows we activate here.
-    if (!byName.has(control.name)) byName.set(control.name, control);
+    if (!['DXTabControl','DXTab','DXConfigTab'].includes(control.type)) continue;
+    if (!namedContainers.has(control.name)) namedContainers.set(control.name, control);
   }
 
   const tabGroups = new Map();
@@ -34,13 +33,13 @@ function buildModel(window) {
     if (control.type !== 'DXTab' && control.type !== 'DXConfigTab') continue;
     const parent = simpleParent(control.properties?.Parent);
     if (!parent) continue;
-    const tabControl = byName.get(parent);
+    const tabControl = namedContainers.get(parent);
     if (!tabControl || tabControl.type !== 'DXTabControl') continue;
     if (!tabGroups.has(parent)) tabGroups.set(parent, []);
     tabGroups.get(parent).push(control.name);
   }
 
-  return {byName, tabGroups};
+  return {controls, namedContainers, tabGroups};
 }
 
 function setTabSkin(element, selected) {
@@ -61,7 +60,7 @@ function controlVisibleThroughTabs(control, model, selected) {
     const parentName = simpleParent(current.properties?.Parent);
     if (!parentName || parentName === 'this' || visited.has(parentName)) return true;
     visited.add(parentName);
-    const parent = model.byName.get(parentName);
+    const parent = model.namedContainers.get(parentName);
     if (!parent) return true;
     if (parent.type === 'DXTab' || parent.type === 'DXConfigTab') {
       const tabControlName = simpleParent(parent.properties?.Parent);
@@ -72,10 +71,11 @@ function controlVisibleThroughTabs(control, model, selected) {
   return true;
 }
 
-function applyWindowTabs(root, window, model, selected) {
-  for (const element of root.querySelectorAll('[data-control-name]')) {
-    const name = element.dataset.controlName;
-    const control = model.byName.get(name);
+function applyWindowTabs(root, model, selected) {
+  for (const element of root.querySelectorAll('[data-control-index]')) {
+    const index = Number.parseInt(element.dataset.controlIndex || '', 10);
+    if (!Number.isInteger(index)) continue;
+    const control = model.controls[index];
     if (!control) continue;
 
     const isTab = control.type === 'DXTab' || control.type === 'DXConfigTab';
@@ -84,8 +84,7 @@ function applyWindowTabs(root, window, model, selected) {
       setTabSkin(element, selected.get(tabControlName) === control.name);
     }
 
-    const visible = controlVisibleThroughTabs(control, model, selected);
-    element.hidden = !visible;
+    element.hidden = !controlVisibleThroughTabs(control, model, selected);
   }
 }
 
@@ -105,7 +104,7 @@ function initializeWindow(root) {
   }
   selectedByWindow.set(root, {window, model, selected});
   root.dataset.originsTabsInitialized = '1';
-  applyWindowTabs(root, window, model, selected);
+  applyWindowTabs(root, model, selected);
 }
 
 function scan(node) {
@@ -124,13 +123,14 @@ stage.addEventListener('click', event => {
   const state = selectedByWindow.get(root);
   if (!state) return;
 
-  const tabName = tabElement.dataset.controlName;
-  const tab = state.model.byName.get(tabName);
-  const tabControlName = simpleParent(tab?.properties?.Parent);
-  if (!tabControlName || !state.model.tabGroups.get(tabControlName)?.includes(tabName)) return;
+  const index = Number.parseInt(tabElement.dataset.controlIndex || '', 10);
+  const tab = Number.isInteger(index) ? state.model.controls[index] : null;
+  if (!tab || (tab.type !== 'DXTab' && tab.type !== 'DXConfigTab')) return;
+  const tabControlName = simpleParent(tab.properties?.Parent);
+  if (!tabControlName || !state.model.tabGroups.get(tabControlName)?.includes(tab.name)) return;
 
-  state.selected.set(tabControlName, tabName);
-  applyWindowTabs(root, state.window, state.model, state.selected);
+  state.selected.set(tabControlName, tab.name);
+  applyWindowTabs(root, state.model, state.selected);
   event.preventDefault();
   event.stopPropagation();
 });
@@ -147,8 +147,9 @@ fetch('ui-source-spec.json')
   .then(spec => {
     sourceSpec = spec;
     stage.querySelectorAll('.window,.generic-window').forEach(initializeWindow);
-    const tabControls = spec.windows.flatMap(window => window.controls || []).filter(control => control.type === 'DXTabControl').length;
-    const tabs = spec.windows.flatMap(window => window.controls || []).filter(control => control.type === 'DXTab' || control.type === 'DXConfigTab').length;
+    const controls = spec.windows.flatMap(window => window.controls || []);
+    const tabControls = controls.filter(control => control.type === 'DXTabControl').length;
+    const tabs = controls.filter(control => control.type === 'DXTab' || control.type === 'DXConfigTab').length;
     console.info(`ORIGINS Zircon tab runtime: ${tabControls} tab controls / ${tabs} tabs`);
   })
   .catch(error => console.error('Unable to load Zircon tab manifest', error));
