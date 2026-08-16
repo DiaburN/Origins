@@ -29,6 +29,9 @@ Authoritative branch: `origins-game-v1`
 - [x] resolved English text drives the reference render and text-dependent sizing
 - [x] CI fails if a newly discovered Zircon control type has no renderer policy
 - [x] single promoted official Zircon UI build workflow
+- [x] simultaneous desktop windows
+- [x] desktop focus / z-order
+- [x] draggable dialog windows with position persistence
 - [x] complete Zircon UI scope document
 - [x] owner UI approval/keep-remove matrix
 - [x] Zircon public-source CI
@@ -72,13 +75,14 @@ The complete source/interface/control inventory is captured. Every currently dis
 - [x] Milestone `GameInter2.GetSize(500)` dependency resolved from source asset dimensions
 - [x] Horse Tame animation/progress geometry derived from real Zircon image bounds
 - [x] suspicious explicit source-location fallbacks: **0 / 742**
-- [ ] multi-window desktop behavior: coexistence, focus/z-order and drag
+- [x] multi-window desktop behavior: coexistence, focus/z-order and drag
+- [ ] source-derived internal window/button navigation
 - [ ] visual owner pass of all 65 GameScene components
 - [ ] owner reviews components and updates `docs/ZIRCON_UI_DECISIONS.md`
 
 ## Latest validated complete reference build
 
-- workflow run: `31968599879`
+- workflow run: `31968909610`
 - source-resolved windows: `65/65`
 - control type render coverage: `21/21`
 - parsed controls: `1,014`
@@ -92,9 +96,10 @@ The complete source/interface/control inventory is captured. Every currently dis
 - extracted source PNGs: **`449`**
 - JS syntax validation: passed
 - zero-fallback geometry validation: passed
+- multi-window runtime static validation: passed
 - official artifact: `zircon-ui-reference-complete`
-- artifact ID: `9269168880`
-- artifact SHA256: `c20ea6eab2a5d2d6c9ee96b6a56ab83704788be1520bca8441b396f90e522316`
+- artifact ID: `9269244939`
+- artifact SHA256: `40613ef1b0b48f9086a5066846d62261a1510c8a7001261fa0f22d6222de1f16`
 
 ## Playable runtime target after desktop UI review
 
