@@ -1,17 +1,31 @@
 #!/usr/bin/env python3
-"""Promote the reference viewer from single-dialog mode to Zircon multi-window mode.
+"""Promote the reference viewer to source-addressable multi-window mode.
 
-The source renderer remains unchanged; this build-time transform removes only the
-single-window eviction inside openWindow and adds focus handling for an already
-open dialog. Close-all/reset continue to use removeTransientWindows().
+Build-time only:
+- removes the single-window eviction inside openWindow,
+- focuses an already-open window instead of duplicating it,
+- tags every rendered control with its original Zircon C# control name/type so
+  the separate interaction runtime can bind source-derived MouseClick actions.
+
+Close-all/reset still use removeTransientWindows().
 """
 from __future__ import annotations
 
 import argparse
 from pathlib import Path
 
-OLD = """  removeTransientWindows();\n  const item = itemById(id);\n"""
-NEW = """  const existing = windows.get(id);\n  if (existing?.isConnected) {\n    existing.dispatchEvent(new CustomEvent('origins:focus', {bubbles:true}));\n    document.querySelector(`[data-window-id=\\\"${id}\\\"]`)?.classList.add('active');\n    return;\n  }\n  const item = itemById(id);\n"""
+OPEN_OLD = """  removeTransientWindows();\n  const item = itemById(id);\n"""
+OPEN_NEW = """  const existing = windows.get(id);\n  if (existing?.isConnected) {\n    existing.dispatchEvent(new CustomEvent('origins:focus', {bubbles:true}));\n    document.querySelector(`[data-window-id=\\\"${id}\\\"]`)?.classList.add('active');\n    return;\n  }\n  const item = itemById(id);\n"""
+
+RENDER_OLD = """  for (const node of layout.nodes) renderControl(node,root);\n"""
+RENDER_NEW = """  for (const node of layout.nodes) {\n    const rendered = renderControl(node,root);\n    if (rendered) {\n      rendered.dataset.controlName = node.control.name;\n      rendered.dataset.controlType = node.control.type;\n    }\n  }\n"""
+
+
+def replace_exact(text: str, old: str, new: str, label: str) -> str:
+    count = text.count(old)
+    if count != 1:
+        raise SystemExit(f"Expected exactly one {label}, found {count}")
+    return text.replace(old, new, 1)
 
 
 def main() -> None:
@@ -20,12 +34,11 @@ def main() -> None:
     args = parser.parse_args()
 
     text = args.app.read_text(encoding="utf-8")
-    count = text.count(OLD)
-    if count != 1:
-        raise SystemExit(f"Expected exactly one single-window openWindow eviction, found {count}")
-    text = text.replace(OLD, NEW, 1)
+    text = replace_exact(text, OPEN_OLD, OPEN_NEW, "single-window openWindow eviction")
+    text = replace_exact(text, RENDER_OLD, RENDER_NEW, "source control render loop")
     args.app.write_text(text, encoding="utf-8")
     print("Patched openWindow for simultaneous Zircon dialogs")
+    print("Tagged rendered controls with source C# names/types")
 
 
 if __name__ == "__main__":
