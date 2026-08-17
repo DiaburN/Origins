@@ -107,15 +107,150 @@ function installRoot(root){
   for(let index=0;index<(item.controls||[]).length;index++)installAnimation(root,item,layout,index);
 }
 
+// ---------------------------------------------------------------------------
+// Source-neutral desktop + repeated small-control fidelity
+// ---------------------------------------------------------------------------
+// This reference has no live MapObject.User, chat history, map texture, belt
+// contents or item rows. Keep those surfaces neutral rather than baking sample
+// player/game data into the source reconstruction.
+const PRIMARY='#c6a663';
+const BLACK='#000000';
+
+function literalInt(raw,fallback=0){
+  const value=String(raw??'').trim();return /^-?\d+$/.test(value)?Number(value):fallback;
+}
+function sourceColour(raw,fallback){
+  const value=String(raw??'').trim();
+  if(!value)return fallback;
+  if(/Constants\.PrimaryColour/.test(value))return PRIMARY;
+  if(/Color\.Empty\b/.test(value))return 'transparent';
+  const named={Black:'#000000',White:'#ffffff',Cyan:'#00ffff',Red:'#ff0000',Green:'#008000',Yellow:'#ffff00',Lime:'#00ff00',Gray:'#808080',Grey:'#808080',Silver:'#c0c0c0'};
+  const key=value.match(/Color\.([A-Za-z]+)/)?.[1];
+  if(key&&named[key])return named[key];
+  let match=value.match(/Color\.FromArgb\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*\)/);
+  if(match)return `rgba(${match[2]},${match[3]},${match[4]},${Number(match[1])/255})`;
+  match=value.match(/Color\.FromArgb\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*\)/);
+  return match?`rgb(${match[1]},${match[2]},${match[3]})`:fallback;
+}
+function controlText(control){
+  if(typeof control?.resolvedText==='string')return control.resolvedText;
+  const p=control?.properties||{};
+  for(const raw of [p.Label,p.Text]){
+    const text=String(raw??'');
+    const quoted=text.match(/(?:Text\s*=\s*)?"([^"]*)"/);if(quoted)return quoted[1];
+  }
+  return '';
+}
+function neutralDesktop(){
+  stage.classList.add('source-neutral-desktop');
+  stage.querySelectorAll(':scope > .runtime-label,:scope > .chat,:scope > .minimap,:scope > .belt').forEach(element=>element.remove());
+
+  // MainPanel.BeforeDraw owns these fills. Without MapObject.User values the
+  // neutral source state must not render them at 100%.
+  const runtimeMainImages=new Set(['00052.png','00054.png','00058.png']);
+  for(const element of stage.querySelectorAll(':scope > img.ui-img')){
+    const file=String(element.getAttribute('src')||'').split('/').pop();
+    if(runtimeMainImages.has(file))element.remove();
+    // MC vs SC is class-dependent. The handcrafted desktop previously chose MC.
+    if(file==='00062.png'&&Number.parseFloat(element.style.top||'0')>=700)element.remove();
+  }
+  stage.dataset.mainPanelRuntimeState='neutral: no player stats, HP/MP/FP fills, class-specific MC/SC or sample messages';
+}
+
+function checkboxLabelColour(control){
+  const raw=String(control?.properties?.Label??'');
+  const match=raw.match(/ForeColour\s*=\s*([^,}\n]+)/);
+  return sourceColour(match?.[1],PRIMARY);
+}
+function installCheckBox(element,control){
+  if(!(element instanceof Element)||element.dataset.sourceCheckboxFidelity==='true')return;
+  const p=control?.properties||{};
+  const label=element.querySelector(':scope > span');
+  const box=element.querySelector(':scope > img');
+  if(!label||!box)return;
+
+  const padding=Math.max(0,literalInt(p.LabelBoxPadding,0));
+  const readOnly=boolFrom(p.ReadOnly,false);
+  const enabled=boolFrom(p.IsEnabled,true);
+  label.textContent=controlText(control);
+  label.style.position='absolute';label.style.left='0';label.style.top='0';
+  label.style.color=checkboxLabelColour(control);
+  label.style.fontSize='10.6667px';label.style.lineHeight='14px';
+  label.style.textShadow=`1px 0 ${BLACK},0 1px ${BLACK},-1px 0 ${BLACK},0 -1px ${BLACK}`;
+  box.style.position='absolute';box.style.margin='0';
+  element.style.display='block';element.style.gap='0';element.style.padding='0';
+  element.dataset.sourceCheckboxFidelity='true';
+  element.dataset.sourceReadOnly=String(readOnly);element.dataset.sourceEnabled=String(enabled);element.dataset.sourceLabelBoxPadding=String(padding);
+
+  const place=()=>{
+    const labelWidth=Math.ceil(label.getBoundingClientRect().width);
+    const boxWidth=box.naturalWidth||box.width||16,boxHeight=box.naturalHeight||box.height||16;
+    box.style.left=`${labelWidth+padding}px`;box.style.top='1px';
+    element.style.width=`${labelWidth+padding+boxWidth}px`;element.style.height=`${boxHeight}px`;
+  };
+  if(box.complete)queueMicrotask(place);else box.addEventListener('load',place,{once:true});
+  requestAnimationFrame(place);
+
+  element.addEventListener('click',event=>{
+    if(enabled&&!readOnly)return;
+    event.preventDefault();event.stopImmediatePropagation();
+  },true);
+}
+function installColourControl(element,control){
+  if(!(element instanceof Element))return;
+  const p=control?.properties||{};
+  element.style.border=`1px solid ${PRIMARY}`;
+  element.style.background=sourceColour(p.BackColour,'#000000');
+  element.dataset.sourceAllowNoColour=String(boolFrom(p.AllowNoColour,false));
+  element.dataset.sourceColourControl='DXColourControl: DrawTexture=true, Border=true, Size default 40x15';
+}
+function cleanRuntimeReviewText(root){
+  root.querySelectorAll('.dx-tree-runtime').forEach(element=>{element.textContent='';element.dataset.runtimeRows='not fabricated'});
+  root.querySelectorAll('.runtime-palette-area > span').forEach(element=>element.remove());
+  root.querySelectorAll('.generic-source-badge').forEach(element=>element.remove());
+  const heading=root.querySelector(':scope > .generic-window-header');
+  if(heading&&root.dataset.nestedSourceClass&&heading.textContent.trim()===root.dataset.nestedSourceClass)heading.textContent='';
+}
+function installSourceFidelity(root){
+  if(!sourceSpec||!(root instanceof Element)||!root.id?.startsWith('w-'))return;
+  const item=itemForRoot(root);if(!item)return;
+  const controls=item.controls||[];
+  for(const element of root.querySelectorAll('[data-control-index]')){
+    const index=Number.parseInt(element.dataset.controlIndex||'',10);if(!Number.isInteger(index))continue;
+    const control=controls[index];if(!control)continue;
+    if(control.type==='DXCheckBox')installCheckBox(element,control);
+    else if(control.type==='DXColourControl')installColourControl(element,control);
+  }
+  cleanRuntimeReviewText(root);
+}
+function fidelityScan(node){
+  neutralDesktop();
+  if(!(node instanceof Element))return;
+  if(node.matches?.('.window,.generic-window'))queueMicrotask(()=>installSourceFidelity(node));
+  node.querySelectorAll?.('.window,.generic-window').forEach(root=>queueMicrotask(()=>installSourceFidelity(root)));
+}
+
+const fidelityStyle=document.createElement('style');
+fidelityStyle.textContent='.stage.source-neutral-desktop:before{display:none!important}.stage.source-neutral-desktop .generic-source-badge{display:none!important}';
+document.head.append(fidelityStyle);
+neutralDesktop();
+
 new MutationObserver(records=>{
   for(const record of records)for(const node of record.addedNodes){
     if(!(node instanceof Element))continue;
     if(node.matches?.('.window,.generic-window'))queueMicrotask(()=>installRoot(node));
     node.querySelectorAll?.('.window,.generic-window').forEach(root=>queueMicrotask(()=>installRoot(root)));
+    fidelityScan(node);
   }
 }).observe(stage,{childList:true,subtree:true});
 
 fetch('ui-source-spec.json',{cache:'no-store'})
   .then(response=>{if(!response.ok)throw new Error(`ui-source-spec.json ${response.status}`);return response.json()})
-  .then(spec=>{sourceSpec=spec;stage.querySelectorAll('.window,.generic-window').forEach(installRoot);console.info(`ORIGINS DXAnimatedControl runtime active; source controls=${spec.renderCoverageAudit?.animatedControls||0}`)})
-  .catch(error=>console.error('Unable to load Zircon animation manifest',error));
+  .then(spec=>{
+    sourceSpec=spec;
+    neutralDesktop();
+    stage.querySelectorAll('.window,.generic-window').forEach(root=>{installRoot(root);installSourceFidelity(root)});
+    console.info(`ORIGINS DXAnimatedControl runtime active; source controls=${spec.renderCoverageAudit?.animatedControls||0}`);
+    console.info('ORIGINS source-neutral desktop + DXCheckBox/DXColourControl fidelity runtime active');
+  })
+  .catch(error=>console.error('Unable to load Zircon animation/fidelity manifest',error));
