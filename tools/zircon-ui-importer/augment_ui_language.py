@@ -1,10 +1,13 @@
 #!/usr/bin/env python3
 """Augment a generated Zircon UI manifest with real English runtime labels.
 
-Before language resolution this phase applies source-backed derived UI passes
-that create controls/labels: nested/transient DXWindows and DXConfigSection
-layout. Running them here ensures every new control receives the same language
-resolution as the 65 GameScene windows.
+Before language resolution this phase applies source-backed derived UI passes:
+- temporal constructor post-assignments for the 65 GameScene windows,
+- nested/transient DXWindows,
+- DXConfigSection automatic Settings layout.
+
+Running them here ensures all generated/corrected controls receive the same
+language resolution and that reused C# locals never corrupt the visual state.
 """
 from __future__ import annotations
 
@@ -14,6 +17,7 @@ import re
 from pathlib import Path
 
 from augment_ui_config_sections import apply as apply_config_sections
+from augment_ui_game_post_assignments import apply as apply_game_post_assignments
 from augment_ui_nested_windows import apply as apply_nested_windows
 
 PROPERTY_RE = re.compile(
@@ -77,6 +81,10 @@ def main() -> None:
     spec = json.loads(args.spec.read_text(encoding='utf-8'))
     zircon_root = args.english_messages.parents[3]
 
+    if 'gameTemporalPostAssignments' not in spec:
+        post_report=apply_game_post_assignments(spec,zircon_root)
+        print('GameScene temporal post assignments:',post_report.get('assignments',0))
+        print('GameScene Locations recovered:',post_report.get('locationsAdded',0))
     if 'nestedWindows' not in spec:
         nested_report = apply_nested_windows(spec, zircon_root)
         print('Nested/transient windows reconstructed before language:', nested_report.get('reconstructedCount', 0))
