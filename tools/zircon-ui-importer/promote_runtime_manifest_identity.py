@@ -87,7 +87,11 @@ def main() -> None:
     )
 
     here = Path(__file__).resolve().parent
-    for helper in ("augment_constructor_final_states.py", "augment_magic_bar_reference.py"):
+    for helper in (
+        "augment_constructor_final_states.py",
+        "augment_magic_bar_reference.py",
+        "augment_overflow_contracts.py",
+    ):
         subprocess.run([sys.executable, str(here / helper), "--spec", str(args.spec)], check=True)
     subprocess.run(
         [sys.executable, str(here / "sanitize_final_viewer.py"), "--app-layout", str(args.spec.parent / "app-layout.js")],
