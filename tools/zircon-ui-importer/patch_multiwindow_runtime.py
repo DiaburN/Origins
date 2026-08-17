@@ -1,9 +1,5 @@
 #!/usr/bin/env python3
-"""Run the established viewer patcher, then bundle modular visual-fidelity runtimes.
-
-Keeping this wrapper tiny lets the source-faithful viewer grow in independent,
-node-checked modules without rewriting the proven multi-window patcher.
-"""
+"""Bundle the validated viewer patch and the source-reference fidelity modules."""
 from __future__ import annotations
 
 import runpy
@@ -12,48 +8,41 @@ import subprocess
 import sys
 from pathlib import Path
 
-HERE = Path(__file__).resolve().parent
-CORE = HERE / "patch_multiwindow_runtime_core.py"
-
-# Preserve the original command line: the core parser still owns the app-layout
-# argument and performs every established patch exactly as before.
-runpy.run_path(str(CORE), run_name="__main__")
+here = Path(__file__).resolve().parent
+runpy.run_path(str(here / "patch_multiwindow_runtime_core.py"), run_name="__main__")
 
 if len(sys.argv) < 2:
     raise SystemExit("Expected generated app-layout.js path")
 
-app_layout = Path(sys.argv[1]).resolve()
-build_root = app_layout.parent
-repo_root = HERE.parents[1]
-visual_source = repo_root / "apps" / "zircon-ui-reference" / "visual-control-runtime.js"
-visual_target = build_root / "visual-control-runtime.js"
-animated_target = build_root / "animated-control-runtime.js"
+build_root = Path(sys.argv[1]).resolve().parent
+repo_root = here.parents[1]
 index_path = build_root / "index.html"
-
-if not visual_source.exists():
-    raise SystemExit(f"Visual fidelity runtime missing: {visual_source}")
 if not index_path.exists():
     raise SystemExit(f"Generated index missing: {index_path}")
 
-shutil.copyfile(visual_source, visual_target)
+sources = [repo_root / "apps" / "zircon-ui-reference" / "visual-control-runtime.js"]
+extra_dir = repo_root / "apps" / "zircon-ui-reference" / "extra-runtimes"
+if extra_dir.exists():
+    sources += sorted(extra_dir.glob("*.js"))
 
 index = index_path.read_text(encoding="utf-8")
-script = '  <script type="module" src="visual-control-runtime.js"></script>\n'
-if script not in index:
-    animated = '  <script type="module" src="animated-control-runtime.js"></script>\n'
-    if animated in index:
-        index = index.replace(animated, animated + script, 1)
-    elif "</body>" in index:
-        index = index.replace("</body>", script + "</body>", 1)
-    else:
-        raise SystemExit("Could not place visual fidelity runtime in generated index")
-    index_path.write_text(index, encoding="utf-8")
+anchor = '  <script type="module" src="animated-control-runtime.js"></script>\n'
+if anchor not in index:
+    raise SystemExit("Animated runtime script anchor missing")
 
-# These modules are part of the official artifact; syntax failure must fail CI.
-for runtime in (animated_target, visual_target):
-    if not runtime.exists():
-        raise SystemExit(f"Bundled runtime missing: {runtime}")
-    subprocess.run(["node", "--check", str(runtime)], check=True)
+for source in sources:
+    target = build_root / source.name
+    shutil.copyfile(source, target)
+    subprocess.run(["node", "--check", str(target)], check=True)
+    tag = f'  <script type="module" src="{source.name}"></script>\n'
+    index = index.replace(tag, "")
 
-print("Bundled and node-checked animated-control-runtime.js")
-print("Bundled and node-checked visual-control-runtime.js")
+block = anchor + "".join(f'  <script type="module" src="{source.name}"></script>\n' for source in sources)
+index = index.replace(anchor, block, 1)
+index_path.write_text(index, encoding="utf-8")
+
+animated = build_root / "animated-control-runtime.js"
+if not animated.exists():
+    raise SystemExit(f"Bundled runtime missing: {animated}")
+subprocess.run(["node", "--check", str(animated)], check=True)
+print("Bundled fidelity runtimes:", ", ".join(source.name for source in sources))
