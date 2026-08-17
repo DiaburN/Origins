@@ -1,0 +1,127 @@
+name: Audit Zircon source contracts
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [origins-game-v1]
+    paths:
+      - ".github/workflows/audit-zircon-source-contracts.yml"
+      - "tools/zircon-ui-importer/**"
+      - "apps/zircon-ui-reference/**"
+
+permissions:
+  contents: read
+
+jobs:
+  source-contracts:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout ORIGINS
+        uses: actions/checkout@v4
+
+      - name: Checkout current Zircon source
+        run: |
+          set -euo pipefail
+          rm -rf .source/Zircon .build/source-contracts
+          git clone --depth 1 https://github.com/Suprcode/Zircon.git .source/Zircon
+          mkdir -p .build/source-contracts
+          echo "Zircon source: $(git -C .source/Zircon rev-parse HEAD)"
+
+      - name: Build source-only manifest
+        run: |
+          set -euo pipefail
+          python3 tools/zircon-ui-importer/build_ui_source_spec.py \
+            --zircon-root .source/Zircon \
+            --out .build/source-contracts/ui-source-spec.json
+          python3 tools/zircon-ui-importer/augment_ui_custom_tabs.py \
+            --spec .build/source-contracts/ui-source-spec.json \
+            --zircon-root .source/Zircon
+          python3 tools/zircon-ui-importer/augment_ui_composites.py \
+            --spec .build/source-contracts/ui-source-spec.json \
+            --zircon-root .source/Zircon \
+            --max-depth 2
+          python3 tools/zircon-ui-importer/augment_ui_language.py \
+            --spec .build/source-contracts/ui-source-spec.json \
+            --english-messages .source/Zircon/Client/Envir/Translations/EnglishMessages.cs
+          python3 tools/zircon-ui-importer/augment_ui_symbols.py \
+            --spec .build/source-contracts/ui-source-spec.json \
+            --zircon-root .source/Zircon
+          python3 tools/zircon-ui-importer/augment_ui_derived_geometry_v2.py \
+            --spec .build/source-contracts/ui-source-spec.json \
+            --zircon-root .source/Zircon
+          python3 tools/zircon-ui-importer/augment_ui_interactions.py \
+            --spec .build/source-contracts/ui-source-spec.json \
+            --zircon-root .source/Zircon
+          python3 tools/zircon-ui-importer/augment_npc_dialog_reference.py \
+            --spec .build/source-contracts/ui-source-spec.json
+          cp apps/zircon-ui-reference/app-layout.js .build/source-contracts/app-layout.js
+          cp apps/zircon-ui-reference/animated-control-runtime.js .build/source-contracts/animated-control-runtime.js
+          python3 tools/zircon-ui-importer/promote_runtime_manifest_identity.py \
+            --spec .build/source-contracts/ui-source-spec.json \
+            --registry apps/zircon-ui-reference/game-scene-windows.js
+
+      - name: Assert exact current source contracts
+        run: |
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          spec=json.loads(Path('.build/source-contracts/ui-source-spec.json').read_text())
+          all_windows=[*spec['windows'],*spec['nestedWindows']]
+          assert len(spec['windows']) == 65
+          assert len(spec['nestedWindows']) == 15
+          assert len({window['id'] for window in all_windows}) == 80
+
+          interactions=spec.get('interactions',[])
+          assert len(interactions) == 18, interactions
+          main=[item for item in interactions if item['sourceField']=='MainPanel']
+          expected={
+              ('CharacterButton','InspectBox','close'),
+              ('CharacterButton','CharacterBox','toggle'),
+              ('InventoryButton','InventoryBox','toggle'),
+              ('SpellButton','MagicBox','toggle'),
+              ('QuestButton','QuestBox','toggle'),
+              ('MailButton','CommunicationBox','toggle'),
+              ('BeltButton','BeltBox','toggle'),
+              ('GroupButton','GroupBox','toggle'),
+              ('MenuButton','MenuBox','toggle'),
+              ('CashShopButton','GameStoreBox','toggle'),
+          }
+          actual={(item['control'],item['targetField'],item['action']) for item in main}
+          assert len(main) == 10 and actual == expected, main
+
+          assert not spec['customDrawAudit']['unclassified'], spec['customDrawAudit']['unclassified']
+          assert spec['overflowContractPass']['contractCount'] == 7
+          by_field={window['field']:window for window in spec['windows']}
+          assert by_field['BeltBox']['root']['Size'] == 'new Size(64, 54)'
+          assert by_field['MiniMapBox']['root']['Size'] == 'new Size(200, 200)'
+          assert by_field['ChatTextBox']['root']['Size'] == 'new Size(493, 118)'
+          assert by_field['QuestTrackerBox']['root']['Size'] == 'new Size(250, 100)'
+          assert by_field['MonsterBox']['root']['Size'] == 'new Size(186, 175)'
+          assert by_field['GroupHealthBox']['root']['Size'] == 'new Size(150, 500)'
+          assert by_field['GroupHealthBox']['root']['Opacity'] == '0F'
+          assert by_field['BuffBox']['root']['Size'] == 'new Size(30, 30)'
+          assert by_field['BuffBox']['root']['Opacity'] == '0.6F'
+          assert by_field['MagicBarBox']['root']['Size'] == 'new Size(646, 65)'
+          assert by_field['MagicBarBox']['magicBarSourceLoop']['slots'] == 24
+          assert by_field['NPCBox']['root']['Size'] == 'new Size(380, 204)'
+          assert by_field['NPCBox']['root']['CustomFrame'] == 'NPCDialog'
+          assert spec['companionReferencePass']['emptySlotAssetsPromoted'] == 4
+          assert spec['runtimeIdentityPass']['startupVisibleIds'] == [
+              'belt','buffs','group-health','main-panel','minimap','timer'
+          ]
+          print('Zircon source-contract matrix: PASS')
+          print('GameScene controls:',sum(len(window.get('controls',[])) for window in spec['windows']))
+          print('Nested controls:',sum(len(window.get('controls',[])) for window in spec['nestedWindows']))
+          print('Direct interactions:',len(interactions))
+          print('Custom-draw classes:',spec['customDrawAudit']['windowCountWithManualDrawHooks'])
+          PY
+
+      - name: Check source runtime syntax
+        run: |
+          set -euo pipefail
+          node --check apps/zircon-ui-reference/app-layout.js
+          node --check apps/zircon-ui-reference/animated-control-runtime.js
+          for file in apps/zircon-ui-reference/extra-runtimes/*.js; do
+            node --check "$file"
+          done
