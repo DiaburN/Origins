@@ -8,8 +8,9 @@ local variable name. Zircon often reuses locals such as `label`, `button` and
 This pass reparses original constructor controls and executes deterministic local
 symbol state in source order. Geometry assigned after an initializer is resolved
 at the exact statement where Zircon executes it, including inline mutations such
-as `y += rowSpacing`. Named control references remain source references for the
-layout resolver, while locals such as `xOffset` are reduced immediately.
+as `y += rowSpacing`. C# preprocessor directives are removed before statement
+matching because they are not executable tokens and must never hide locals such
+as `int xOffset = 40` after a `#region` marker.
 """
 from __future__ import annotations
 
@@ -30,6 +31,7 @@ STATEMENT_INIT_RE = re.compile(
     r"^(?:(?:[A-Za-z_][A-Za-z0-9_<>]*\s+)?)([A-Za-z_][A-Za-z0-9_]*)\s*=\s*new\s+(DX[A-Za-z_][A-Za-z0-9_]*)\s*\{", re.S,
 )
 POST_RE = re.compile(r"^([A-Za-z_][A-Za-z0-9_]*)\.([A-Za-z_][A-Za-z0-9_]*)\s*=\s*(.+)$", re.S)
+PREPROCESSOR_RE = re.compile(r"(?m)^\s*#(?:region|endregion|if|elif|else|endif|define|undef|warning|error|line|pragma)\b[^\n\r]*")
 RESETTABLE = {'Location','Size','Index','Visible','LibraryFile','Opacity','ButtonType','Checked'}
 POST_PROPERTIES = RESETTABLE | {
     'Enabled','Text','Parent','BackColour','Border','DrawTexture','AutoSize','MaxValue','MinValue','Change','Value',
@@ -40,6 +42,12 @@ GEOMETRY_PROPERTIES={'Location','Size','GridSize'}
 
 def normalise(value: object) -> str:
     return ' '.join(str(value).strip().split())
+
+
+def clean_statement(raw: str) -> str:
+    value=strip_leading_comments(raw)
+    value=PREPROCESSOR_RE.sub('',value)
+    return normalise(value).rstrip(';').strip()
 
 
 def parse_occurrences(body: str) -> list[dict]:
@@ -84,7 +92,6 @@ def replace_current_refs(expression: str, current: dict[str,dict]) -> str:
 
 
 def resolve_post_value(prop: str, expression: str, symbols: dict[str,str], current: dict[str,dict]) -> str:
-    """Resolve constructor locals now; keep named-control geometry for JS resolver."""
     expression=normalise(expression)
     if prop in GEOMETRY_PROPERTIES:
         value=resolve_inline_geometry_side_effects(expression,symbols)
@@ -118,13 +125,14 @@ def apply_window(window: dict, zircon_root: Path) -> dict:
     assignments=0; locations_added=0; geometry_resolved=0
 
     for raw in top_level_statements(body):
-        statement=normalise(strip_leading_comments(raw)).rstrip(';').strip()
+        statement=clean_statement(raw)
+        if not statement:
+            continue
         init=STATEMENT_INIT_RE.match(statement)
         if init:
             key=(init.group(1),init.group(2))
             if live_queues.get(key):
                 _,control=live_queues[key].popleft(); current[init.group(1)]=control
-            # A DX object initializer is not a local numeric/Point/Size assignment.
             continue
 
         post=POST_RE.match(statement)
@@ -140,12 +148,8 @@ def apply_window(window: dict, zircon_root: Path) -> dict:
                 if prop=='Location' and 'Location' not in props: locations_added+=1
                 if prop in GEOMETRY_PROPERTIES and value!=normalise(expression): geometry_resolved+=1
                 props[prop]=value; assignments+=1
-                # Do not call update_local_symbols again: inline +=/-= was already
-                # executed by resolve_inline_geometry_side_effects above.
                 continue
 
-        # Standalone constructor locals such as `y = yStart`, declarations and
-        # increments update state for later UI statements.
         update_local_symbols(statement,symbols)
 
     return {
@@ -169,6 +173,7 @@ def apply(spec: dict, zircon_root: Path) -> dict:
         'compositeControlsUntouched':True,
         'runtimeEventAssignmentsIgnored':True,
         'inlineCompoundAssignmentsExecuted':True,
+        'preprocessorDirectivesIgnoredAsNonExecutable':True,
     }
     spec['gameTemporalPostAssignments']=report
     return report
