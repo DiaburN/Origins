@@ -10,9 +10,12 @@ from pathlib import Path
 from audit_ui_render_coverage import apply as audit_render_coverage
 from audit_ui_unplaced_controls import apply as audit_unplaced_controls
 
-CLICK_EXPR_RE = re.compile(r"\b([A-Za-z_][A-Za-z0-9_]*)\.MouseClick\s*\+=\s*\([^)]*\)\s*=>\s*([^;]+);",re.S)
+CLICK_EXPR_RE = re.compile(r"\b([A-Za-z_][A-Za-z0-9_]*)\.MouseClick\s*\+=\s*\([^)]*\)\s*=>\s*([^;{]+);",re.S)
+CLICK_BLOCK_RE = re.compile(r"\b([A-Za-z_][A-Za-z0-9_]*)\.MouseClick\s*\+=\s*\([^)]*\)\s*=>\s*\{(.*?)\};",re.S)
 VISIBLE_RE = re.compile(r"^GameScene\.Game\.([A-Za-z_][A-Za-z0-9_]*)\.Visible\s*=\s*(.+)$",re.S)
 TOGGLE_OPEN_RE = re.compile(r"^GameScene\.Game\.([A-Za-z_][A-Za-z0-9_]*)\.ToggleOpen\s*\(\s*(.+)\s*\)$",re.S)
+VISIBLE_ASSIGN_RE = re.compile(r"\bGameScene\.Game\.([A-Za-z_][A-Za-z0-9_]*)\.Visible\s*=\s*([^;]+);",re.S)
+TOGGLE_OPEN_ASSIGN_RE = re.compile(r"\bGameScene\.Game\.([A-Za-z_][A-Za-z0-9_]*)\.ToggleOpen\s*\(\s*([^;]+?)\s*\)\s*;",re.S)
 MIN_GAME_EXPLICIT_LOCATIONS=1389
 MIN_NESTED_EXPLICIT_LOCATIONS=78
 
@@ -31,26 +34,55 @@ def classify_toggle_open(target: str, argument: str) -> str | None:
     if value==f"!GameScene.Game.{target}.Visible": return "toggle"
     return None
 
+def make_interaction(window: dict, control: str, target: str, action: str, expression: str) -> dict:
+    return {
+        "sourceField":window["field"],"sourceClass":window.get("class"),"control":control,
+        "event":"MouseClick","action":action,"targetField":target,"sourceExpression":normalise(expression),
+    }
+
+def classify_expression(window: dict, control: str, expression: str, known_fields: set[str]) -> list[dict]:
+    expression=normalise(expression);out=[]
+    visible=VISIBLE_RE.match(expression)
+    if visible:
+        target,rhs=visible.groups()
+        if target in known_fields:
+            action=classify_visible(target,rhs)
+            if action: out.append(make_interaction(window,control,target,action,expression))
+        return out
+    toggle=TOGGLE_OPEN_RE.match(expression)
+    if toggle:
+        target,argument=toggle.groups()
+        if target in known_fields:
+            action=classify_toggle_open(target,argument)
+            if action: out.append(make_interaction(window,control,target,action,expression))
+    return out
+
 def extract_window_interactions(window: dict, source: str, known_fields: set[str]) -> list[dict]:
     out=[];control_names={control.get("name") for control in window.get("controls", [])}
     for match in CLICK_EXPR_RE.finditer(source):
         control,expression=match.groups()
+        if control in control_names: out.extend(classify_expression(window,control,expression,known_fields))
+    for match in CLICK_BLOCK_RE.finditer(source):
+        control,body=match.groups()
         if control not in control_names: continue
-        expression=normalise(expression)
-        visible=VISIBLE_RE.match(expression)
-        if visible:
+        for visible in VISIBLE_ASSIGN_RE.finditer(body):
             target,rhs=visible.groups()
             if target not in known_fields: continue
             action=classify_visible(target,rhs)
-            if action: out.append({"sourceField":window["field"],"sourceClass":window.get("class"),"control":control,"event":"MouseClick","action":action,"targetField":target,"sourceExpression":expression})
-            continue
-        toggle=TOGGLE_OPEN_RE.match(expression)
-        if toggle:
+            if action: out.append(make_interaction(window,control,target,action,visible.group(0).rstrip(';')))
+        for toggle in TOGGLE_OPEN_ASSIGN_RE.finditer(body):
             target,argument=toggle.groups()
             if target not in known_fields: continue
             action=classify_toggle_open(target,argument)
-            if action: out.append({"sourceField":window["field"],"sourceClass":window.get("class"),"control":control,"event":"MouseClick","action":action,"targetField":target,"sourceExpression":expression})
-    return out
+            if action: out.append(make_interaction(window,control,target,action,toggle.group(0).rstrip(';')))
+    # Exact duplicate handlers can be reached through source text repeated in a
+    # helper region; keep one stable source relationship per control/target/action.
+    unique=[];seen=set()
+    for item in out:
+        key=(item['control'],item['targetField'],item['action'])
+        if key in seen: continue
+        seen.add(key);unique.append(item)
+    return unique
 
 
 def explicit_locations(owners: list[dict]) -> int:
@@ -73,7 +105,7 @@ def main() -> None:
     render=audit_render_coverage(spec,Path('.'))
     game_explicit=explicit_locations(spec.get('windows',[]));nested_explicit=explicit_locations(spec.get('nestedWindows',[]))
     spec["interactionPass"]={
-        "source":"direct Zircon MouseClick -> GameScene window visibility/ToggleOpen relationships","count":len(interactions),"sourceBackedOnly":True,
+        "source":"direct Zircon MouseClick -> GameScene window visibility/ToggleOpen relationships (expression + block lambdas)","count":len(interactions),"sourceBackedOnly":True,
         "gameExplicitLocationFloor":MIN_GAME_EXPLICIT_LOCATIONS,"nestedExplicitLocationFloor":MIN_NESTED_EXPLICIT_LOCATIONS,
         "gameExplicitLocations":game_explicit,"nestedExplicitLocations":nested_explicit,"zeroUnknownPlacementRequired":True,
         "renderCoverageIssueCount":render.get('issueCount',0),
