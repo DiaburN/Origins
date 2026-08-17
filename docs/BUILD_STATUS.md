@@ -21,7 +21,6 @@ Authoritative branch: `origins-game-v1`
 - [x] **483 visible controls** resolved to real English text
 - [x] source-backed direct window interactions: **14**
 - [x] simultaneous windows, focus/z-order and dragging
-- [x] reusable tabs / checkbox / scrollbar / text / item grid / number / sound controls
 - [x] Quest custom tabs and **76** static composite children
 - [x] Guild helper-built tabs and **50** static composite children
 - [x] Magic **16** runtime school templates, without invented active schools
@@ -42,6 +41,13 @@ Authoritative branch: `origins-game-v1`
 - [x] deterministic animation frame ranges promoted automatically into extraction refs
 - [x] current Horse Tame `LassoAnimation` contract locked to Zircon source
 - [x] current Timer `_eggTimer` index-driven contract locked to Zircon source
+- [x] `DXTextBox` / `DXNumberTextBox` focus, editable/read-only, password, max-length and numeric behavior reproduced
+- [x] `DXVScrollBar` / `DXHScrollBar` state, wheel, buttons, track and thumb drag reproduced when source values are deterministic
+- [x] `DXListBox` neutral empty state uses source scrollbar geometry and no fabricated rows
+- [x] `DXTreeControl` neutral empty state uses Interface `59/60/61/62`, 21px rows, 2px row offset and no fabricated placeholder text
+- [x] `DXItemGrid` corrected to Zircon **35px shared-line cell step**, 36×36 cells, `GridPadding`, `VisibleHeight` and `ScrollValue`
+- [x] standalone `DXItemCell` Hidden/fixed/selected/locked/hover visual-state behavior reproduced without fabricating item data
+- [x] `DXButton` generated/indexed artwork tint reproduced: normal `217/255`, hover/pressed white, disabled `51/255`, plus source 1px pressed offset
 - [x] repository/Cursor safety rules, bootstrap and master implementation docs
 
 ## Geometry / source fidelity
@@ -144,11 +150,13 @@ Runtime values are represented as runtime contracts rather than sample/fake game
 - [x] Colour Picker RGB boxes update the selected swatch; runtime-only palette texture is not fabricated
 - [x] Colour Picker Select/Cancel behavior wired
 - [x] `DXAnimatedControl` timing uses `AnimationDelay / FrameCount`, source frame offsets and Loop semantics
+- [x] deterministic source scrollbars are interactive; runtime-data list/tree scrollbars remain neutral rather than inventing row counts
+- [x] source `DXButton` artwork state/tint and pressed motion reproduced independently from label text
 
 ## Latest validated official build
 
-- workflow run: **`32062972655`**
-- commit: **`903c699bb4bdc3eab06208a482a61ef5c2a6d3c3`**
+- workflow run: **`32065223098`**
+- commit: **`7e1bae015b22911dd35617e707b3ee2736f4ff7b`**
 - canonical GameScene windows: **`65/65`**
 - nested/transient windows: **`15/15`**
 - total source window coverage: **`80`**
@@ -176,8 +184,8 @@ Runtime values are represented as runtime contracts rather than sample/fake game
 - missing public UI libraries: `0`
 - extracted source PNGs: **`578`**
 - official artifact: `zircon-ui-reference-complete`
-- artifact ID: **`9298840826`**
-- artifact SHA256: **`242244e72f63ceb1b78fb9f684dbf823b586c4799fd1e44e6657bf88c82d63f8`**
+- artifact ID: **`9299639955`**
+- artifact SHA256: **`8bbd5d09453dfdb8c0065b59a5b250b4b0163f0fc9899ede9d4848d742a89198`**
 - JS syntax validation: passed
 - zero-fallback geometry validation: passed
 - zero-UNKNOWN placement audit: passed
@@ -190,6 +198,9 @@ Source window coverage and placement are strongly validated. The active pass rem
 - [x] audit every currently discovered GameScene + nested control type for renderer coverage
 - [x] audit current literal `LibraryFile + Index` controls and extract required source artwork
 - [x] audit deterministic `DXAnimatedControl` ranges and extract their frames
+- [x] correct repeated source-control behaviors for textboxes, scrollbars, list/tree neutral states, item grids/cells and buttons
+- [ ] reproduce remaining explicit `DXLabel` formatting only where source colors/styles are deterministically available
+- [ ] finish `DXComboBox` source showing/selection behavior without fabricating runtime options
 - [ ] eliminate any remaining generic renderer where Zircon defines real artwork/chrome
 - [ ] review every one of the 80 source windows in the reference harness
 - [ ] correct any visual discrepancy found against Zircon source/assets
