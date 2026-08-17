@@ -17,6 +17,10 @@ UA = "Mozilla/5.0 (X11; Linux x86_64) ORIGINS-Zircon-UI-Reference"
 CONTROL_ASSET_REFS: dict[str, set[int]] = {
     "GameInter": {161, 162, 795, 1010, 1011, 4740, 4741, 4742, 4743, 4745, 4746},
     "Interface": {16,17,18,41,42,43,44,45,46,53,54,55,56,57,58,59,60,61,62,206,241,242,243,245},
+    # CharacterDialog.CharacterTab_BeforeChildrenDraw draws the static male/female
+    # equipment-preview body from ProgUse #0/#1 at source anchor (130,270).
+    # These are UI preview artwork, not the world locomotion sprites.
+    "ProgUse": {0, 1},
 }
 
 
