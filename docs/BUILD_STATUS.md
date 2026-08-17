@@ -48,6 +48,8 @@ Authoritative branch: `origins-game-v1`
 - [x] `DXItemGrid` corrected to Zircon **35px shared-line cell step**, 36×36 cells, `GridPadding`, `VisibleHeight` and `ScrollValue`
 - [x] standalone `DXItemCell` Hidden/fixed/selected/locked/hover visual-state behavior reproduced without fabricating item data
 - [x] `DXButton` generated/indexed artwork tint reproduced: normal `217/255`, hover/pressed white, disabled `51/255`, plus source 1px pressed offset
+- [x] `DXLabel` source formatting reproduced for deterministic text/font/colour/outline/alignment/gradient properties
+- [x] MainPanel neutral reference no longer fabricates player class/stats/HP/MP/FP values or full runtime bar fills
 - [x] repository/Cursor safety rules, bootstrap and master implementation docs
 
 ## Geometry / source fidelity
@@ -152,11 +154,12 @@ Runtime values are represented as runtime contracts rather than sample/fake game
 - [x] `DXAnimatedControl` timing uses `AnimationDelay / FrameCount`, source frame offsets and Loop semantics
 - [x] deterministic source scrollbars are interactive; runtime-data list/tree scrollbars remain neutral rather than inventing row counts
 - [x] source `DXButton` artwork state/tint and pressed motion reproduced independently from label text
+- [x] `DXLabel` default/source outline, explicit colour, alignment, font and deterministic gradient label styles reproduced
 
 ## Latest validated official build
 
-- workflow run: **`32065223098`**
-- commit: **`7e1bae015b22911dd35617e707b3ee2736f4ff7b`**
+- workflow run: **`32068992526`**
+- commit: **`ef77b9fee1e048aafca8a77dedca3a6b08a61b1a`**
 - canonical GameScene windows: **`65/65`**
 - nested/transient windows: **`15/15`**
 - total source window coverage: **`80`**
@@ -184,8 +187,8 @@ Runtime values are represented as runtime contracts rather than sample/fake game
 - missing public UI libraries: `0`
 - extracted source PNGs: **`578`**
 - official artifact: `zircon-ui-reference-complete`
-- artifact ID: **`9299639955`**
-- artifact SHA256: **`8bbd5d09453dfdb8c0065b59a5b250b4b0163f0fc9899ede9d4848d742a89198`**
+- artifact ID: **`9301016652`**
+- artifact SHA256: **`36b9973505a1ce53e6386c1054c5c0e029df77feae267fb97d0a169cd2fe7e9e`**
 - JS syntax validation: passed
 - zero-fallback geometry validation: passed
 - zero-UNKNOWN placement audit: passed
@@ -199,7 +202,7 @@ Source window coverage and placement are strongly validated. The active pass rem
 - [x] audit current literal `LibraryFile + Index` controls and extract required source artwork
 - [x] audit deterministic `DXAnimatedControl` ranges and extract their frames
 - [x] correct repeated source-control behaviors for textboxes, scrollbars, list/tree neutral states, item grids/cells and buttons
-- [ ] reproduce remaining explicit `DXLabel` formatting only where source colors/styles are deterministically available
+- [x] reproduce explicit `DXLabel` formatting where source text/colors/styles are deterministically available
 - [ ] finish `DXComboBox` source showing/selection behavior without fabricating runtime options
 - [ ] eliminate any remaining generic renderer where Zircon defines real artwork/chrome
 - [ ] review every one of the 80 source windows in the reference harness
