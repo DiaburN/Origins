@@ -3,21 +3,17 @@
 
 This complements geometry QA. A control can be perfectly positioned and still be
 visually wrong if the reference uses generic chrome where Zircon specifies an
-indexed image or a different ButtonType.
+indexed image, HoverIndex/PressedIndex state, or a different ButtonType.
 
-The audit verifies:
-- every GameScene and nested control type has an explicit renderer policy;
-- all generated ButtonType values are supported by the reference skin map;
-- literal LibraryFile + non-negative Index controls are image-capable types;
-- every such indexed asset is present in assetRefs for extraction;
-- the nested runtime contains the source-art enforcement used by indexed modal
-  controls (notably NewCharacterDialog Interface1c class/gender buttons).
+This pass is deliberately source-backed and runs before artwork extraction. It
+therefore also promotes literal indexed button state artwork into `assetRefs` so
+all normal/hover/pressed PNGs used by Zircon are available to the runtime.
 """
 from __future__ import annotations
 
 import json
 import re
-from collections import Counter, defaultdict
+from collections import Counter
 from pathlib import Path
 
 GAME_RENDER_TYPES={
@@ -33,6 +29,7 @@ GENERATED_BUTTON_TYPES={'Default','SmallButton','AddButton','RemoveButton','LFGB
 INDEXED_RENDER_TYPES={'DXImageControl','DXAnimatedControl','DXButton'}
 LIB_RE=re.compile(r'LibraryFile\.([A-Za-z0-9_]+)')
 BUTTON_RE=re.compile(r'ButtonType\.([A-Za-z0-9_]+)')
+STATE_PROPERTIES=('HoverIndex','PressedIndex')
 
 
 def literal_index(raw) -> int|None:
@@ -58,11 +55,40 @@ def indexed_controls(owners: list[dict]) -> list[dict]:
     return rows
 
 
+def promote_button_state_assets(spec: dict, owners: list[dict], scope: str) -> tuple[list[dict],list[dict]]:
+    """Add literal HoverIndex/PressedIndex artwork to assetRefs before extraction."""
+    refs=spec.setdefault('assetRefs',{})
+    controls=[]; added=[]
+    for owner in owners:
+        for control in owner.get('controls',[]):
+            if control.get('type')!='DXButton': continue
+            p=control.get('properties',{});lib=library(p.get('LibraryFile'));normal=literal_index(p.get('Index'))
+            if not lib or normal is None or normal<0: continue
+            states={'normal':normal}
+            for prop in STATE_PROPERTIES:
+                value=literal_index(p.get(prop))
+                if value is not None and value>=0:
+                    states['hover' if prop=='HoverIndex' else 'pressed']=value
+                    bucket={int(v) for v in refs.get(lib,[])}
+                    if value not in bucket:
+                        bucket.add(value);refs[lib]=sorted(bucket)
+                        added.append({'scope':scope,'window':owner.get('field'),'control':control.get('name'),'library':lib,'property':prop,'index':value})
+            if len(states)>1:
+                controls.append({'scope':scope,'window':owner.get('field'),'control':control.get('name'),'library':lib,'states':states})
+    return controls,added
+
+
 def apply(spec: dict, repo_root: Path) -> dict:
     game=spec.get('windows',[]);nested=spec.get('nestedWindows',[])
     game_types=Counter(c.get('type') for w in game for c in w.get('controls',[]))
     nested_types=Counter(c.get('type') for w in nested for c in w.get('controls',[]))
     issues=[]
+
+    # Promote state images first, because the same audit validates extraction refs.
+    game_state_controls,game_added=promote_button_state_assets(spec,game,'game')
+    nested_state_controls,nested_added=promote_button_state_assets(spec,nested,'nested')
+    state_controls=game_state_controls+nested_state_controls
+    state_assets_added=game_added+nested_added
 
     missing_game=sorted(set(game_types)-GAME_RENDER_TYPES)
     missing_nested=sorted(set(nested_types)-NESTED_RENDER_TYPES)
@@ -91,18 +117,28 @@ def apply(spec: dict, repo_root: Path) -> dict:
                 indexed_wrong.append({'scope':scope,**row})
             if row['index'] not in refs.get(row['library'],set()):
                 asset_ref_missing.append({'scope':scope,**row})
+    # State assets are source artwork too and are subject to the same extraction contract.
+    for row in state_controls:
+        for state,index in row['states'].items():
+            if index not in refs.get(row['library'],set()):
+                asset_ref_missing.append({'scope':row['scope'],'window':row['window'],'control':row['control'],'type':'DXButton','library':row['library'],'index':index,'state':state})
     if indexed_wrong: issues.append({'kind':'INDEXED_CONTROL_NOT_IMAGE_RENDERED','values':indexed_wrong})
     if asset_ref_missing: issues.append({'kind':'INDEXED_ASSET_NOT_EXTRACTED','values':asset_ref_missing})
 
-    # Current source has six real Interface1c indexed buttons in NewCharacterDialog.
     new_character=[row for row in all_indexed['nested'] if row['window']=='NewCharacterDialog' and row['type']=='DXButton']
     if len(new_character)!=6 or any(row['library']!='Interface1c' for row in new_character):
         issues.append({'kind':'NEW_CHARACTER_INDEXED_BUTTON_CONTRACT_CHANGED','values':new_character})
 
+    # Current Zircon source contract: LootBox RerollButton uses distinct normal/hover/pressed images.
+    reroll=next((row for row in state_controls if row['window']=='LootBoxBox' and row['control']=='RerollButton'),None)
+    expected_reroll={'normal':2926,'hover':2927,'pressed':2925}
+    if not reroll or reroll.get('library')!='GameInter2' or reroll.get('states')!=expected_reroll:
+        issues.append({'kind':'LOOTBOX_REROLL_STATE_CONTRACT_CHANGED','values':[reroll,expected_reroll]})
+
     nested_runtime=repo_root/'apps/zircon-ui-reference/nested-variant-runtime.js'
-    runtime_text=nested_runtime.read_text(encoding='utf-8') if nested_runtime.exists() else ''
+    nested_text=nested_runtime.read_text(encoding='utf-8') if nested_runtime.exists() else ''
     runtime_markers=['applyIndexedSourceArtwork','nested-source-indexed-control','sourceAsset(library,index)']
-    missing_markers=[marker for marker in runtime_markers if marker not in runtime_text]
+    missing_markers=[marker for marker in runtime_markers if marker not in nested_text]
     if missing_markers: issues.append({'kind':'NESTED_INDEXED_ART_RUNTIME_MISSING','values':missing_markers})
 
     report={
@@ -114,7 +150,12 @@ def apply(spec: dict, repo_root: Path) -> dict:
         'buttonSkinCounts':{f'{scope}:{kind}':count for (scope,kind),count in sorted(button_counts.items())},
         'indexedGameControls':len(all_indexed['game']),
         'indexedNestedControls':len(all_indexed['nested']),
+        'indexedButtonStateControls':len(state_controls),
+        'indexedButtonStateDetails':state_controls,
+        'stateAssetRefsAdded':len(state_assets_added),
+        'stateAssetRefsAddedDetails':state_assets_added,
         'newCharacterIndexedButtons':len(new_character),
+        'lootBoxRerollStates':reroll,
         'issues':issues,
         'issueCount':len(issues),
         'genericIndexedArtworkInvented':False,
@@ -131,6 +172,8 @@ if __name__=='__main__':
     print('Nested render type coverage:',report['nestedTypeCoverage'])
     print('Indexed GameScene controls:',report['indexedGameControls'])
     print('Indexed nested controls:',report['indexedNestedControls'])
+    print('Indexed button state controls:',report['indexedButtonStateControls'])
+    print('State asset refs added:',report['stateAssetRefsAdded'])
     print('NewCharacter indexed source buttons:',report['newCharacterIndexedButtons'])
     print('Render audit issues:',report['issueCount'])
     if report['issues']:
