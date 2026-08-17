@@ -14,7 +14,7 @@ Authoritative branch: `origins-game-v1`
 - [x] automatic Zircon `GameScene` UI source analyzer
 - [x] complete Zircon GameScene registry: **65/65 source-resolved components**
 - [x] complete UI reference dependency build: **0 missing public UI libraries**
-- [x] validated reference extraction: **449 real PNG assets**
+- [x] validated reference extraction: **454 real PNG assets**
 - [x] searchable/category-based Zircon desktop UI reference harness
 - [x] explicit renderer policy for **21/21 discovered DX control types**
 - [x] source-geometry resolver using parent/child relationships and extracted PNG dimensions/offsets
@@ -22,10 +22,10 @@ Authoritative branch: `origins-game-v1`
 - [x] deterministic `ClientArea`/`Area` geometry resolution
 - [x] asset-size-derived geometry (`GetSize(...)`) resolution
 - [x] Horse Tame composite geometry recipe from real image bounds
-- [x] **853 explicit source Locations resolved with 0 suspicious fallbacks**
+- [x] **1,204 explicit source Locations resolved with 0 suspicious fallbacks**
 - [x] zero-fallback geometry regression validation in CI
 - [x] Zircon English runtime language extraction: **764 messages**
-- [x] **374 UI controls** resolved to real English display text, with original C# expression preserved
+- [x] **415 UI controls** resolved to real English display text, with original C# expression preserved
 - [x] resolved English text drives the reference render and text-dependent sizing
 - [x] CI fails if a newly discovered Zircon control type has no renderer policy
 - [x] single promoted official Zircon UI build workflow
@@ -42,7 +42,14 @@ Authoritative branch: `origins-game-v1`
 - [x] Guild reference-state inspection selector outside game desktop
 - [x] `DXNumberBox` real 1011/1010 decrement/increment behavior
 - [x] constructor-level number-control state preservation
+- [x] `DXSoundBar` real 4740-4746 mute/value/click/drag behavior
 - [x] Magic source tab templates imported: **16**, visibility remains runtime/data-driven
+- [x] `DXConfigSection` automatic Settings layout reconstructed from source
+- [x] Settings source-section controls placed from `AddSection` / `AddControl`
+- [x] Character/Equip source preview body uses real `ProgUse #0/#1`
+- [x] Character/Equip preview anchor locked to Zircon source `(130,270)`
+- [x] Character hidden Weapon/Armour/Shield/Helmet hit-zones respect `DXItemCell.Hidden`
+- [x] Character visible equipment slot artwork uses source Interface indices
 - [x] complete Zircon UI scope document
 - [x] owner UI approval/keep-remove matrix
 - [x] Zircon public-source CI
@@ -54,12 +61,16 @@ Authoritative branch: `origins-game-v1`
 
 ## Current UI fidelity pass
 
-The complete source/interface/control inventory is captured. Every currently discovered DX control type has an explicit rendering policy and every explicit `Location` currently emitted into the 65-window GameScene reference resolves without falling back to an invented `(0,0)` coordinate. Runtime-populated lists, maps, item icons, tree rows and live values remain runtime data by design.
+The complete `GameScene` source/interface/control inventory is captured. Every currently discovered DX control type has an explicit rendering policy and every explicit `Location` emitted into the current 65-window GameScene reference resolves without falling back to an invented `(0,0)` coordinate. Runtime-populated lists, maps, item icons, tree rows and live values remain runtime data by design.
+
+The next completeness phase is expanding transient/nested Zircon UI windows that are created by other dialogs rather than stored directly on `GameScene` (for example Key Bind, Colour Picker, MessageBox/Input/amount modals). These must be inventoried and reconstructed before the overall desktop UI can honestly be marked 100%.
 
 - [x] complete GameScene component inventory
 - [x] exact `.Zl` source dependency extraction
 - [x] image-backed MainPanel reference
 - [x] image-backed Character reference foundation
+- [x] Character/Equip real source preview body and anchor `(130,270)`
+- [x] Character/Equip hidden hit-zones and visible slot-source artwork
 - [x] image-backed Inventory reference foundation
 - [x] Magic reference foundation
 - [x] image-backed Quest reference foundation
@@ -75,19 +86,20 @@ The complete source/interface/control inventory is captured. Every currently dis
 - [x] reproduce number-box `Change / MinValue / MaxValue / Value` behavior
 - [x] preserve post-initializer number state assignment(s) from Zircon constructors
 - [x] reproduce sound-bar source assets (`GameInter 4740-4746`)
+- [x] reproduce sound-bar interaction: mute, click track and drag slider
 - [x] explicit policy for all **21/21** currently discovered DX control types
 - [x] preserve complete `Point` / `Size` expressions without truncation
 - [x] resolve named-control geometry before root `Size`/`DisplayArea` tokens
 - [x] resolve forward parent/control references used by the current validation set
 - [x] embed asset dimensions and offsets for **8 source libraries**
 - [x] extract **764** English Zircon messages
-- [x] resolve **374** visible control labels with **0 missing referenced language keys**
+- [x] resolve **415** visible control labels with **0 missing referenced language keys**
 - [x] preserve original language expressions as provenance while using real text in rendering
 - [x] constructor arguments with default values resolved from actual `GameScene` calls
 - [x] MiniMap/BigMap `ClientArea` layout relationships resolved from source
 - [x] Milestone `GameInter2.GetSize(500)` dependency resolved from source asset dimensions
 - [x] Horse Tame animation/progress geometry derived from real Zircon image bounds
-- [x] suspicious explicit source-location fallbacks: **0 / 853**
+- [x] suspicious explicit source-location fallbacks: **0 / 1,204**
 - [x] multi-window desktop behavior: coexistence, focus/z-order and drag
 - [x] direct source-derived internal window/button navigation: **14 validated links**
 - [x] static/renderable tab runtime: **15 DXTabControls / 50 tabs**
@@ -99,22 +111,24 @@ The complete source/interface/control inventory is captured. Every currently dis
 - [x] Guild War and Castle explicitly runtime/data-only in current source inventory; no fabricated content
 - [x] reference-only Guild states: `noGuild`, `hasGuild`, `ownsCastle`; selector remains outside 1024×768 game HUD
 - [x] Magic dynamic tab artwork/state templates: **16 schools/cases**, no active-school state invented
-- [ ] interactive `DXSoundBar`
+- [x] Settings `DXConfigSection` layout and target-typed controls imported
+- [x] Character/Equip source body placement reviewed against `CharacterTab_BeforeChildrenDraw`
+- [ ] inventory and reconstruct nested/transient Zircon windows (`DXKeyBindWindow`, colour picker, message/input/amount modals, etc.)
 - [ ] runtime Magic school population from actual player/magic data
 - [ ] complex source actions beyond direct window visibility
-- [ ] visual owner pass of all 65 GameScene components
+- [ ] visual owner pass of all GameScene + nested/transient components
 - [ ] owner reviews components and updates `docs/ZIRCON_UI_DECISIONS.md`
 
 ## Latest validated complete reference build
 
-- workflow run: `31971321187`
-- source-resolved windows: `65/65`
+- workflow run: `32047443429`
+- source-resolved GameScene windows: `65/65`
 - control type render coverage: `21/21`
-- parsed/renderable controls: **`1,152`**
-- explicit source locations: **`853`**
+- parsed/renderable controls: **`1,460`**
+- explicit source locations: **`1,204`**
 - suspicious source-location fallbacks: **`0`**
 - English messages parsed: `764`
-- controls using resolved English display text: **`374`**
+- controls using resolved English display text: **`415`**
 - unresolved referenced language keys: `0`
 - source-backed direct window interactions: **`14`**
 - DXTabControls: `15`
@@ -126,18 +140,23 @@ The complete source/interface/control inventory is captured. Every currently dis
 - number-control constructor state assignments applied: **`1`**
 - asset-size/metadata libraries: `8`
 - missing public UI libraries: `0`
-- extracted source PNGs: **`449`**
+- extracted source PNGs: **`454`**
+- Character source body images: `ProgUse #0/#1`
+- Character source body anchor: **`(130,270)`**
+- Character male base metadata: `84x178`, offset `(-22,-123)`
+- Character female base metadata: `80x182`, offset `(-22,-122)`
 - JS syntax validation: passed
 - zero-fallback geometry validation: passed
 - multi-window runtime static validation: passed
 - Guild reference-state runtime: passed JS validation
 - interactive `DXNumberBox` patch: passed JS validation
+- interactive `DXSoundBar` patch: passed JS validation
 - source-interaction validation: passed
 - custom-tab source validation: passed
 - Quest/Guild composite validation: passed
 - official artifact: `zircon-ui-reference-complete`
-- artifact ID: `9269869050`
-- artifact SHA256: `6db88b31eb37483f7e5d7fa76ac15e72c6fa45457609149fa3691cbf04153256`
+- artifact ID: `9293399337`
+- artifact SHA256: `0ca95a6d3ccc78a4a93c0f320ac65ce1478743247062f6b49e3d990a62da7eae`
 
 ## Playable runtime target after desktop UI review
 
