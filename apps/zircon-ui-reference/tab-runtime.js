@@ -1,4 +1,3 @@
-import './combo-runtime.js';
 import { gameSceneWindows } from './game-scene-windows.js';
 
 const stage = document.querySelector('#stage');
@@ -23,6 +22,14 @@ function sourceWindowForRoot(root) {
   const id = root.id.slice(2);
   const field = byId.get(id)?.field;
   return sourceSpec.windows?.find(window => window.field === field) || null;
+}
+
+function comboSourceWindowForRoot(root) {
+  if (!sourceSpec || !(root instanceof Element)) return null;
+  const field = root.dataset.sourceField;
+  if (!field) return null;
+  return [...(sourceSpec.windows || []), ...(sourceSpec.nestedWindows || [])]
+    .find(window => window.field === field) || null;
 }
 
 function simpleParent(expression) {
@@ -148,10 +155,102 @@ function initializeWindow(root) {
   applyWindowTabs(root, state);
 }
 
+function comboInt(expression, fallback) {
+  const value = String(expression ?? '').trim();
+  return /^-?\d+$/.test(value) ? Number(value) : fallback;
+}
+
+function comboBool(expression, fallback=false) {
+  const value = String(expression ?? '').trim().toLowerCase();
+  if (value === 'true') return true;
+  if (value === 'false') return false;
+  return fallback;
+}
+
+function restoreCombo(element, control) {
+  if (!(element instanceof Element) || element.dataset.originsComboInitialized === '1') return;
+  const properties = control?.properties || {};
+  const normalHeight = Math.max(1, comboInt(properties.NormalHeight, 16));
+  const dropDownHeight = Math.max(normalHeight, comboInt(properties.DropDownHeight, 123));
+  const arrow = element.querySelector(':scope > img.ui-button');
+  const selectedLabel = element.querySelector(':scope > span');
+
+  element.dataset.originsComboInitialized = '1';
+  element.dataset.sourceNormalHeight = String(normalHeight);
+  element.dataset.sourceDropDownHeight = String(dropDownHeight);
+  element.dataset.runtimeOptions = 'DXListBoxItem controls supplied by game/runtime';
+  element.dataset.sourceListParent = 'ActiveScene';
+  element.dataset.sourceSort = String(comboBool(properties.Sort, true));
+  element.style.background = 'transparent';
+  element.style.border = '1px solid #c6a663';
+  element.style.overflow = 'visible';
+
+  if (selectedLabel) {
+    selectedLabel.style.position = 'absolute';
+    selectedLabel.style.left = '0';
+    selectedLabel.style.top = '-1px';
+    selectedLabel.style.height = `${normalHeight}px`;
+    selectedLabel.style.lineHeight = `${normalHeight}px`;
+    selectedLabel.style.color = '#fff';
+    selectedLabel.style.whiteSpace = 'nowrap';
+    selectedLabel.style.overflow = 'hidden';
+    selectedLabel.style.textOverflow = 'ellipsis';
+    selectedLabel.style.padding = '0 2px';
+  }
+
+  const arrowWidth = Math.max(1, arrow?.naturalWidth || arrow?.width || 16);
+  const arrowHeight = Math.max(1, arrow?.naturalHeight || arrow?.height || 16);
+  if (selectedLabel) selectedLabel.style.width = `${Math.max(0, element.clientWidth - 3 - arrowHeight)}px`;
+  if (arrow) {
+    arrow.style.left = `${Math.max(0, element.clientWidth - arrowWidth)}px`;
+    arrow.style.top = `${Math.max(0, Math.trunc((normalHeight - arrowHeight) / 2))}px`;
+    arrow.dataset.sourceLibrary = 'GameInter';
+    arrow.dataset.sourceIndex = '795';
+  }
+
+  let showing = comboBool(properties.Showing, false);
+  const applyShowing = () => {
+    // Zircon: min(ListBox.ScrollBar.MaxValue + NormalHeight + 2, DropDownHeight).
+    // Runtime rows are intentionally absent in this reference, so MaxValue=0.
+    const height = showing ? Math.min(normalHeight + 2, dropDownHeight) : normalHeight;
+    element.style.height = `${height}px`;
+    element.dataset.sourceShowing = String(showing);
+    element.dataset.sourceNeutralListHeight = String(Math.max(0, height - normalHeight - 2));
+    element.classList.toggle('showing', showing);
+  };
+
+  applyShowing();
+  arrow?.addEventListener('click', event => {
+    showing = !showing;
+    applyShowing();
+    event.preventDefault();
+    event.stopPropagation();
+  });
+}
+
+function initializeComboWindow(root) {
+  if (!(root instanceof Element)) return;
+  const window = comboSourceWindowForRoot(root);
+  if (!window) return;
+  const controls = window.controls || [];
+  for (const element of root.querySelectorAll('[data-control-type="DXComboBox"][data-control-index]')) {
+    const index = Number.parseInt(element.dataset.controlIndex || '', 10);
+    if (!Number.isInteger(index)) continue;
+    const control = controls[index];
+    if (control?.type === 'DXComboBox') restoreCombo(element, control);
+  }
+}
+
 function scan(node) {
   if (!(node instanceof Element)) return;
-  if (node.matches('.window,.generic-window')) initializeWindow(node);
-  node.querySelectorAll?.('.window,.generic-window').forEach(initializeWindow);
+  if (node.matches('.window,.generic-window')) {
+    initializeWindow(node);
+    initializeComboWindow(node);
+  }
+  node.querySelectorAll?.('.window,.generic-window').forEach(root => {
+    initializeWindow(root);
+    initializeComboWindow(root);
+  });
 }
 
 function refreshGuildReferenceState() {
@@ -202,10 +301,17 @@ fetch('ui-source-spec.json')
   })
   .then(spec => {
     sourceSpec = spec;
-    stage.querySelectorAll('.window,.generic-window').forEach(initializeWindow);
+    stage.querySelectorAll('.window,.generic-window').forEach(root => {
+      initializeWindow(root);
+      initializeComboWindow(root);
+    });
     const controls = spec.windows.flatMap(window => window.controls || []);
     const tabControls = controls.filter(control => control.type === 'DXTabControl').length;
     const tabs = controls.filter(control => control.type === 'DXTab' || control.type === 'DXConfigTab').length;
+    const combos = [...(spec.windows || []), ...(spec.nestedWindows || [])]
+      .flatMap(window => window.controls || [])
+      .filter(control => control.type === 'DXComboBox').length;
     console.info(`ORIGINS Zircon tab runtime: ${tabControls} tab controls / ${tabs} tabs / Guild state ${guildReferenceState}`);
+    console.info(`ORIGINS Zircon DXComboBox runtime: ${combos} source combo boxes / neutral runtime options`);
   })
-  .catch(error => console.error('Unable to load Zircon tab manifest', error));
+  .catch(error => console.error('Unable to load Zircon tab/combo manifest', error));
