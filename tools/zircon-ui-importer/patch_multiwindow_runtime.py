@@ -6,6 +6,8 @@ Build-time only:
 - focuses an already-open window instead of duplicating it,
 - tags every rendered control with its Zircon C# name/type and stable manifest index,
 - preserves each rendered control's source Parent expression as DOM metadata,
+- reproduces CharacterDialog equipment preview body at the exact Zircon anchor,
+- reproduces CharacterDialog hidden equipment hit-zones and source slot artwork,
 - reproduces DXNumberBox Up/Down behavior from Zircon using real 1010/1011 buttons,
 - reproduces DXSoundBar mute/value/track/drag behavior from Zircon using 4740-4746.
 
@@ -20,7 +22,13 @@ OPEN_OLD = """  removeTransientWindows();\n  const item = itemById(id);\n"""
 OPEN_NEW = """  const existing = windows.get(id);\n  if (existing?.isConnected) {\n    existing.dispatchEvent(new CustomEvent('origins:focus', {bubbles:true}));\n    document.querySelector(`[data-window-id=\\\"${id}\\\"]`)?.classList.add('active');\n    return;\n  }\n  const item = itemById(id);\n"""
 
 RENDER_OLD = """  for (const node of layout.nodes) renderControl(node,root);\n"""
-RENDER_NEW = """  for (let controlIndex = 0; controlIndex < layout.nodes.length; controlIndex++) {\n    const node = layout.nodes[controlIndex];\n    const rendered = renderControl(node,root);\n    if (rendered) {\n      rendered.dataset.controlIndex = String(controlIndex);\n      rendered.dataset.controlName = node.control.name;\n      rendered.dataset.controlType = node.control.type;\n      const sourceParent = node.control.properties?.Parent;\n      if (sourceParent !== undefined) rendered.dataset.parentControl = String(sourceParent);\n    }\n  }\n"""
+RENDER_NEW = """  // CharacterDialog draws its equipment-preview avatar in CharacterTab.BeforeChildrenDraw,\n  // therefore it must be emitted before item cells/labels/tabs are rendered.\n  renderSourceCharacterPreview(item,root);\n\n  for (let controlIndex = 0; controlIndex < layout.nodes.length; controlIndex++) {\n    const node = layout.nodes[controlIndex];\n    const rendered = renderControl(node,root);\n    if (rendered) {\n      rendered.dataset.controlIndex = String(controlIndex);\n      rendered.dataset.controlName = node.control.name;\n      rendered.dataset.controlType = node.control.type;\n      const sourceParent = node.control.properties?.Parent;\n      if (sourceParent !== undefined) rendered.dataset.parentControl = String(sourceParent);\n    }\n  }\n"""
+
+CHARACTER_MARKER = """// ---------------------------------------------------------------------------\n// Complete source-driven dialog renderer\n// ---------------------------------------------------------------------------\n"""
+CHARACTER_CODE = """// ---------------------------------------------------------------------------\n// CharacterDialog runtime preview layer\n// ---------------------------------------------------------------------------\n// Source: CharacterDialog.CharacterTab_BeforeChildrenDraw. Zircon uses the\n// static equipment-preview body from ProgUse #0/#1 and draws it at anchor\n// (130,270). Armour/weapon/hair are runtime item/player data and are NOT\n// invented in the neutral reference state. Asset offsets come from the .Zl.\nfunction renderSourceCharacterPreview(item,root) {\n  if (item.id !== 'character' && item.id !== 'inspect') return null;\n  const bodyIndex = 0; // neutral source state: MirGender.Male; female is ProgUse #1.\n  const meta = sourceSpec?.assetMeta?.ProgUse?.[String(bodyIndex)] || {};\n  const anchorX = 130;\n  const anchorY = 270;\n  const drawX = anchorX + Number(meta.offsetX || 0);\n  const drawY = anchorY + Number(meta.offsetY || 0);\n  const body = image(asset('ProgUse',bodyIndex),drawX,drawY,'character-equip-preview',root);\n  body.style.pointerEvents = 'none';\n  body.dataset.sourceAnchorX = String(anchorX);\n  body.dataset.sourceAnchorY = String(anchorY);\n  body.dataset.sourceLibrary = 'ProgUse';\n  body.dataset.sourceIndex = String(bodyIndex);\n  body.title = 'CharacterDialog source preview: ProgUse #0 @ anchor (130,270)';\n  return body;\n}\n\n""" + CHARACTER_MARKER
+
+ITEMCELL_OLD = """    case 'DXItemCell': {\n      const element = document.createElement('div'); element.className = 'dx-item-cell';\n      element.style.left = `${node.x}px`; element.style.top = `${node.y}px`; element.style.width = `${node.width}px`; element.style.height = `${node.height}px`; element.title = control.name;\n      root.append(element); return element;\n    }\n"""
+ITEMCELL_NEW = """    case 'DXItemCell': {\n      const element = document.createElement('div');\n      element.className = 'dx-item-cell';\n      element.style.left = `${node.x}px`; element.style.top = `${node.y}px`; element.style.width = `${node.width}px`; element.style.height = `${node.height}px`; element.title = control.name;\n      root.append(element);\n\n      // DXItemCell.Hidden suppresses item drawing AND UpdateBorder() forces\n      // Border=false/transparent. CharacterDialog uses this for the large\n      // Weapon/Armour/Shield/Helmet body hit-zones around the preview avatar.\n      if (boolFrom(p.Hidden,false)) {\n        element.classList.add('dx-item-cell-hidden');\n        element.style.border = 'none';\n        element.style.background = 'transparent';\n        return element;\n      }\n\n      // CharacterDialog wires these exact Interface images through cell.BeforeDraw\n      // -> Draw(cell,index). Draw() centres the source image inside the item cell.\n      const slotMatch = String(p.Slot || '').match(/EquipmentSlot\\.([A-Za-z0-9_]+)/);\n      const slotArt = {\n        Emblem:104, HorseArmour:82, Torch:38, Necklace:33,\n        BraceletL:32, BraceletR:32, RingL:31, RingR:31, Flower:81,\n        Poison:40, Amulet:39, Shoes:36, Costume:34,\n      };\n      const artIndex = slotMatch ? slotArt[slotMatch[1]] : undefined;\n      if (artIndex !== undefined) {\n        const artSize = getAssetSize(sourceSpec,'Interface',artIndex) || [0,0];\n        const art = image(\n          asset('Interface',artIndex),\n          Math.round((node.width-artSize[0])/2),\n          Math.round((node.height-artSize[1])/2),\n          'ui-img character-slot-art',\n          element\n        );\n        art.style.pointerEvents = 'none';\n        element.dataset.slotArtIndex = String(artIndex);\n      }\n      return element;\n    }\n"""
 
 NUMBERBOX_OLD = """function renderNumberBox(node,parent) {\n  const root = document.createElement('div');\n  root.className = 'dx-numberbox';\n  root.style.left = `${node.x}px`; root.style.top = `${node.y}px`; root.style.width = `${node.width}px`; root.style.height = `${node.height}px`;\n  parent.append(root);\n  image(asset('GameInter',1011),0,1,'ui-button',root);\n  const field = document.createElement('div');\n  field.className = 'dx-textbox'; field.style.left = '19px'; field.style.top = '1px'; field.style.width = '50px'; field.style.height = '20px'; field.textContent = '0';\n  root.append(field);\n  image(asset('GameInter',1010),Math.max(0,node.width-17),1,'ui-button',root);\n  return root;\n}\n"""
 
@@ -51,6 +59,8 @@ def main() -> None:
 
     text = args.app.read_text(encoding="utf-8")
     text = replace_exact(text, OPEN_OLD, OPEN_NEW, "single-window openWindow eviction")
+    text = replace_exact(text, CHARACTER_MARKER, CHARACTER_CODE, "CharacterDialog preview insertion marker")
+    text = replace_exact(text, ITEMCELL_OLD, ITEMCELL_NEW, "DXItemCell source renderer")
     text = replace_exact(text, RENDER_OLD, RENDER_NEW, "source control render loop")
     text = replace_exact(text, NUMBERBOX_OLD, NUMBERBOX_NEW, "DXNumberBox renderer")
     text = replace_exact(text, NUMBERBOX_CASE_OLD, NUMBERBOX_CASE_NEW, "DXNumberBox render dispatch")
@@ -59,6 +69,8 @@ def main() -> None:
     args.app.write_text(text, encoding="utf-8")
     print("Patched openWindow for simultaneous Zircon dialogs")
     print("Tagged rendered controls with stable source indices/names/types/parents")
+    print("Patched CharacterDialog preview to ProgUse #0 at source anchor 130,270")
+    print("Patched CharacterDialog DXItemCell Hidden semantics and source slot artwork")
     print("Patched DXNumberBox with clickable 1011/1010 Change/Min/Max behavior")
     print("Patched DXSoundBar with 4740-4746 mute/value/track/drag behavior")
 
