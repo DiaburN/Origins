@@ -131,5 +131,125 @@
     new MutationObserver(records=>records.forEach(record=>record.addedNodes.forEach(scan))).observe(stage,{childList:true,subtree:true});
     fetch('ui-source-spec.json',{cache:'no-store'}).then(response=>{if(!response.ok)throw new Error(`ui-source-spec.json ${response.status}`);return response.json()}).then(spec=>{sourceSpec=spec;stage.querySelectorAll('.window,.generic-window').forEach(apply);console.info('ORIGINS source DXItemGrid/DXItemCell geometry and visual-state runtime active')}).catch(error=>console.error('Unable to load Zircon item source manifest',error));
   </script>
+  <script type="module">
+    import { buildWindowLayout as buildLabelLayout } from './layout-resolver-derived.js';
+    const labelStage=document.querySelector('#stage');
+    let labelSourceSpec=null;
+    const labelBool=(raw,fallback=false)=>{const value=String(raw??'').trim().toLowerCase();return value==='true'?true:value==='false'?false:fallback};
+    const labelLiteralString=raw=>{
+      const value=String(raw??'').trim();
+      if(!value)return null;
+      if(value.startsWith('"')&&value.endsWith('"')){
+        try{return JSON.parse(value)}catch{return value.slice(1,-1)}
+      }
+      return null;
+    };
+    function labelColour(raw,fallback=null){
+      const value=String(raw??'').trim();
+      const named={
+        Black:'#000000',White:'#ffffff',Cyan:'#00ffff',Red:'#ff0000',Green:'#008000',Yellow:'#ffff00',
+        Lime:'#00ff00',LimeGreen:'#32cd32',Gray:'#808080',Grey:'#808080',Silver:'#c0c0c0',
+        Orange:'#ffa500',Gold:'#ffd700',Pink:'#ffc0cb',LightPink:'#ffb6c1',Plum:'#dda0dd',
+        Aquamarine:'#7fffd4',AntiqueWhite:'#faebd7',GreenYellow:'#adff2f',DarkBlue:'#00008b'
+      };
+      const name=value.match(/Color\.([A-Za-z]+)/)?.[1];
+      if(name&&named[name])return named[name];
+      if(/Color\.Empty\b/.test(value))return 'transparent';
+      let match=value.match(/Color\.FromArgb\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*\)/);
+      if(match)return `rgba(${match[2]},${match[3]},${match[4]},${Number(match[1])/255})`;
+      match=value.match(/Color\.FromArgb\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*\)/);
+      return match?`rgb(${match[1]},${match[2]},${match[3]})`:fallback;
+    }
+    function labelFont(raw){
+      const value=String(raw??'');
+      const sizeMatch=value.match(/CEnvir\.FontSize\(\s*([0-9.]+)F?\s*\)/i)||value.match(/new\s+Font\([^,]+,\s*([0-9.]+)F?/i);
+      const pt=sizeMatch?Number(sizeMatch[1]):8;
+      return {px:Math.max(1,pt*96/72),bold:/FontStyle\.Bold/.test(value),italic:/FontStyle\.Italic/.test(value)};
+    }
+    function labelText(control){
+      if(typeof control?.resolvedText==='string')return control.resolvedText;
+      return labelLiteralString(control?.properties?.Text)??'';
+    }
+    function sourceLabelItem(root){
+      if(!labelSourceSpec||!root?.id?.startsWith('w-'))return null;
+      const id=root.id.slice(2);
+      return [...(labelSourceSpec.windows||[]),...(labelSourceSpec.nestedWindows||[])].find(item=>item.id===id)||null;
+    }
+    function applyDrawFormat(element,raw,autoSize,node){
+      const value=String(raw??'');
+      const horizontal=/HorizontalCenter/.test(value)?'center':/Right/.test(value)?'right':'left';
+      element.style.textAlign=horizontal;
+      const vertical=/VerticalCenter/.test(value)?'center':/Bottom/.test(value)?'flex-end':'flex-start';
+      if(!autoSize&&(node.height||0)>0){
+        element.style.height=`${node.height}px`;
+        element.style.display='flex';
+        element.style.flexDirection='column';
+        element.style.justifyContent=vertical;
+      }
+      if(/WordBreak/.test(value)&&!/SingleLine/.test(value)){element.style.whiteSpace='normal';element.style.overflowWrap='break-word'}
+      else element.style.whiteSpace='nowrap';
+    }
+    function applyGradient(element,p){
+      let top=null,bottom=null;
+      const style=String(p.LabelStyle??'');
+      if(/DXLabelStyle\.Title/.test(style)){top='rgb(255,226,113)';bottom='rgb(226,171,55)'}
+      else if(/DXLabelStyle\.GameStoreTopRank/.test(style)){top='rgb(245,248,255)';bottom='rgb(151,184,255)'}
+      else if(labelBool(p.Gradient,false)){top=labelColour(p.GradientTopColour);bottom=labelColour(p.GradientBottomColour)}
+      if(!top&&!bottom){element.style.backgroundImage='';element.style.webkitBackgroundClip='';element.style.backgroundClip='';return}
+      top=top||element.style.color||'#fff';bottom=bottom||top;
+      element.style.backgroundImage=`linear-gradient(${top},${bottom})`;
+      element.style.webkitBackgroundClip='text';element.style.backgroundClip='text';element.style.color='transparent';
+    }
+    function styleSourceLabel(node,element){
+      const control=node.control||{},p=control.properties||{};
+      const text=labelText(control);element.textContent=text;
+      const autoSize=labelBool(p.AutoSize,true);
+      const font=labelFont(p.Font);
+      element.style.fontFamily=/Config\.FontName/.test(String(p.Font??''))?'"MS Sans Serif",Arial,sans-serif':element.style.fontFamily;
+      element.style.fontSize=`${font.px}px`;element.style.fontWeight=font.bold?'700':'400';element.style.fontStyle=font.italic?'italic':'normal';
+      if(!autoSize){
+        if(node.width>0)element.style.width=`${node.width}px`;
+        if(node.height>0)element.style.height=`${node.height}px`;
+      }else{
+        element.style.width='max-content';
+        element.style.height='auto';
+      }
+      const fore=labelColour(p.ForeColour,null);if(fore)element.style.color=fore;
+      const outline=labelBool(p.Outline,true),outlineColour=labelColour(p.OutlineColour,'#000');
+      element.style.textShadow=outline?`0 -1px ${outlineColour},-1px 0 ${outlineColour},1px 0 ${outlineColour},0 1px ${outlineColour}`:'none';
+      applyDrawFormat(element,p.DrawFormat,autoSize,node);applyGradient(element,p);
+      element.dataset.sourceLabelText=text?'source':'runtime-empty';
+      element.dataset.sourceLabelOutline=String(outline);element.dataset.sourceLabelAutoSize=String(autoSize);
+    }
+    function applyLabels(root){
+      const item=sourceLabelItem(root);if(!item||!labelSourceSpec)return;
+      const layout=buildLabelLayout(labelSourceSpec,item);
+      for(let i=0;i<layout.nodes.length;i++){
+        const node=layout.nodes[i];if(node.control?.type!=='DXLabel')continue;
+        const element=root.querySelector(`[data-control-index="${i}"]`);if(element)styleSourceLabel(node,element);
+      }
+    }
+    function neutralizeMainPanelRuntime(){
+      for(const label of labelStage.querySelectorAll(':scope > .runtime-label')){
+        const top=Number.parseFloat(label.style.top||'0');
+        if(top>=700){label.textContent='';label.dataset.runtimeContract='MainPanel player/stat value';}
+      }
+      for(const img of labelStage.querySelectorAll(':scope > img.ui-img')){
+        const top=Number.parseFloat(img.style.top||'0'),src=img.getAttribute('src')||'';
+        if(top>=700&&/(00052|00054|00058)\.png$/.test(src)){img.style.visibility='hidden';img.dataset.runtimeContract='MainPanel clipped HP/MP/FP fill';}
+      }
+    }
+    function labelScan(node){
+      if(!(node instanceof Element))return;
+      if(node.matches?.('.window,.generic-window'))queueMicrotask(()=>applyLabels(node));
+      node.querySelectorAll?.('.window,.generic-window').forEach(root=>queueMicrotask(()=>applyLabels(root)));
+      queueMicrotask(neutralizeMainPanelRuntime);
+    }
+    new MutationObserver(records=>records.forEach(record=>record.addedNodes.forEach(labelScan))).observe(labelStage,{childList:true,subtree:true});
+    fetch('ui-source-spec.json',{cache:'no-store'})
+      .then(response=>{if(!response.ok)throw new Error(`ui-source-spec.json ${response.status}`);return response.json()})
+      .then(spec=>{labelSourceSpec=spec;labelStage.querySelectorAll('.window,.generic-window').forEach(applyLabels);neutralizeMainPanelRuntime();console.info('ORIGINS source-faithful DXLabel + neutral MainPanel runtime state active')})
+      .catch(error=>console.error('Unable to load Zircon label source manifest',error));
+  </script>
 </body>
 </html>
