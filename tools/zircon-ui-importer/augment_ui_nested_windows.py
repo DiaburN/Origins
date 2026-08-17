@@ -17,12 +17,7 @@ import re
 from pathlib import Path
 
 from build_ui_source_spec import ROOT_PROPS, constructor_body, simple_assignments
-from augment_ui_composites import (
-    add_asset_refs,
-    build_class_index,
-    namespace_children,
-    prepare_controls,
-)
+from augment_ui_composites import add_asset_refs, build_class_index, namespace_children, prepare_controls
 
 CTOR_RE = re.compile(r"\bpublic\s+([A-Za-z_][A-Za-z0-9_]*)\s*\(([^)]*)\)")
 
@@ -40,7 +35,6 @@ def constructor_signature(text: str, class_name: str) -> str:
 
 
 def root_properties(body: str) -> dict[str, str]:
-    # simple_assignments also captures SetClientSize(...) as ClientSize.
     allowed = set(ROOT_PROPS) | {
         "Modal", "Title", "Text", "AllowResize", "AutomaticVisibility",
         "CustomSize", "HasFooter", "SlimFooter", "HasTitle", "HasTopBorder",
@@ -60,18 +54,12 @@ def category_for(source_path: str) -> str:
     return "modal"
 
 
-def main() -> None:
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--spec", type=Path, required=True)
-    parser.add_argument("--zircon-root", type=Path, required=True)
-    args = parser.parse_args()
-
-    spec = json.loads(args.spec.read_text(encoding="utf-8"))
+def apply(spec: dict, zircon_root: Path) -> dict:
     inventory = spec.get("nestedWindowInventory", {}).get("windows", [])
-    bases, sources, texts = build_class_index(args.zircon_root)
-
+    bases, sources, texts = build_class_index(zircon_root)
     nested: list[dict] = []
     skipped: list[dict] = []
+
     for row in inventory:
         class_name = row.get("sourceClass")
         source_path = row.get("sourcePath")
@@ -79,7 +67,6 @@ def main() -> None:
         if not class_name or not source_path or not path:
             skipped.append({"sourceClass": class_name, "reason": "source missing"})
             continue
-
         text = texts[path]
         body = constructor_body(text, class_name)
         if not body:
@@ -88,15 +75,11 @@ def main() -> None:
 
         controls = prepare_controls(body, class_name, text, bases, sources, texts)
         controls = namespace_children(controls, class_name)
-        # Parent=this in a nested top-level constructor means the window root,
-        # not a child control named after the class. Keep the namespaced child
-        # identifiers while restoring that root-parent sentinel.
         for control in controls:
             props = control.setdefault("properties", {})
             if props.get("Parent") == class_name:
                 props["Parent"] = "this"
 
-        root = root_properties(body)
         item = {
             "id": f"nested-{slug(class_name)}",
             "field": class_name,
@@ -108,7 +91,7 @@ def main() -> None:
             "defaultVisible": False,
             "nested": True,
             "category": category_for(source_path),
-            "root": root,
+            "root": root_properties(body),
             "controls": controls,
             "referenceCount": row.get("referenceCount", 0),
             "referencedFrom": row.get("referencedFrom", []),
@@ -122,18 +105,38 @@ def main() -> None:
         row["nestedId"] = item["id"]
 
     spec["nestedWindows"] = nested
-    nested_report = spec.setdefault("nestedWindowInventory", {})
-    nested_report["reconstructedCount"] = len(nested)
-    nested_report["skipped"] = skipped
-    nested_report["allPendingSourceReconstruction"] = bool(skipped)
+    report = spec.setdefault("nestedWindowInventory", {})
+    report["reconstructedCount"] = len(nested)
+    report["skipped"] = skipped
+    report["allPendingSourceReconstruction"] = bool(skipped)
 
+    expected = {
+        'DXColourPicker','DXInputWindow','DXItemAmountWindow','DXKeyBindWindow','DXMessageBox',
+        'GroupLFGInputWindow','MarketPlaceHistoryDialog','ActivationDialog','ChangePasswordDialog',
+        'NewAccountDialog','NewCharacterDialog','RequestActivationKeyDialog',
+        'RequestResetPasswordDialog','ResetPasswordDialog','SelectDialog',
+    }
+    actual={row.get('sourceClass') for row in inventory}
+    if actual != expected:
+        raise RuntimeError(f"Nested Zircon window inventory changed: {sorted(actual)}")
+    if skipped or len(nested) != len(expected):
+        raise RuntimeError(f"Nested Zircon source reconstruction incomplete: nested={len(nested)} skipped={skipped}")
+
+    return report
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--spec", type=Path, required=True)
+    parser.add_argument("--zircon-root", type=Path, required=True)
+    args = parser.parse_args()
+    spec = json.loads(args.spec.read_text(encoding="utf-8"))
+    report=apply(spec,args.zircon_root)
     args.spec.write_text(json.dumps(spec, indent=2, ensure_ascii=False), encoding="utf-8")
-    print("Nested/transient windows source-reconstructed:", len(nested))
-    print("Nested/transient windows skipped:", len(skipped))
-    for item in nested:
+    print("Nested/transient windows source-reconstructed:", report.get('reconstructedCount',0))
+    print("Nested/transient windows skipped:", len(report.get('skipped',[])))
+    for item in spec.get('nestedWindows',[]):
         print("  RECONSTRUCTED", item["sourceClass"], "controls=", len(item["controls"]), "ctor=", item["constructorSignature"] or "()")
-    for item in skipped:
-        print("  SKIPPED", item)
 
 
 if __name__ == "__main__":
