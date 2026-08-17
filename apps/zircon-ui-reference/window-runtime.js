@@ -103,11 +103,51 @@ function indexedButtonImage(element) {
   if(element instanceof HTMLImageElement)return element;
   return element.querySelector?.('img.nested-source-indexed-art,img.nested-source-indexed-image,img.nested-indexed-image')||null;
 }
+function buttonArtworkTargets(element) {
+  if(element instanceof HTMLImageElement)return [element];
+  if(element.classList?.contains('dx-generated-button'))
+    return [...element.querySelectorAll(':scope > img')];
+  const indexed=indexedButtonImage(element);
+  return indexed?[indexed]:[];
+}
+function installButtonVisualState(element,node,enabled) {
+  if(node.control?.type!=='DXButton')return false;
+  if(element.dataset.sourceButtonVisualInstalled==='true')return true;
+  const p=node.control?.properties||{};
+  const canBePressed=boolFrom(p.CanBePressed,true);
+  const artwork=buttonArtworkTargets(element);
+  if(!artwork.length)return false;
+
+  const normalBrightness=217/255;
+  const disabledBrightness=51/255;
+  let hovered=false,pressed=boolFrom(p.Pressed,false)&&enabled;
+  const render=()=>{
+    const brightness=!enabled?disabledBrightness:(hovered||pressed?1:normalBrightness);
+    for(const image of artwork) {
+      image.style.filter=`brightness(${brightness})`;
+      image.style.transform=pressed&&enabled?'translateY(1px)':'';
+    }
+    element.dataset.sourceButtonBrightness=String(brightness);
+    element.dataset.sourceButtonPressed=String(pressed);
+    element.dataset.sourceButtonCanBePressed=String(canBePressed);
+  };
+  render();
+  element.dataset.sourceButtonVisualInstalled='true';
+  if(enabled&&canBePressed) {
+    element.style.pointerEvents='auto';element.style.cursor='pointer';
+    element.addEventListener('pointerenter',()=>{hovered=true;render()});
+    element.addEventListener('pointerleave',()=>{hovered=false;pressed=false;render()});
+    element.addEventListener('pointerdown',event=>{if(event.button===0){pressed=true;render()}});
+    element.addEventListener('pointerup',()=>{pressed=false;render()});
+    element.addEventListener('pointercancel',()=>{pressed=false;render()});
+  }
+  return true;
+}
 function installIndexedButtonStates(element,node,enabled) {
   if(node.control?.type!=='DXButton'||!enabled||element.dataset.sourceButtonStateInstalled==='true')return false;
   const p=node.control?.properties||{},library=sourceLibrary(p.LibraryFile),normal=sourceIndex(p.Index),hover=sourceIndex(p.HoverIndex),pressed=sourceIndex(p.PressedIndex);
   if(!library||normal===null||normal<0)return false;
-  const hasHover=hover!==null&&hover>=0,hasPressed=pressed!==null&&pressed>=0;
+  const hasHover=hover!==null&&hover>0,hasPressed=pressed!==null&&pressed>0;
   if(!hasHover&&!hasPressed)return false;
   const image=indexedButtonImage(element);
   if(!image)return false;
@@ -286,22 +326,17 @@ function applySourceVisualState(element,node) {
   }
   const enabled=p.Enabled===undefined?true:boolFrom(p.Enabled,true);
   if(p.Enabled!==undefined) element.dataset.sourceEnabled=String(enabled);
-  if(!enabled) {
-    element.style.pointerEvents='none';
-    if(node.control?.type==='DXButton') {
-      const brightness=51/217;
-      element.style.filter=`brightness(${brightness})`;
-      element.dataset.sourceDisabledButtonTint='51/217';
-    }
-  }
+  if(!enabled) element.style.pointerEvents='none';
+
+  const buttonVisual=installButtonVisualState(element,node,enabled);
   const textBox=installTextBoxBehavior(element,node,enabled);
   const scrollBar=installScrollBarBehavior(element,node,enabled);
-  return {enabled,textBox,scrollBar,statefulIndexedButton:installIndexedButtonStates(element,node,enabled)};
+  return {enabled,buttonVisual,textBox,scrollBar,statefulIndexedButton:installIndexedButtonStates(element,node,enabled)};
 }
 
 function applySourceControlTree(root) {
   const item=sourceItemForRoot(root);if(!item||!sourceSpec)return;
-  const layout=buildWindowLayout(sourceSpec,item);let applied=0,opacityCount=0,disabledCount=0,statefulButtonCount=0,textBoxCount=0,scrollBarCount=0;
+  const layout=buildWindowLayout(sourceSpec,item);let applied=0,opacityCount=0,disabledCount=0,statefulButtonCount=0,buttonVisualCount=0,textBoxCount=0,scrollBarCount=0;
   for(let i=0;i<layout.nodes.length;i++) {
     const node=layout.nodes[i],element=root.querySelector(`[data-control-index="${i}"]`);if(!element)continue;
     applyClipToElement(element,node,sourceClipArea(node));
@@ -309,6 +344,7 @@ function applySourceControlTree(root) {
     if(node.control?.properties?.Opacity!==undefined)opacityCount++;
     if(node.control?.properties?.Enabled!==undefined&&!visual.enabled)disabledCount++;
     if(visual.statefulIndexedButton)statefulButtonCount++;
+    if(visual.buttonVisual)buttonVisualCount++;
     if(visual.textBox)textBoxCount++;
     if(visual.scrollBar)scrollBarCount++;
     applied++;
@@ -318,9 +354,10 @@ function applySourceControlTree(root) {
   root.dataset.sourceOpacityNodes=String(opacityCount);
   root.dataset.sourceDisabledNodes=String(disabledCount);
   root.dataset.sourceIndexedButtonStateNodes=String(statefulButtonCount);
+  root.dataset.sourceButtonVisualNodes=String(buttonVisualCount);
   root.dataset.sourceTextBoxNodes=String(textBoxCount);
   root.dataset.sourceScrollBarNodes=String(scrollBarCount);
-  root.dataset.sourceVisualStatePolicy='DXControl ClipArea/Opacity/Enabled + DXButton indexed states + DXTextBox semantics + DXV/HScrollBar Value/Min/Max/VisibleSize/Change';
+  root.dataset.sourceVisualStatePolicy='DXControl ClipArea/Opacity/Enabled + DXButton 217/255 hover/press/disabled tint and 1px press offset + indexed states + DXTextBox semantics + DXV/HScrollBar Value/Min/Max/VisibleSize/Change';
 }
 
 function installDrag(root) {
@@ -352,7 +389,7 @@ fetch('ui-source-spec.json',{cache:'no-store'})
   .then(spec=>{
     sourceSpec=spec;
     stage.querySelectorAll('.window,.generic-window').forEach(root=>{installDrag(root);applySourceControlTree(root)});
-    console.info('ORIGINS source ClipArea/Opacity/Enabled/indexed-button/textbox/scrollbar runtime active');
+    console.info('ORIGINS source ClipArea/Opacity/Enabled/button/textbox/scrollbar runtime active');
   })
   .catch(error=>console.error('Unable to load Zircon source visual-state manifest',error));
 
