@@ -4,8 +4,8 @@
 //
 // This layer also enforces a visual source rule for nested windows: whenever a
 // control has literal LibraryFile + non-negative Index, the exact extracted PNG
-// replaces generic HTML chrome. This currently fixes the six Interface1c class /
-// gender buttons used by NewCharacterDialog.
+// replaces generic HTML chrome. Runtime-only textures/data remain explicitly
+// unrendered rather than being fabricated.
 
 const stage = document.querySelector('#stage');
 const topActions = document.querySelector('.top-actions');
@@ -38,6 +38,21 @@ const messageSelect = messageControl.querySelector('select');
 
 function suffix(element, name) {
   return String(element?.dataset?.controlName || '').endsWith(name);
+}
+function controlBySuffix(root,name) {
+  return [...(root?.querySelectorAll?.('[data-control-name]')||[])].find(element=>suffix(element,name))||null;
+}
+function closeNested(root) {
+  if (!root?.isConnected) return;
+  root.remove();
+  refreshReferenceControls();
+}
+function bindOnce(element,key,event,handler,options) {
+  if (!element) return;
+  const marker=`originsBound${key}`;
+  if (element.dataset[marker]==='true') return;
+  element.dataset[marker]='true';
+  element.addEventListener(event,handler,options);
 }
 
 function applyIndexedSourceArtwork(root) {
@@ -78,6 +93,22 @@ function applyMessageVariant(root, variant = messageSelect?.value || 'OK') {
   }
   root.dataset.runtimeMessage = 'constructor:string message';
   root.dataset.runtimeCaption = 'constructor:string caption';
+
+  for(const name of ['OKButton','YesButton','NoButton','CancelButton']) {
+    const button=controlBySuffix(root,name);
+    bindOnce(button,`Message${name}`,'click',event=>{
+      event.preventDefault();event.stopPropagation();closeNested(root);
+    });
+  }
+  root.tabIndex=0;
+  bindOnce(root,'MessageKeyboard','keydown',event=>{
+    const current=root.dataset.sourceVariant||'OK';
+    if(event.key==='Escape') {
+      if(current==='OK'||current==='YesNo') { event.preventDefault();closeNested(root); }
+    } else if(event.key==='Enter') {
+      if(current==='OK'||current==='YesNo') { event.preventDefault();closeNested(root); }
+    }
+  });
 }
 
 function annotateInput(root) {
@@ -85,6 +116,23 @@ function annotateInput(root) {
   root.dataset.runtimeMessage = 'constructor:string message';
   root.dataset.runtimeCaption = 'constructor:string caption';
   root.dataset.runtimeValue = 'user input';
+
+  const field=controlBySuffix(root,'ValueTextBox');
+  if(field) {
+    field.contentEditable='true';
+    field.spellcheck=false;
+    field.setAttribute('role','textbox');
+    field.dataset.runtimeEditable='true';
+    bindOnce(field,'InputValue','input',()=>{root.dataset.referenceInputValue=field.textContent||''});
+    bindOnce(field,'InputKeyboard','keydown',event=>{
+      if(event.key==='Enter') {event.preventDefault();closeNested(root)}
+      else if(event.key==='Escape') {event.preventDefault();closeNested(root)}
+    });
+  }
+  for(const name of ['ConfirmButton','CancelButton']) {
+    const button=controlBySuffix(root,name);
+    bindOnce(button,`Input${name}`,'click',event=>{event.preventDefault();event.stopPropagation();closeNested(root)});
+  }
 }
 
 function annotateItemAmount(root) {
@@ -93,23 +141,93 @@ function annotateItemAmount(root) {
   root.dataset.runtimeItem = 'constructor:ClientUserItem item';
   root.dataset.runtimeAmountMax = 'item.Count';
   root.dataset.runtimeAmountChange = 'Math.Max(1, item.Count / 5)';
-  const number = [...root.querySelectorAll('[data-control-name]')].find(el => suffix(el,'AmountBox'));
+  const number = controlBySuffix(root,'AmountBox');
   if (number) {
     number.dataset.runtimeMaxValue = 'item.Count';
     number.dataset.runtimeChange = 'Math.Max(1,item.Count/5)';
+    number.dataset.value='1';
     const field = number.querySelector('.dx-number-value');
     if (field) field.textContent = '1';
+    // Without the constructor ClientUserItem there is no truthful MaxValue or
+    // Change. Keep the source controls visible but deliberately non-interactive.
     number.querySelectorAll('.dx-number-up,.dx-number-down').forEach(button => {
       button.style.opacity = '.55';
       button.title = 'Requires runtime item.Count';
       button.style.pointerEvents = 'none';
     });
   }
-  const itemCell = [...root.querySelectorAll('[data-control-name]')].find(el => suffix(el,'ItemCell'));
+  const itemCell = controlBySuffix(root,'ItemCell');
   if (itemCell) {
     itemCell.dataset.runtimeItemGrid = 'new[] { item }';
     itemCell.title = 'Runtime ClientUserItem from constructor';
   }
+  const confirm=controlBySuffix(root,'ConfirmButton');
+  bindOnce(confirm,'AmountConfirm','click',event=>{event.preventDefault();event.stopPropagation();closeNested(root)});
+}
+
+function numberValue(element) {
+  const value=Number(element?.dataset?.value ?? 0);
+  return Number.isFinite(value)?Math.max(0,Math.min(255,Math.round(value))):0;
+}
+function annotateColourPicker(root) {
+  if (!root || root.dataset.nestedSourceClass !== 'DXColourPicker') return;
+  root.dataset.runtimePaletteTexture='RenderingPipelineManager.GetColourPaletteTexture()';
+  root.dataset.runtimeTarget='DXColourControl Target';
+  root.dataset.runtimePaletteInvented='false';
+
+  const red=controlBySuffix(root,'RedBox');
+  const green=controlBySuffix(root,'GreenBox');
+  const blue=controlBySuffix(root,'BlueBox');
+  const colour=controlBySuffix(root,'ColourBox');
+  const none=controlBySuffix(root,'NoColourLabel');
+  const palette=controlBySuffix(root,'ColourScaleBox');
+  const empty=controlBySuffix(root,'EmptyButton');
+
+  for(const box of [red,green,blue].filter(Boolean)) {
+    box.dataset.maxValue='255';
+    box.dataset.change='5';
+  }
+  if(palette) {
+    palette.dataset.runtimeTexture='RenderingPipelineManager.GetColourPaletteTexture()';
+    palette.title='Runtime Zircon colour palette texture; no substitute artwork fabricated.';
+  }
+  // AllowNoColour belongs to the calling DXColourControl. New picker default is
+  // false until Target/AllowNoColour is assigned, so the neutral reference hides it.
+  if(empty) {
+    empty.style.display='none';
+    empty.dataset.runtimeVisibility='AllowNoColour';
+  }
+
+  const update=()=>{
+    const r=numberValue(red),g=numberValue(green),b=numberValue(blue);
+    root.dataset.selectedColour=`${r},${g},${b}`;
+    if(colour) {
+      colour.style.backgroundColor=`rgb(${r}, ${g}, ${b})`;
+      colour.style.display='';
+      colour.dataset.selectedColour=root.dataset.selectedColour;
+    }
+    if(none) none.style.display='none';
+  };
+  update();
+
+  root._originsColourObserver?.disconnect?.();
+  const rgb=[red,green,blue].filter(Boolean);
+  const colourObserver=new MutationObserver(records=>{
+    if(records.some(record=>record.type==='attributes'&&record.attributeName==='data-value')) update();
+  });
+  for(const box of rgb) colourObserver.observe(box,{attributes:true,attributeFilter:['data-value']});
+  root._originsColourObserver=colourObserver;
+
+  const select=controlBySuffix(root,'SelectButton');
+  const cancel=controlBySuffix(root,'CancelButton');
+  bindOnce(select,'ColourSelect','click',event=>{event.preventDefault();event.stopPropagation();closeNested(root)});
+  bindOnce(cancel,'ColourCancel','click',event=>{event.preventDefault();event.stopPropagation();closeNested(root)});
+  bindOnce(empty,'ColourEmpty','click',event=>{
+    event.preventDefault();event.stopPropagation();
+    root.dataset.selectedColour='transparent';
+    if(colour) colour.style.display='none';
+    if(none) none.style.display='';
+  });
 }
 
 function initialiseNestedRoot(root) {
@@ -117,6 +235,7 @@ function initialiseNestedRoot(root) {
   applyMessageVariant(root);
   annotateInput(root);
   annotateItemAmount(root);
+  annotateColourPicker(root);
 }
 
 function refreshReferenceControls() {
