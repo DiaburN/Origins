@@ -99,6 +99,7 @@ def main() -> None:
         str(here / "audit_custom_draw_contracts.py"),
         "--spec", str(args.spec),
         "--zircon-root", str(here.parents[1] / ".source" / "Zircon"),
+        "--strict",
     ], check=True)
     subprocess.run(
         [sys.executable, str(here / "sanitize_final_viewer.py"), "--app-layout", str(args.spec.parent / "app-layout.js")],
