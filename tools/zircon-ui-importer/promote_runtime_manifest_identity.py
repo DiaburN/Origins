@@ -2,7 +2,7 @@
 """Promote stable viewer identity/state into a generated Zircon UI manifest.
 
 The static viewer registry is an explicit transcription of GameScene construction
-and is also the browser's canonical id/category/default-visible mapping.  The
+and is also the browser's canonical id/category/default-visible mapping. The
 base source parser historically inferred visibility by looking past each
 initializer, which can accidentally capture the next window's Visible=false.
 Promoting the canonical registry values here keeps the final artifact internally
@@ -13,6 +13,8 @@ from __future__ import annotations
 import argparse
 import json
 import re
+import subprocess
+import sys
 from pathlib import Path
 
 
@@ -93,6 +95,13 @@ def main() -> None:
     print(
         f"Stable runtime identity promoted: {assigned} GameScene + {nested_assigned} nested; "
         f"startup visibility corrected on {visibility_corrected} windows"
+    )
+
+    sanitizer = Path(__file__).with_name("sanitize_final_viewer.py")
+    app_layout = args.spec.parent / "app-layout.js"
+    subprocess.run(
+        [sys.executable, str(sanitizer), "--app-layout", str(app_layout)],
+        check=True,
     )
 
 
