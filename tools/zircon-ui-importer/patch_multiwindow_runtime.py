@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Bundle the validated viewer patch and the source-reference fidelity modules."""
+"""Bundle the validated viewer patch and modular source-fidelity runtimes."""
 from __future__ import annotations
 
 import runpy
@@ -20,24 +20,31 @@ index_path = build_root / "index.html"
 if not index_path.exists():
     raise SystemExit(f"Generated index missing: {index_path}")
 
-sources = [repo_root / "apps" / "zircon-ui-reference" / "visual-control-runtime.js"]
+visual = repo_root / "apps" / "zircon-ui-reference" / "visual-control-runtime.js"
+entries: list[tuple[Path, Path]] = [(visual, Path("visual-control-runtime.js"))]
 extra_dir = repo_root / "apps" / "zircon-ui-reference" / "extra-runtimes"
 if extra_dir.exists():
-    sources += sorted(extra_dir.glob("*.js"))
+    entries += [(source, Path("extra-runtimes") / source.name) for source in sorted(extra_dir.glob("*.js"))]
 
 index = index_path.read_text(encoding="utf-8")
 anchor = '  <script type="module" src="animated-control-runtime.js"></script>\n'
 if anchor not in index:
     raise SystemExit("Animated runtime script anchor missing")
 
-for source in sources:
-    target = build_root / source.name
+for source, relative in entries:
+    if not source.exists():
+        raise SystemExit(f"Fidelity runtime missing: {source}")
+    target = build_root / relative
+    target.parent.mkdir(parents=True, exist_ok=True)
     shutil.copyfile(source, target)
     subprocess.run(["node", "--check", str(target)], check=True)
-    tag = f'  <script type="module" src="{source.name}"></script>\n'
+    tag = f'  <script type="module" src="{relative.as_posix()}"></script>\n'
     index = index.replace(tag, "")
 
-block = anchor + "".join(f'  <script type="module" src="{source.name}"></script>\n' for source in sources)
+block = anchor + "".join(
+    f'  <script type="module" src="{relative.as_posix()}"></script>\n'
+    for _, relative in entries
+)
 index = index.replace(anchor, block, 1)
 index_path.write_text(index, encoding="utf-8")
 
@@ -45,4 +52,4 @@ animated = build_root / "animated-control-runtime.js"
 if not animated.exists():
     raise SystemExit(f"Bundled runtime missing: {animated}")
 subprocess.run(["node", "--check", str(animated)], check=True)
-print("Bundled fidelity runtimes:", ", ".join(source.name for source in sources))
+print("Bundled fidelity runtimes:", ", ".join(relative.as_posix() for _, relative in entries))
