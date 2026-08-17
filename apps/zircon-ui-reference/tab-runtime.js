@@ -1,3 +1,4 @@
+import './combo-runtime.js';
 import { gameSceneWindows } from './game-scene-windows.js';
 
 const stage = document.querySelector('#stage');
