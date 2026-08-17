@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
-"""Sanitize inspection-only fallbacks from the final source reference viewer.
+"""Sanitize/fix inspection-only fallbacks in the final source viewer.
 
 The catalog/QA shell may use technical names, but the reconstructed game stage
-must never render a C# field/control name just because source-visible text is
-absent.  Image-backed root controls also do not own the synthetic title/close
-chrome that the early viewer added for navigation convenience.
+must not render C# field/control names as game text. Image controls also need a
+strict distinction between a real literal source index, an animated BaseIndex,
+and runtime-only data (Index=-1 / symbolic runtime index).
 """
 from __future__ import annotations
 
@@ -25,6 +25,14 @@ def main() -> None:
     args = parser.parse_args()
 
     text = args.app_layout.read_text(encoding="utf-8")
+
+    old_index_parser = """function indexFrom(expression) {\n  const match = String(expression ?? '').match(/\\b(\\d+)\\b/);\n  return match ? Number(match[1]) : null;\n}\n"""
+    new_index_parser = """function indexFrom(expression) {\n  const value = String(expression ?? '').trim();\n  return /^-?\\d+$/.test(value) ? Number(value) : null;\n}\n"""
+    text = replace_once(text, old_index_parser, new_index_parser, "literal image-index parser")
+
+    old_image_block = """  if ((control.type === 'DXImageControl' || control.type === 'DXAnimatedControl') && library && index !== null) {\n    const element = image(asset(library,index),node.x,node.y,'ui-img',root);\n    element.style.width = `${node.width}px`; element.style.height = `${node.height}px`;\n    element.title = `${control.name}: ${control.type}`;\n    return element;\n  }\n"""
+    new_image_block = """  if (control.type === 'DXImageControl' || control.type === 'DXAnimatedControl') {\n    const baseIndex = indexFrom(p.BaseIndex);\n    const resolvedImageIndex = index !== null && index >= 0 ? index : (baseIndex !== null && baseIndex >= 0 ? baseIndex : null);\n    if (library && resolvedImageIndex !== null) {\n      const element = image(asset(library,resolvedImageIndex),node.x,node.y,'ui-img',root);\n      element.style.width = `${node.width}px`; element.style.height = `${node.height}px`;\n      element.dataset.sourceIndexOrigin = index !== null && index >= 0 ? 'Index' : 'BaseIndex';\n      return element;\n    }\n    if (boolFrom(p.DrawTexture,false) || boolFrom(p.Border,false) || p.BackColour !== undefined)\n      return renderStructuralControl(control,node,root);\n    return null;\n  }\n"""
+    text = replace_once(text, old_image_block, new_image_block, "DXImageControl/DXAnimatedControl neutral-index renderer")
 
     replacements = [
         (
@@ -48,11 +56,6 @@ def main() -> None:
             "DXCheckBox internal-name fallback",
         ),
         (
-            "    element.title = `${control.name}: ${control.type}`;\n",
-            "",
-            "indexed image technical tooltip",
-        ),
-        (
             "        element.style.width = `${node.width}px`; element.style.height = `${node.height}px`; element.title = `${control.name}: DXButton`;\n",
             "        element.style.width = `${node.width}px`; element.style.height = `${node.height}px`;\n",
             "indexed button technical tooltip",
@@ -61,6 +64,16 @@ def main() -> None:
             "      element.style.left = `${node.x}px`; element.style.top = `${node.y}px`; element.style.width = `${node.width}px`; element.style.height = `${node.height}px`; element.title = control.name;\n",
             "      element.style.left = `${node.x}px`; element.style.top = `${node.y}px`; element.style.width = `${node.width}px`; element.style.height = `${node.height}px`;\n",
             "item-cell technical tooltip",
+        ),
+        (
+            "      if (library && index !== null) {",
+            "      if (library && index !== null && index >= 0) {",
+            "DXButton negative-index guard",
+        ),
+        (
+            "  if (rootLibrary && rootIndex !== null) {",
+            "  if (rootLibrary && rootIndex !== null && rootIndex >= 0) {",
+            "root image negative-index guard",
         ),
     ]
     for old, new, label in replacements:
@@ -78,13 +91,14 @@ def main() -> None:
         "`${control.name}: ${control.type}`",
         "element.title = control.name",
         "className = 'window-title'",
+        "match(/\\b(\\d+)\\b/)",
     ]
     leaked = [value for value in forbidden_stage_fallbacks if value in text]
     if leaked:
-        raise SystemExit(f"Technical stage fallback survived sanitization: {leaked}")
+        raise SystemExit(f"Technical/unsafe stage fallback survived sanitization: {leaked}")
 
     args.app_layout.write_text(text, encoding="utf-8")
-    print("Final viewer sanitized: no control-name fallbacks, debug tooltips or synthetic image-root chrome")
+    print("Final viewer sanitized: literal indices only; runtime images neutral; no technical game-stage fallbacks")
 
 
 if __name__ == "__main__":
