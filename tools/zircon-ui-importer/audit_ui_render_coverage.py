@@ -186,13 +186,30 @@ def apply(spec: dict, repo_root: Path) -> dict:
     reroll=next((row for row in state_controls if row['window']=='LootBoxBox' and row['control']=='RerollButton'),None);expected_reroll={'normal':2926,'hover':2927,'pressed':2925}
     if not reroll or reroll.get('library')!='GameInter2' or reroll.get('states')!=expected_reroll: issues.append({'kind':'LOOTBOX_REROLL_STATE_CONTRACT_CHANGED','values':[reroll,expected_reroll]})
 
+    # Current Suprcode/Zircon source contract. Keep this locked to source names and
+    # values so upstream animation changes fail loudly instead of being silently
+    # rendered with stale frame ranges.
     if len(animations)!=17: issues.append({'kind':'ANIMATED_CONTROL_COUNT_CHANGED','values':len(animations)})
-    horse=next((row for row in animations if row['window']=='HorseTameBox' and row['control']=='Animation'),None)
-    if not horse or horse.get('baseIndex')!=3350 or horse.get('frameCount')!=40 or horse.get('loop') is not False: issues.append({'kind':'HORSE_TAME_ANIMATION_CONTRACT_CHANGED','values':horse})
-    action=next((row for row in animations if row['window']=='TimerBox' and row['control']=='ActionEffect'),None)
-    if not action or action.get('baseIndex')!=7600 or action.get('frameCount')!=32 or action.get('loop') is not False: issues.append({'kind':'TIMER_ACTION_ANIMATION_CONTRACT_CHANGED','values':action})
+    horse=next((row for row in animations if row['window']=='HorseTameBox' and row['control']=='LassoAnimation'),None)
+    if (
+        not horse
+        or horse.get('baseIndex')!=7600
+        or horse.get('frameCount')!=10
+        or horse.get('loop') is not True
+        or horse.get('animated') is not False
+    ):
+        issues.append({'kind':'HORSE_TAME_ANIMATION_CONTRACT_CHANGED','values':horse})
+
     egg=next((row for row in animations if row['window']=='TimerBox' and row['control']=='_eggTimer'),None)
-    if not egg or not egg.get('indexDrivenWithoutBaseIndex'): issues.append({'kind':'TIMER_EGG_INDEX_DRIVEN_CONTRACT_CHANGED','values':egg})
+    if (
+        not egg
+        or not egg.get('indexDrivenWithoutBaseIndex')
+        or egg.get('index')!=960
+        or egg.get('frameCount')!=6
+        or egg.get('loop') is not False
+        or egg.get('animated') is not True
+    ):
+        issues.append({'kind':'TIMER_EGG_ANIMATION_CONTRACT_CHANGED','values':egg})
 
     nested_runtime=repo_root/'apps/zircon-ui-reference/nested-variant-runtime.js';nested_text=nested_runtime.read_text(encoding='utf-8') if nested_runtime.exists() else ''
     missing_markers=[marker for marker in ['applyIndexedSourceArtwork','nested-source-indexed-control','sourceAsset(library,index)'] if marker not in nested_text]
