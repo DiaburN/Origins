@@ -5,6 +5,10 @@ Quest custom DXTab constructors and Guild helper-built tabs are expanded into
 source-backed, namespaced child controls. Runtime-created data rows/items are
 never fabricated: controls are imported only when their source Parent chain
 proves they belong to the tab being expanded.
+
+This pass also inventories source-referenced DXWindow subclasses that are not
+stored directly on GameScene. Those nested/transient windows must be reviewed
+before the desktop UI can honestly be called 100% complete.
 """
 from __future__ import annotations
 
@@ -43,6 +47,7 @@ GENERIC_INIT_RE = re.compile(
     r'new\s+([A-Za-z_][A-Za-z0-9_]*)\s*\{'
 )
 CTOR_DECL_RE = re.compile(r'\bpublic\s+([A-Za-z_][A-Za-z0-9_]*)\s*\(([^)]*)\)')
+NEW_TYPE_RE = re.compile(r'\bnew\s+([A-Za-z_][A-Za-z0-9_]*)\s*(?=\(|\{)')
 
 
 def normalise(value: str) -> str:
@@ -72,6 +77,48 @@ def nearest_render_type(source_type: str, bases: dict[str,str]) -> str|None:
             return current
         seen.add(current); current=bases.get(current,'')
     return None
+
+
+def derives_from(class_name: str, target: str, bases: dict[str,str]) -> bool:
+    current=class_name; seen=set()
+    while current and current not in seen:
+        if current==target:
+            return True
+        seen.add(current); current=bases.get(current,'')
+    return False
+
+
+def inventory_nested_windows(spec: dict, zircon_root: Path, bases: dict[str,str], sources: dict[str,Path], texts: dict[Path,str]) -> list[dict]:
+    """Inventory referenced DXWindow subclasses outside the 65 GameScene fields."""
+    main_classes={str(w.get('class')) for w in spec.get('windows',[]) if w.get('class')}
+    referenced_from: dict[str,set[str]] = defaultdict(set)
+    reference_count: Counter[str] = Counter()
+
+    for path,text in texts.items():
+        relative=path.relative_to(zircon_root).as_posix()
+        for source_type in NEW_TYPE_RE.findall(text):
+            if source_type in main_classes or source_type=='DXWindow':
+                continue
+            if not derives_from(source_type,'DXWindow',bases):
+                continue
+            reference_count[source_type]+=1
+            referenced_from[source_type].add(relative)
+
+    rows=[]
+    for source_type,count in sorted(reference_count.items(),key=lambda row:(row[0].lower(),row[0])):
+        path=sources.get(source_type)
+        if not path:
+            continue
+        rows.append({
+            'sourceClass':source_type,
+            'baseClass':bases.get(source_type),
+            'sourcePath':path.relative_to(zircon_root).as_posix(),
+            'referenceCount':int(count),
+            'referencedFrom':sorted(referenced_from[source_type]),
+            'renderStatus':'PENDING_SOURCE_RECONSTRUCTION',
+            'runtimeDataInvented':False,
+        })
+    return rows
 
 
 def constructor_parameterless(text: str, class_name: str) -> bool:
@@ -301,9 +348,6 @@ def main() -> None:
         }
         add_asset_refs(spec,additions); guild_total=len(additions)
 
-    # Freeze the current public Zircon helper structure. If upstream changes a
-    # helper, CI should force us to inspect the new source instead of silently
-    # dropping or fabricating controls.
     expected_guild={
         'CreateTab':17,'HomeTab':18,'MemberTab':1,'StorageTab':8,
         'WarTab':0,'StyleTab':6,'CastleTab':0,
@@ -313,9 +357,18 @@ def main() -> None:
     if guild_by_tab and guild_runtime_only != ['WarTab','CastleTab']:
         raise SystemExit(f'Guild runtime-only helper state changed: {guild_runtime_only}')
 
+    nested_windows=inventory_nested_windows(spec,args.zircon_root,bases,sources,texts)
+    spec['nestedWindowInventory']={
+        'sourceBacked':True,
+        'scope':'referenced Client classes deriving from DXWindow and not stored directly as GameScene fields',
+        'count':len(nested_windows),
+        'windows':nested_windows,
+        'allPendingSourceReconstruction':True,
+        'runtimeDataInvented':False,
+    }
+
     spec['compositePass']={
         'sourceBacked':True,
-        # Legacy alias kept until the workflow/doc validators are migrated.
         'childrenByTab':quest_by_tab,
         'questChildrenAdded':quest_total,
         'questChildrenByTab':quest_by_tab,
@@ -333,6 +386,9 @@ def main() -> None:
     print('Guild composite children added:',guild_total)
     print('Guild children by tab:',guild_by_tab)
     print('Guild runtime-only tabs:',guild_runtime_only)
+    print('Nested/transient DXWindow classes referenced:',len(nested_windows))
+    for row in nested_windows:
+        print('  NESTED',row['sourceClass'],'refs=',row['referenceCount'],'source=',row['sourcePath'])
     print('Constructor alias scope: source-ordered latest assignment')
 
 
