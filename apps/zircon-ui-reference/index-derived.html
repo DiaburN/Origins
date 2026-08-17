@@ -44,14 +44,15 @@
       </aside>
       <section class="desktop-wrap">
         <div id="stage" class="stage" aria-label="1024 by 768 Zircon desktop reference"></div>
-        <div id="selection-info" class="selection-info">Select any Zircon GameScene window from the catalog.</div>
+        <div id="selection-info" class="selection-info">Select any Zircon GameScene or nested/transient window from the catalog.</div>
       </section>
     </div>
-    <p class="note">Reference rule: artwork comes from current public Zircon .Zl libraries and geometry comes from Suprcode/Zircon source. Runtime sample text is not burned into source PNGs. The Guild state selector is a reference-only inspection tool outside the 1024×768 game desktop.</p>
+    <p class="note">Reference rule: artwork comes from current public Zircon .Zl libraries and geometry comes from Suprcode/Zircon source. Runtime data is never fabricated. Guild and MessageBox selectors are reference-only inspection tools outside the 1024×768 game desktop.</p>
   </main>
   <script type="module" src="app-layout.js"></script>
   <script type="module" src="window-runtime.js"></script>
   <script type="module" src="interaction-runtime.js"></script>
+  <script type="module" src="nested-variant-runtime.js"></script>
   <script type="module" src="tab-runtime.js"></script>
 </body>
 </html>
