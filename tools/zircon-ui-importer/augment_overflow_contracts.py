@@ -28,6 +28,28 @@ def main() -> None:
     spec = json.loads(args.spec.read_text(encoding="utf-8"))
     by_field = {item.get("field"): item for item in spec.get("windows", [])}
 
+    # MiniMap source intentionally inflates ClientArea by 6px on every side.
+    # With the source-default 200x200 window this produces (3,31,194,172),
+    # extending three pixels below the root before source clipping.
+    mini = by_field["MiniMapBox"]
+    mini_panel = control(mini, name="Panel")
+    mini_panel["overflowContract"] = {
+        "kind": "SOURCE_INFLATED_DRAW_AREA",
+        "reason": "OnClientAreaChanged: Area=ClientArea; Area.Inflate(6,6)",
+        "runtimeDataInvented": False,
+    }
+
+    # MagicDialog explicitly uses Interface #164 at (0,66). Its source asset is
+    # 420x448 while the root is 419x511: one-pixel horizontal / three-pixel
+    # vertical bleed is therefore source-authored, not a resolver error.
+    magic = by_field["MagicBox"]
+    magic_background = control(magic, name="BackgroundImage")
+    magic_background["overflowContract"] = {
+        "kind": "SOURCE_ASSET_BLEED",
+        "reason": "MagicDialog: root 419x511; Interface#164 at (0,66), source asset 420x448",
+        "runtimeDataInvented": False,
+    }
+
     # NPCGoodsDialog constructor intentionally places GuildCheckBox at x=200.
     # NewGoods(...) later moves it to x=120 and decides visibility from currency.
     goods = by_field["NPCGoodsBox"]
@@ -92,6 +114,8 @@ def main() -> None:
     group["dynamicHeightContract"] = "SetClientSize(new Size(300, 60 + Label.Size.Height))"
 
     contracts = [
+        ("MiniMapBox", "Panel", "SOURCE_INFLATED_DRAW_AREA"),
+        ("MagicBox", "BackgroundImage", "SOURCE_ASSET_BLEED"),
         ("NPCGoodsBox", "GuildCheckBox", "SOURCE_RUNTIME_RELOCATION"),
         ("NPCRollBox", "_animation", "RUNTIME_SIZED_MINIGAME"),
         ("TimerBox", "_eggTimer", "SOURCE_OFFSET_PARENT_CLIP"),
