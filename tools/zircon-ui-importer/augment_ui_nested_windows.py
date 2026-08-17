@@ -3,11 +3,9 @@
 
 GameScene owns the 65 persistent/top-level in-game UI entries, but Zircon also
 creates modal/transient DXWindow subclasses from those dialogs. This pass turns
-`nestedWindowInventory` rows into renderable source specs without inventing
-runtime list/data content.
-
-The result is stored separately as `nestedWindows`; `windowCount` remains the
-canonical 65 GameScene entries so existing runtime contracts do not change.
+`nestedWindowInventory` rows into renderable source specs and recursively expands
+parameterless custom controls (for example KeyBindTree -> DXVScrollBar) without
+inventing runtime list/data content.
 """
 from __future__ import annotations
 
@@ -17,13 +15,21 @@ import re
 from pathlib import Path
 
 from build_ui_source_spec import ROOT_PROPS, constructor_body, simple_assignments
-from augment_ui_composites import add_asset_refs, build_class_index, namespace_children, prepare_controls
+from augment_ui_composites import (
+    RENDER_TYPES,
+    add_asset_refs,
+    build_class_index,
+    expand_instance,
+    namespace_children,
+    prepare_controls,
+)
 
 CTOR_RE = re.compile(r"\bpublic\s+([A-Za-z_][A-Za-z0-9_]*)\s*\(([^)]*)\)")
 
 
 def slug(name: str) -> str:
-    value = re.sub(r"(?<!^)(?=[A-Z])", "-", name).lower()
+    first = re.sub(r"(.)([A-Z][a-z]+)", r"\1-\2", name)
+    value = re.sub(r"([a-z0-9])([A-Z])", r"\1-\2", first).lower()
     return re.sub(r"[^a-z0-9-]+", "-", value).strip("-")
 
 
@@ -39,18 +45,21 @@ def root_properties(body: str) -> dict[str, str]:
         "Modal", "Title", "Text", "AllowResize", "AutomaticVisibility",
         "CustomSize", "HasFooter", "SlimFooter", "HasTitle", "HasTopBorder",
     }
-    return simple_assignments(body, allowed)
+    root = simple_assignments(body, allowed)
+    title = re.search(r"\bTitleLabel\.Text\s*=\s*(.+?)\s*;", body, re.S)
+    if title:
+        root["Title"] = " ".join(title.group(1).split())
+    close = re.search(r"\bCloseButton\.Visible\s*=\s*(true|false)\s*;", body)
+    if close:
+        root["CloseButtonVisible"] = close.group(1)
+    return root
 
 
 def category_for(source_path: str) -> str:
-    if "/LoginScene.cs" in source_path:
-        return "login"
-    if "/SelectScene.cs" in source_path:
-        return "character-select"
-    if "GroupDialog.cs" in source_path:
-        return "group"
-    if "ConsignmentDialog.cs" in source_path:
-        return "market"
+    if "/LoginScene.cs" in source_path: return "login"
+    if "/SelectScene.cs" in source_path: return "character-select"
+    if "GroupDialog.cs" in source_path: return "group"
+    if "ConsignmentDialog.cs" in source_path: return "market"
     return "modal"
 
 
@@ -59,26 +68,34 @@ def apply(spec: dict, zircon_root: Path) -> dict:
     bases, sources, texts = build_class_index(zircon_root)
     nested: list[dict] = []
     skipped: list[dict] = []
+    composite_children = 0
+    composite_by_window: dict[str,int] = {}
 
     for row in inventory:
         class_name = row.get("sourceClass")
         source_path = row.get("sourcePath")
         path = sources.get(class_name)
         if not class_name or not source_path or not path:
-            skipped.append({"sourceClass": class_name, "reason": "source missing"})
-            continue
+            skipped.append({"sourceClass": class_name, "reason": "source missing"}); continue
         text = texts[path]
         body = constructor_body(text, class_name)
         if not body:
-            skipped.append({"sourceClass": class_name, "reason": "constructor not found"})
-            continue
+            skipped.append({"sourceClass": class_name, "reason": "constructor not found"}); continue
 
-        controls = prepare_controls(body, class_name, text, bases, sources, texts)
-        controls = namespace_children(controls, class_name)
+        controls = namespace_children(prepare_controls(body, class_name, text, bases, sources, texts), class_name)
         for control in controls:
-            props = control.setdefault("properties", {})
-            if props.get("Parent") == class_name:
-                props["Parent"] = "this"
+            if control.setdefault("properties", {}).get("Parent") == class_name:
+                control["properties"]["Parent"] = "this"
+
+        additions=[]
+        for control in list(controls):
+            if control.get("sourceType") in RENDER_TYPES:
+                continue
+            children=expand_instance(control,bases,sources,texts,1,2)
+            additions.extend(children)
+        controls.extend(additions)
+        composite_children += len(additions)
+        composite_by_window[class_name]=len(additions)
 
         item = {
             "id": f"nested-{slug(class_name)}",
@@ -97,18 +114,20 @@ def apply(spec: dict, zircon_root: Path) -> dict:
             "referencedFrom": row.get("referencedFrom", []),
             "runtimeDataInvented": False,
             "renderStatus": "SOURCE_RECONSTRUCTED",
+            "customCompositeChildren": len(additions),
         }
         add_asset_refs(spec, controls)
         nested.append(item)
-        row["renderStatus"] = "SOURCE_RECONSTRUCTED"
-        row["controlCount"] = len(controls)
-        row["nestedId"] = item["id"]
+        row.update(renderStatus="SOURCE_RECONSTRUCTED", controlCount=len(controls), nestedId=item["id"], customCompositeChildren=len(additions))
 
     spec["nestedWindows"] = nested
     report = spec.setdefault("nestedWindowInventory", {})
-    report["reconstructedCount"] = len(nested)
-    report["skipped"] = skipped
-    report["allPendingSourceReconstruction"] = bool(skipped)
+    report.update(
+        reconstructedCount=len(nested), skipped=skipped,
+        allPendingSourceReconstruction=bool(skipped),
+        compositeChildrenAdded=composite_children,
+        compositeChildrenByWindow=composite_by_window,
+    )
 
     expected = {
         'DXColourPicker','DXInputWindow','DXItemAmountWindow','DXKeyBindWindow','DXMessageBox',
@@ -121,7 +140,9 @@ def apply(spec: dict, zircon_root: Path) -> dict:
         raise RuntimeError(f"Nested Zircon window inventory changed: {sorted(actual)}")
     if skipped or len(nested) != len(expected):
         raise RuntimeError(f"Nested Zircon source reconstruction incomplete: nested={len(nested)} skipped={skipped}")
-
+    keybind=next((w for w in nested if w['sourceClass']=='DXKeyBindWindow'),None)
+    if not keybind or not any(c.get('type')=='DXVScrollBar' for c in keybind.get('controls',[])):
+        raise RuntimeError('DXKeyBindWindow KeyBindTree scrollbar composite was not expanded')
     return report
 
 
@@ -134,9 +155,10 @@ def main() -> None:
     report=apply(spec,args.zircon_root)
     args.spec.write_text(json.dumps(spec, indent=2, ensure_ascii=False), encoding="utf-8")
     print("Nested/transient windows source-reconstructed:", report.get('reconstructedCount',0))
+    print("Nested custom composite children added:", report.get('compositeChildrenAdded',0))
     print("Nested/transient windows skipped:", len(report.get('skipped',[])))
     for item in spec.get('nestedWindows',[]):
-        print("  RECONSTRUCTED", item["sourceClass"], "controls=", len(item["controls"]), "ctor=", item["constructorSignature"] or "()")
+        print("  RECONSTRUCTED", item["sourceClass"], "controls=", len(item["controls"]), "customChildren=",item.get('customCompositeChildren',0))
 
 
 if __name__ == "__main__":
