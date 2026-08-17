@@ -9,7 +9,8 @@ Build-time only:
 - reproduces CharacterDialog equipment preview body at the exact Zircon anchor,
 - reproduces CharacterDialog hidden equipment hit-zones and source slot artwork,
 - reproduces DXNumberBox Up/Down behavior from Zircon using real 1010/1011 buttons,
-- reproduces DXSoundBar mute/value/track/drag behavior from Zircon using 4740-4746.
+- reproduces DXSoundBar mute/value/track/drag behavior from Zircon using 4740-4746,
+- bundles the source-faithful DXAnimatedControl runtime into the generated viewer.
 
 Close-all/reset still use removeTransientWindows().
 """
@@ -67,12 +68,20 @@ def main() -> None:
     text = replace_exact(text, SOUNDBAR_OLD, SOUNDBAR_NEW, "DXSoundBar renderer")
     text = replace_exact(text, SOUNDBAR_CASE_OLD, SOUNDBAR_CASE_NEW, "DXSoundBar render dispatch")
     args.app.write_text(text, encoding="utf-8")
+
+    animated_source = Path("apps/zircon-ui-reference/animated-control-runtime.js")
+    if not animated_source.exists():
+        raise SystemExit(f"Missing source-faithful animation runtime: {animated_source}")
+    animated_target = args.app.with_name("animated-control-runtime.js")
+    animated_target.write_text(animated_source.read_text(encoding="utf-8"), encoding="utf-8")
+
     print("Patched openWindow for simultaneous Zircon dialogs")
     print("Tagged rendered controls with stable source indices/names/types/parents")
     print("Patched CharacterDialog preview to ProgUse #0 at source anchor 130,270")
     print("Patched CharacterDialog DXItemCell Hidden semantics and source slot artwork")
     print("Patched DXNumberBox with clickable 1011/1010 Change/Min/Max behavior")
     print("Patched DXSoundBar with 4740-4746 mute/value/track/drag behavior")
+    print("Bundled source-faithful DXAnimatedControl runtime")
 
 
 if __name__ == "__main__":
