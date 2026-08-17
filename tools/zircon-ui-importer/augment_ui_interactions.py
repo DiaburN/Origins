@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Extract simple source-backed GameScene interactions and final placement audit."""
+"""Extract source-backed interactions and run final placement/render audits."""
 from __future__ import annotations
 
 import argparse
@@ -7,6 +7,7 @@ import json
 import re
 from pathlib import Path
 
+from audit_ui_render_coverage import apply as audit_render_coverage
 from audit_ui_unplaced_controls import apply as audit_unplaced_controls
 
 CLICK_EXPR_RE = re.compile(r"\b([A-Za-z_][A-Za-z0-9_]*)\.MouseClick\s*\+=\s*\([^)]*\)\s*=>\s*([^;]+);",re.S)
@@ -68,24 +69,32 @@ def main() -> None:
         if extracted: window["interactions"]=extracted;interactions.extend(extracted)
     spec["interactions"]=interactions
 
-    audit=audit_unplaced_controls(spec,args.zircon_root)
+    placement=audit_unplaced_controls(spec,args.zircon_root)
+    render=audit_render_coverage(spec,Path('.'))
     game_explicit=explicit_locations(spec.get('windows',[]));nested_explicit=explicit_locations(spec.get('nestedWindows',[]))
     spec["interactionPass"]={
         "source":"direct Zircon MouseClick -> GameScene window visibility/ToggleOpen relationships","count":len(interactions),"sourceBackedOnly":True,
         "gameExplicitLocationFloor":MIN_GAME_EXPLICIT_LOCATIONS,"nestedExplicitLocationFloor":MIN_NESTED_EXPLICIT_LOCATIONS,
         "gameExplicitLocations":game_explicit,"nestedExplicitLocations":nested_explicit,"zeroUnknownPlacementRequired":True,
+        "renderCoverageIssueCount":render.get('issueCount',0),
     }
     args.spec.write_text(json.dumps(spec,indent=2,ensure_ascii=False),encoding="utf-8")
     print("Source-backed window interactions:",len(interactions))
     for interaction in interactions: print(interaction["sourceField"],interaction["control"],"->",interaction["action"],interaction["targetField"])
     print('Explicit GameScene Locations:',game_explicit)
     print('Explicit nested Locations:',nested_explicit)
-    print('Controls without Location:',audit['totalControlsWithoutConstructorLocation'])
-    print('Unplaced classifications:',audit['classificationCounts'])
-    print('UNKNOWN unplaced controls:',audit['unknownCount'])
-    for row in audit['unknown'][:100]: print('  UNKNOWN',row['window'],row['control'],row['type'],'parent=',row.get('parent'))
-    if audit['unknownCount']:
-        raise SystemExit(f"Unclassified controls without source-backed layout: {audit['unknownCount']}")
+    print('Controls without Location:',placement['totalControlsWithoutConstructorLocation'])
+    print('Unplaced classifications:',placement['classificationCounts'])
+    print('UNKNOWN unplaced controls:',placement['unknownCount'])
+    print('Game render type coverage:',render['gameTypeCoverage'])
+    print('Nested render type coverage:',render['nestedTypeCoverage'])
+    print('Indexed GameScene controls:',render['indexedGameControls'])
+    print('Indexed nested controls:',render['indexedNestedControls'])
+    print('Render audit issues:',render['issueCount'])
+    if placement['unknownCount']:
+        raise SystemExit(f"Unclassified controls without source-backed layout: {placement['unknownCount']}")
+    if render['issueCount']:
+        raise SystemExit(f"Zircon render coverage audit failed: {render['issues']}")
     if game_explicit < MIN_GAME_EXPLICIT_LOCATIONS:
         raise SystemExit(f"GameScene explicit Location coverage regressed: {game_explicit} < {MIN_GAME_EXPLICIT_LOCATIONS}")
     if nested_explicit < MIN_NESTED_EXPLICIT_LOCATIONS:
