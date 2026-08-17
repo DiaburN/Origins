@@ -1,20 +1,20 @@
 #!/usr/bin/env python3
 """Reconstruct source-defined Zircon DXWindow classes outside GameScene.
 
-GameScene owns the 65 persistent/top-level in-game UI entries, but Zircon also
-creates modal/transient DXWindow subclasses from those dialogs. This pass turns
-`nestedWindowInventory` rows into renderable source specs and recursively expands
-parameterless custom controls (for example KeyBindTree -> DXVScrollBar) without
-inventing runtime list/data content.
+Besides object initializers, Zircon frequently positions modal controls with
+source-ordered post assignments such as `label.Location = ...`. This pass keeps
+those assignments with C# temporal local-variable semantics so repeated locals
+(e.g. `label`) are attached to the correct control rather than falling to (0,0).
 """
 from __future__ import annotations
 
 import argparse
 import json
 import re
+from collections import defaultdict, deque
 from pathlib import Path
 
-from build_ui_source_spec import ROOT_PROPS, constructor_body, simple_assignments
+from build_ui_source_spec import ROOT_PROPS, constructor_body, simple_assignments, strip_leading_comments, top_level_statements
 from augment_ui_composites import (
     RENDER_TYPES,
     add_asset_refs,
@@ -25,6 +25,16 @@ from augment_ui_composites import (
 )
 
 CTOR_RE = re.compile(r"\bpublic\s+([A-Za-z_][A-Za-z0-9_]*)\s*\(([^)]*)\)")
+INIT_STATEMENT_RE = re.compile(r"^(?:(?:[A-Za-z_][A-Za-z0-9_<>]*\s+)?)([A-Za-z_][A-Za-z0-9_]*)\s*=\s*new(?:\s+[A-Za-z_][A-Za-z0-9_]*)?\s*(?:\(|\{)", re.S)
+POST_ASSIGN_RE = re.compile(r"^([A-Za-z_][A-Za-z0-9_]*)\.([A-Za-z_][A-Za-z0-9_]*)\s*=\s*(.+)$", re.S)
+POST_PROPERTIES = {
+    'Location','Size','Visible','Enabled','Checked','Text','Parent','BackColour','Border','DrawTexture','AutoSize',
+    'MaxValue','MinValue','Change','Value','Opacity','ReadOnly','FixedSize','KeepFocus',
+}
+
+
+def normalise(value: str) -> str:
+    return ' '.join(str(value).strip().split())
 
 
 def slug(name: str) -> str:
@@ -48,7 +58,7 @@ def root_properties(body: str) -> dict[str, str]:
     root = simple_assignments(body, allowed)
     title = re.search(r"\bTitleLabel\.Text\s*=\s*(.+?)\s*;", body, re.S)
     if title:
-        root["Title"] = " ".join(title.group(1).split())
+        root["Title"] = normalise(title.group(1))
     close = re.search(r"\bCloseButton\.Visible\s*=\s*(true|false)\s*;", body)
     if close:
         root["CloseButtonVisible"] = close.group(1)
@@ -64,15 +74,10 @@ def category_for(source_path: str) -> str:
 
 
 def runtime_contract_for(class_name: str) -> dict:
-    """Describe only runtime dependencies explicitly present in Zircon source."""
     contracts = {
         "DXMessageBox": {
             "constructorRuntime": ["string message", "string caption", "DXMessageBoxButtons buttons = OK"],
-            "sourceVariants": {
-                "OK": ["OKButton"],
-                "YesNo": ["YesButton", "NoButton"],
-                "Cancel": ["CancelButton"],
-            },
+            "sourceVariants": {"OK": ["OKButton"], "YesNo": ["YesButton", "NoButton"], "Cancel": ["CancelButton"]},
             "defaultReviewVariant": "OK",
             "sizeDependency": "Label.Size = (380, DXLabel.GetSize(message).Height); SetClientSize(Label.Size)",
             "inventRuntimeText": False,
@@ -85,26 +90,62 @@ def runtime_contract_for(class_name: str) -> dict:
         },
         "DXItemAmountWindow": {
             "constructorRuntime": ["string caption", "ClientUserItem item"],
-            "amountMax": "item.Count",
-            "amountChange": "Math.Max(1, item.Count / 5)",
-            "initialValue": 1,
-            "itemCellData": "new[] { item }",
-            "inventRuntimeItem": False,
+            "amountMax": "item.Count", "amountChange": "Math.Max(1, item.Count / 5)", "initialValue": 1,
+            "itemCellData": "new[] { item }", "inventRuntimeItem": False,
         },
         "DXColourPicker": {
-            "runtimeTexture": "RenderingPipelineManager.GetColourPaletteTexture()",
-            "runtimeTarget": "DXColourControl Target",
-            "rgbRange": [0, 255],
-            "rgbChange": 5,
-            "inventPaletteTexture": False,
+            "runtimeTexture": "RenderingPipelineManager.GetColourPaletteTexture()", "runtimeTarget": "DXColourControl Target",
+            "rgbRange": [0, 255], "rgbChange": 5, "inventPaletteTexture": False,
         },
         "DXKeyBindWindow": {
-            "runtimeRows": "CEnvir.KeyBinds grouped by BindInfo.Category",
-            "sourceTreeScrollbar": True,
-            "inventKeyBindings": False,
+            "runtimeRows": "CEnvir.KeyBinds grouped by BindInfo.Category", "sourceTreeScrollbar": True, "inventKeyBindings": False,
         },
     }
     return contracts.get(class_name, {})
+
+
+def replace_current_refs(expression: str, current: dict[str,dict]) -> str:
+    value=str(expression)
+    for source_name, control in sorted(current.items(), key=lambda row: len(row[0]), reverse=True):
+        value=re.sub(rf"\b{re.escape(source_name)}\b", control['name'], value)
+    return normalise(value)
+
+
+def apply_post_assignments(body: str, controls: list[dict]) -> int:
+    """Apply constructor top-level `control.Property = expression` assignments.
+
+    Repeated C# local names are resolved to the latest initializer encountered in
+    source order. Lambda/event-body assignments are not top-level statements and
+    therefore cannot accidentally overwrite constructor geometry/state here.
+    """
+    queues: dict[str,deque] = defaultdict(deque)
+    for control in controls:
+        queues[str(control.get('sourceName',''))].append(control)
+    current: dict[str,dict] = {}
+    changed=0
+    for raw in top_level_statements(body):
+        statement=normalise(strip_leading_comments(raw)).rstrip(';').strip()
+        init=INIT_STATEMENT_RE.match(statement)
+        if init:
+            name=init.group(1)
+            if queues.get(name):
+                current[name]=queues[name].popleft()
+            continue
+        match=POST_ASSIGN_RE.match(statement)
+        if not match:
+            continue
+        name,prop,expression=match.groups()
+        if prop not in POST_PROPERTIES or name not in current:
+            continue
+        control=current[name]
+        props=control.setdefault('properties',{})
+        expression=replace_current_refs(expression,current)
+        if prop in props and normalise(props[prop]) != expression:
+            control.setdefault('sourceInitializerBeforePostAssignment',{})[prop]=props[prop]
+        control.setdefault('sourcePostAssignments',{})[prop]=expression
+        props[prop]=expression
+        changed+=1
+    return changed
 
 
 def apply(spec: dict, zircon_root: Path) -> dict:
@@ -114,6 +155,8 @@ def apply(spec: dict, zircon_root: Path) -> dict:
     skipped: list[dict] = []
     composite_children = 0
     composite_by_window: dict[str,int] = {}
+    post_assignments=0
+    post_by_window: dict[str,int]={}
 
     for row in inventory:
         class_name = row.get("sourceClass")
@@ -130,6 +173,8 @@ def apply(spec: dict, zircon_root: Path) -> dict:
         for control in controls:
             if control.setdefault("properties", {}).get("Parent") == class_name:
                 control["properties"]["Parent"] = "this"
+        post_count=apply_post_assignments(body,controls)
+        post_assignments+=post_count; post_by_window[class_name]=post_count
 
         additions=[]
         for control in list(controls):
@@ -142,66 +187,50 @@ def apply(spec: dict, zircon_root: Path) -> dict:
         composite_by_window[class_name]=len(additions)
 
         item = {
-            "id": f"nested-{slug(class_name)}",
-            "field": class_name,
-            "class": class_name,
-            "sourceClass": class_name,
-            "baseClass": bases.get(class_name, "DXWindow"),
-            "sourcePath": source_path,
-            "constructorSignature": constructor_signature(text, class_name),
-            "defaultVisible": False,
-            "nested": True,
-            "category": category_for(source_path),
-            "root": root_properties(body),
-            "controls": controls,
-            "referenceCount": row.get("referenceCount", 0),
-            "referencedFrom": row.get("referencedFrom", []),
-            "runtimeDataInvented": False,
-            "runtimeContract": runtime_contract_for(class_name),
-            "renderStatus": "SOURCE_RECONSTRUCTED",
-            "customCompositeChildren": len(additions),
+            "id": f"nested-{slug(class_name)}", "field": class_name, "class": class_name, "sourceClass": class_name,
+            "baseClass": bases.get(class_name, "DXWindow"), "sourcePath": source_path,
+            "constructorSignature": constructor_signature(text, class_name), "defaultVisible": False, "nested": True,
+            "category": category_for(source_path), "root": root_properties(body), "controls": controls,
+            "referenceCount": row.get("referenceCount", 0), "referencedFrom": row.get("referencedFrom", []),
+            "runtimeDataInvented": False, "runtimeContract": runtime_contract_for(class_name),
+            "renderStatus": "SOURCE_RECONSTRUCTED", "customCompositeChildren": len(additions),
+            "postInitializerAssignmentsApplied": post_count,
         }
         add_asset_refs(spec, controls)
         nested.append(item)
-        row.update(
-            renderStatus="SOURCE_RECONSTRUCTED",
-            controlCount=len(controls),
-            nestedId=item["id"],
-            customCompositeChildren=len(additions),
-            runtimeContract=item["runtimeContract"],
-        )
+        row.update(renderStatus="SOURCE_RECONSTRUCTED", controlCount=len(controls), nestedId=item["id"],
+                   customCompositeChildren=len(additions), runtimeContract=item["runtimeContract"], postInitializerAssignmentsApplied=post_count)
 
     spec["nestedWindows"] = nested
     report = spec.setdefault("nestedWindowInventory", {})
     report.update(
-        reconstructedCount=len(nested), skipped=skipped,
-        allPendingSourceReconstruction=bool(skipped),
-        compositeChildrenAdded=composite_children,
-        compositeChildrenByWindow=composite_by_window,
-        runtimeContractsPreserved=True,
-        runtimeValuesInvented=False,
+        reconstructedCount=len(nested), skipped=skipped, allPendingSourceReconstruction=bool(skipped),
+        compositeChildrenAdded=composite_children, compositeChildrenByWindow=composite_by_window,
+        postInitializerAssignmentsApplied=post_assignments, postInitializerAssignmentsByWindow=post_by_window,
+        runtimeContractsPreserved=True, runtimeValuesInvented=False,
     )
 
     expected = {
         'DXColourPicker','DXInputWindow','DXItemAmountWindow','DXKeyBindWindow','DXMessageBox',
         'GroupLFGInputWindow','MarketPlaceHistoryDialog','ActivationDialog','ChangePasswordDialog',
-        'NewAccountDialog','NewCharacterDialog','RequestActivationKeyDialog',
-        'RequestResetPasswordDialog','ResetPasswordDialog','SelectDialog',
+        'NewAccountDialog','NewCharacterDialog','RequestActivationKeyDialog','RequestResetPasswordDialog','ResetPasswordDialog','SelectDialog',
     }
     actual={row.get('sourceClass') for row in inventory}
     if actual != expected:
         raise RuntimeError(f"Nested Zircon window inventory changed: {sorted(actual)}")
     if skipped or len(nested) != len(expected):
         raise RuntimeError(f"Nested Zircon source reconstruction incomplete: nested={len(nested)} skipped={skipped}")
-    keybind=next((w for w in nested if w['sourceClass']=='DXKeyBindWindow'),None)
-    if not keybind or not any(c.get('type')=='DXVScrollBar' for c in keybind.get('controls',[])):
+    keybind=next(w for w in nested if w['sourceClass']=='DXKeyBindWindow')
+    if not any(c.get('type')=='DXVScrollBar' for c in keybind.get('controls',[])):
         raise RuntimeError('DXKeyBindWindow KeyBindTree scrollbar composite was not expanded')
-    message=next((w for w in nested if w['sourceClass']=='DXMessageBox'),None)
+    message=next(w for w in nested if w['sourceClass']=='DXMessageBox')
     if message.get('runtimeContract',{}).get('sourceVariants',{}).get('YesNo') != ['YesButton','NoButton']:
         raise RuntimeError('DXMessageBox source variant contract lost')
-    amount=next((w for w in nested if w['sourceClass']=='DXItemAmountWindow'),None)
+    amount=next(w for w in nested if w['sourceClass']=='DXItemAmountWindow')
     if amount.get('runtimeContract',{}).get('amountMax') != 'item.Count':
         raise RuntimeError('DXItemAmountWindow runtime item.Count contract lost')
+    if post_assignments < 20:
+        raise RuntimeError(f'Nested post-initializer source assignment coverage unexpectedly low: {post_assignments}')
     return report
 
 
@@ -215,10 +244,11 @@ def main() -> None:
     args.spec.write_text(json.dumps(spec, indent=2, ensure_ascii=False), encoding="utf-8")
     print("Nested/transient windows source-reconstructed:", report.get('reconstructedCount',0))
     print("Nested custom composite children added:", report.get('compositeChildrenAdded',0))
+    print("Nested post-initializer assignments applied:", report.get('postInitializerAssignmentsApplied',0))
     print("Nested runtime contracts preserved:", report.get('runtimeContractsPreserved'))
     print("Nested/transient windows skipped:", len(report.get('skipped',[])))
     for item in spec.get('nestedWindows',[]):
-        print("  RECONSTRUCTED", item["sourceClass"], "controls=", len(item["controls"]), "customChildren=",item.get('customCompositeChildren',0))
+        print("  RECONSTRUCTED", item["sourceClass"], "controls=", len(item["controls"]), "post=",item.get('postInitializerAssignmentsApplied',0))
 
 
 if __name__ == "__main__":
