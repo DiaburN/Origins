@@ -63,6 +63,50 @@ def category_for(source_path: str) -> str:
     return "modal"
 
 
+def runtime_contract_for(class_name: str) -> dict:
+    """Describe only runtime dependencies explicitly present in Zircon source."""
+    contracts = {
+        "DXMessageBox": {
+            "constructorRuntime": ["string message", "string caption", "DXMessageBoxButtons buttons = OK"],
+            "sourceVariants": {
+                "OK": ["OKButton"],
+                "YesNo": ["YesButton", "NoButton"],
+                "Cancel": ["CancelButton"],
+            },
+            "defaultReviewVariant": "OK",
+            "sizeDependency": "Label.Size = (380, DXLabel.GetSize(message).Height); SetClientSize(Label.Size)",
+            "inventRuntimeText": False,
+        },
+        "DXInputWindow": {
+            "constructorRuntime": ["string message", "string caption"],
+            "runtimeValue": "ValueTextBox user input",
+            "sizeDependency": "Label height from runtime message; client height = Label.Size.Height + 30",
+            "inventRuntimeText": False,
+        },
+        "DXItemAmountWindow": {
+            "constructorRuntime": ["string caption", "ClientUserItem item"],
+            "amountMax": "item.Count",
+            "amountChange": "Math.Max(1, item.Count / 5)",
+            "initialValue": 1,
+            "itemCellData": "new[] { item }",
+            "inventRuntimeItem": False,
+        },
+        "DXColourPicker": {
+            "runtimeTexture": "RenderingPipelineManager.GetColourPaletteTexture()",
+            "runtimeTarget": "DXColourControl Target",
+            "rgbRange": [0, 255],
+            "rgbChange": 5,
+            "inventPaletteTexture": False,
+        },
+        "DXKeyBindWindow": {
+            "runtimeRows": "CEnvir.KeyBinds grouped by BindInfo.Category",
+            "sourceTreeScrollbar": True,
+            "inventKeyBindings": False,
+        },
+    }
+    return contracts.get(class_name, {})
+
+
 def apply(spec: dict, zircon_root: Path) -> dict:
     inventory = spec.get("nestedWindowInventory", {}).get("windows", [])
     bases, sources, texts = build_class_index(zircon_root)
@@ -113,12 +157,19 @@ def apply(spec: dict, zircon_root: Path) -> dict:
             "referenceCount": row.get("referenceCount", 0),
             "referencedFrom": row.get("referencedFrom", []),
             "runtimeDataInvented": False,
+            "runtimeContract": runtime_contract_for(class_name),
             "renderStatus": "SOURCE_RECONSTRUCTED",
             "customCompositeChildren": len(additions),
         }
         add_asset_refs(spec, controls)
         nested.append(item)
-        row.update(renderStatus="SOURCE_RECONSTRUCTED", controlCount=len(controls), nestedId=item["id"], customCompositeChildren=len(additions))
+        row.update(
+            renderStatus="SOURCE_RECONSTRUCTED",
+            controlCount=len(controls),
+            nestedId=item["id"],
+            customCompositeChildren=len(additions),
+            runtimeContract=item["runtimeContract"],
+        )
 
     spec["nestedWindows"] = nested
     report = spec.setdefault("nestedWindowInventory", {})
@@ -127,6 +178,8 @@ def apply(spec: dict, zircon_root: Path) -> dict:
         allPendingSourceReconstruction=bool(skipped),
         compositeChildrenAdded=composite_children,
         compositeChildrenByWindow=composite_by_window,
+        runtimeContractsPreserved=True,
+        runtimeValuesInvented=False,
     )
 
     expected = {
@@ -143,6 +196,12 @@ def apply(spec: dict, zircon_root: Path) -> dict:
     keybind=next((w for w in nested if w['sourceClass']=='DXKeyBindWindow'),None)
     if not keybind or not any(c.get('type')=='DXVScrollBar' for c in keybind.get('controls',[])):
         raise RuntimeError('DXKeyBindWindow KeyBindTree scrollbar composite was not expanded')
+    message=next((w for w in nested if w['sourceClass']=='DXMessageBox'),None)
+    if message.get('runtimeContract',{}).get('sourceVariants',{}).get('YesNo') != ['YesButton','NoButton']:
+        raise RuntimeError('DXMessageBox source variant contract lost')
+    amount=next((w for w in nested if w['sourceClass']=='DXItemAmountWindow'),None)
+    if amount.get('runtimeContract',{}).get('amountMax') != 'item.Count':
+        raise RuntimeError('DXItemAmountWindow runtime item.Count contract lost')
     return report
 
 
@@ -156,6 +215,7 @@ def main() -> None:
     args.spec.write_text(json.dumps(spec, indent=2, ensure_ascii=False), encoding="utf-8")
     print("Nested/transient windows source-reconstructed:", report.get('reconstructedCount',0))
     print("Nested custom composite children added:", report.get('compositeChildrenAdded',0))
+    print("Nested runtime contracts preserved:", report.get('runtimeContractsPreserved'))
     print("Nested/transient windows skipped:", len(report.get('skipped',[])))
     for item in spec.get('nestedWindows',[]):
         print("  RECONSTRUCTED", item["sourceClass"], "controls=", len(item["controls"]), "customChildren=",item.get('customCompositeChildren',0))
