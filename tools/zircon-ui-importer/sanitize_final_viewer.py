@@ -98,7 +98,20 @@ def main() -> None:
         raise SystemExit(f"Technical/unsafe stage fallback survived sanitization: {leaked}")
 
     args.app_layout.write_text(text, encoding="utf-8")
-    print("Final viewer sanitized: literal indices only; runtime images neutral; no technical game-stage fallbacks")
+
+    animated_path = args.app_layout.parent / "animated-control-runtime.js"
+    if not animated_path.exists():
+        raise SystemExit(f"Animated runtime missing before sanitization: {animated_path}")
+    animated = animated_path.read_text(encoding="utf-8")
+    animated = replace_once(
+        animated,
+        "const p=control.properties||{},library=libraryFrom(p.LibraryFile),base=intFrom(p.BaseIndex),count=intFrom(p.FrameCount);",
+        "const p=control.properties||{},library=libraryFrom(p.LibraryFile),base=intFrom(p.BaseIndex) ?? intFrom(p.Index),count=intFrom(p.FrameCount);",
+        "DXAnimatedControl BaseIndex/Index base selection",
+    )
+    animated_path.write_text(animated, encoding="utf-8")
+
+    print("Final viewer sanitized: literal indices only; runtime images neutral; index-driven animations supported")
 
 
 if __name__ == "__main__":
