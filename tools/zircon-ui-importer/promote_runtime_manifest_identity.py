@@ -89,6 +89,7 @@ def main() -> None:
     here = Path(__file__).resolve().parent
     for helper in (
         "augment_constructor_final_states.py",
+        "augment_group_health_reference.py",
         "augment_magic_bar_reference.py",
         "augment_overflow_contracts.py",
         "augment_companion_reference.py",
