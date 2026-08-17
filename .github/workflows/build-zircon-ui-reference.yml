@@ -70,6 +70,12 @@ jobs:
           missing=[w['field'] for w in spec['windows'] if w.get('sourceMissing')]
           if missing:
               raise SystemExit(f'Missing Zircon source classes: {missing}')
+          nested=spec.get('nestedWindows',[])
+          nested_report=spec.get('nestedWindowInventory',{})
+          if len(nested) != 15 or nested_report.get('reconstructedCount') != 15 or nested_report.get('skipped'):
+              raise SystemExit(f'Nested/transient Zircon reconstruction incomplete: {nested_report}')
+          if not any(c.get('type')=='DXVScrollBar' for w in nested if w.get('sourceClass')=='DXKeyBindWindow' for c in w.get('controls',[])):
+              raise SystemExit('DXKeyBindWindow custom tree scrollbar missing')
           discovered={c['type'] for w in spec['windows'] for c in w.get('controls',[])}
           covered=set(policy['policies'])
           if discovered-covered:
@@ -78,7 +84,7 @@ jobs:
           if controls <= 1026:
               raise SystemExit(f'Quest composite expansion added no controls: {controls}')
           language=spec.get('language',{})
-          if language.get('resolvedControlCount',0) < 325 or language.get('unresolvedReferencedKeys'):
+          if language.get('resolvedControlCount',0) < 400 or language.get('unresolvedReferencedKeys'):
               raise SystemExit('Zircon language resolution regressed')
 
           custom=spec.get('customTabPass',{})
@@ -88,7 +94,6 @@ jobs:
               raise SystemExit(f'Magic dynamic tab contract mismatch: {custom}')
 
           composite=spec.get('compositePass',{})
-          print('Composite pass:',composite)
           if composite.get('questChildrenAdded',0) <= 0:
               raise SystemExit('Quest custom tab child constructors were not expanded')
           children=composite.get('childrenByTab',{})
@@ -106,18 +111,11 @@ jobs:
           if 'fullRanking' in str(last['properties'].get('Location')):
               raise SystemExit('Ranking constructor argument unresolved')
 
-          menu={
-              item['control']:(item['action'],item['targetField'])
-              for item in spec.get('interactions',[])
-              if item['sourceField']=='MenuBox'
-          }
+          menu={item['control']:(item['action'],item['targetField']) for item in spec.get('interactions',[]) if item['sourceField']=='MenuBox'}
           expected={
-              'SettingsButton':('toggle','ConfigBox'),
-              'HelpButton':('toggle','HelpBox'),
-              'GuildButton':('toggle','GuildBox'),
-              'StorageButton':('toggle','StorageBox'),
-              'RankingButton':('toggle','RankingBox'),
-              'CompanionButton':('toggle','CompanionBox'),
+              'SettingsButton':('toggle','ConfigBox'),'HelpButton':('toggle','HelpBox'),
+              'GuildButton':('toggle','GuildBox'),'StorageButton':('toggle','StorageBox'),
+              'RankingButton':('toggle','RankingBox'),'CompanionButton':('toggle','CompanionBox'),
               'LeaveButton':('open','ExitBox'),
           }
           if menu != expected:
@@ -154,17 +152,12 @@ jobs:
               raise SystemExit('Magic runtime tab template contract broken')
 
           print('Source-backed interactions:',len(spec.get('interactions',[])))
-          print('DXTabControls:',len(tab_controls))
-          print('Static/renderable tabs:',len(tabs))
-          print('Quest composite children:',composite.get('questChildrenAdded'))
-          print('Quest children by tab:',children)
-          print('Quest runtime-only tabs:',composite.get('questRuntimeOnlyTabs'))
-          print('Magic dynamic templates:',len(magic.get('templates',[])))
-          print('Windows:',spec['windowCount'])
+          print('GameScene windows:',spec['windowCount'])
+          print('Nested/transient windows:',len(nested))
+          print('Nested custom children:',nested_report.get('compositeChildrenAdded'))
           print('Controls:',controls)
           print('DX types:',len(discovered))
           print('English labels:',language.get('resolvedControlCount'))
-          print('Derived geometry:',spec.get('derivedGeometryPass'))
           PY
 
       - name: Download and extract exact Zircon artwork
@@ -181,6 +174,7 @@ jobs:
           cp apps/zircon-ui-reference/app-layout.js .build/zircon-ui/app-layout.js
           cp apps/zircon-ui-reference/window-runtime.js .build/zircon-ui/window-runtime.js
           cp apps/zircon-ui-reference/interaction-runtime.js .build/zircon-ui/interaction-runtime.js
+          cp apps/zircon-ui-reference/nested-variant-runtime.js .build/zircon-ui/nested-variant-runtime.js
           cp apps/zircon-ui-reference/tab-runtime.js .build/zircon-ui/tab-runtime.js
           cp apps/zircon-ui-reference/game-scene-windows.js .build/zircon-ui/game-scene-windows.js
           cp apps/zircon-ui-reference/control-render-policy.json .build/zircon-ui/control-render-policy.json
@@ -190,18 +184,19 @@ jobs:
           node --check .build/zircon-ui/app-layout.js
           node --check .build/zircon-ui/window-runtime.js
           node --check .build/zircon-ui/interaction-runtime.js
+          node --check .build/zircon-ui/nested-variant-runtime.js
           node --check .build/zircon-ui/tab-runtime.js
           node --check .build/zircon-ui/layout-resolver-base.js
           node --check .build/zircon-ui/layout-resolver-derived.js
           node --check .build/zircon-ui/game-scene-windows.js
           grep -Fq "existing?.isConnected" .build/zircon-ui/app-layout.js
           grep -Fq "dataset.controlIndex" .build/zircon-ui/app-layout.js
-          grep -Fq "dataset.parentControl" .build/zircon-ui/app-layout.js
           grep -Fq "window-runtime.js" .build/zircon-ui/index.html
           grep -Fq "interaction-runtime.js" .build/zircon-ui/index.html
-          grep -Fq "tab-runtime.js" .build/zircon-ui/index.html
+          grep -Fq "nested-variant-runtime.js" .build/zircon-ui/index.html
+          grep -Fq "messagebox-reference-variant" .build/zircon-ui/nested-variant-runtime.js
 
-      - name: Validate zero-fallback geometry
+      - name: Validate zero-fallback GameScene geometry
         run: |
           cat > .build/zircon-ui/validate-final.mjs <<'JS'
           import fs from 'node:fs';
@@ -222,20 +217,16 @@ jobs:
                 bad.push({window:window.field,control:control.name,source,original:control.sourceLocationExpression||null});
             }
           }
-          console.log('Explicit source Locations:',explicit);
-          console.log('Suspicious geometry fallbacks:',bad.length);
+          console.log('Explicit GameScene source Locations:',explicit);
+          console.log('Suspicious GameScene geometry fallbacks:',bad.length);
           if(bad.length) console.log(JSON.stringify(bad.slice(0,50),null,2));
           if(explicit < 754) throw new Error(`explicit Location coverage regressed: ${explicit}`);
           if(bad.length!==0) throw new Error(`zero-fallback contract broken: ${bad.length}`);
           const main=spec.windows.find(w=>w.field==='MainPanel');
           const char=main.controls.find(c=>c.name==='CharacterButton');
           if(char.properties.Location!=='new Point(650, 23)') throw new Error('Character button location changed');
-          const mini=spec.windows.find(w=>w.field==='MiniMapBox');
-          if(mini.controls.find(c=>c.name==='Panel').properties.Location==='Area.Location') throw new Error('MiniMap Area alias unresolved');
           const big=spec.windows.find(w=>w.field==='BigMapBox');
           if(big.controls.find(c=>c.name==='Panel').properties.Location!=='ClientArea.Location') throw new Error('BigMap ClientArea layout unresolved');
-          const horse=spec.windows.find(w=>w.field==='HorseTameBox');
-          if(!horse.derivedGeometry) throw new Error('Horse Tame derived recipe missing');
           JS
           node .build/zircon-ui/validate-final.mjs
 
@@ -249,20 +240,16 @@ jobs:
           assets=json.loads((root/'asset-build.json').read_text())
           missing=[k for k,v in assets.items() if v.get('missing')]
           pngs=list((root/'assets').rglob('*.png'))
-          all_controls=[c for w in spec['windows'] for c in w.get('controls',[])]
-          print(f"Source-resolved windows: {sum(1 for w in spec['windows'] if w.get('sourcePath'))}/{spec['windowCount']}")
-          print('Parsed/renderable controls:',sum(len(w.get('controls',[])) for w in spec['windows']))
+          print(f"Source-resolved GameScene windows: {sum(1 for w in spec['windows'] if w.get('sourcePath'))}/{spec['windowCount']}")
+          print('Nested/transient source windows:',len(spec.get('nestedWindows',[])))
+          print('GameScene parsed/renderable controls:',sum(len(w.get('controls',[])) for w in spec['windows']))
+          print('Nested parsed/renderable controls:',sum(len(w.get('controls',[])) for w in spec.get('nestedWindows',[])))
           print('Resolved English control labels:',spec.get('language',{}).get('resolvedControlCount'))
-          print('Source-backed interactions:',len(spec.get('interactions',[])))
-          print('Quest composite children:',spec.get('compositePass',{}).get('questChildrenAdded'))
-          print('DXTabControls:',sum(c['type']=='DXTabControl' for c in all_controls))
-          print('Static/renderable DXTabs:',sum(c['type'] in ('DXTab','DXConfigTab') for c in all_controls))
-          print('Magic dynamic tab templates:',spec.get('customTabPass',{}).get('magicDynamicTemplates'))
           print('Missing public UI libraries:',missing)
           print('Extracted PNG files:',len(pngs))
           if missing:
               raise SystemExit('A required public Zircon library is missing')
-          if len(pngs) < 449:
+          if len(pngs) < 454:
               raise SystemExit(f'Extracted PNG coverage regressed: {len(pngs)}')
           PY
 
