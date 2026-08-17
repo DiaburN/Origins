@@ -52,6 +52,11 @@ function boolValue(raw,fallback=false) {
   const value=String(raw??'').trim().toLowerCase();
   return value==='true'?true:value==='false'?false:fallback;
 }
+function scalar(raw,fallback=0) {
+  const value=String(raw??'').trim();
+  const match=value.match(/^\(*\s*(-?\d+)\s*\)*$/);
+  return match?Number(match[1]):fallback;
+}
 function controlText(control) {
   if(control.resolvedText) return control.resolvedText;
   const p=control.properties||{};
@@ -60,6 +65,15 @@ function controlText(control) {
     const quoted=raw.match(/"([^"]*)"/); if(quoted) return quoted[1];
   }
   return '';
+}
+function sourceColour(raw,fallback='transparent') {
+  const text=String(raw??'').trim();
+  if(!text||text==='Color.Empty') return fallback;
+  const rgb=text.match(/Color\.FromArgb\(\s*(?:\d+\s*,\s*)?(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*\)/);
+  if(rgb)return `rgb(${rgb[1]},${rgb[2]},${rgb[3]})`;
+  const named={Black:'#000',White:'#fff',Red:'#f00',Green:'#0f0',Blue:'#00f',Yellow:'#ff0',Cyan:'#0ff',Silver:'#c0c0c0',Lime:'#0f0'};
+  const key=text.match(/Color\.([A-Za-z]+)/)?.[1];
+  return named[key]||fallback;
 }
 
 function buildNestedFrame(item,layout) {
@@ -70,8 +84,6 @@ function buildNestedFrame(item,layout) {
   root.dataset.sourceField=item.field;
   root.dataset.nestedSourceClass=item.sourceClass;
   root.style.position='absolute'; root.style.width=`${width}px`; root.style.height=`${height}px`;
-  // DXKeyBindWindow.OnIsVisibleChanged centres against Config.GameSize. The
-  // reference desktop is the locked 1024x768 Zircon desktop viewport.
   root.style.left=`${Math.round((1024-width)/2)}px`;
   root.style.top=`${Math.round((768-height)/2)}px`;
 
@@ -97,14 +109,17 @@ function buildNestedFrame(item,layout) {
   const br=img('Interface',9,0,Math.max(0,height-16),root);br.style.right='0';br.style.left='auto';
 
   const heading=document.createElement('div'); heading.className='generic-window-header';
-  heading.textContent=item.resolvedText || item.sourceClass; root.append(heading);
+  heading.textContent=item.resolvedText || controlText({properties:{Text:p.Title}}) || item.sourceClass; root.append(heading);
+  if(p.CloseButtonVisible!=='false') {
+    const close=img('Interface',15,Math.max(0,width-35),3,root,'ui-button nested-close-button');
+    close.style.pointerEvents='auto';close.style.cursor='pointer';close.addEventListener('click',()=>root.remove());
+  }
   stage.append(root);
   root.dispatchEvent(new CustomEvent('origins:focus',{bubbles:true}));
   return root;
 }
 
 function renderNestedButton(control,node,root) {
-  const p=control.properties||{};
   const width=node.width||80,height=node.height||20;
   const button=document.createElement('div'); button.className='dx-generated-button dx-button-Default';
   button.style.position='absolute';button.style.left=`${node.x}px`;button.style.top=`${node.y}px`;button.style.width=`${width}px`;button.style.height=`${height}px`;
@@ -114,22 +129,70 @@ function renderNestedButton(control,node,root) {
   img('Interface',parts[2],Math.max(0,width-rs[0]),0,button);
   const label=document.createElement('div');label.className='dx-button-label';label.textContent=controlText(control);button.append(label);
   button.dataset.controlName=control.name;button.dataset.controlType=control.type;root.append(button);
-  if(/CancelButton$|CloseButton$/.test(control.name)) button.addEventListener('click',()=>root.remove());
+  if(/CancelButton$|CloseButton$|OKButton$|NoButton$|YesButton$|SelectButton$/.test(control.name)) button.addEventListener('click',()=>root.remove());
   return button;
+}
+
+function renderNestedScrollBar(control,node,root) {
+  const vertical=control.type==='DXVScrollBar';
+  const el=document.createElement('div');el.className=`dx-scrollbar ${vertical?'vertical':'horizontal'}`;
+  el.style.position='absolute';el.style.left=`${node.x}px`;el.style.top=`${node.y}px`;el.style.width=`${node.width}px`;el.style.height=`${node.height}px`;root.append(el);
+  if(vertical){
+    img('Interface',44,1,1,el);img('Interface',46,1,Math.max(1,node.height-13),el);img('Interface',45,1,16,el,'ui-img dx-scroll-thumb');
+  }else{
+    img('Interface',44,1,1,el);img('Interface',46,Math.max(1,node.width-13),1,el);img('Interface',45,16,1,el,'ui-img dx-scroll-thumb');
+  }
+  return el;
+}
+
+function renderNestedNumberBox(control,node,root) {
+  const p=control.properties||{};
+  const el=document.createElement('div');el.className='dx-numberbox';
+  el.style.position='absolute';el.style.left=`${node.x}px`;el.style.top=`${node.y}px`;el.style.width=`${node.width}px`;el.style.height=`${node.height}px`;root.append(el);
+  const change=scalar(p.Change,10),min=scalar(p.MinValue,0),max=Math.max(min,scalar(p.MaxValue,0));
+  let value=Math.max(min,Math.min(max,scalar(p.Value,0)));
+  const down=img('GameInter',1011,0,1,el,'ui-button');down.style.pointerEvents='auto';down.style.cursor='pointer';
+  const field=document.createElement('div');field.className='dx-textbox dx-number-value';field.style.position='absolute';field.style.left='19px';field.style.top='1px';field.style.width='50px';field.style.height='20px';el.append(field);
+  const up=img('GameInter',1010,Math.max(0,node.width-17),1,el,'ui-button');up.style.pointerEvents='auto';up.style.cursor='pointer';
+  const setValue=next=>{value=Math.max(min,Math.min(max,Math.trunc(next)));field.textContent=String(value);el.dataset.value=String(value)};
+  setValue(value);down.addEventListener('click',e=>{e.stopPropagation();setValue(value-change)});up.addEventListener('click',e=>{e.stopPropagation();setValue(value+change)});
+  return el;
 }
 
 function renderNestedControl(control,node,root) {
   if(!node.visible) return null;
+  const p=control.properties||{};
   if(control.type==='DXButton') return renderNestedButton(control,node,root);
   if(control.type==='DXLabel') {
-    const el=document.createElement('div');el.className='runtime-label';el.textContent=controlText(control);
+    const el=document.createElement('div');el.className='runtime-label dx-label';el.textContent=controlText(control);
     el.style.position='absolute';el.style.left=`${node.x}px`;el.style.top=`${node.y}px`;el.style.width=`${node.width}px`;el.style.height=`${node.height}px`;root.append(el);return el;
   }
   if(control.type==='DXTreeControl'||control.sourceType==='KeyBindTree') {
-    const el=document.createElement('div');el.className='dx-tree-control';el.style.position='absolute';el.style.left=`${node.x}px`;el.style.top=`${node.y}px`;el.style.width=`${node.width}px`;el.style.height=`${node.height}px`;el.style.border='1px solid rgb(93,70,37)';el.style.background='rgba(0,0,0,.45)';root.append(el);return el;
+    const el=document.createElement('div');el.className='dx-tree-control';el.style.position='absolute';el.style.left=`${node.x}px`;el.style.top=`${node.y}px`;el.style.width=`${node.width}px`;el.style.height=`${node.height}px`;el.style.border='1px solid rgb(93,70,37)';el.style.background='rgba(0,0,0,.45)';
+    const note=document.createElement('div');note.className='dx-tree-runtime';note.textContent=control.sourceType==='KeyBindTree'?'Key bindings: runtime user data':'Tree rows: runtime data';el.append(note);root.append(el);return el;
   }
   if(control.type==='DXTextBox'||control.type==='DXNumberTextBox') {
-    const el=document.createElement('div');el.className='dx-textbox';el.style.position='absolute';el.style.left=`${node.x}px`;el.style.top=`${node.y}px`;el.style.width=`${node.width}px`;el.style.height=`${node.height}px`;root.append(el);return el;
+    const el=document.createElement('div');el.className='dx-textbox';el.style.position='absolute';el.style.left=`${node.x}px`;el.style.top=`${node.y}px`;el.style.width=`${node.width}px`;el.style.height=`${node.height}px`;el.textContent=controlText(control);root.append(el);return el;
+  }
+  if(control.type==='DXNumberBox') return renderNestedNumberBox(control,node,root);
+  if(control.type==='DXVScrollBar'||control.type==='DXHScrollBar') return renderNestedScrollBar(control,node,root);
+  if(control.type==='DXCheckBox') {
+    const el=document.createElement('div');el.className='dx-checkbox';el.style.position='absolute';el.style.left=`${node.x}px`;el.style.top=`${node.y}px`;
+    const label=document.createElement('span');label.textContent=controlText(control);el.append(label);const box=img('GameInter',boolValue(p.Checked,false)?162:161,0,0,el);box.style.position='relative';box.style.left='0';box.style.top='0';el.append(box);root.append(el);return el;
+  }
+  if(control.type==='DXColourControl') {
+    const el=document.createElement('div');el.className='dx-colour-control';el.style.position='absolute';el.style.left=`${node.x}px`;el.style.top=`${node.y}px`;el.style.width=`${node.width}px`;el.style.height=`${node.height}px`;el.style.background=sourceColour(p.BackColour,'#000');el.style.border='1px solid rgb(93,70,37)';root.append(el);return el;
+  }
+  if(control.type==='DXComboBox') {
+    const el=document.createElement('div');el.className='dx-combobox';el.style.position='absolute';el.style.left=`${node.x}px`;el.style.top=`${node.y}px`;el.style.width=`${node.width}px`;el.style.height=`${node.height}px`;const arrow=getAssetSize(sourceSpec,'GameInter',795)||[16,16];img('GameInter',795,Math.max(0,node.width-arrow[0]),0,el,'ui-button');root.append(el);return el;
+  }
+  if(control.type==='DXItemCell') {
+    const el=document.createElement('div');el.className='dx-item-cell';el.style.position='absolute';el.style.left=`${node.x}px`;el.style.top=`${node.y}px`;el.style.width=`${node.width}px`;el.style.height=`${node.height}px`;root.append(el);return el;
+  }
+  if(control.type==='DXControl') {
+    const el=document.createElement('div');el.className='dx-structural-control';el.style.position='absolute';el.style.left=`${node.x}px`;el.style.top=`${node.y}px`;el.style.width=`${node.width}px`;el.style.height=`${node.height}px`;el.style.background=sourceColour(p.BackColour,'transparent');if(boolValue(p.Border,false))el.style.border='1px solid rgb(93,70,37)';
+    if(/ColourScaleBox$/.test(control.name)){el.classList.add('runtime-palette-area');el.dataset.runtimeTexture='RenderingPipelineManager.GetColourPaletteTexture';const note=document.createElement('span');note.textContent='Runtime colour palette texture';el.append(note)}
+    root.append(el);return el;
   }
   const el=document.createElement('div');el.className=`dx-nested-control ${control.type}`;el.style.position='absolute';el.style.left=`${node.x}px`;el.style.top=`${node.y}px`;el.style.width=`${node.width}px`;el.style.height=`${node.height}px`;root.append(el);return el;
 }
@@ -146,6 +209,19 @@ function openNestedByClass(className) {
   return root;
 }
 
+function addNestedReviewCatalog(spec) {
+  const list=document.querySelector('#window-list');
+  if(!list||list.querySelector('[data-nested-catalog="true"]'))return;
+  const categories=['modal','group','market','login','character-select'];
+  for(const category of categories){
+    const rows=(spec.nestedWindows||[]).filter(item=>item.category===category);if(!rows.length)continue;
+    const group=document.createElement('div');group.className='catalog-group';group.dataset.nestedCatalog='true';
+    const heading=document.createElement('div');heading.className='catalog-group-title';heading.textContent=`${category} (${rows.length})`;group.append(heading);
+    for(const item of rows){const button=document.createElement('button');button.className='catalog-item';button.dataset.nestedWindowId=item.id;button.innerHTML=`${item.id}<small>${item.sourceClass} · nested/transient</small>`;button.addEventListener('click',()=>openNestedByClass(item.sourceClass));group.append(button)}
+    list.append(group);
+  }
+}
+
 stage.addEventListener('click', event => {
   if (!(event.target instanceof Element)) return;
   const controlElement = event.target.closest('[data-control-name]');
@@ -154,12 +230,20 @@ stage.addEventListener('click', event => {
   const sourceField = sourceFieldFromRoot(root);
   if (!sourceField) return;
   const control = controlElement.dataset.controlName;
+  const controlType = controlElement.dataset.controlType;
 
-  // DXConfigWindow source: KeyBindButton.MouseClick toggles KeyBindWindow.Visible.
   if(sourceField==='ConfigBox' && control==='KeyBindButton') {
     event.preventDefault();event.stopPropagation();
     const nested=nestedByClass.get('DXKeyBindWindow');
     if(nested && windowRoot(nested.id)) windowRoot(nested.id).remove(); else openNestedByClass('DXKeyBindWindow');
+    return;
+  }
+
+  // Source: DXColourControl_MouseClick creates a centered DXColourPicker.
+  if(controlType==='DXColourControl') {
+    event.preventDefault();event.stopPropagation();
+    document.querySelectorAll('[data-nested-source-class="DXColourPicker"]').forEach(element=>element.remove());
+    openNestedByClass('DXColourPicker');
     return;
   }
 
@@ -174,6 +258,7 @@ fetch('ui-source-spec.json')
     sourceSpec=spec;
     interactions=Array.isArray(spec.interactions)?spec.interactions:[];
     nestedByClass=new Map((spec.nestedWindows||[]).map(item=>[item.sourceClass,item]));
+    addNestedReviewCatalog(spec);
     console.info(`ORIGINS Zircon interaction runtime: ${interactions.length} direct links; ${nestedByClass.size} nested DXWindows available`);
   })
   .catch(error => console.error('Unable to load Zircon interaction manifest', error));
