@@ -1,5 +1,6 @@
 // Reflow exact DXWindow Interface pieces whenever a source window changes size.
 // This supports runtime states such as Monster expand/collapse and later resize.
+// Windows that override Draw()/DrawEdges with a source custom frame opt out.
 const stage=document.querySelector('#stage');
 let spec=null;
 const pad=value=>String(value).padStart(5,'0');
@@ -14,7 +15,8 @@ function piece(root,index,x,y,width=null,height=null){
 }
 function reflow(root){
   if(!(root instanceof Element)||!root.classList.contains('generic-window'))return;const item=itemFor(root);if(!item)return;
-  const p=item.root||{},W=Math.round(root.getBoundingClientRect().width||parseFloat(root.style.width)||0),H=Math.round(root.getBoundingClientRect().height||parseFloat(root.style.height)||0);if(W<=0||H<=0)return;
+  const p=item.root||{};if(p.CustomFrame){root.dataset.sourceFrameReflow=`custom:${p.CustomFrame}`;return}
+  const W=Math.round(root.getBoundingClientRect().width||parseFloat(root.style.width)||0),H=Math.round(root.getBoundingClientRect().height||parseFloat(root.style.height)||0);if(W<=0||H<=0)return;
   root.querySelectorAll(':scope > .source-window-frame-piece').forEach(el=>el.remove());
   const hasTop=boolFrom(p.HasTopBorder,true),hasTitle=boolFrom(p.HasTitle,true),hasFooter=boolFrom(p.HasFooter,false),slim=boolFrom(p.SlimFooter,false);
   const topIndex=hasTop?0:2,[,topH]=size(topIndex),[sideW]=size(1);piece(root,topIndex,0,0,W,topH);let y=topH;piece(root,1,0,y,sideW,Math.max(0,H-y));piece(root,1,Math.max(0,W-sideW),y,sideW,Math.max(0,H-y));
@@ -32,4 +34,4 @@ function reflow(root){
 function scan(node){if(!(node instanceof Element))return;if(node.matches?.('.generic-window'))queueMicrotask(()=>reflow(node));node.querySelectorAll?.('.generic-window').forEach(root=>queueMicrotask(()=>reflow(root)))}
 const observer=new MutationObserver(records=>{for(const record of records){if(record.type==='childList')record.addedNodes.forEach(scan);else if(record.type==='attributes'&&record.target instanceof Element&&record.target.matches('.generic-window'))queueMicrotask(()=>reflow(record.target))}});
 observer.observe(stage,{childList:true,subtree:true,attributes:true,attributeFilter:['style']});
-fetch('ui-source-spec.json',{cache:'no-store'}).then(r=>{if(!r.ok)throw new Error(`ui-source-spec.json ${r.status}`);return r.json()}).then(value=>{spec=value;stage.querySelectorAll('.generic-window').forEach(reflow);console.info('ORIGINS exact DXWindow frame reflow active')}).catch(error=>console.error('Unable to load window frame reflow manifest',error));
+fetch('ui-source-spec.json',{cache:'no-store'}).then(r=>{if(!r.ok)throw new Error(`ui-source-spec.json ${r.status}`);return r.json()}).then(value=>{spec=value;stage.querySelectorAll('.generic-window').forEach(reflow);console.info('ORIGINS exact DXWindow frame reflow active; source custom frames excluded')}).catch(error=>console.error('Unable to load window frame reflow manifest',error));
