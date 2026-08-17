@@ -91,8 +91,15 @@ def main() -> None:
         "augment_constructor_final_states.py",
         "augment_magic_bar_reference.py",
         "augment_overflow_contracts.py",
+        "augment_companion_reference.py",
     ):
         subprocess.run([sys.executable, str(here / helper), "--spec", str(args.spec)], check=True)
+    subprocess.run([
+        sys.executable,
+        str(here / "audit_custom_draw_contracts.py"),
+        "--spec", str(args.spec),
+        "--zircon-root", str(here.parents[1] / ".source" / "Zircon"),
+    ], check=True)
     subprocess.run(
         [sys.executable, str(here / "sanitize_final_viewer.py"), "--app-layout", str(args.spec.parent / "app-layout.js")],
         check=True,
