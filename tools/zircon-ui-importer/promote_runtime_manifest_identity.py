@@ -97,10 +97,13 @@ def main() -> None:
         f"startup visibility corrected on {visibility_corrected} windows"
     )
 
-    sanitizer = Path(__file__).with_name("sanitize_final_viewer.py")
-    app_layout = args.spec.parent / "app-layout.js"
+    here = Path(__file__).resolve().parent
     subprocess.run(
-        [sys.executable, str(sanitizer), "--app-layout", str(app_layout)],
+        [sys.executable, str(here / "augment_magic_bar_reference.py"), "--spec", str(args.spec)],
+        check=True,
+    )
+    subprocess.run(
+        [sys.executable, str(here / "sanitize_final_viewer.py"), "--app-layout", str(args.spec.parent / "app-layout.js")],
         check=True,
     )
 
