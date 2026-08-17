@@ -2,7 +2,8 @@
 """Bundle the validated viewer patch and modular source-fidelity runtimes.
 
 The final assembly pass also promotes inherited DXWindow child assignments,
-stable runtime IDs, and removes the obsolete handcrafted sample desktop.
+stable runtime IDs, removes the obsolete handcrafted sample desktop, and runs
+strict final geometry audits over the assembled artifact.
 """
 from __future__ import annotations
 
@@ -153,4 +154,6 @@ animated = build_root / "animated-control-runtime.js"
 if not animated.exists(): raise SystemExit(f"Bundled runtime missing: {animated}")
 subprocess.run(["node", "--check", str(animated)], check=True)
 subprocess.run(["node", "--check", str(app_layout_path)], check=True)
+subprocess.run(["node", str(here / "audit_final_overflow.mjs"), str(build_root)], check=True)
 print("Bundled fidelity runtimes:", ", ".join(relative.as_posix() for _, relative in entries))
+print("Final top-level geometry overflow audit: PASS")
