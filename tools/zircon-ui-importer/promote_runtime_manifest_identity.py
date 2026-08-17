@@ -1,13 +1,5 @@
 #!/usr/bin/env python3
-"""Promote stable viewer identity/state into a generated Zircon UI manifest.
-
-The static viewer registry is an explicit transcription of GameScene construction
-and is also the browser's canonical id/category/default-visible mapping. The
-base source parser historically inferred visibility by looking past each
-initializer, which can accidentally capture the next window's Visible=false.
-Promoting the canonical registry values here keeps the final artifact internally
-consistent while the deeper parser remains focused on C# geometry/properties.
-"""
+"""Promote stable viewer identity/state into a generated Zircon UI manifest."""
 from __future__ import annotations
 
 import argparse
@@ -30,10 +22,7 @@ def main() -> None:
 
     spec = json.loads(args.spec.read_text(encoding="utf-8"))
     registry_text = args.registry.read_text(encoding="utf-8")
-    rows = re.findall(
-        r"\['([^']+)','([^']+)','([^']+)','([^']+)',(true|false)\]",
-        registry_text,
-    )
+    rows = re.findall(r"\['([^']+)','([^']+)','([^']+)','([^']+)',(true|false)\]", registry_text)
     registry = {
         field: {
             "id": window_id,
@@ -98,10 +87,8 @@ def main() -> None:
     )
 
     here = Path(__file__).resolve().parent
-    subprocess.run(
-        [sys.executable, str(here / "augment_magic_bar_reference.py"), "--spec", str(args.spec)],
-        check=True,
-    )
+    for helper in ("augment_constructor_final_states.py", "augment_magic_bar_reference.py"):
+        subprocess.run([sys.executable, str(here / helper), "--spec", str(args.spec)], check=True)
     subprocess.run(
         [sys.executable, str(here / "sanitize_final_viewer.py"), "--app-layout", str(args.spec.parent / "app-layout.js")],
         check=True,
