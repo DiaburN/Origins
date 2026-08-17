@@ -11,11 +11,13 @@ Authoritative branch: `origins-game-v1`
 - [x] automatic Zircon `GameScene` UI source analyzer
 - [x] complete Zircon GameScene registry: **65/65 source-resolved components**
 - [x] nested/transient Zircon DXWindow inventory: **15/15 source-reconstructed windows**
+- [x] total desktop source coverage under review: **80 windows**
 - [x] 0 missing public Zircon UI libraries
 - [x] **454 real extracted PNG assets**
 - [x] explicit renderer policy for **21/21 discovered GameScene DX control types**
 - [x] searchable/category-based desktop reference harness
 - [x] real Zircon English language extraction: **764 messages**
+- [x] **483 visible controls** resolved to real English text
 - [x] source-backed direct window interactions: **14**
 - [x] simultaneous windows, focus/z-order and dragging
 - [x] reusable tabs / checkbox / scrollbar / text / item grid / number / sound controls
@@ -41,8 +43,20 @@ Authoritative branch: `origins-game-v1`
 
 The GameScene reference is source-derived. Runtime-populated rows, item data, maps, messages and player-specific values remain runtime data by design and are not fabricated.
 
-- [x] **1,204 / 1,204** explicit GameScene source Locations resolve with **0 suspicious fallbacks**
-- [x] local audit of nested/transient windows: **78 / 78** explicit nested Locations resolve with **0 suspicious fallbacks**
+- [x] temporal C# post-initializer assignment pass with reused-local scope
+- [x] **398** GameScene temporal post assignments applied
+- [x] **387** GameScene `Location` assignments recovered that the flat parser previously missed
+- [x] inline C# geometry mutations such as `y += rowSpacing` executed in source order
+- [x] C# preprocessor directives ignored as non-executable tokens during layout parsing
+- [x] **1,389 / 1,389** explicit GameScene source Locations resolve with **0 suspicious fallbacks**
+- [x] **133** explicit nested/transient source Locations captured; current protected floor `>=78`
+- [x] all controls without direct `Location` are source-classified
+- [x] **81** controls intentionally without constructor Location audited
+- [x] **0 UNKNOWN unplaced controls**
+- [x] unplaced classifications: Event `13`, Method `53`, Tab auto-layout `5`, List auto-layout `2`, Default origin `4`, Runtime-data layout `3`, Detached nested window `1`
+- [x] build fails if a control without Location has no source-backed explanation
+- [x] build fails if GameScene explicit Location coverage drops below **1,389**
+- [x] build fails if nested explicit Location coverage drops below **78**
 - [x] constructor/default-argument geometry resolution
 - [x] `ClientArea` / `Area` relationships
 - [x] named-control / parent-child geometry
@@ -122,14 +136,20 @@ Runtime values are represented as runtime contracts rather than sample/fake game
 
 ## Latest validated official build
 
-- workflow run: **`32049722987`**
+- workflow run: **`32051734683`**
+- commit: **`1544cb2272f96bcb1d500dbca8005f92eee910d5`**
 - canonical GameScene windows: **`65/65`**
 - nested/transient windows: **`15/15`**
-- total source window coverage under review: **80 source windows**
+- total source window coverage: **`80`**
 - GameScene parsed/renderable controls: **`1,460`**
-- GameScene explicit Locations: **`1,204`**, fallbacks `0`
-- nested explicit Locations audited: **`78`**, fallbacks `0`
+- nested parsed/renderable controls: **`143`**
+- temporal GameScene post assignments: **`398`**
+- recovered GameScene Locations: **`387`**
+- explicit GameScene Locations: **`1,389`**, fallbacks `0`
+- explicit nested Locations: **`133`**
+- controls without direct Location: **`81`**, UNKNOWN `0`
 - English messages: `764`
+- controls using resolved English text: **`483`**
 - unresolved referenced language keys: `0`
 - direct source window interactions: `14`
 - GameScene DXTabControls: `15`
@@ -140,19 +160,24 @@ Runtime values are represented as runtime contracts rather than sample/fake game
 - missing public UI libraries: `0`
 - extracted source PNGs: **`454`**
 - official artifact: `zircon-ui-reference-complete`
-- artifact ID: **`9294232299`**
-- artifact SHA256: **`4658cff335885d68109c5d5e6facbd79756a54a4d5ca60b54e438f1bb29e2276`**
+- artifact ID: **`9294947316`**
+- artifact SHA256: **`7b6151b33e1c0a51445313eccc1cb8f5e4555381e8867708474226a6a93e5716`**
 - JS syntax validation: passed
-- official CI: passed
+- zero-fallback geometry validation: passed
+- zero-UNKNOWN placement audit: passed
+- official CI: **passed**
 
-## What remains before owner can call desktop UI approved
+## Current QA phase
 
-The **source reconstruction coverage is now 65 GameScene + 15 nested/transient windows**. Remaining work is not to invent more windows; it is the visual/behavior QA pass over this full catalogue and source-dependent runtime states.
+Source window coverage and placement are now strongly validated. The active pass is **visual/render fidelity** across all 80 windows: exact skin type, real indexed artwork, hidden/visible semantics, clipping, control state and source-driven runtime behavior.
 
+- [ ] audit every GameScene + nested control type for source-correct renderer/skin
+- [ ] eliminate any generic renderer where Zircon defines real artwork/chrome
+- [ ] audit `LibraryFile + Index` controls to ensure the actual PNG is drawn
 - [ ] review every one of the 80 source windows in the reference harness
-- [ ] correct any visual discrepancy found during that review against Zircon source/assets
+- [ ] correct any visual discrepancy found against Zircon source/assets
 - [ ] finish complex actions that are more than direct visibility/toggle behavior
-- [ ] populate Magic schools only when actual player/magic test data is provided by runtime
+- [ ] populate Magic schools only when actual player/magic runtime data is available
 - [ ] owner marks KEEP / REMOVE / MERGE / MOBILE_REDESIGN in `docs/ZIRCON_UI_DECISIONS.md`
 
 Do **not** mark the desktop UI owner-approved until that visual pass is complete.
