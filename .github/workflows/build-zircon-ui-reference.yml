@@ -57,6 +57,8 @@ jobs:
           python3 tools/zircon-ui-importer/augment_ui_interactions.py \
             --spec .build/zircon-ui/ui-source-spec.json \
             --zircon-root .source/Zircon
+          python3 tools/zircon-ui-importer/augment_npc_dialog_reference.py \
+            --spec .build/zircon-ui/ui-source-spec.json
 
       - name: Validate source, controls, composites, tabs and interactions
         run: |
@@ -151,6 +153,13 @@ jobs:
           if not magic.get('doNotAssumeVisibleSchools') or len(magic.get('templates',[])) != 16:
               raise SystemExit('Magic runtime tab template contract broken')
 
+          npc=next(w for w in spec['windows'] if w['field']=='NPCBox')
+          if npc.get('root',{}).get('Size')!='new Size(380, 204)' or npc.get('root',{}).get('CustomFrame')!='NPCDialog':
+              raise SystemExit(f'NPC custom-frame contract missing: {npc.get("root",{})}')
+          required_npc_assets={380,381,382,385,387}
+          if not required_npc_assets.issubset(set(spec.get('assetRefs',{}).get('GameInter',[]))):
+              raise SystemExit('NPC custom GameInter assets were not promoted before extraction')
+
           print('Source-backed interactions:',len(spec.get('interactions',[])))
           print('GameScene windows:',spec['windowCount'])
           print('Nested/transient windows:',len(nested))
@@ -158,6 +167,7 @@ jobs:
           print('Controls:',controls)
           print('DX types:',len(discovered))
           print('English labels:',language.get('resolvedControlCount'))
+          print('NPC custom-frame assets:',sorted(required_npc_assets))
           PY
 
       - name: Download and extract exact Zircon artwork
