@@ -13,8 +13,9 @@ Authoritative branch: `origins-game-v1`
 - [x] nested/transient Zircon DXWindow inventory: **15/15 source-reconstructed windows**
 - [x] total desktop source coverage under review: **80 windows**
 - [x] 0 missing public Zircon UI libraries
-- [x] **454 real extracted PNG assets**
+- [x] **578 real extracted PNG assets**, including indexed button states and deterministic animation ranges
 - [x] explicit renderer policy for **21/21 discovered GameScene DX control types**
+- [x] nested renderer coverage **10/10 discovered nested DX control types**
 - [x] searchable/category-based desktop reference harness
 - [x] real Zircon English language extraction: **764 messages**
 - [x] **483 visible controls** resolved to real English text
@@ -37,6 +38,10 @@ Authoritative branch: `origins-game-v1`
 - [x] `DXInputWindow` runtime message/caption/value contract preserved
 - [x] `DXItemAmountWindow` runtime `item.Count` / Change contract preserved
 - [x] Colour Picker palette explicitly marked runtime texture; no fake palette artwork
+- [x] source-faithful `DXAnimatedControl` frame runtime bundled into the official viewer
+- [x] deterministic animation frame ranges promoted automatically into extraction refs
+- [x] current Horse Tame `LassoAnimation` contract locked to Zircon source
+- [x] current Timer `_eggTimer` index-driven contract locked to Zircon source
 - [x] repository/Cursor safety rules, bootstrap and master implementation docs
 
 ## Geometry / source fidelity
@@ -132,12 +137,18 @@ Runtime values are represented as runtime contracts rather than sample/fake game
 - [x] `DXSoundBar` mute/value/click/drag behavior using 4740-4746
 - [x] Guild review states outside game UI
 - [x] MessageBox review variants outside game UI
+- [x] MessageBox OK/Yes/No/Cancel + keyboard dismissal in the reference runtime
+- [x] `DXInputWindow` editable value field + Confirm/Cancel/Enter/Escape behavior
 - [x] ItemAmount does not invent `item.Count`; neutral review preserves source initial `Value=1`
+- [x] ItemAmount Confirm closes without fabricating item quantity data
+- [x] Colour Picker RGB boxes update the selected swatch; runtime-only palette texture is not fabricated
+- [x] Colour Picker Select/Cancel behavior wired
+- [x] `DXAnimatedControl` timing uses `AnimationDelay / FrameCount`, source frame offsets and Loop semantics
 
 ## Latest validated official build
 
-- workflow run: **`32051734683`**
-- commit: **`1544cb2272f96bcb1d500dbca8005f92eee910d5`**
+- workflow run: **`32062972655`**
+- commit: **`903c699bb4bdc3eab06208a482a61ef5c2a6d3c3`**
 - canonical GameScene windows: **`65/65`**
 - nested/transient windows: **`15/15`**
 - total source window coverage: **`80`**
@@ -157,11 +168,16 @@ Runtime values are represented as runtime contracts rather than sample/fake game
 - Quest composite children: `76`
 - Guild composite children: `50`
 - Magic dynamic templates: `16`
+- GameScene render type coverage: **`21/21`**
+- nested render type coverage: **`10/10`**
+- indexed GameScene controls audited: **`399`**
+- indexed nested controls audited: **`6`**
+- render audit issue groups: **`0`**
 - missing public UI libraries: `0`
-- extracted source PNGs: **`454`**
+- extracted source PNGs: **`578`**
 - official artifact: `zircon-ui-reference-complete`
-- artifact ID: **`9294947316`**
-- artifact SHA256: **`7b6151b33e1c0a51445313eccc1cb8f5e4555381e8867708474226a6a93e5716`**
+- artifact ID: **`9298840826`**
+- artifact SHA256: **`242244e72f63ceb1b78fb9f684dbf823b586c4799fd1e44e6657bf88c82d63f8`**
 - JS syntax validation: passed
 - zero-fallback geometry validation: passed
 - zero-UNKNOWN placement audit: passed
@@ -169,11 +185,12 @@ Runtime values are represented as runtime contracts rather than sample/fake game
 
 ## Current QA phase
 
-Source window coverage and placement are now strongly validated. The active pass is **visual/render fidelity** across all 80 windows: exact skin type, real indexed artwork, hidden/visible semantics, clipping, control state and source-driven runtime behavior.
+Source window coverage and placement are strongly validated. The active pass remains **visual/render fidelity** across all 80 windows: exact skin type, real indexed artwork, hidden/visible semantics, clipping, control state and source-driven runtime behavior.
 
-- [ ] audit every GameScene + nested control type for source-correct renderer/skin
-- [ ] eliminate any generic renderer where Zircon defines real artwork/chrome
-- [ ] audit `LibraryFile + Index` controls to ensure the actual PNG is drawn
+- [x] audit every currently discovered GameScene + nested control type for renderer coverage
+- [x] audit current literal `LibraryFile + Index` controls and extract required source artwork
+- [x] audit deterministic `DXAnimatedControl` ranges and extract their frames
+- [ ] eliminate any remaining generic renderer where Zircon defines real artwork/chrome
 - [ ] review every one of the 80 source windows in the reference harness
 - [ ] correct any visual discrepancy found against Zircon source/assets
 - [ ] finish complex actions that are more than direct visibility/toggle behavior
