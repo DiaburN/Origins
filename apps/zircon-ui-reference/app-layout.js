@@ -75,6 +75,7 @@ function cssColour(expression, fallback='#000') {
   const value = String(expression ?? '');
   if (/Color\.Black\b/.test(value)) return '#000';
   if (/Color\.White\b/.test(value)) return '#fff';
+  if (/Color\.Empty\b/.test(value)) return 'transparent';
   if (/Constants\.WindowBackColour/.test(value)) return 'rgb(16,8,8)';
   if (/Constants\.RowBackColour/.test(value)) return 'rgb(25,20,0)';
   const match = value.match(/Color\.FromArgb\(\s*(?:\d+\s*,\s*)?(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*\)/);
@@ -92,11 +93,6 @@ function removeTransientWindows() {
   document.querySelectorAll('.catalog-item.active').forEach(element => element.classList.remove('active'));
 }
 
-// ---------------------------------------------------------------------------
-// Permanent 1024x768 desktop HUD. These positions are literal MainPanel source
-// coordinates and remain useful as a stable visual anchor while every dialog
-// is reconstructed from the generated source manifest.
-// ---------------------------------------------------------------------------
 function buildDesktop() {
   stage.innerHTML = '';
   const mainY = 700;
@@ -149,9 +145,6 @@ function buildDesktop() {
   stage.append(belt);
 }
 
-// ---------------------------------------------------------------------------
-// Source-backed window chrome
-// ---------------------------------------------------------------------------
 function addImageWindow(name, library, index, x, y, width, height, title) {
   const root = document.createElement('div');
   root.className = 'window';
@@ -246,9 +239,6 @@ function effectiveItem(item) {
   };
 }
 
-// ---------------------------------------------------------------------------
-// Reusable Zircon control chrome
-// ---------------------------------------------------------------------------
 const buttonParts = {
   Default:[16,18,17],
   SelectedTab:[56,58,57],
@@ -311,12 +301,12 @@ function renderScrollBar(control,node,parent,skin={}) {
     if (vertical) bg.style.height = '100%'; else bg.style.width = '100%';
   }
   if (vertical) {
-    image(asset('Interface',up),1,1,'ui-img',root);
-    image(asset('Interface',down),1,Math.max(1,node.height-13),'ui-img',root);
+    image(asset('Interface',up),1,1,'ui-img dx-scroll-prev',root);
+    image(asset('Interface',down),1,Math.max(1,node.height-13),'ui-img dx-scroll-next',root);
     image(asset('Interface',thumb),1,16,'ui-img dx-scroll-thumb',root);
   } else {
-    image(asset('Interface',up),1,1,'ui-img',root);
-    image(asset('Interface',down),Math.max(1,node.width-13),1,'ui-img',root);
+    image(asset('Interface',up),1,1,'ui-img dx-scroll-prev',root);
+    image(asset('Interface',down),Math.max(1,node.width-13),1,'ui-img dx-scroll-next',root);
     image(asset('Interface',thumb),16,1,'ui-img dx-scroll-thumb',root);
   }
   return root;
@@ -380,12 +370,25 @@ function renderColourControl(control,node,parent) {
   return element;
 }
 
+function markNeutralScrollBar(scrollbar, contract) {
+  scrollbar.dataset.runtimeDataContract = contract;
+  scrollbar.dataset.sourceNeutralEmpty = 'true';
+  for (const part of scrollbar.querySelectorAll('.dx-scroll-prev,.dx-scroll-next,.dx-scroll-thumb')) {
+    part.style.filter = `brightness(${51/217})`;
+    part.style.pointerEvents = 'none';
+    part.dataset.sourceEnabled = 'false';
+  }
+}
+
 function renderListBox(control,node,parent) {
   const root = document.createElement('div');
   root.className = 'dx-listbox';
   root.style.left = `${node.x}px`; root.style.top = `${node.y}px`; root.style.width = `${node.width}px`; root.style.height = `${node.height}px`;
+  root.dataset.runtimeRows = 'DXListBoxItem controls';
+  root.dataset.sourceViewportWidth = String(Math.max(0,node.width-15));
   parent.append(root);
-  renderScrollBar({type:'DXVScrollBar'},{x:Math.max(0,node.width-14),y:0,width:14,height:node.height},root);
+  const scrollbar=renderScrollBar({type:'DXVScrollBar'},{x:Math.max(0,node.width-14),y:0,width:14,height:node.height},root);
+  markNeutralScrollBar(scrollbar,'MaxValue=sum(runtime DXListBoxItem heights); VisibleSize=Size.Height');
   return root;
 }
 
@@ -405,9 +408,19 @@ function renderTreeControl(control,node,parent) {
   const root = document.createElement('div');
   root.className = 'dx-tree-control';
   root.style.left = `${node.x}px`; root.style.top = `${node.y}px`; root.style.width = `${node.width}px`; root.style.height = `${node.height}px`;
-  const rows = document.createElement('div'); rows.className = 'dx-tree-runtime'; rows.textContent = 'Tree rows: runtime data'; root.append(rows);
+  root.dataset.runtimeRows = 'DXTreeNode / DXTreeRow data';
+  root.dataset.sourceRowHeight = '21';
+  root.dataset.sourceRowTopOffset = '2';
+  root.dataset.sourceIndentWidth = '15';
+  root.dataset.sourceScrollBarWidth = '18';
+  const viewport=document.createElement('div');
+  viewport.className='dx-tree-runtime';
+  viewport.style.left='0';viewport.style.top='0';viewport.style.right='18px';viewport.style.bottom='0';
+  viewport.dataset.runtimeData='true';
+  root.append(viewport);
   parent.append(root);
-  renderScrollBar({type:'DXVScrollBar'},{x:Math.max(0,node.width-18),y:0,width:18,height:node.height},root,{up:61,down:62,thumb:60,background:59});
+  const scrollbar=renderScrollBar({type:'DXVScrollBar'},{x:Math.max(0,node.width-18),y:0,width:18,height:node.height},root,{up:61,down:62,thumb:60,background:59});
+  markNeutralScrollBar(scrollbar,'MaxValue=visible runtime rows; VisibleSize=VisibleRows; Change=1');
   return root;
 }
 
@@ -500,64 +513,26 @@ function renderSourceWindow(rawItem) {
   const preferred = literalPair(item.defaultLocationExpression,'Point') || literalPair(item.root?.Location,'Point') || [Math.max(0,(1024-width)/2),Math.max(0,(700-height)/2)];
   const rootLibrary = libraryFrom(item.root?.LibraryFile);
   const rootIndex = indexFrom(item.root?.Index);
-  const rootAssetSize = getAssetSize(sourceSpec,rootLibrary,rootIndex);
   let root;
-
-  if (rootLibrary && rootIndex !== null && rootAssetSize) {
-    root = addImageWindow(item.id,rootLibrary,rootIndex,preferred[0],preferred[1],width,height,item.sourceClass || item.class || item.id);
+  if (rootLibrary && rootIndex !== null) {
+    root = addImageWindow(item.id,rootLibrary,rootIndex,preferred[0],preferred[1],width,height,item.field);
   } else {
-    root = buildDxFrame(width,height,item.sourceClass || item.class || item.id,item.root || {});
-    root.id = `w-${item.id}`;
-    root.style.left = `${preferred[0]}px`; root.style.top = `${preferred[1]}px`;
-    stage.append(root); windows.set(item.id,root);
+    root = buildDxFrame(width,height,item.field,item.root || {});
+    root.id = `w-${item.id}`; root.style.left = `${preferred[0]}px`; root.style.top = `${preferred[1]}px`; stage.append(root); windows.set(item.id,root);
   }
-
+  root.dataset.sourceField = item.field;
+  root.dataset.sourceClass = item.sourceClass || item.class || '';
+  root.dataset.sourcePath = item.sourcePath || '';
+  root.dataset.sourceReconstruction = 'true';
   for (const node of layout.nodes) renderControl(node,root);
-
-  const badge = document.createElement('div');
-  badge.className = 'generic-source-badge';
-  badge.textContent = `${item.sourcePath || 'source unresolved'} · ${layout.nodes.length} controls`;
-  root.append(badge);
-
-  // Runtime values are deliberately overlays; these never alter source PNGs.
-  if (item.id === 'character' || item.id === 'inspect') {
-    runtimeLabel('ORIGINS',97,52,137,root); runtimeLabel('Wizard',97,70,137,root);
-  }
-  if (item.id === 'inventory') {
-    runtimeLabel('12,500',112,382,65,root);
-  }
-  if (item.id === 'quest') {
-    runtimeLabel('Zuma Temple',25,85,150,root); runtimeLabel('Reach the King Room',25,103,180,root);
-  }
-  if (item.id === 'magic') {
-    const icons = document.createElement('div'); icons.className = 'magic-icons';
-    for (const icon of [0,8,10,14,18,20,30,38,40,44,52,64]) { const element=document.createElement('img'); element.src=asset('MagicIcon',icon); icons.append(element); }
-    root.append(icons);
-  }
-
-  placeIfOffscreen(root);
   return root;
 }
 
-function placeIfOffscreen(root) {
-  requestAnimationFrame(() => {
-    const width = root.offsetWidth || 350, height = root.offsetHeight || 300;
-    let x = Number.parseInt(root.style.left,10) || 0, y = Number.parseInt(root.style.top,10) || 0;
-    if (x + width > 1024) x = Math.max(0,1024-width);
-    if (y + height > 700) y = Math.max(0,700-height);
-    root.style.left = `${x}px`; root.style.top = `${y}px`;
-  });
-}
-
 function itemById(id) {
-  return sourceSpec?.windows?.find(item => item.id === id || item.field === gameSceneWindows.find(base => base.id === id)?.field) || gameSceneWindows.find(item => item.id === id);
+  return sourceSpec?.windows?.find(item => item.id === id) || sourceSpec?.nestedWindows?.find(item => item.id === id) || gameSceneWindows.find(item => item.id === id);
 }
 
 function openWindow(id) {
-  if (['main-panel','belt','minimap','buffs','group-health','timer'].includes(id)) {
-    selectionInfo.textContent = `${id}: persistent/default GameScene HUD component.`;
-    return;
-  }
   removeTransientWindows();
   const item = itemById(id);
   if (!item) return;
@@ -578,24 +553,32 @@ async function loadSpec() {
     const response = await fetch('ui-source-spec.json',{cache:'no-store'});
     if (!response.ok) throw new Error(response.statusText);
     const raw = await response.json();
-    sourceSpec = {...raw,windows:mergeSpec(raw)};
+    const merged = mergeSpec(raw);
+    const nested = (raw.nestedWindows || []).map(item => ({...item,id:item.id || `nested-${String(item.sourceClass || item.class || item.field).replace(/(?<!^)(?=[A-Z])/g,'-').toLowerCase()}`}));
+    sourceSpec = {...raw,windows:merged,nestedWindows:nested};
     const sizeLibraries = Object.keys(raw.assetSizes || {}).length;
-    sourceStatus.textContent = `${raw.windowCount || sourceSpec.windows.length} GameScene entries · source geometry resolver active · ${sizeLibraries} asset-size libraries`;
+    const nestedCount = nested.length;
+    sourceStatus.textContent = `${raw.windowCount || merged.length} GameScene + ${nestedCount} nested/transient · source geometry resolver active · ${sizeLibraries} asset-size libraries`;
   } catch (error) {
-    sourceSpec = {windows:gameSceneWindows,assetSizes:{}};
+    sourceSpec = {windows:gameSceneWindows,nestedWindows:[],assetSizes:{}};
     sourceStatus.textContent = `static registry only (${gameSceneWindows.length}); generated source spec unavailable`;
   }
   renderCatalog();
 }
 
+function catalogItems() {
+  return [...(sourceSpec?.windows || gameSceneWindows),...(sourceSpec?.nestedWindows || [])];
+}
+
 function renderCatalog() {
   list.innerHTML = '';
   const query = search.value.trim().toLowerCase();
-  const items = (sourceSpec?.windows || gameSceneWindows).filter(item =>
+  const items = catalogItems().filter(item =>
     (activeCategory === 'all' || item.category === activeCategory) &&
     (!query || `${item.id} ${item.field} ${item.sourceClass || item.class}`.toLowerCase().includes(query))
   );
-  for (const category of uiCategories) {
+  const categories=[...uiCategories,...new Set(items.map(item=>item.category).filter(Boolean).filter(category=>!uiCategories.includes(category)))];
+  for (const category of categories) {
     const categoryItems = items.filter(item => item.category === category);
     if (!categoryItems.length) continue;
     const group = document.createElement('div'); group.className = 'catalog-group';
@@ -612,7 +595,8 @@ function renderCatalog() {
 }
 
 function buildFilters() {
-  for (const category of ['all',...uiCategories]) {
+  for (const category of ['all',...uiCategories,'modal','login','character-select']) {
+    if(filters.querySelector(`[data-category="${category}"]`)) continue;
     const button = document.createElement('button');
     button.textContent = category; button.dataset.category = category;
     if (category === 'all') button.classList.add('active');
