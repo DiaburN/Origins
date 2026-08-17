@@ -3,6 +3,8 @@ import { buildWindowLayout } from './layout-resolver-derived.js';
 const stage = document.querySelector('#stage');
 let zCounter = 100;
 let sourceSpec = null;
+const pad=value=>String(value).padStart(5,'0');
+const sourceAsset=(library,index)=>`assets/${library}/${pad(index)}.png`;
 
 function isWindow(element) {
   return element instanceof HTMLElement && (element.classList.contains('window') || element.classList.contains('generic-window'));
@@ -14,6 +16,13 @@ function boolFrom(raw,fallback=false) {
 function sourceFloat(raw,fallback=1) {
   const value=String(raw??'').trim().replace(/[fFdDmM]$/,'');
   return /^-?(?:\d+(?:\.\d*)?|\.\d+)$/.test(value)?Number(value):fallback;
+}
+function sourceLibrary(raw) {
+  return String(raw??'').match(/LibraryFile\.([A-Za-z0-9_]+)/)?.[1]||null;
+}
+function sourceIndex(raw) {
+  const value=String(raw??'').trim();
+  return /^-?\d+$/.test(value)?Number(value):null;
 }
 
 function focusWindow(root) {
@@ -61,7 +70,6 @@ function intersect(a,b) {
 function sourceClipArea(node) {
   let clip={left:node.x,top:node.y,right:node.x+node.width,bottom:node.y+node.height,width:node.width,height:node.height};
   let parent=node.parent;
-  // DXControl.UpdateClipArea(): DisplayArea intersect Parent.ClipArea.
   while(parent) {
     clip=intersect(clip,{left:parent.x,top:parent.y,right:parent.x+parent.width,bottom:parent.y+parent.height,width:parent.width,height:parent.height});
     parent=parent.parent;
@@ -87,43 +95,73 @@ function applyClipToElement(element,node,clip) {
   apply();if(element instanceof HTMLImageElement&&!element.complete)element.addEventListener('load',apply,{once:true});
 }
 
+function indexedButtonImage(element) {
+  if(element instanceof HTMLImageElement)return element;
+  return element.querySelector?.('img.nested-source-indexed-art,img.nested-source-indexed-image,img.nested-indexed-image')||null;
+}
+function installIndexedButtonStates(element,node,enabled) {
+  if(node.control?.type!=='DXButton'||!enabled||element.dataset.sourceButtonStateInstalled==='true')return false;
+  const p=node.control?.properties||{},library=sourceLibrary(p.LibraryFile),normal=sourceIndex(p.Index),hover=sourceIndex(p.HoverIndex),pressed=sourceIndex(p.PressedIndex);
+  if(!library||normal===null||normal<0)return false;
+  const hasHover=hover!==null&&hover>=0,hasPressed=pressed!==null&&pressed>=0;
+  if(!hasHover&&!hasPressed)return false;
+  const image=indexedButtonImage(element);
+  if(!image)return false;
+  const states={normal,hover:hasHover?hover:normal,pressed:hasPressed?pressed:(hasHover?hover:normal)};
+  const setState=state=>{
+    const index=states[state];image.src=sourceAsset(library,index);
+    element.dataset.sourceButtonState=state;element.dataset.sourceButtonStateIndex=String(index);
+  };
+  // Indexed Zircon buttons are controls; allow the image/container to receive pointer state events.
+  element.style.pointerEvents='auto';element.style.cursor='pointer';
+  element.dataset.sourceButtonStateInstalled='true';
+  element.dataset.sourceButtonStateAssets=`${library}:${states.normal}/${states.hover}/${states.pressed}`;
+  setState('normal');
+  element.addEventListener('pointerenter',()=>setState('hover'));
+  element.addEventListener('pointerleave',()=>setState('normal'));
+  element.addEventListener('pointerdown',event=>{if(event.button===0)setState('pressed')});
+  element.addEventListener('pointerup',()=>setState(element.matches(':hover')?'hover':'normal'));
+  element.addEventListener('pointercancel',()=>setState('normal'));
+  return true;
+}
+
 function applySourceVisualState(element,node) {
   const p=node.control?.properties||{};
   if(p.Opacity!==undefined) {
     const opacity=Math.max(0,Math.min(1,sourceFloat(p.Opacity,1)));
     element.style.opacity=String(opacity);element.dataset.sourceOpacity=String(opacity);
   }
-  if(p.Enabled!==undefined) {
-    const enabled=boolFrom(p.Enabled,true);element.dataset.sourceEnabled=String(enabled);
-    if(!enabled) {
-      element.style.pointerEvents='none';
-      // DXButton.UpdateForeColour(): disabled ForeColour=51 instead of normal 217.
-      // Zircon keeps the same texture/skin; only the tint darkens.
-      if(node.control?.type==='DXButton') {
-        const brightness=51/217;
-        element.style.filter=`brightness(${brightness})`;
-        element.dataset.sourceDisabledButtonTint='51/217';
-      }
+  const enabled=p.Enabled===undefined?true:boolFrom(p.Enabled,true);
+  if(p.Enabled!==undefined) element.dataset.sourceEnabled=String(enabled);
+  if(!enabled) {
+    element.style.pointerEvents='none';
+    if(node.control?.type==='DXButton') {
+      const brightness=51/217;
+      element.style.filter=`brightness(${brightness})`;
+      element.dataset.sourceDisabledButtonTint='51/217';
     }
   }
+  return {enabled,statefulIndexedButton:installIndexedButtonStates(element,node,enabled)};
 }
 
 function applySourceControlTree(root) {
   const item=sourceItemForRoot(root);if(!item||!sourceSpec)return;
-  const layout=buildWindowLayout(sourceSpec,item);let applied=0,opacityCount=0,disabledCount=0;
+  const layout=buildWindowLayout(sourceSpec,item);let applied=0,opacityCount=0,disabledCount=0,statefulButtonCount=0;
   for(let i=0;i<layout.nodes.length;i++) {
     const node=layout.nodes[i],element=root.querySelector(`[data-control-index="${i}"]`);if(!element)continue;
     applyClipToElement(element,node,sourceClipArea(node));
-    applySourceVisualState(element,node);
+    const visual=applySourceVisualState(element,node);
     if(node.control?.properties?.Opacity!==undefined)opacityCount++;
-    if(node.control?.properties?.Enabled!==undefined&&!boolFrom(node.control.properties.Enabled,true))disabledCount++;
+    if(node.control?.properties?.Enabled!==undefined&&!visual.enabled)disabledCount++;
+    if(visual.statefulIndexedButton)statefulButtonCount++;
     applied++;
   }
   root.dataset.sourceClipNodes=String(applied);
   root.dataset.sourceClipPolicy='DXControl.UpdateClipArea';
   root.dataset.sourceOpacityNodes=String(opacityCount);
   root.dataset.sourceDisabledNodes=String(disabledCount);
-  root.dataset.sourceVisualStatePolicy='DXControl.Opacity + DXButton.UpdateForeColour';
+  root.dataset.sourceIndexedButtonStateNodes=String(statefulButtonCount);
+  root.dataset.sourceVisualStatePolicy='DXControl.Opacity + DXButton.UpdateForeColour + DXButton Index/HoverIndex/PressedIndex';
 }
 
 function installDrag(root) {
@@ -155,7 +193,7 @@ fetch('ui-source-spec.json',{cache:'no-store'})
   .then(spec=>{
     sourceSpec=spec;
     stage.querySelectorAll('.window,.generic-window').forEach(root=>{installDrag(root);applySourceControlTree(root)});
-    console.info('ORIGINS source ClipArea/Opacity/Enabled runtime active');
+    console.info('ORIGINS source ClipArea/Opacity/Enabled/indexed-button-state runtime active');
   })
   .catch(error=>console.error('Unable to load Zircon source visual-state manifest',error));
 
