@@ -1,9 +1,26 @@
 // Reference-only runtime for Zircon nested/modal branches that depend on
-// constructor arguments or live item/user data. Controls added here live OUTSIDE
+// constructor arguments or live item/user data. Reference selectors live OUTSIDE
 // the 1024x768 game desktop and therefore never masquerade as Zircon artwork.
+//
+// This layer also enforces a visual source rule for nested windows: whenever a
+// control has literal LibraryFile + non-negative Index, the exact extracted PNG
+// replaces generic HTML chrome. This currently fixes the six Interface1c class /
+// gender buttons used by NewCharacterDialog.
 
 const stage = document.querySelector('#stage');
 const topActions = document.querySelector('.top-actions');
+let nestedSpecByClass = new Map();
+
+const pad = value => String(value).padStart(5,'0');
+const sourceAsset = (library,index) => `assets/${library}/${pad(index)}.png`;
+function sourceLibrary(raw) {
+  const match=String(raw??'').match(/LibraryFile\.([A-Za-z0-9_]+)/);
+  return match?match[1]:null;
+}
+function sourceIndex(raw) {
+  const match=String(raw??'').trim().match(/^-?\d+$/);
+  return match?Number(match[0]):null;
+}
 
 const messageControl = document.createElement('label');
 messageControl.className = 'reference-state-control';
@@ -22,6 +39,32 @@ const messageSelect = messageControl.querySelector('select');
 function suffix(element, name) {
   return String(element?.dataset?.controlName || '').endsWith(name);
 }
+
+function applyIndexedSourceArtwork(root) {
+  if (!root?.dataset?.nestedSourceClass) return;
+  const item=nestedSpecByClass.get(root.dataset.nestedSourceClass);
+  if (!item) return;
+  let applied=0;
+  for(const control of item.controls||[]) {
+    const p=control.properties||{};
+    const library=sourceLibrary(p.LibraryFile),index=sourceIndex(p.Index);
+    if(!library||index===null||index<0) continue;
+    if(control.type!=='DXButton'&&control.type!=='DXImageControl'&&control.type!=='DXAnimatedControl') continue;
+    const target=root.querySelector(`[data-control-name="${CSS.escape(control.name)}"]`);
+    if(!target) continue;
+    const image=document.createElement('img');
+    image.src=sourceAsset(library,index);image.draggable=false;image.className='nested-source-indexed-art';
+    image.style.position='absolute';image.style.inset='0';image.style.width='100%';image.style.height='100%';
+    image.style.pointerEvents='none';
+    target.replaceChildren(image);
+    target.classList.add('nested-source-indexed-control');
+    target.dataset.sourceLibrary=library;target.dataset.sourceIndex=String(index);
+    target.title=`${control.name}: ${library} #${index}`;
+    applied++;
+  }
+  root.dataset.indexedSourceArtworkApplied=String(applied);
+}
+
 function applyMessageVariant(root, variant = messageSelect?.value || 'OK') {
   if (!root || root.dataset.nestedSourceClass !== 'DXMessageBox') return;
   root.dataset.sourceVariant = variant;
@@ -33,7 +76,6 @@ function applyMessageVariant(root, variant = messageSelect?.value || 'OK') {
     if (suffix(element,'CancelButton')) visible = variant === 'Cancel';
     element.style.display = visible ? '' : 'none';
   }
-  // message/caption are constructor parameters, not static source text.
   root.dataset.runtimeMessage = 'constructor:string message';
   root.dataset.runtimeCaption = 'constructor:string caption';
 }
@@ -56,8 +98,7 @@ function annotateItemAmount(root) {
     number.dataset.runtimeMaxValue = 'item.Count';
     number.dataset.runtimeChange = 'Math.Max(1,item.Count/5)';
     const field = number.querySelector('.dx-number-value');
-    if (field) field.textContent = '1'; // explicit source assignment: AmountBox.Value = 1.
-    // Do not make up a count: leave increment/decrement inert in this neutral review.
+    if (field) field.textContent = '1';
     number.querySelectorAll('.dx-number-up,.dx-number-down').forEach(button => {
       button.style.opacity = '.55';
       button.title = 'Requires runtime item.Count';
@@ -69,6 +110,13 @@ function annotateItemAmount(root) {
     itemCell.dataset.runtimeItemGrid = 'new[] { item }';
     itemCell.title = 'Runtime ClientUserItem from constructor';
   }
+}
+
+function initialiseNestedRoot(root) {
+  applyIndexedSourceArtwork(root);
+  applyMessageVariant(root);
+  annotateInput(root);
+  annotateItemAmount(root);
 }
 
 function refreshReferenceControls() {
@@ -87,14 +135,20 @@ const observer = new MutationObserver(records => {
     for (const node of record.addedNodes) {
       if (!(node instanceof Element)) continue;
       const roots = node.matches?.('.nested-source-window') ? [node] : [...node.querySelectorAll?.('.nested-source-window') || []];
-      for (const root of roots) {
-        applyMessageVariant(root);
-        annotateInput(root);
-        annotateItemAmount(root);
-      }
+      for (const root of roots) initialiseNestedRoot(root);
     }
   }
   refreshReferenceControls();
 });
 if (stage) observer.observe(stage,{childList:true,subtree:true});
+
+fetch('ui-source-spec.json',{cache:'no-store'})
+  .then(response=>{if(!response.ok)throw new Error(`ui-source-spec.json ${response.status}`);return response.json()})
+  .then(spec=>{
+    nestedSpecByClass=new Map((spec.nestedWindows||[]).map(item=>[item.sourceClass,item]));
+    stage?.querySelectorAll('[data-nested-source-class]').forEach(initialiseNestedRoot);
+    console.info(`ORIGINS nested source-art runtime: ${nestedSpecByClass.size} nested windows loaded`);
+  })
+  .catch(error=>console.error('Unable to load nested Zircon source-art manifest',error));
+
 refreshReferenceControls();
