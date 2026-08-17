@@ -9,23 +9,18 @@ from pathlib import Path
 
 from audit_ui_unplaced_controls import apply as audit_unplaced_controls
 
-CLICK_EXPR_RE = re.compile(
-    r"\b([A-Za-z_][A-Za-z0-9_]*)\.MouseClick\s*\+=\s*\([^)]*\)\s*=>\s*([^;]+);",
-    re.S,
-)
+CLICK_EXPR_RE = re.compile(r"\b([A-Za-z_][A-Za-z0-9_]*)\.MouseClick\s*\+=\s*\([^)]*\)\s*=>\s*([^;]+);",re.S)
 VISIBLE_RE = re.compile(r"^GameScene\.Game\.([A-Za-z_][A-Za-z0-9_]*)\.Visible\s*=\s*(.+)$",re.S)
 TOGGLE_OPEN_RE = re.compile(r"^GameScene\.Game\.([A-Za-z_][A-Za-z0-9_]*)\.ToggleOpen\s*\(\s*(.+)\s*\)$",re.S)
 
 
 def normalise(value: str) -> str: return " ".join(value.strip().split())
-
 def classify_visible(target: str, rhs: str) -> str | None:
     value=normalise(rhs)
     if value=="true": return "open"
     if value=="false": return "close"
     if value==f"!GameScene.Game.{target}.Visible": return "toggle"
     return None
-
 def classify_toggle_open(target: str, argument: str) -> str | None:
     value=normalise(argument)
     if value=="true": return "open"
@@ -76,5 +71,7 @@ def main() -> None:
     print('Unplaced classifications:',audit['classificationCounts'])
     print('UNKNOWN unplaced controls:',audit['unknownCount'])
     for row in audit['unknown'][:100]: print('  UNKNOWN',row['window'],row['control'],row['type'],'parent=',row.get('parent'))
+    if audit['unknownCount']:
+        raise SystemExit(f"Unclassified controls without source-backed layout: {audit['unknownCount']}")
 
 if __name__=="__main__": main()
