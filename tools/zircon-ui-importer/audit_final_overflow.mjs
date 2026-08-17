@@ -57,17 +57,21 @@ console.log('Unexplained overflows:',unexpected.length);
 for(const row of unexpected)console.log('UNEXPLAINED',JSON.stringify(row));
 
 const pass=spec.overflowContractPass||{};
-if(pass.contractCount!==5)throw new Error(`overflow contract inventory changed: ${JSON.stringify(pass)}`);
+if(pass.contractCount!==7)throw new Error(`overflow contract inventory changed: ${JSON.stringify(pass)}`);
 if(unexpected.length)throw new Error(`unexplained source-window overflow: ${unexpected.length}`);
 
-// Some contracts are source/runtime conditional and may be neutral-hidden in
-// this exact artifact, so not every declared contract must physically overflow.
-// But the high-risk constructor cases should remain represented in the manifest.
 const kinds=new Set();
 for(const window of [...(spec.windows||[]),...(spec.nestedWindows||[])])
   for(const control of window.controls||[])
     if(control.overflowContract?.kind)kinds.add(control.overflowContract.kind);
-for(const required of ['SOURCE_RUNTIME_RELOCATION','RUNTIME_SIZED_MINIGAME','SOURCE_OFFSET_PARENT_CLIP','SOURCE_BEFORE_DRAW_HIDDEN','PARTIAL_DYNAMIC_SIZE'])
-  if(!kinds.has(required))throw new Error(`missing overflow contract kind: ${required}`);
+for(const required of [
+  'SOURCE_INFLATED_DRAW_AREA',
+  'SOURCE_ASSET_BLEED',
+  'SOURCE_RUNTIME_RELOCATION',
+  'RUNTIME_SIZED_MINIGAME',
+  'SOURCE_OFFSET_PARENT_CLIP',
+  'SOURCE_BEFORE_DRAW_HIDDEN',
+  'PARTIAL_DYNAMIC_SIZE',
+]) if(!kinds.has(required))throw new Error(`missing overflow contract kind: ${required}`);
 
 console.log('Zero-unexplained-overflow contract: PASS');
