@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """Bundle the validated viewer patch and modular source-fidelity runtimes.
 
-The final assembly pass also promotes inherited DXWindow child assignments and
-removes the obsolete handcrafted sample desktop from the official artifact.
+The final assembly pass also promotes inherited DXWindow child assignments,
+stable runtime IDs, and removes the obsolete handcrafted sample desktop.
 """
 from __future__ import annotations
 
@@ -125,6 +125,12 @@ def neutralize_handcrafted_desktop() -> None:
 
 
 augment_inherited_window_chrome()
+subprocess.run([
+    sys.executable,
+    str(here / "promote_runtime_manifest_identity.py"),
+    "--spec", str(spec_path),
+    "--registry", str(repo_root / "apps" / "zircon-ui-reference" / "game-scene-windows.js"),
+], check=True)
 neutralize_handcrafted_desktop()
 
 visual = repo_root / "apps" / "zircon-ui-reference" / "visual-control-runtime.js"
