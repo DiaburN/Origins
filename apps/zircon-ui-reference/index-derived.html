@@ -61,6 +61,7 @@
     let sourceSpec=null;
     const sourceInt=(raw,fallback=null)=>{const value=String(raw??'').trim();return /^-?\d+$/.test(value)?Number(value):fallback};
     const sourceFloat=(raw,fallback=null)=>{const value=String(raw??'').trim().replace(/[fFdDmM]$/,'');return /^-?(?:\d+(?:\.\d*)?|\.\d+)$/.test(value)?Number(value):fallback};
+    const sourceBool=(raw,fallback=false)=>{const value=String(raw??'').trim().toLowerCase();return value==='true'?true:value==='false'?false:fallback};
     const literalSize=raw=>{const match=String(raw??'').match(/new\s+Size\s*\(\s*(-?\d+)\s*,\s*(-?\d+)\s*\)/);return match?[Number(match[1]),Number(match[2])]:null};
     function sourceItemForRoot(root){
       if(!sourceSpec||!root?.id?.startsWith('w-'))return null;
@@ -92,17 +93,43 @@
       for(let x=0;x<=columns;x++){const line=document.createElement('i');line.className='dx-item-grid-line';line.style.position='absolute';line.style.left=`${Math.trunc(stepX*x)}px`;line.style.top='0';line.style.width='1px';line.style.height='100%';line.style.background=lineColour;line.style.pointerEvents='none';element.append(line)}
       for(let y=0;y<=visibleRows;y++){const line=document.createElement('i');line.className='dx-item-grid-line';line.style.position='absolute';line.style.left='0';line.style.top=`${Math.trunc(stepY*y)}px`;line.style.width='100%';line.style.height='1px';line.style.background=lineColour;line.style.pointerEvents='none';element.append(line)}
     }
+    function colourFrom(raw,fallback='transparent'){
+      const value=String(raw??'');
+      if(/Color\.Empty\b/.test(value))return 'transparent';
+      if(/Color\.Black\b/.test(value))return '#000';
+      const match=value.match(/Color\.FromArgb\(\s*(?:\d+\s*,\s*)?(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*\)/);
+      return match?`rgb(${match[1]},${match[2]},${match[3]})`:fallback;
+    }
+    function styleItemCell(node,element){
+      const p=node.control?.properties||{};
+      if(sourceBool(p.Hidden,false)){
+        element.style.border='none';element.style.background='transparent';element.dataset.sourceHidden='true';return;
+      }
+      const fixed=sourceBool(p.FixedBorder,false),explicit=sourceBool(p.Border,false),locked=sourceBool(p.Locked,false),selected=sourceBool(p.Selected,false);
+      const baseBorder=fixed||explicit||locked||selected;
+      const baseColour=(locked||selected)?'#00ff00':'#49391f';
+      const baseBackground=(locked||selected)?'rgba(255,125,125,.49)':colourFrom(p.BackColour,'transparent');
+      const restore=()=>{element.style.border=baseBorder?`1px solid ${baseColour}`:'none';element.style.background=baseBackground};
+      restore();
+      element.dataset.sourceFixedBorder=String(fixed);element.dataset.sourceExplicitBorder=String(explicit);element.dataset.runtimeItem='ClientUserItem';
+      if(element.dataset.sourceHoverInstalled!=='true'){
+        element.dataset.sourceHoverInstalled='true';
+        element.addEventListener('pointerenter',()=>{element.style.border='1px solid #00ff00'});
+        element.addEventListener('pointerleave',restore);
+      }
+    }
     function apply(root){
       const item=sourceItemForRoot(root);if(!item||!sourceSpec)return;
       const layout=buildWindowLayout(sourceSpec,item);
       for(let i=0;i<layout.nodes.length;i++){
-        const node=layout.nodes[i];if(node.control?.type!=='DXItemGrid')continue;
-        const element=root.querySelector(`[data-control-index="${i}"]`);if(element)drawGrid(node,element);
+        const node=layout.nodes[i],element=root.querySelector(`[data-control-index="${i}"]`);if(!element)continue;
+        if(node.control?.type==='DXItemGrid')drawGrid(node,element);
+        else if(node.control?.type==='DXItemCell')styleItemCell(node,element);
       }
     }
     function scan(node){if(!(node instanceof Element))return;if(node.matches?.('.window,.generic-window'))queueMicrotask(()=>apply(node));node.querySelectorAll?.('.window,.generic-window').forEach(root=>queueMicrotask(()=>apply(root)))}
     new MutationObserver(records=>records.forEach(record=>record.addedNodes.forEach(scan))).observe(stage,{childList:true,subtree:true});
-    fetch('ui-source-spec.json',{cache:'no-store'}).then(response=>{if(!response.ok)throw new Error(`ui-source-spec.json ${response.status}`);return response.json()}).then(spec=>{sourceSpec=spec;stage.querySelectorAll('.window,.generic-window').forEach(apply);console.info('ORIGINS source DXItemGrid 35px shared-line geometry runtime active')}).catch(error=>console.error('Unable to load Zircon item-grid source manifest',error));
+    fetch('ui-source-spec.json',{cache:'no-store'}).then(response=>{if(!response.ok)throw new Error(`ui-source-spec.json ${response.status}`);return response.json()}).then(spec=>{sourceSpec=spec;stage.querySelectorAll('.window,.generic-window').forEach(apply);console.info('ORIGINS source DXItemGrid/DXItemCell geometry and visual-state runtime active')}).catch(error=>console.error('Unable to load Zircon item source manifest',error));
   </script>
 </body>
 </html>
