@@ -178,6 +178,106 @@ function installTextBoxBehavior(element,node,enabled) {
   return true;
 }
 
+function resolvedScrollProperty(properties,name,defaultValue) {
+  if(properties[name]===undefined)return {resolved:true,value:defaultValue,source:'default'};
+  const value=sourceInt(properties[name],null);
+  return {resolved:value!==null,value,source:String(properties[name])};
+}
+function setInternalScrollButtonState(image,enabled) {
+  if(!image)return;
+  image.dataset.sourceEnabled=String(enabled);
+  image.style.pointerEvents=enabled?'auto':'none';
+  image.style.cursor=enabled?'pointer':'default';
+  image.style.filter=enabled?'':`brightness(${51/217})`;
+}
+function installScrollBarBehavior(element,node,enabled) {
+  const type=node.control?.type;
+  if(type!=='DXVScrollBar'&&type!=='DXHScrollBar')return false;
+  if(element.dataset.sourceScrollInstalled==='true')return true;
+  const p=node.control?.properties||{};
+  const vertical=type==='DXVScrollBar';
+  const minProp=resolvedScrollProperty(p,'MinValue',0);
+  const maxProp=resolvedScrollProperty(p,'MaxValue',0);
+  const visibleProp=resolvedScrollProperty(p,'VisibleSize',0);
+  const valueProp=resolvedScrollProperty(p,'Value',0);
+  const changeProp=resolvedScrollProperty(p,'Change',10);
+  const deterministic=[minProp,maxProp,visibleProp,valueProp,changeProp].every(item=>item.resolved);
+
+  element.dataset.sourceScrollInstalled='true';
+  element.dataset.sourceScrollAxis=vertical?'vertical':'horizontal';
+  element.dataset.sourceScrollDeterministic=String(deterministic);
+  element.dataset.sourceHideWhenNoScroll=String(boolFrom(p.HideWhenNoScroll,false));
+
+  const background=element.querySelector('img.dx-scroll-bg');
+  const thumb=element.querySelector('img.dx-scroll-thumb');
+  const buttons=[...element.querySelectorAll('img')].filter(image=>image!==background&&image!==thumb);
+  const previous=buttons[0]||null,next=buttons[1]||null;
+  if(!deterministic||!enabled) {
+    setInternalScrollButtonState(previous,false);setInternalScrollButtonState(next,false);setInternalScrollButtonState(thumb,false);
+    element.dataset.sourceScrollRuntimeContract=deterministic?'parent control disabled':'Value/MinValue/MaxValue/VisibleSize/Change require runtime expression';
+    return true;
+  }
+
+  const min=minProp.value,max=maxProp.value,visible=Math.max(0,visibleProp.value),change=Math.max(0,changeProp.value);
+  const maxScroll=Math.max(0,max-min-visible);
+  const scrollExtent=Math.max(0,(vertical?node.height:node.width)-50);
+  let value=Math.max(min,Math.min(max-visible,valueProp.value));
+  const hideWhenNoScroll=boolFrom(p.HideWhenNoScroll,false);
+
+  const update=()=>{
+    value=Math.max(min,Math.min(max-visible,value));
+    const canPrevious=value>min,canNext=value<max-visible,canMove=max-min>visible;
+    setInternalScrollButtonState(previous,canPrevious);
+    setInternalScrollButtonState(next,canNext);
+    setInternalScrollButtonState(thumb,canMove);
+    if(thumb&&maxScroll>0) {
+      const position=16+Math.trunc(scrollExtent*((value-min)/maxScroll));
+      if(vertical)thumb.style.top=`${position}px`;else thumb.style.left=`${position}px`;
+    }
+    element.dataset.value=String(value);
+    element.dataset.sourceScrollRange=`${min}:${max}:${visible}:${change}`;
+    if(hideWhenNoScroll)element.style.display=(canPrevious||canNext)?'':'none';
+  };
+  const setValue=nextValue=>{value=Math.max(min,Math.min(max-visible,Math.round(nextValue)));update()};
+  update();
+
+  previous?.addEventListener('click',event=>{event.preventDefault();event.stopPropagation();setValue(value-change)});
+  next?.addEventListener('click',event=>{event.preventDefault();event.stopPropagation();setValue(value+change)});
+  element.addEventListener('wheel',event=>{
+    event.preventDefault();event.stopPropagation();
+    const steps=event.deltaY===0?0:(event.deltaY>0?1:-1);
+    setValue(value+steps*change);
+  },{passive:false});
+  element.addEventListener('pointerdown',event=>{
+    if(event.button!==0||event.target===previous||event.target===next||event.target===thumb||maxScroll<=0)return;
+    const rect=element.getBoundingClientRect();
+    const pointer=vertical?event.clientY-rect.top:event.clientX-rect.left;
+    const thumbSize=vertical?(thumb?.offsetHeight||13):(thumb?.offsetWidth||13);
+    const nextValue=Math.round((pointer-(thumbSize+thumbSize/2))*maxScroll/Math.max(1,scrollExtent))+min;
+    setValue(nextValue);
+  });
+  if(thumb)thumb.addEventListener('pointerdown',event=>{
+    if(event.button!==0||maxScroll<=0)return;
+    event.preventDefault();event.stopPropagation();
+    thumb.setPointerCapture?.(event.pointerId);
+    const rect=element.getBoundingClientRect();
+    const thumbRect=thumb.getBoundingClientRect();
+    const grabOffset=vertical?event.clientY-thumbRect.top:event.clientX-thumbRect.left;
+    const move=moveEvent=>{
+      const pointer=vertical?moveEvent.clientY-rect.top:moveEvent.clientX-rect.left;
+      const thumbSize=vertical?(thumb.offsetHeight||13):(thumb.offsetWidth||13);
+      const position=Math.max(16,Math.min(16+scrollExtent,pointer-grabOffset));
+      setValue(Math.round((position-16)*maxScroll/Math.max(1,scrollExtent))+min);
+    };
+    const end=endEvent=>{
+      thumb.releasePointerCapture?.(endEvent.pointerId);
+      thumb.removeEventListener('pointermove',move);thumb.removeEventListener('pointerup',end);thumb.removeEventListener('pointercancel',end);
+    };
+    thumb.addEventListener('pointermove',move);thumb.addEventListener('pointerup',end);thumb.addEventListener('pointercancel',end);
+  });
+  return true;
+}
+
 function applySourceVisualState(element,node) {
   const p=node.control?.properties||{};
   if(p.Opacity!==undefined) {
@@ -195,12 +295,13 @@ function applySourceVisualState(element,node) {
     }
   }
   const textBox=installTextBoxBehavior(element,node,enabled);
-  return {enabled,textBox,statefulIndexedButton:installIndexedButtonStates(element,node,enabled)};
+  const scrollBar=installScrollBarBehavior(element,node,enabled);
+  return {enabled,textBox,scrollBar,statefulIndexedButton:installIndexedButtonStates(element,node,enabled)};
 }
 
 function applySourceControlTree(root) {
   const item=sourceItemForRoot(root);if(!item||!sourceSpec)return;
-  const layout=buildWindowLayout(sourceSpec,item);let applied=0,opacityCount=0,disabledCount=0,statefulButtonCount=0,textBoxCount=0;
+  const layout=buildWindowLayout(sourceSpec,item);let applied=0,opacityCount=0,disabledCount=0,statefulButtonCount=0,textBoxCount=0,scrollBarCount=0;
   for(let i=0;i<layout.nodes.length;i++) {
     const node=layout.nodes[i],element=root.querySelector(`[data-control-index="${i}"]`);if(!element)continue;
     applyClipToElement(element,node,sourceClipArea(node));
@@ -209,6 +310,7 @@ function applySourceControlTree(root) {
     if(node.control?.properties?.Enabled!==undefined&&!visual.enabled)disabledCount++;
     if(visual.statefulIndexedButton)statefulButtonCount++;
     if(visual.textBox)textBoxCount++;
+    if(visual.scrollBar)scrollBarCount++;
     applied++;
   }
   root.dataset.sourceClipNodes=String(applied);
@@ -217,7 +319,8 @@ function applySourceControlTree(root) {
   root.dataset.sourceDisabledNodes=String(disabledCount);
   root.dataset.sourceIndexedButtonStateNodes=String(statefulButtonCount);
   root.dataset.sourceTextBoxNodes=String(textBoxCount);
-  root.dataset.sourceVisualStatePolicy='DXControl ClipArea/Opacity/Enabled + DXButton indexed states + DXTextBox Editable/ReadOnly/Password/MaxLength';
+  root.dataset.sourceScrollBarNodes=String(scrollBarCount);
+  root.dataset.sourceVisualStatePolicy='DXControl ClipArea/Opacity/Enabled + DXButton indexed states + DXTextBox semantics + DXV/HScrollBar Value/Min/Max/VisibleSize/Change';
 }
 
 function installDrag(root) {
@@ -249,7 +352,7 @@ fetch('ui-source-spec.json',{cache:'no-store'})
   .then(spec=>{
     sourceSpec=spec;
     stage.querySelectorAll('.window,.generic-window').forEach(root=>{installDrag(root);applySourceControlTree(root)});
-    console.info('ORIGINS source ClipArea/Opacity/Enabled/indexed-button/textbox runtime active');
+    console.info('ORIGINS source ClipArea/Opacity/Enabled/indexed-button/textbox/scrollbar runtime active');
   })
   .catch(error=>console.error('Unable to load Zircon source visual-state manifest',error));
 
