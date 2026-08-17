@@ -3,7 +3,8 @@
 
 These values come from checked-in Zircon defaults plus constructor method calls
 whose side effects the static initializer parser cannot execute (GetAcceptableResize,
-OnClientAreaChanged, UpdateButtonLocations and property setters).
+SetDefaultSize, OnSizeChanged, OnClientAreaChanged, UpdateButtonLocations and
+property setters). Runtime player/map/quest/monster data is never fabricated.
 """
 from __future__ import annotations
 
@@ -62,6 +63,55 @@ def main() -> None:
         "runtimeMapImageInvented": False,
     }
 
+    # ChatTextBox calls SetDefaultSize() after creating its controls. With the
+    # initial TextBox 350x100, ChatMode 60 and Options 50, SetClientSize receives
+    # 475x100. No title/top/footer => DXWindow overhead is 18x18, final 493x118.
+    chat = by_field["ChatTextBox"]
+    chat["root"]["Size"] = "new Size(493, 118)"
+    chat["root"]["SourceSizeExpression"] = "SetDefaultSize(): SetClientSize(new Size(350 + 60 + 15 + 50, 100))"
+    chat_mode = control(chat, "ChatModeButton")
+    chat_mode["properties"]["Location"] = "new Point(9, 8)"
+    chat_mode["sourcePostConstructor"] = "after SetDefaultSize: ClientArea.Location + y - 1"
+    chat_text = control(chat, "TextBox")
+    chat_text["properties"]["Location"] = "new Point(74, 9)"
+    chat_text["properties"]["Size"] = "new Size(355, 100)"
+    chat_text["sourcePostConstructor"] = "OnSizeChanged after SetClientSize: client width 475 - 60 - 10 - 50"
+    chat_options = control(chat, "OptionsButton")
+    chat_options["properties"]["Location"] = "new Point(434, 8)"
+    chat_options["sourcePostConstructor"] = "after SetDefaultSize: ClientArea.X + TextBox.Width + ChatMode.Width + 10"
+    chat["constructorFinalState"] = {
+        "size": [493, 118],
+        "clientArea": [9, 9, 475, 100],
+        "canResizeWidth": True,
+        "canResizeHeight": False,
+        "runtimeChatTextInvented": False,
+    }
+
+    # QuestTracker creates ScrollBar/TextPanel before setting Size=250x100. The
+    # final Size assignment invokes OnSizeChanged and overwrites both geometries.
+    tracker = by_field["QuestTrackerBox"]
+    tracker["root"]["Size"] = "new Size(250, 100)"
+    scroll = control(tracker, "ScrollBar")
+    scroll["properties"].update({
+        "Location": "new Point(227, 9)",
+        "Size": "new Size(14, 82)",
+        "VisibleSize": "82",
+        "HideWhenNoScroll": "true",
+    })
+    scroll["sourcePostConstructor"] = "OnSizeChanged(Size=250x100); ResizeBuffer=9"
+    text_panel = control(tracker, "TextPanel")
+    text_panel["properties"]["Location"] = "new Point(0, 9)"
+    text_panel["properties"]["Size"] = "new Size(226, 82)"
+    text_panel["sourcePostConstructor"] = "OnSizeChanged(Size=250x100); width=250-14-1-9, height=100-18"
+    tracker["constructorFinalState"] = {
+        "size": [250, 100],
+        "scrollBar": [227, 9, 14, 82],
+        "textPanel": [0, 9, 226, 82],
+        "opacityIdle": 0.0,
+        "opacityHover": 0.3,
+        "runtimeQuestLinesInvented": False,
+    }
+
     # MonsterDialog ends with Expanded = Config.MonsterBoxExpanded; default Config=true.
     monster = by_field["MonsterBox"]
     monster["root"]["Size"] = "new Size(186, 175)"
@@ -83,21 +133,26 @@ def main() -> None:
     checks = {
         "BeltBox": belt["root"]["Size"],
         "MiniMapBox": mini["root"]["Size"],
+        "ChatTextBox": chat["root"]["Size"],
+        "QuestTrackerBox": tracker["root"]["Size"],
         "MonsterBox": monster["root"]["Size"],
     }
-    if checks != {
+    expected = {
         "BeltBox": "new Size(64, 54)",
         "MiniMapBox": "new Size(200, 200)",
+        "ChatTextBox": "new Size(493, 118)",
+        "QuestTrackerBox": "new Size(250, 100)",
         "MonsterBox": "new Size(186, 175)",
-    }:
+    }
+    if checks != expected:
         raise SystemExit(f"Constructor final-state promotion drifted: {checks}")
 
     spec["constructorFinalStatePass"] = {
-        "windowsPromoted": ["BeltBox", "MiniMapBox", "MonsterBox"],
+        "windowsPromoted": ["BeltBox", "MiniMapBox", "ChatTextBox", "QuestTrackerBox", "MonsterBox"],
         "source": "Zircon constructors + checked-in Config.cs defaults + DXWindow GetSize/GetClientArea",
     }
     args.spec.write_text(json.dumps(spec, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
-    print("Constructor final states promoted: Belt 64x54, MiniMap 200x200, Monster expanded 186x175")
+    print("Constructor final states promoted: Belt, MiniMap, ChatTextBox, QuestTracker, MonsterBox")
 
 
 if __name__ == "__main__":
