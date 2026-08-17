@@ -17,6 +17,10 @@ function sourceFloat(raw,fallback=1) {
   const value=String(raw??'').trim().replace(/[fFdDmM]$/,'');
   return /^-?(?:\d+(?:\.\d*)?|\.\d+)$/.test(value)?Number(value):fallback;
 }
+function sourceInt(raw,fallback=null) {
+  const value=String(raw??'').trim();
+  return /^-?\d+$/.test(value)?Number(value):fallback;
+}
 function sourceLibrary(raw) {
   return String(raw??'').match(/LibraryFile\.([A-Za-z0-9_]+)/)?.[1]||null;
 }
@@ -55,7 +59,7 @@ function clearCatalogState(root) {
   document.querySelector(`[data-window-id="${CSS.escape(id)}"]`)?.classList.remove('active');
 }
 function isInteractiveTarget(target) {
-  return target instanceof Element && Boolean(target.closest('button,input,textarea,select,.close,.ui-button,.dx-generated-button,.dx-checkbox,.dx-scrollbar'));
+  return target instanceof Element && Boolean(target.closest('button,input,textarea,select,.close,.ui-button,.dx-generated-button,.dx-checkbox,.dx-scrollbar,.dx-textbox'));
 }
 function sourceItemForRoot(root) {
   if (!sourceSpec || !root?.id?.startsWith('w-')) return null;
@@ -112,7 +116,6 @@ function installIndexedButtonStates(element,node,enabled) {
     const index=states[state];image.src=sourceAsset(library,index);
     element.dataset.sourceButtonState=state;element.dataset.sourceButtonStateIndex=String(index);
   };
-  // Indexed Zircon buttons are controls; allow the image/container to receive pointer state events.
   element.style.pointerEvents='auto';element.style.cursor='pointer';
   element.dataset.sourceButtonStateInstalled='true';
   element.dataset.sourceButtonStateAssets=`${library}:${states.normal}/${states.hover}/${states.pressed}`;
@@ -122,6 +125,56 @@ function installIndexedButtonStates(element,node,enabled) {
   element.addEventListener('pointerdown',event=>{if(event.button===0)setState('pressed')});
   element.addEventListener('pointerup',()=>setState(element.matches(':hover')?'hover':'normal'));
   element.addEventListener('pointercancel',()=>setState('normal'));
+  return true;
+}
+
+function installTextBoxBehavior(element,node,enabled) {
+  const type=node.control?.type;
+  if(type!=='DXTextBox'&&type!=='DXNumberTextBox')return false;
+  if(element.dataset.sourceTextBoxInstalled==='true')return true;
+  const p=node.control?.properties||{};
+  const editable=enabled&&boolFrom(p.Editable,true)&&!boolFrom(p.ReadOnly,false);
+  const readOnly=boolFrom(p.ReadOnly,false);
+  const password=boolFrom(p.Password,false);
+  const maxLength=sourceInt(p.MaxLength,0);
+
+  element.dataset.sourceTextBoxInstalled='true';
+  element.dataset.sourceEditable=String(editable);
+  element.dataset.sourceReadOnly=String(readOnly);
+  element.dataset.sourcePassword=String(password);
+  if(maxLength>0)element.dataset.sourceMaxLength=String(maxLength);
+  element.setAttribute('role','textbox');
+  element.setAttribute('aria-readonly',String(!editable));
+  element.contentEditable=editable?'true':'false';
+  element.tabIndex=editable?0:-1;
+  element.style.cursor=editable?'text':'default';
+  element.style.userSelect=editable?'text':'none';
+  if(password) {
+    element.style.webkitTextSecurity='disc';
+    element.dataset.sourcePasswordMask='system-password-char';
+  }
+  if(type==='DXNumberTextBox') {
+    element.setAttribute('inputmode','numeric');
+    element.dataset.sourceNumeric='true';
+  }
+
+  if(editable) {
+    element.addEventListener('focus',()=>{element.dataset.sourceActiveTextBox='true'});
+    element.addEventListener('blur',()=>{element.dataset.sourceActiveTextBox='false'});
+    element.addEventListener('input',()=>{
+      if(type==='DXNumberTextBox') {
+        const caretSelection=window.getSelection();
+        const cleaned=(element.textContent||'').replace(/[^0-9-]/g,'');
+        if(cleaned!==element.textContent)element.textContent=cleaned;
+        caretSelection?.collapse?.(element,element.childNodes.length);
+      }
+      if(maxLength>0&&(element.textContent||'').length>maxLength) {
+        element.textContent=(element.textContent||'').slice(0,maxLength);
+        const selection=window.getSelection();selection?.collapse?.(element,element.childNodes.length);
+      }
+      element.dataset.runtimeValue=element.textContent||'';
+    });
+  }
   return true;
 }
 
@@ -141,12 +194,13 @@ function applySourceVisualState(element,node) {
       element.dataset.sourceDisabledButtonTint='51/217';
     }
   }
-  return {enabled,statefulIndexedButton:installIndexedButtonStates(element,node,enabled)};
+  const textBox=installTextBoxBehavior(element,node,enabled);
+  return {enabled,textBox,statefulIndexedButton:installIndexedButtonStates(element,node,enabled)};
 }
 
 function applySourceControlTree(root) {
   const item=sourceItemForRoot(root);if(!item||!sourceSpec)return;
-  const layout=buildWindowLayout(sourceSpec,item);let applied=0,opacityCount=0,disabledCount=0,statefulButtonCount=0;
+  const layout=buildWindowLayout(sourceSpec,item);let applied=0,opacityCount=0,disabledCount=0,statefulButtonCount=0,textBoxCount=0;
   for(let i=0;i<layout.nodes.length;i++) {
     const node=layout.nodes[i],element=root.querySelector(`[data-control-index="${i}"]`);if(!element)continue;
     applyClipToElement(element,node,sourceClipArea(node));
@@ -154,6 +208,7 @@ function applySourceControlTree(root) {
     if(node.control?.properties?.Opacity!==undefined)opacityCount++;
     if(node.control?.properties?.Enabled!==undefined&&!visual.enabled)disabledCount++;
     if(visual.statefulIndexedButton)statefulButtonCount++;
+    if(visual.textBox)textBoxCount++;
     applied++;
   }
   root.dataset.sourceClipNodes=String(applied);
@@ -161,7 +216,8 @@ function applySourceControlTree(root) {
   root.dataset.sourceOpacityNodes=String(opacityCount);
   root.dataset.sourceDisabledNodes=String(disabledCount);
   root.dataset.sourceIndexedButtonStateNodes=String(statefulButtonCount);
-  root.dataset.sourceVisualStatePolicy='DXControl.Opacity + DXButton.UpdateForeColour + DXButton Index/HoverIndex/PressedIndex';
+  root.dataset.sourceTextBoxNodes=String(textBoxCount);
+  root.dataset.sourceVisualStatePolicy='DXControl ClipArea/Opacity/Enabled + DXButton indexed states + DXTextBox Editable/ReadOnly/Password/MaxLength';
 }
 
 function installDrag(root) {
@@ -193,7 +249,7 @@ fetch('ui-source-spec.json',{cache:'no-store'})
   .then(spec=>{
     sourceSpec=spec;
     stage.querySelectorAll('.window,.generic-window').forEach(root=>{installDrag(root);applySourceControlTree(root)});
-    console.info('ORIGINS source ClipArea/Opacity/Enabled/indexed-button-state runtime active');
+    console.info('ORIGINS source ClipArea/Opacity/Enabled/indexed-button/textbox runtime active');
   })
   .catch(error=>console.error('Unable to load Zircon source visual-state manifest',error));
 
