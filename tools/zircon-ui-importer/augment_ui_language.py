@@ -1,15 +1,10 @@
 #!/usr/bin/env python3
 """Augment a generated Zircon UI manifest with real English runtime labels.
 
-Before language resolution this phase also applies the source-backed
-DXConfigSection automatic layout. That layout synthesizes section/title labels,
-so running it here ensures those new labels receive the same EnglishMessages
-resolution as every other Zircon control.
-
-The visual source uses expressions such as `CEnvir.Language.MenuDialogSettingsButton`.
-Those expressions remain available as provenance while this script attaches the
-actual EnglishMessages.cs value and prepares a render-facing copy of the relevant
-text property. The source C# itself is never modified.
+Before language resolution this phase applies source-backed derived UI passes
+that create controls/labels: nested/transient DXWindows and DXConfigSection
+layout. Running them here ensures every new control receives the same language
+resolution as the 65 GameScene windows.
 """
 from __future__ import annotations
 
@@ -19,6 +14,7 @@ import re
 from pathlib import Path
 
 from augment_ui_config_sections import apply as apply_config_sections
+from augment_ui_nested_windows import apply as apply_nested_windows
 
 PROPERTY_RE = re.compile(
     r'public\s+override\s+string\s+([A-Za-z_][A-Za-z0-9_]*)\s*'
@@ -33,13 +29,7 @@ def decode_csharp_string(raw: str) -> str:
     try:
         return json.loads('"' + raw + '"')
     except json.JSONDecodeError:
-        return (
-            raw.replace(r'\"', '"')
-               .replace(r'\\', '\\')
-               .replace(r'\n', '\n')
-               .replace(r'\r', '\r')
-               .replace(r'\t', '\t')
-        )
+        return raw.replace(r'\"', '"').replace(r'\\', '\\').replace(r'\n', '\n').replace(r'\r', '\r').replace(r'\t', '\t')
 
 
 def render_literal(value: str) -> str:
@@ -59,9 +49,7 @@ def resolve_expression(expression: object, messages: dict[str, str]) -> tuple[st
         return None
     key = match.group(1)
     value = messages.get(key)
-    if value is None:
-        return None
-    return key, value
+    return (key, value) if value is not None else None
 
 
 def augment_properties(owner: dict, properties: dict, messages: dict[str, str]) -> bool:
@@ -70,7 +58,6 @@ def augment_properties(owner: dict, properties: dict, messages: dict[str, str]) 
         resolved = resolve_expression(expression, messages)
         if resolved is None:
             continue
-
         key, value = resolved
         owner['resolvedText'] = value
         owner['resolvedLanguageKey'] = key
@@ -88,9 +75,11 @@ def main() -> None:
     args = parser.parse_args()
 
     spec = json.loads(args.spec.read_text(encoding='utf-8'))
-
-    # .source/Zircon/Client/Envir/Translations/EnglishMessages.cs -> Zircon root.
     zircon_root = args.english_messages.parents[3]
+
+    if 'nestedWindows' not in spec:
+        nested_report = apply_nested_windows(spec, zircon_root)
+        print('Nested/transient windows reconstructed before language:', nested_report.get('reconstructedCount', 0))
     if 'configSectionPass' not in spec:
         config_report = apply_config_sections(spec, zircon_root)
         print('Config sections reconstructed before language:', config_report.get('sections', 0))
@@ -103,17 +92,16 @@ def main() -> None:
     resolved_controls = 0
     resolved_windows = 0
     unresolved_keys: set[str] = set()
+    owners = list(spec.get('windows', [])) + list(spec.get('nestedWindows', []))
 
-    for window in spec.get('windows', []):
+    for window in owners:
         root = window.get('root', {})
         if augment_properties(window, root, messages):
             resolved_windows += 1
-
         for control in window.get('controls', []):
             properties = control.get('properties', {})
             if augment_properties(control, properties, messages):
                 resolved_controls += 1
-
             values = list(properties.values())
             if control.get('sourceTextExpression') is not None:
                 values.append(control['sourceTextExpression'])
@@ -130,6 +118,7 @@ def main() -> None:
         'resolvedControlCount': resolved_controls,
         'renderPropertiesUseResolvedEnglish': True,
         'sourceExpressionsPreserved': True,
+        'includesNestedWindows': True,
         'unresolvedReferencedKeys': sorted(unresolved_keys),
     }
     args.spec.write_text(json.dumps(spec, indent=2, ensure_ascii=False), encoding='utf-8')
