@@ -87,14 +87,13 @@ def main() -> None:
             continue
 
         controls = prepare_controls(body, class_name, text, bases, sources, texts)
-        controls = namespace_children(controls, "this")
-        # namespace_children() uses the supplied parent name for Parent=this.
-        # For a top-level window, restore those children to the root sentinel.
+        controls = namespace_children(controls, class_name)
+        # Parent=this in a nested top-level constructor means the window root,
+        # not a child control named after the class. Keep the namespaced child
+        # identifiers while restoring that root-parent sentinel.
         for control in controls:
             props = control.setdefault("properties", {})
-            if props.get("Parent") == "this":
-                props["Parent"] = "this"
-            elif props.get("Parent") == "this":
+            if props.get("Parent") == class_name:
                 props["Parent"] = "this"
 
         root = root_properties(body)
