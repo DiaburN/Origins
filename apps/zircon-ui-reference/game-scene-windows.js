@@ -70,4 +70,10 @@ export const gameSceneWindows = [
   ['horse-tame','HorseTameBox','HorseTameDialog','gameplay',false],
 ].map(([id,field,sourceClass,category,defaultVisible])=>({id,field,sourceClass,category,defaultVisible}));
 
-export const uiCategories = ['hud','character','inventory','map','gameplay','social','communication','commerce','npc','system'];
+// Categories after `system` are source-reconstructed nested/transient windows.
+// They are shown in the same reference viewer but remain separate from the
+// canonical 65 GameScene registry above.
+export const uiCategories = [
+  'hud','character','inventory','map','gameplay','social','communication','commerce','npc','system',
+  'modal','group','market','login','character-select',
+];
