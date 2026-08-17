@@ -90,6 +90,7 @@ def main() -> None:
     for helper in (
         "augment_constructor_final_states.py",
         "augment_group_health_reference.py",
+        "augment_buff_reference.py",
         "augment_magic_bar_reference.py",
         "augment_overflow_contracts.py",
         "augment_companion_reference.py",
