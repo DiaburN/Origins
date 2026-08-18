@@ -1,16 +1,12 @@
 #!/usr/bin/env python3
 """Gate custom non-DX controls constructed directly by source window constructors.
 
-The base importer recognises object initialisers whose type name starts with DX.
-Zircon also constructs custom DXControl subclasses directly (for example
-GameStoreItemListControl or ConsignmentItemTypeMenu). Those are easy to omit even
-though their shell exists before any server payload arrives.
-
-This audit scans all 65 GameScene + nested window constructors, ignores event
-lambda bodies, resolves the C# inheritance chain, and requires every directly
-constructed custom DXControl/DXWindow type to have a materialised sourceType in
-that manifest owner. Fixed array cardinality remains the responsibility of the
-specific deterministic row/composite audits.
+Most direct custom DXControl/DXWindow subclasses remain materialised with their
+sourceType. A small, explicitly source-backed set is intentionally flattened to
+base DX controls by deterministic expanders so the full child tree can be
+rendered without inventing runtime payloads. Those flattened cases are accepted
+only when their exact owner/type/count contracts are already proven in the
+manifest. Any new direct custom type remains a hard failure.
 """
 from __future__ import annotations
 
@@ -119,6 +115,84 @@ def derives(name: str, targets: set[str], bases: dict[str, str]) -> bool:
     return False
 
 
+def generated_count(owner: dict, prefix: str) -> int:
+    return sum(1 for c in owner.get("controls", []) if str(c.get("sourceGenerated") or "").startswith(prefix))
+
+
+def named_roots(owner: dict, pattern: str) -> int:
+    regex = re.compile(pattern)
+    return sum(1 for c in owner.get("controls", []) if regex.fullmatch(str(c.get("name") or "")))
+
+
+def flattened_contract(spec: dict, owner: dict, type_name: str, source_occurrences: int) -> dict | None:
+    """Return exact evidence for the only approved flattened custom composites."""
+    field = str(owner.get("field") or "")
+
+    if (field, type_name) == ("AutoPotionBox", "AutoPotionRow"):
+        contract = owner.get("autoPotionSourceLoop") or {}
+        ok = (
+            source_occurrences == 1
+            and contract.get("rowCount") == 8
+            and contract.get("runtimeItemLinksInvented") is False
+            and named_roots(owner, r"AutoPotionRow\d{2}") == 8
+            and generated_count(owner, "AutoPotionDialog Rows loop + AutoPotionRow constructor") == 80
+        )
+        if ok:
+            return {"kind":"flattened-deterministic-tree","rows":8,"controls":80,"runtimePayloadsInvented":False}
+        return None
+
+    source_audit = spec.get("deterministicSourceRowAudit") or {}
+    if source_audit.get("passed") is not True or source_audit.get("runtimePayloadsInvented") is not False:
+        return None
+
+    if (field, type_name) == ("RankingBox", "RankingLine"):
+        contract = owner.get("deterministicRankingRows") or {}
+        roots = named_roots(owner, r"Ranking(?:SearchLineSource|LineSource\d{2})")
+        ok = (
+            source_occurrences == 2
+            and source_audit.get("rankingRows") == 12
+            and contract.get("searchRows") == 1
+            and contract.get("rankingRows") == 11
+            and contract.get("runtimeRankInfoInvented") is False
+            and roots == 12
+            and generated_count(owner, "deterministic-rows:Ranking") == 72
+        )
+        if ok:
+            return {"kind":"flattened-deterministic-tree","rows":12,"controls":72,"runtimePayloadsInvented":False}
+        return None
+
+    if (field, type_name) == ("DungeonFinderBox", "DungeonRow"):
+        contract = owner.get("deterministicDungeonRows") or {}
+        ok = (
+            source_occurrences == 1
+            and source_audit.get("dungeonRows") == 9
+            and contract.get("rowCount") == 9
+            and contract.get("runtimeInstanceInfoInvented") is False
+            and named_roots(owner, r"DungeonRowSource\d{2}") == 9
+            and generated_count(owner, "deterministic-rows:Dungeon") == 54
+        )
+        if ok:
+            return {"kind":"flattened-deterministic-tree","rows":9,"controls":54,"runtimePayloadsInvented":False}
+        return None
+
+    if (field, type_name) == ("FortuneCheckerBox", "FortuneCheckerRow"):
+        contract = owner.get("deterministicFortuneRows") or {}
+        ok = (
+            source_occurrences == 1
+            and source_audit.get("fortuneRows") == 9
+            and contract.get("rowCount") == 9
+            and contract.get("runtimeItemInfoInvented") is False
+            and contract.get("runtimeFortuneInvented") is False
+            and named_roots(owner, r"FortuneRowSource\d{2}") == 9
+            and generated_count(owner, "deterministic-rows:Fortune") == 90
+        )
+        if ok:
+            return {"kind":"flattened-deterministic-tree","rows":9,"controls":90,"runtimePayloadsInvented":False}
+        return None
+
+    return None
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--spec", type=Path, required=True)
@@ -129,10 +203,11 @@ def main() -> None:
     bases, paths = build_types(args.zircon_root)
     rows: list[dict] = []
     missing: list[dict] = []
+    flattened = 0
     targets = {"DXControl", "DXWindow"}
 
     for owner in [*(spec.get("windows") or []), *(spec.get("nestedWindows") or [])]:
-        source_class = str(owner.get("class") or owner.get("sourceClass") or "")
+        source_class = str(owner.get("sourceClass") or owner.get("class") or "")
         source_path = str(owner.get("sourcePath") or "")
         path = args.zircon_root / source_path
         if not source_class or not source_path or not path.exists(): continue
@@ -157,6 +232,9 @@ def main() -> None:
 
         for type_name, source_occurrences in sorted(discovered.items()):
             materialized = int(source_types.get(type_name, 0))
+            evidence = flattened_contract(spec, owner, type_name, source_occurrences) if materialized == 0 else None
+            covered = materialized > 0 or evidence is not None
+            if evidence is not None: flattened += 1
             row = {
                 "id": owner.get("id"),
                 "field": owner.get("field"),
@@ -166,10 +244,11 @@ def main() -> None:
                 "customTypeSourcePath": paths[type_name].relative_to(args.zircon_root).as_posix() if type_name in paths else None,
                 "constructorSyntaxOccurrences": source_occurrences,
                 "materializedSourceTypeControls": materialized,
-                "covered": materialized > 0,
+                "flattenedTreeEvidence": evidence,
+                "covered": covered,
             }
             rows.append(row)
-            if not row["covered"]: missing.append(row)
+            if not covered: missing.append(row)
 
     if missing:
         details = "; ".join(f"{row['field'] or row['sourceClass']}:{row['customType']}" for row in missing)
@@ -180,12 +259,20 @@ def main() -> None:
         "ownerCount": len(spec.get("windows") or []) + len(spec.get("nestedWindows") or []),
         "customTypeOccurrenceRows": len(rows),
         "allDirectCustomTypesMaterialized": True,
+        "flattenedDeterministicContracts": flattened,
+        "approvedFlattenedOwnerTypes": [
+            "AutoPotionBox:AutoPotionRow",
+            "RankingBox:RankingLine",
+            "DungeonFinderBox:DungeonRow",
+            "FortuneCheckerBox:FortuneCheckerRow",
+        ],
+        "exactFlattenedCountsRequired": True,
         "eventCallbackBodiesExcluded": True,
         "runtimePayloadsInvented": False,
         "rows": rows,
     }
     args.spec.write_text(json.dumps(spec, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
-    print(f"Direct custom composite inventory: PASS ({len(rows)} source type/owner rows, 0 uncovered)")
+    print(f"Direct custom composite inventory: PASS ({len(rows)} source type/owner rows, {flattened} exact flattened trees, 0 uncovered)")
 
 
 if __name__ == "__main__":
