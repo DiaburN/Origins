@@ -1,0 +1,98 @@
+name: Extract Crystal-Monk items NET Framework
+
+on:
+  push:
+    branches:
+      - research/monk-items-source
+  pull_request:
+    branches:
+      - origins-game-v1
+  workflow_dispatch:
+
+jobs:
+  extract:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download release
+        shell: powershell
+        run: |
+          $ErrorActionPreference = 'Stop'
+          New-Item -ItemType Directory -Force -Path research_out | Out-Null
+          Invoke-WebRequest -UseBasicParsing -Uri 'https://github.com/JevLOMCN/Crystal-Monk/releases/download/Server/Server.rar' -OutFile 'research_out/Server.rar'
+          & 7z x -y 'research_out/Server.rar' '-oresearch_out/release' | Out-Null
+
+      - name: Reflect exact Server assembly and database
+        shell: powershell
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $outDir = Join-Path $env:GITHUB_WORKSPACE 'research_out'
+          $serverDir = (Resolve-Path 'research_out/release/Server').Path
+          Set-Location $serverDir
+          $assemblyPath = Join-Path $serverDir 'Server.exe'
+          Write-Host "Server.exe: $assemblyPath"
+          & corflags.exe $assemblyPath 2>&1 | Tee-Object -FilePath (Join-Path $outDir 'corflags.txt')
+          try {
+            $asm = [System.Reflection.Assembly]::LoadFrom($assemblyPath)
+          } catch {
+            $_ | Out-String | Set-Content -Encoding UTF8 (Join-Path $outDir 'load_error.txt')
+            throw
+          }
+          $asm.FullName | Set-Content -Encoding UTF8 (Join-Path $outDir 'assembly.txt')
+          $envirType = $asm.GetType('Server.MirEnvir.Envir', $true)
+          $envir = [Activator]::CreateInstance($envirType)
+          $load = $envirType.GetMethod('LoadDB', [System.Reflection.BindingFlags]'Instance,Public')
+          try {
+            $load.Invoke($envir, @()) | Out-Null
+          } catch {
+            $_ | Out-String | Set-Content -Encoding UTF8 (Join-Path $outDir 'loaddb_error.txt')
+            if ($_.Exception.InnerException) { $_.Exception.InnerException | Out-String | Add-Content -Encoding UTF8 (Join-Path $outDir 'loaddb_error.txt') }
+            throw
+          }
+          $dict = $envirType.GetField('ItemInfoList').GetValue($envir)
+          Write-Host "Loaded item count: $($dict.Count)"
+          $first = $dict.Values | Select-Object -First 1
+          $itemType = $first.GetType()
+          $fields = $itemType.GetFields([System.Reflection.BindingFlags]'Instance,Public')
+          $props = $itemType.GetProperties([System.Reflection.BindingFlags]'Instance,Public') | ? { $_.GetIndexParameters().Count -eq 0 }
+          $fields.Name | Sort-Object | Set-Content -Encoding UTF8 (Join-Path $outDir 'item_fields.txt')
+          $props.Name | Sort-Object | Set-Content -Encoding UTF8 (Join-Path $outDir 'item_properties.txt')
+          $rcField = $itemType.GetField('RequiredClass')
+          $rows = @()
+          foreach ($item in $dict.Values) {
+            $rc = $rcField.GetValue($item)
+            if ($null -eq $rc -or $rc.ToString() -ne 'Monk') { continue }
+            $h = [ordered]@{}
+            foreach ($f in $fields) {
+              $v = $f.GetValue($item)
+              if ($null -eq $v) { $h[$f.Name] = $null }
+              elseif ($v.GetType().IsEnum) { $h[$f.Name] = $v.ToString() }
+              elseif ($v -is [System.Drawing.Color]) { $h[$f.Name] = $v.Name }
+              elseif ($v -is [System.Collections.IEnumerable] -and -not ($v -is [string])) { $h[$f.Name] = @($v | % { $_.ToString() }) }
+              else { $h[$f.Name] = $v }
+            }
+            foreach ($p in $props) {
+              if ($h.Contains($p.Name)) { continue }
+              try {
+                $v=$p.GetValue($item,$null)
+                if ($null -eq $v) { $h[$p.Name]=$null }
+                elseif ($v.GetType().IsEnum) { $h[$p.Name]=$v.ToString() }
+                else { $h[$p.Name]=$v.ToString() }
+              } catch {}
+            }
+            $rows += New-Object psobject -Property $h
+          }
+          $rows = @($rows | Sort-Object Index)
+          $rows | ConvertTo-Json -Depth 6 | Set-Content -Encoding UTF8 (Join-Path $outDir 'monk_items.json')
+          $rows | Select-Object Index,Name,FriendlyName,Type,Shape,RequiredClass,RequiredType,RequiredAmount,Set,Weight,Durability,MinAC,MaxAC,MinMAC,MaxMAC,MinDC,MaxDC,MinMC,MaxMC,MinSC,MaxSC,Image | Export-Csv -NoTypeInformation -Encoding UTF8 (Join-Path $outDir 'monk_items.csv')
+          $rows | Select-Object Index,Name,FriendlyName,Type,Shape,RequiredClass,RequiredType,RequiredAmount,Set,MinDC,MaxDC,MinMC,MaxMC,MinSC,MaxSC,Image | Format-Table -AutoSize | Out-String -Width 500 | Tee-Object -FilePath (Join-Path $outDir 'monk_items.txt') | Write-Host
+          Write-Host "Monk item count: $($rows.Count)"
+
+      - name: Upload diagnostics and exact items
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: crystal-monk-netfx-items
+          path: research_out/*.txt
+          if-no-files-found: warn
