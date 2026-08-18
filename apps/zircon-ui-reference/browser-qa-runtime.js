@@ -113,7 +113,7 @@ if (params.get('qa') === '1') {
         failures.push({ id: 'manifest', issue: `Deterministic row matrix mismatch: ${JSON.stringify(rowAudit)}` });
       }
       const guildRows = qaSpec.guildMemberRowAudit || {};
-      if (guildRows.headerRows !== 1 || guildRows.memberRows !== 17 || guildRows.sourceControls !== 108 || guildRows.netControlsAdded !== 107) {
+      if (guildRows.headerRows !== 1 || guildRows.memberRows !== 17 || guildRows.sourceControls !== 108 || guildRows.replacedIncompleteCompositeControls !== 0 || guildRows.netControlsAdded !== 108) {
         failures.push({ id: 'manifest', issue: `Guild deterministic member row matrix mismatch: ${JSON.stringify(guildRows)}` });
       }
       const guildRoot = qaSpec.guildRootHelperAudit || {};
@@ -173,7 +173,9 @@ if (params.get('qa') === '1') {
         failures.push({ id: 'manifest', issue: `Direct custom composite coverage mismatch: ${JSON.stringify(direct)}` });
       }
       const helperAudit = qaSpec.uiCreationHelperInventory || {};
-      if (helperAudit.version !== 2 || helperAudit.chatOptionsAddNewTabDeferredLocal !== true || helperAudit.helpPagesRemainRuntimeBound !== true || helperAudit.magicTabsRemainRuntimeBound !== true || helperAudit.knownBigMapHelpersMaterialized !== true || helperAudit.guildConstructorHelpersMaterialized !== true || helperAudit.guildWarRuntimeCastlePanelsRemainNeutral !== true || helperAudit.eventCallbacksExcludedFromCreationClassification !== true || helperAudit.staticGlobalsDoNotImplyRuntimeData !== true) {
+      const helperClasses = helperAudit.classificationCounts || {};
+      const helperStatuses = helperAudit.statusCounts || {};
+      if (helperAudit.version !== 3 || helperAudit.helperCount !== 56 || helperAudit.deferredHelperCount !== 35 || helperClasses['runtime-bound'] !== 5 || helperClasses['deferred-runtime'] !== 13 || helperClasses['deferred-local-state'] !== 22 || helperClasses['deterministic-source'] !== 16 || helperStatuses['runtime-bound'] !== 4 || helperStatuses['audited-deferred-runtime'] !== 13 || helperStatuses['audited-deferred-local'] !== 22 || helperStatuses.materialized !== 17 || helperAudit.chatOptionsAddNewTabDeferredLocal !== true || helperAudit.helpPagesRemainRuntimeBound !== true || helperAudit.magicTabsRemainRuntimeBound !== true || helperAudit.knownBigMapHelpersMaterialized !== true || helperAudit.guildConstructorHelpersMaterialized !== true || helperAudit.guildWarRuntimeCastlePanelsRemainNeutral !== true || helperAudit.eventCallbacksExcludedFromCreationClassification !== true || helperAudit.staticGlobalsDoNotImplyRuntimeData !== true || helperAudit.storeCategoryNodesRemainRuntimeBound !== true || helperAudit.communicationBlockRowsRemainRuntimeBound !== true || helperAudit.gameStoreSortItemsLinkedWithoutDuplication !== true || helperAudit.companionEnumFiltersMaterialized !== true || helperAudit.runtimePayloadsInvented !== false || helperAudit.sourceBackedOnly !== true) {
         failures.push({ id: 'manifest', issue: `UI helper boundary matrix mismatch: ${JSON.stringify(helperAudit)}` });
       }
     } catch (error) {
