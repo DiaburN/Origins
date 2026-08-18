@@ -88,6 +88,7 @@ jobs:
           psql -v ON_ERROR_STOP=1 -f packages/database/migrations/0004_item_equip_class_rules.sql
           psql -v ON_ERROR_STOP=1 -f packages/database/migrations/0005_world_content_and_progression.sql
           psql -v ON_ERROR_STOP=1 -f packages/database/migrations/0006_class_combat_and_equipment_contract.sql
+          psql -v ON_ERROR_STOP=1 -f packages/database/migrations/0007_equipment_persistence_enforcement.sql
 
       - name: Validate spell source contract
         run: |
@@ -109,44 +110,61 @@ jobs:
           test "$(psql -Atqc "SELECT concat_ws('+',primary_offense_stat,secondary_offense_stat) FROM content.class_combat_profiles WHERE class_id=5")" = "DC+MC"
           test "$(psql -Atqc "SELECT concat_ws('+',primary_offense_stat,secondary_offense_stat) FROM content.class_combat_profiles WHERE class_id=6")" = "DC+SC"
 
-      - name: Validate hybrid item stats and class equip rules
+      - name: Validate hybrid items class restrictions and persistence guard
         run: |
           set -euo pipefail
           psql -v ON_ERROR_STOP=1 <<'SQL'
           INSERT INTO content.item_definitions
             (game_key,item_name,item_type,source_system,source_repo,source_path,class_restriction_mode)
-          VALUES
-            ('qa.archerbow','QA Archer Bow','Weapon','zircon','Suprcode/Zircon','QA','restricted');
+          VALUES ('qa.archerbow','QA Archer Bow','Weapon','zircon','Suprcode/Zircon','QA','restricted');
 
           INSERT INTO content.item_stats (item_definition_id,stat_code,amount)
           SELECT id,'DC',10 FROM content.item_definitions WHERE game_key='qa.archerbow';
-
           INSERT INTO content.item_class_stats
             (item_definition_id,class_id,stat_code,amount,mode,source_system,source_repo,source_path)
           SELECT id,5,'DC',17,'replace','crystal','Suprcode/Crystal.Database','Jev/Server.MirDB'
           FROM content.item_definitions WHERE game_key='qa.archerbow';
-
           INSERT INTO content.item_allowed_classes (item_definition_id,class_id,source_system)
           SELECT id,5,'crystal' FROM content.item_definitions WHERE game_key='qa.archerbow';
-
           INSERT INTO content.item_equip_slots (item_definition_id,slot_code)
           SELECT id,'weapon' FROM content.item_definitions WHERE game_key='qa.archerbow';
 
+          INSERT INTO player.accounts (account_name) VALUES ('qa_items');
+          INSERT INTO player.characters (account_id,character_name,class_id,current_hp,current_mp)
+          SELECT id,'qa_warrior',1,100,0 FROM player.accounts WHERE account_name='qa_items';
+          INSERT INTO player.characters (account_id,character_name,class_id,current_hp,current_mp)
+          SELECT id,'qa_archer',5,100,100 FROM player.accounts WHERE account_name='qa_items';
+          INSERT INTO player.item_instances (item_definition_id,owner_character_id)
+          SELECT i.id,c.id FROM content.item_definitions i, player.characters c
+          WHERE i.game_key='qa.archerbow' AND c.character_name='qa_archer';
+
           DO $$
-          DECLARE
-            item_id bigint;
-            warrior_dc numeric;
-            archer_dc numeric;
+          DECLARE item_id bigint; item_instance uuid; archer_id uuid; warrior_id uuid; warrior_dc numeric; archer_dc numeric; blocked boolean := false;
           BEGIN
             SELECT id INTO item_id FROM content.item_definitions WHERE game_key='qa.archerbow';
+            SELECT id INTO archer_id FROM player.characters WHERE character_name='qa_archer';
+            SELECT id INTO warrior_id FROM player.characters WHERE character_name='qa_warrior';
+            SELECT id INTO item_instance FROM player.item_instances WHERE item_definition_id=item_id AND owner_character_id=archer_id;
             SELECT amount INTO warrior_dc FROM content.effective_item_stats WHERE item_definition_id=item_id AND class_code='warrior' AND stat_code='DC';
             SELECT amount INTO archer_dc FROM content.effective_item_stats WHERE item_definition_id=item_id AND class_code='archer' AND stat_code='DC';
             IF warrior_dc <> 10 THEN RAISE EXCEPTION 'Zircon base stat inheritance failed'; END IF;
             IF archer_dc <> 17 THEN RAISE EXCEPTION 'Crystal Archer stat overlay failed'; END IF;
-            IF content.can_class_equip_item(item_id, 1) THEN RAISE EXCEPTION 'Warrior equipped Archer-only item'; END IF;
-            IF NOT content.can_class_equip_item(item_id, 5) THEN RAISE EXCEPTION 'Archer rejected Archer-only item'; END IF;
-            IF NOT content.can_class_equip_item_in_slot(item_id,5,'weapon') THEN RAISE EXCEPTION 'Archer weapon slot rejected'; END IF;
-            IF content.can_class_equip_item_in_slot(item_id,5,'armour') THEN RAISE EXCEPTION 'Archer bow accepted in armour slot'; END IF;
+            IF content.can_class_equip_item(item_id,1) THEN RAISE EXCEPTION 'Warrior allowed Archer-only item'; END IF;
+            IF NOT content.can_class_equip_item_in_slot(item_id,5,'weapon') THEN RAISE EXCEPTION 'Archer weapon rejected'; END IF;
+            IF content.can_class_equip_item_in_slot(item_id,5,'armour') THEN RAISE EXCEPTION 'Bow accepted as armour'; END IF;
+
+            INSERT INTO player.character_item_slots(character_id,slot_group,slot_index,item_instance_id)
+            VALUES (archer_id,'equipment',0,item_instance);
+
+            DELETE FROM player.character_item_slots WHERE item_instance_id=item_instance;
+            UPDATE player.item_instances SET owner_character_id=warrior_id WHERE id=item_instance;
+            BEGIN
+              INSERT INTO player.character_item_slots(character_id,slot_group,slot_index,item_instance_id)
+              VALUES (warrior_id,'equipment',0,item_instance);
+            EXCEPTION WHEN OTHERS THEN
+              blocked := true;
+            END;
+            IF NOT blocked THEN RAISE EXCEPTION 'Persistence allowed Warrior to equip Archer-only item'; END IF;
           END $$;
           SQL
 
@@ -154,21 +172,17 @@ jobs:
         run: |
           set -euo pipefail
           psql -v ON_ERROR_STOP=1 <<'SQL'
-          INSERT INTO player.accounts (account_name) VALUES ('qa_account');
+          INSERT INTO player.accounts (account_name) VALUES ('qa_magic');
           INSERT INTO player.characters (account_id, character_name, class_id, current_hp, current_mp)
-          SELECT id, 'qa_wizard', 2, 100, 100 FROM player.accounts WHERE account_name='qa_account';
+          SELECT id, 'qa_wizard', 2, 100, 100 FROM player.accounts WHERE account_name='qa_magic';
           DO $$
           DECLARE c uuid; m bigint;
           BEGIN
             SELECT id INTO c FROM player.characters WHERE character_name='qa_wizard';
             SELECT id INTO m FROM content.magic_definitions WHERE game_key='wizard.fireball';
-            IF EXISTS (SELECT 1 FROM player.character_magics WHERE character_id=c AND magic_definition_id=m) THEN
-              RAISE EXCEPTION 'Unlearned magic must have no UserMagic row';
-            END IF;
-            INSERT INTO player.character_magics (character_id, magic_definition_id, level, experience) VALUES (c,m,1,250);
-            IF NOT EXISTS (SELECT 1 FROM player.character_magics WHERE character_id=c AND magic_definition_id=m AND level=1 AND experience=250) THEN
-              RAISE EXCEPTION 'UserMagic lifecycle failed';
-            END IF;
+            IF EXISTS (SELECT 1 FROM player.character_magics WHERE character_id=c AND magic_definition_id=m) THEN RAISE EXCEPTION 'Unlearned magic must have no row'; END IF;
+            INSERT INTO player.character_magics (character_id,magic_definition_id,level,experience) VALUES(c,m,1,250);
+            IF NOT EXISTS (SELECT 1 FROM player.character_magics WHERE character_id=c AND magic_definition_id=m AND level=1 AND experience=250) THEN RAISE EXCEPTION 'UserMagic lifecycle failed'; END IF;
           END $$;
           SQL
 
@@ -176,23 +190,14 @@ jobs:
         run: |
           python3 - <<'PY'
           import subprocess
-          expected = {
-            'content': {
-              'class_definitions','class_combat_profiles','equipment_slot_definitions','map_definitions','map_regions','map_connections',
-              'magic_definitions','item_definitions','item_stats','item_source_links','item_class_profiles','item_class_stats','item_source_policy',
-              'item_allowed_classes','item_equip_slots','monster_definitions','monster_stats','monster_drops','monster_respawns','monster_magics',
-              'buff_definitions','quest_definitions','quest_tasks','quest_rewards','currency_definitions','npc_definitions','npc_shop_goods',
-              'dungeon_definitions','dungeon_maps','summon_definitions'
-            },
-            'player': {
-              'accounts','characters','character_stats','character_magics','item_instances','character_item_slots','character_buffs','character_quests',
-              'character_currencies','character_pets'
-            },
-            'gameplay': {'dungeon_runs','combat_sessions','combat_events','monster_kills'},
+          expected={
+            'content':{'class_definitions','class_combat_profiles','equipment_slot_definitions','map_definitions','map_regions','map_connections','magic_definitions','item_definitions','item_stats','item_source_links','item_class_profiles','item_class_stats','item_source_policy','item_allowed_classes','item_equip_slots','monster_definitions','monster_stats','monster_drops','monster_respawns','monster_magics','buff_definitions','quest_definitions','quest_tasks','quest_rewards','currency_definitions','npc_definitions','npc_shop_goods','dungeon_definitions','dungeon_maps','summon_definitions'},
+            'player':{'accounts','characters','character_stats','character_magics','item_instances','character_item_slots','character_buffs','character_quests','character_currencies','character_pets'},
+            'gameplay':{'dungeon_runs','combat_sessions','combat_events','monster_kills'}
           }
-          for schema, required in expected.items():
+          for schema,required in expected.items():
             actual=set(subprocess.check_output(['psql','-Atqc',f"SELECT tablename FROM pg_tables WHERE schemaname='{schema}'"]).decode().splitlines())
             missing=required-actual
             if missing: raise SystemExit(f'{schema}: missing {sorted(missing)}')
-            print(schema, len(actual), 'tables PASS')
+            print(schema,len(actual),'tables PASS')
           PY
