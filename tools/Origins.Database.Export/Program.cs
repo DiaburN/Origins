@@ -119,7 +119,7 @@ Dictionary<string, object?> Flatten(DBObject value)
         ["$type"] = value.GetType().FullName
     };
 
-    var properties = value.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
+    var properties = value.GetType().GetProperties(BindingFlags.FlattenHierarchy | BindingFlags.Public | BindingFlags.Instance | BindingFlags.GetProperty | BindingFlags.SetProperty);
     foreach (var property in properties.OrderBy(x => x.Name, StringComparer.Ordinal))
     {
         if (!property.CanRead || property.GetIndexParameters().Length != 0)
@@ -129,6 +129,11 @@ Dictionary<string, object?> Flatten(DBObject value)
             continue;
 
         if (property.GetCustomAttribute<IgnorePropertyAttribute>() != null)
+            continue;
+
+        // This is the same type gate used by Zircon DBMapping. Unsupported or
+        // calculated public properties are deliberately absent from System.db.
+        if (!ZirconValueCodec.IsPersistedPropertyType(property.PropertyType))
             continue;
 
         object? propertyValue;
@@ -152,22 +157,10 @@ Dictionary<string, object?> Flatten(DBObject value)
             continue;
         }
 
-        if (IsBindingList(property.PropertyType))
-        {
-            // Reverse/child association collections are recreated by assigning
-            // the referenced DBObject properties during import.
-            continue;
-        }
-
         result[property.Name] = ZirconValueCodec.Encode(propertyValue, property.PropertyType);
     }
 
     return new Dictionary<string, object?>(result);
-}
-
-bool IsBindingList(Type type)
-{
-    return type.IsGenericType && type.GetGenericTypeDefinition() == typeof(DBBindingList<>);
 }
 
 string FileNameFor(Type type)
