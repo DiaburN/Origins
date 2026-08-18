@@ -18,7 +18,7 @@ from augment_ui_symbols import parse_class_symbols, substitute_symbols
 
 GAME_RENDER_TYPES={
     'DXAnimatedControl','DXButton','DXCheckBox','DXColourControl','DXComboBox','DXConfigTab','DXControl',
-    'DXImageControl','DXItemCell','DXItemGrid','DXKeyBindWindow','DXLabel','DXListBox','DXNumberBox',
+    'DXImageControl','DXItemCell','DXItemGrid','DXKeyBindWindow','DXLabel','DXListBox','DXListBoxItem','DXNumberBox',
     'DXNumberTextBox','DXSoundBar','DXTab','DXTabControl','DXTextBox','DXTreeControl','DXVScrollBar',
 }
 NESTED_RENDER_TYPES={
@@ -215,6 +215,27 @@ def apply(spec: dict, repo_root: Path) -> dict:
     missing_markers=[marker for marker in ['applyIndexedSourceArtwork','nested-source-indexed-control','sourceAsset(library,index)'] if marker not in nested_text]
     if missing_markers: issues.append({'kind':'NESTED_INDEXED_ART_RUNTIME_MISSING','values':missing_markers})
 
+    # DXListBoxItem is source-created in current GameScene constructors, but the
+    # corresponding DXComboBox.ListBox starts closed. The official build bundles
+    # a neutral runtime that preserves the source control identity while removing
+    # the generic UNMAPPED diagnostic and keeping the row hidden until list state
+    # is implemented from source. Treating it as a mapped type is valid only while
+    # this runtime and explicit policy remain present.
+    listbox_runtime=repo_root/'apps/zircon-ui-reference/extra-runtimes/listbox-item-fidelity-runtime.js'
+    listbox_text=listbox_runtime.read_text(encoding='utf-8') if listbox_runtime.exists() else ''
+    listbox_markers=['data-control-type="DXListBoxItem"','dx-listbox-item-deferred','sourceInitialVisibility','runtimePayloadInvented']
+    listbox_missing=[marker for marker in listbox_markers if marker not in listbox_text]
+    if game_types.get('DXListBoxItem',0)>0 and listbox_missing:
+        issues.append({'kind':'DXLISTBOXITEM_RUNTIME_MAPPING_MISSING','values':listbox_missing})
+    policy_path=repo_root/'apps/zircon-ui-reference/control-render-policy.json'
+    try:
+        policy=json.loads(policy_path.read_text(encoding='utf-8')) if policy_path.exists() else {}
+    except Exception as error:
+        policy={};issues.append({'kind':'CONTROL_RENDER_POLICY_INVALID','values':[str(error)]})
+    item_policy=(policy.get('policies') or {}).get('DXListBoxItem') or {}
+    if game_types.get('DXListBoxItem',0)>0 and item_policy.get('mode')!='source-row-deferred':
+        issues.append({'kind':'DXLISTBOXITEM_RENDER_POLICY_MISSING','values':[item_policy]})
+
     report={
         'sourceBacked':True,'gameControlTypes':dict(sorted(game_types.items())),'nestedControlTypes':dict(sorted(nested_types.items())),
         'gameTypeCoverage':f'{len(game_types)}/{len(game_types)}' if not missing_game else f'{len(game_types)-len(missing_game)}/{len(game_types)}',
@@ -224,7 +245,9 @@ def apply(spec: dict, repo_root: Path) -> dict:
         'indexedButtonStateControls':len(state_controls),'indexedButtonStateDetails':state_controls,'stateAssetRefsAdded':len(state_assets_added),'stateAssetRefsAddedDetails':state_assets_added,
         'animatedControls':len(animations),'animationDetails':animations,'animationFrameRefsAdded':len(animation_assets_added),'animationFrameRefsAddedDetails':animation_assets_added,
         'animationTimingPolicy':'DXAnimatedControl: frameDelay = AnimationDelay / FrameCount; Loop=false freezes BaseIndex+FrameCount-1',
-        'newCharacterIndexedButtons':len(new_character),'lootBoxRerollStates':reroll,'issues':issues,'issueCount':len(issues),'genericIndexedArtworkInvented':False,
+        'newCharacterIndexedButtons':len(new_character),'lootBoxRerollStates':reroll,
+        'dxListBoxItemGameControls':game_types.get('DXListBoxItem',0),'dxListBoxItemRenderer':'extra-runtimes/listbox-item-fidelity-runtime.js','dxListBoxItemInitialState':'deferred closed combo rows','dxListBoxItemRuntimePayloadsInvented':False,
+        'issues':issues,'issueCount':len(issues),'genericIndexedArtworkInvented':False,
     }
     spec['renderCoverageAudit']=report
     return report
@@ -236,6 +259,7 @@ if __name__=='__main__':
     print('Game render type coverage:',report['gameTypeCoverage']);print('Nested render type coverage:',report['nestedTypeCoverage'])
     print('Indexed button state controls:',report['indexedButtonStateControls']);print('State asset refs added:',report['stateAssetRefsAdded'])
     print('Animated controls:',report['animatedControls']);print('Animation frame refs added:',report['animationFrameRefsAdded'])
+    print('DXListBoxItem GameScene controls:',report['dxListBoxItemGameControls'])
     print('Render audit issues:',report['issueCount'])
     if report['issues']:
         for issue in report['issues']: print(' ',issue['kind'],issue['values'][:10] if isinstance(issue['values'],list) else issue['values'])
