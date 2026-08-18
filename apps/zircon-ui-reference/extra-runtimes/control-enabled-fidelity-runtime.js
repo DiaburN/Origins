@@ -2,6 +2,8 @@
 // parent chain. Enforce that invariant at the source-control boundary so a child
 // cannot receive input through a disabled Zircon parent. Initializers use
 // `Enabled = ...`; IsEnabled is the computed runtime result, not the source flag.
+// Specialized source runtimes may set data-source-dynamic-enabled when Zircon
+// changes Enabled after construction (for example DXConfigWindow.OnVisibleChanged).
 const stage=document.querySelector('#stage');
 let spec=null;
 function boolFrom(raw,fallback=true){const v=String(raw??'').trim().toLowerCase();return v==='true'?true:v==='false'?false:fallback}
@@ -17,27 +19,38 @@ function computedEnabled(item,control,seen=new Set()){
   const parentControl=(item.controls||[]).find(candidate=>candidate.name===parent);
   return parentControl?computedEnabled(item,parentControl,seen):ownEnabled(item.root||{});
 }
+function parentChainEnabled(item,control){
+  const parent=parentName(control);if(!parent)return ownEnabled(item?.root||{});
+  const parentControl=(item?.controls||[]).find(candidate=>candidate.name===parent);return parentControl?computedEnabled(item,parentControl):ownEnabled(item?.root||{});
+}
 function sourceControl(element){
   const root=element.closest('.window,.generic-window');if(!root)return null;const item=itemFor(root);if(!item)return null;
   const index=Number.parseInt(element.dataset.controlIndex||'',10);if(!Number.isInteger(index))return null;
   const control=item.controls?.[index];return control?{root,item,control,index}:null;
 }
+function effectiveEnabled(element,item,control){
+  if(element?.dataset?.sourceDynamicEnabled==='true'||element?.dataset?.sourceDynamicEnabled==='false')return boolFrom(element.dataset.sourceDynamicEnabled,true)&&parentChainEnabled(item,control);
+  return computedEnabled(item,control);
+}
+function style(element,enabled){
+  element.dataset.sourceEnabled=String(enabled);element.setAttribute('aria-disabled',String(!enabled));
+  if(!enabled)element.classList.add('source-disabled-control');else element.classList.remove('source-disabled-control');
+}
 function apply(root){
   const item=itemFor(root);if(!item)return;
   for(const element of root.querySelectorAll('[data-control-index]')){
     const index=Number.parseInt(element.dataset.controlIndex||'',10);if(!Number.isInteger(index))continue;const control=item.controls?.[index];if(!control)continue;
-    const enabled=computedEnabled(item,control);element.dataset.sourceOwnEnabled=String(ownEnabled(control.properties));element.dataset.sourceEnabled=String(enabled);
-    element.setAttribute('aria-disabled',String(!enabled));
-    if(!enabled)element.classList.add('source-disabled-control');else element.classList.remove('source-disabled-control');
+    element.dataset.sourceOwnEnabled=String(ownEnabled(control.properties));style(element,effectiveEnabled(element,item,control));
   }
 }
+stage.addEventListener('origins:source-enabled-changed',event=>{if(!(event.target instanceof Element))return;const root=event.target.closest('.window,.generic-window');if(root)apply(root)});
 for(const type of ['pointerdown','pointerup','click','dblclick','contextmenu'])stage.addEventListener(type,event=>{
   if(!(event.target instanceof Element))return;
   const element=event.target.closest('[data-control-index]');if(!element)return;
   const resolved=sourceControl(element);if(!resolved)return;
-  if(computedEnabled(resolved.item,resolved.control))return;
+  if(effectiveEnabled(element,resolved.item,resolved.control))return;
   event.preventDefault();event.stopImmediatePropagation();resolved.root.dataset.lastBlockedDisabledControl=resolved.control.name||'';
 },true);
 function scan(node){if(!(node instanceof Element))return;if(node.matches?.('.window,.generic-window'))queueMicrotask(()=>apply(node));node.querySelectorAll?.('.window,.generic-window').forEach(root=>queueMicrotask(()=>apply(root)))}
 new MutationObserver(records=>records.forEach(record=>record.addedNodes.forEach(scan))).observe(stage,{childList:true,subtree:true});
-fetch('ui-source-spec.json',{cache:'no-store'}).then(r=>{if(!r.ok)throw new Error(`ui-source-spec.json ${r.status}`);return r.json()}).then(value=>{spec=value;stage.querySelectorAll('.window,.generic-window').forEach(apply);console.info('ORIGINS DXControl Enabled/parent-chain IsEnabled input guard active')}).catch(error=>console.error('Unable to load enabled-state manifest',error));
+fetch('ui-source-spec.json',{cache:'no-store'}).then(r=>{if(!r.ok)throw new Error(`ui-source-spec.json ${r.status}`);return r.json()}).then(value=>{spec=value;stage.querySelectorAll('.window,.generic-window').forEach(apply);console.info('ORIGINS DXControl Enabled/parent-chain IsEnabled input guard active with dynamic source overrides')}).catch(error=>console.error('Unable to load enabled-state manifest',error));
