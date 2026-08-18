@@ -87,11 +87,12 @@ if (params.get('qa') === '1') {
       }
       gameControlCount = (qaSpec.windows || []).reduce((sum, item) => sum + (item.controls || []).length, 0);
       nestedControlCount = (qaSpec.nestedWindows || []).reduce((sum, item) => sum + (item.controls || []).length, 0);
-      if (gameControlCount < 2069) failures.push({ id: 'manifest', issue: `Expanded GameScene control coverage regressed: ${gameControlCount} < 2069` });
+      if (gameControlCount < 2284) failures.push({ id: 'manifest', issue: `Expanded GameScene control coverage regressed: ${gameControlCount} < 2284` });
       if (nestedControlCount < 143) failures.push({ id: 'manifest', issue: `Nested control coverage regressed: ${nestedControlCount} < 143` });
       if (qaSpec.deterministicSourceRowAudit?.passed !== true) failures.push({ id: 'manifest', issue: 'Deterministic source row audit missing/not PASS in built artifact' });
       if (qaSpec.guildMemberRowAudit?.passed !== true) failures.push({ id: 'manifest', issue: 'Guild member deterministic row audit missing/not PASS in built artifact' });
       if (qaSpec.guildRootHelperAudit?.passed !== true) failures.push({ id: 'manifest', issue: 'Guild root helper audit missing/not PASS in built artifact' });
+      if (qaSpec.gameStoreCompositeAudit?.passed !== true) failures.push({ id: 'manifest', issue: 'GameStore composite audit missing/not PASS in built artifact' });
       if (qaSpec.uiCreationHelperInventory?.passed !== true) failures.push({ id: 'manifest', issue: 'UI creation helper inventory missing/not PASS in built artifact' });
       if (qaSpec.sourceSearchFlowAudit?.passed !== true) failures.push({ id: 'manifest', issue: 'Source search flow audit missing/not PASS in built artifact' });
       const rowAudit = qaSpec.deterministicSourceRowAudit || {};
@@ -105,6 +106,10 @@ if (params.get('qa') === '1') {
       const guildRoot = qaSpec.guildRootHelperAudit || {};
       if (guildRoot.deterministicControls !== 16 || guildRoot.panels !== 6 || guildRoot.buttons !== 10 || guildRoot.runtimeCastlePanelsInvented !== false || guildRoot.clickCreatedModalsInvented !== false) {
         failures.push({ id: 'manifest', issue: `Guild root helper matrix mismatch: ${JSON.stringify(guildRoot)}` });
+      }
+      const gameStore = qaSpec.gameStoreCompositeAudit || {};
+      if (gameStore.deterministicControls !== 215 || gameStore.itemRows !== 10 || gameStore.topRows !== 5 || gameStore.runtimeStoreInfoInvented !== false || gameStore.runtimeItemsInvented !== false) {
+        failures.push({ id: 'manifest', issue: `GameStore deterministic composite matrix mismatch: ${JSON.stringify(gameStore)}` });
       }
       const helperAudit = qaSpec.uiCreationHelperInventory || {};
       if (helperAudit.version !== 2 || helperAudit.chatOptionsAddNewTabDeferredLocal !== true || helperAudit.helpPagesRemainRuntimeBound !== true || helperAudit.magicTabsRemainRuntimeBound !== true || helperAudit.knownBigMapHelpersMaterialized !== true || helperAudit.guildConstructorHelpersMaterialized !== true || helperAudit.guildWarRuntimeCastlePanelsRemainNeutral !== true || helperAudit.eventCallbacksExcludedFromCreationClassification !== true || helperAudit.staticGlobalsDoNotImplyRuntimeData !== true) {
