@@ -92,7 +92,7 @@ jobs:
 
           assert not spec['customDrawAudit']['unclassified'], spec['customDrawAudit']['unclassified']
           assert spec['overflowContractPass']['contractCount'] == 7
-          assert spec['complexActionAudit']['contractCount'] == 7
+          assert spec['complexActionAudit']['contractCount'] == 8
           combo=spec['comboOptionPass']
           assert combo['runtimeOptionsInvented'] is False
           assert combo['deterministicOptionCount'] >= 41
