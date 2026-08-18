@@ -1,0 +1,49 @@
+name: Decompile Crystal-Monk release libraries
+
+on:
+  push:
+    branches:
+      - research/monk-items-source
+  workflow_dispatch:
+
+jobs:
+  decompile:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download release and ILSpy
+        shell: pwsh
+        run: |
+          $ErrorActionPreference='Stop'
+          New-Item -ItemType Directory -Force research_out | Out-Null
+          Invoke-WebRequest -Uri 'https://github.com/JevLOMCN/Crystal-Monk/releases/download/Server/Server.rar' -OutFile research_out/Server.rar
+          7z x -y research_out/Server.rar '-oresearch_out/release' | Out-Null
+          dotnet tool install --global ilspycmd
+          ilspycmd --version
+      - name: Decompile relevant types
+        shell: pwsh
+        run: |
+          $ErrorActionPreference='Continue'
+          $root=(Resolve-Path 'research_out/release/Server/Server.Library.dll').Path
+          $net=(Resolve-Path 'research_out/release/Server/netstandard2.0/Server.Library.dll').Path
+          $shared=(Resolve-Path 'research_out/release/Server/netstandard2.0/Shared.dll').Path
+          ilspycmd -l c $root 2>&1 | Out-File -Encoding utf8 research_out/root_types.txt
+          ilspycmd -l c $net 2>&1 | Out-File -Encoding utf8 research_out/net_types.txt
+          ilspycmd -l c $shared 2>&1 | Out-File -Encoding utf8 research_out/shared_types.txt
+          ilspycmd -t Server.MirEnvir.Envir $root 2>&1 | Out-File -Encoding utf8 research_out/root_envir.cs
+          ilspycmd -t Server.MirEnvir.Envir $net 2>&1 | Out-File -Encoding utf8 research_out/net_envir.cs
+          ilspycmd -t Server.MirDatabase.ItemInfo $root 2>&1 | Out-File -Encoding utf8 research_out/root_iteminfo.cs
+          ilspycmd -t Server.MirDatabase.ItemInfo $net 2>&1 | Out-File -Encoding utf8 research_out/net_iteminfo.cs
+          ilspycmd -t ItemInfo $shared 2>&1 | Out-File -Encoding utf8 research_out/shared_iteminfo.cs
+          Select-String -Path research_out/root_envir.cs -Pattern 'Version|LoadDB|ItemInfoList|Server.MirDB' -Context 3,12 | Out-File -Encoding utf8 research_out/root_envir_focus.txt
+          Select-String -Path research_out/net_envir.cs -Pattern 'Version|LoadDB|ItemInfoList|Server.MirDB' -Context 3,12 | Out-File -Encoding utf8 research_out/net_envir_focus.txt
+          Select-String -Path research_out/root_iteminfo.cs -Pattern 'BinaryReader|RequiredClass|FriendlyName|Name' -Context 3,20 | Out-File -Encoding utf8 research_out/root_iteminfo_focus.txt
+          Select-String -Path research_out/net_iteminfo.cs -Pattern 'BinaryReader|RequiredClass|FriendlyName|Name' -Context 3,20 | Out-File -Encoding utf8 research_out/net_iteminfo_focus.txt
+          Write-Host '=== ROOT ENVIR FOCUS ==='; Get-Content research_out/root_envir_focus.txt -ErrorAction SilentlyContinue
+          Write-Host '=== ROOT ITEM FOCUS ==='; Get-Content research_out/root_iteminfo_focus.txt -ErrorAction SilentlyContinue
+      - name: Upload decompile outputs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: crystal-monk-decompile
+          path: research_out/*.*
