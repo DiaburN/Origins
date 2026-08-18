@@ -158,7 +158,7 @@ Dictionary<string, object?> Flatten(DBObject value)
             continue;
         }
 
-        if (propertyValue is IEnumerable && propertyValue is not string)
+        if (IsBindingList(property.PropertyType))
         {
             // Reverse/child association collections are recreated by assigning
             // the referenced DBObject properties during import.
@@ -183,6 +183,11 @@ Dictionary<string, object?> Flatten(DBObject value)
     }
 
     return new Dictionary<string, object?>(result);
+}
+
+bool IsBindingList(Type type)
+{
+    return type.IsGenericType && type.GetGenericTypeDefinition() == typeof(DBBindingList<>);
 }
 
 string FileNameFor(Type type)
