@@ -59,6 +59,11 @@ jobs:
             --zircon-root .source/Zircon
           python3 tools/zircon-ui-importer/augment_npc_dialog_reference.py \
             --spec .build/zircon-ui/ui-source-spec.json
+          cp apps/zircon-ui-reference/app-layout.js .build/zircon-ui/app-layout.js
+          cp apps/zircon-ui-reference/animated-control-runtime.js .build/zircon-ui/animated-control-runtime.js
+          python3 tools/zircon-ui-importer/promote_runtime_manifest_identity.py \
+            --spec .build/zircon-ui/ui-source-spec.json \
+            --registry apps/zircon-ui-reference/game-scene-windows.js
 
       - name: Validate source, controls, composites, tabs and interactions
         run: |
@@ -138,7 +143,7 @@ jobs:
               raise SystemExit('Character primary tab hierarchy changed')
           if len(tab_children('CharacterBox','StatsTabControl')) != 7:
               raise SystemExit('Character stats tab hierarchy changed')
-          if [c['name'] for c in tab_children('StorageBox','TabControl')] != ['StorageTab','PartsTab']:
+          if [c['name'] for c in tab_children('StorageBox','TabControl')) != ['StorageTab','PartsTab']:
               raise SystemExit('Storage tab hierarchy changed')
 
           quest=tab_children('QuestBox','TabControl')
@@ -181,7 +186,6 @@ jobs:
         run: |
           cp apps/zircon-ui-reference/index-derived.html .build/zircon-ui/index.html
           cp apps/zircon-ui-reference/styles.css .build/zircon-ui/styles.css
-          cp apps/zircon-ui-reference/app-layout.js .build/zircon-ui/app-layout.js
           cp apps/zircon-ui-reference/window-runtime.js .build/zircon-ui/window-runtime.js
           cp apps/zircon-ui-reference/interaction-runtime.js .build/zircon-ui/interaction-runtime.js
           cp apps/zircon-ui-reference/nested-variant-runtime.js .build/zircon-ui/nested-variant-runtime.js
@@ -192,6 +196,7 @@ jobs:
           cp apps/zircon-ui-reference/layout-resolver-derived.js .build/zircon-ui/layout-resolver-derived.js
           python3 tools/zircon-ui-importer/patch_multiwindow_runtime.py .build/zircon-ui/app-layout.js
           node --check .build/zircon-ui/app-layout.js
+          node --check .build/zircon-ui/animated-control-runtime.js
           node --check .build/zircon-ui/window-runtime.js
           node --check .build/zircon-ui/interaction-runtime.js
           node --check .build/zircon-ui/nested-variant-runtime.js
