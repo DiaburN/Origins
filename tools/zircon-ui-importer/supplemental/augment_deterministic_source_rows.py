@@ -175,11 +175,11 @@ def fortune_rows(spec: dict) -> int:
             "RuntimeFortune": "ClientFortuneInfo; null in neutral reference",
         }, parent="this", source=source))
         generated.append(make(f"{row}ItemCell", "DXItemCell", {
-            "Location": "new Point(10, 10)", "FixedBorder": "true", "Border": "true", "ReadOnly": "true",
+            "Location": "new Point(9, 9)", "FixedBorder": "true", "Border": "true", "ReadOnly": "true",
             "Slot": "0", "FixedBorderColour": "true", "RuntimeItem": "ItemInfo -> ClientUserItem; absent",
         }, parent=row, source=source))
         generated.append(make(f"{row}NameLabel", "DXLabel", {
-            "Location": "new Point(46, 22)", "IsControl": "false", "Text": '""',
+            "Location": "new Point(45, 22)", "IsControl": "false", "Text": '""',
         }, parent=row, resolved_text="", source=source))
         generated.append(make(f"{row}CountLabelLabel", "DXLabel", {
             "Location": "new Point(320 - CountLabelLabel.Size.Width, 5)", "ForeColour": "Color.White",
@@ -205,7 +205,7 @@ def fortune_rows(spec: dict) -> int:
         generated.append(make(f"{row}CheckButton", "DXButton", {
             "ButtonType": "ButtonType.SmallButton", "Size": "new Size(50, SmallButtonHeight)",
             "Location": "new Point(Size.Width - 55, 34)", "Label": "CEnvir.Language.FortuneCheckerRowCheckButtonLabel",
-            "Enabled": "false", "RuntimeAction": "C.FortuneCheck requires real ItemInfo and confirmation",
+            "RuntimeAction": "C.FortuneCheck requires real ItemInfo and confirmation",
         }, parent=row, resolved_text=labels["CheckButton"], source=source))
     w["controls"] = generated + controls
     w["deterministicFortuneRows"] = {
