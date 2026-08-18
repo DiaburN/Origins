@@ -14,7 +14,7 @@ def main():
   'zircon-ui-reference-complete',
   'browser-qa-runtime.js',
   'browser-qa-window-runtime.js',
-  '#browser-qa-result',
+  'id=\"browser-qa-result\"',
   "report.get('status') != 'pass'",
   "report.get('testedWindows') != 80",
   "int(report.get('gameControlCount') or 0) < 2511",
@@ -32,5 +32,5 @@ def main():
  forbidden=("< 1634","< 1946","< 2053","< 2284","< 2466","minimumGameSceneControls') != 2511")
  for needle in forbidden:
   if needle in text:raise SystemExit(f'Browser QA contains obsolete/premature floor contract: {needle}')
- spec['browserQaWorkflowAudit']={'passed':True,'exactShaBuildArtifactRequired':True,'artifactName':'zircon-ui-reference-complete','expectedWindows':80,'sourceGameFloor':2511,'nestedFloor':143,'priorBrowserCheckpoint':2507,'checkpointPromotionPendingUntilPass':True,'bigMapSidePanelContractRequired':True,'failureEvidenceUploaded':True,'runtimePayloadsInvented':False};a.spec.write_text(json.dumps(spec,indent=2,ensure_ascii=False)+'\n',encoding='utf-8');print('Browser QA workflow audit: PASS -> exact SHA artifact, 80 windows, 2511 source floor, 2507 prior checkpoint pending Chrome')
+ spec['browserQaWorkflowAudit']={'passed':True,'exactShaBuildArtifactRequired':True,'artifactName':'zircon-ui-reference-complete','expectedWindows':80,'sourceGameFloor':2511,'nestedFloor':143,'priorBrowserCheckpoint':2507,'checkpointPromotionPendingUntilPass':True,'bigMapSidePanelContractRequired':True,'failureEvidenceUploaded':True,'resultNodeId':'browser-qa-result','runtimePayloadsInvented':False};a.spec.write_text(json.dumps(spec,indent=2,ensure_ascii=False)+'\n',encoding='utf-8');print('Browser QA workflow audit: PASS -> exact SHA artifact, 80 windows, 2511 source floor, 2507 prior checkpoint pending Chrome')
 if __name__=='__main__':main()
