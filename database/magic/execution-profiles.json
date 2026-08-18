@@ -1,5 +1,6 @@
 {
-  "schemaVersion": 1,
-  "description": "Additive ORIGINS execution metadata for Crystal spells stored in Zircon MagicInfo. Empty until each Crystal call path is verified.",
+  "schemaVersion": 2,
+  "runtime": "Zircon MagicObject",
+  "description": "Audit/migration metadata only. Crystal spells are implemented through Zircon MagicObject handlers; this file never dispatches combat.",
   "profiles": []
 }

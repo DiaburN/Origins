@@ -1,6 +1,11 @@
 {
-  "schemaVersion": 1,
-  "engine": "Zircon LibraryCore/MirDB",
+  "schemaVersion": 2,
+  "source": {
+    "repository": "Suprcode/Zircon",
+    "commit": "cbf1aa919083bc13fc3f23f93772a8ab8370632d",
+    "session": "LibraryCore/MirDB/Session.cs"
+  },
+  "engine": "Zircon MirDB",
   "defaultDatabaseRoot": "./Database/",
   "defaultBackupRoot": "./Backup/",
   "files": {
@@ -8,7 +13,8 @@
       "name": "System.db",
       "purpose": "Static game definitions",
       "serverMode": "read",
-      "editorMode": "read-write"
+      "editorMode": "read-write",
+      "versioned": true
     },
     "users": {
       "name": "Users.db",
@@ -21,5 +27,6 @@
     "server": "SessionMode.Users",
     "editor": "SessionMode.Both",
     "systemWriter": "SessionMode.System"
-  }
+  },
+  "note": "The official current Session tracks SystemDatabaseVersion and only rewrites changed system/user sections."
 }

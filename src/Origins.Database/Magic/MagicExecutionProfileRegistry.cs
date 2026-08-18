@@ -3,8 +3,8 @@ using System.Collections.Generic;
 namespace Origins.Database.Magic;
 
 /// <summary>
-/// Runtime lookup keyed by Zircon MagicInfo.Index.
-/// A missing profile means: execute the spell using Zircon native behaviour.
+/// Lookup for migration/audit metadata only. The game server still resolves
+/// and executes spells through Zircon MagicObject + MagicTypeAttribute.
 /// </summary>
 public sealed class MagicExecutionProfileRegistry
 {
@@ -18,12 +18,5 @@ public sealed class MagicExecutionProfileRegistry
     public bool TryGet(int magicInfoIndex, out MagicExecutionProfile? profile)
     {
         return _profiles.TryGetValue(magicInfoIndex, out profile);
-    }
-
-    public MagicExecutionKind ResolveKind(int magicInfoIndex)
-    {
-        return _profiles.TryGetValue(magicInfoIndex, out var profile)
-            ? profile.ExecutionKind
-            : MagicExecutionKind.ZirconNative;
     }
 }

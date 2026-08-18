@@ -1,28 +1,17 @@
 namespace Origins.Database.Magic;
 
 /// <summary>
-/// Describes only HOW a spell executes. Power, cost, levels, icon and class
-/// remain authoritative in Zircon MagicInfo.
+/// Integration decision for one Crystal spell. This does NOT select a second
+/// runtime spell engine; execution remains a Zircon MagicObject.
 /// </summary>
 public enum MagicExecutionKind
 {
+    /// <summary>Existing Zircon MagicObject can be used as-is.</summary>
     ZirconNative = 0,
-    Projectile = 1,
-    MultiProjectile = 2,
-    TargetStrike = 3,
-    GroundArea = 4,
-    TargetArea = 5,
-    Line = 6,
-    Cone = 7,
-    SelfBuff = 8,
-    TargetBuff = 9,
-    Debuff = 10,
-    Heal = 11,
-    Revive = 12,
-    Summon = 13,
-    Teleport = 14,
-    PersistentArea = 15,
-    Chain = 16,
-    MeleeSkill = 17,
-    SpecialHandler = 100
+
+    /// <summary>An existing Zircon MagicObject is subclassed/adapted for the Crystal behaviour.</summary>
+    ZirconAdapted = 1,
+
+    /// <summary>A small Crystal behaviour is ported into a new Zircon MagicObject implementation.</summary>
+    CrystalAdapted = 2
 }

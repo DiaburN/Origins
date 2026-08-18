@@ -1,45 +1,52 @@
 # ORIGINS database architecture
 
-## Verified Zircon runtime
+## Locked source
 
-ORIGINS follows the database path that the current Zircon server actually loads, not the older duplicate model project.
+ORIGINS is pinned to the official `Suprcode/Zircon` commit `cbf1aa919083bc13fc3f23f93772a8ab8370632d` from 2026-08-12.
 
-`SEnvir.LoadDatabase()` creates `Session(SessionMode.Users)`, then initializes it with:
+The current upstream projects target .NET 10.0, so `Origins.Database` targets .NET 10.0 as well.
 
-- the assembly containing `ItemInfo` -> **LibraryCore**
-- the assembly containing `AccountInfo` -> **ServerLibrary**
+## Runtime split
 
-Therefore the ORIGINS database foundation is:
+`SEnvir.LoadDatabase()` creates `Session(SessionMode.Users)` and initializes it with the assemblies containing `ItemInfo` (`LibraryCore`) and `AccountInfo` (`ServerLibrary`).
 
 ```text
-LibraryCore/MirDB            -> database engine
-LibraryCore/SystemModels     -> static/game definitions
-ServerLibrary/DBModels       -> persistent/player definitions
-ServerLibrary/Envir/SEnvir   -> runtime collection wiring
+LibraryCore/MirDB            -> DB engine
+LibraryCore/SystemModels     -> System.db definitions
+ServerLibrary/DBModels       -> Users.db definitions
+ServerLibrary/Envir/SEnvir   -> live server wiring
 ```
 
-The upstream top-level `MirDB/SystemModels` tree is retained only as a legacy/reference path and must not be treated as the current server runtime source.
+The server reads `System.db` and writes persistent player state to `Users.db`. ORIGINS tooling may use `SessionMode.Both` when editing both sides.
 
-## Static/game definitions
+The current `Session` also versions `System.db` through `SystemDatabaseInfo` and avoids unnecessary rewrites when there are no changes.
 
-The current LibraryCore model set includes items, monsters, maps, regions, NPCs, drops, respawns, safe zones, magic, quests, stores, currencies, sets, instances, companions, events, castles, mining, base stats and weapon-craft stats.
+## Database domains now present upstream
 
-## Persistent/player definitions
+The current official source already models the domains ORIGINS needs: maps, dungeons/instances, items/stats/sets, monsters/drops/respawns, NPCs, quests, stores/currency, magic, guilds, accounts/characters/inventory, buffs, companions, disciplines, fishing, events, castles, milestones, loot boxes and persistent user state.
 
-ServerLibrary DB models include accounts, characters, inventory, user item stats, `UserMagic`, buffs, guilds, mail, auctions, quests, currencies, belts, auto-potions, companions, conquest data and other player/server state.
+We extend these models only where ORIGINS gameplay genuinely requires new fields. We do not rebuild them in a parallel SQL/JSON schema.
 
-## Crystal magic integration
+## Crystal spells
 
-Crystal remains a spell content/behaviour reference, never a second database engine.
+`MagicInfo` remains the authoritative spell definition and `UserMagic` remains the authoritative learned spell state.
 
-- `MagicInfo` = authoritative spell definition.
-- `UserMagic` = authoritative learned/player spell state.
-- `MagicExecutionProfile` = optional ORIGINS metadata describing execution differences only.
+The current Zircon server already has an extensible spell runtime:
 
-Resolution rule:
+```text
+MagicInfo / UserMagic
+        -> MagicType
+        -> MagicObject
+        -> concrete class marked [MagicType(MagicType.X)]
+        -> MagicCast / delayed actions / MagicComplete / buffs / damage
+```
 
-1. No profile -> execute Zircon native behaviour.
-2. Generic profile -> ORIGINS adapter executes with Zircon combat primitives.
-3. `SpecialHandler` -> one isolated handler is adapted/ported after the Crystal call path is verified.
+`SEnvir.CreateMagic()` discovers concrete `MagicObject` classes carrying `MagicTypeAttribute`. Therefore ORIGINS will integrate Crystal spell behaviour inside this native mechanism instead of creating a second handler/dispatcher engine.
 
-We do not duplicate levels, costs, icon, class or base power in the execution profile; those remain in `MagicInfo`.
+For each Crystal spell:
+
+1. Reuse an existing Zircon `MagicObject` unchanged when behaviour matches.
+2. Adapt/derive a Zircon handler when behaviour is close.
+3. Port only the missing Crystal behaviour into a new Zircon `MagicObject` when necessary.
+
+The JSON execution-profile file is only an audit map recording which decision was made; it is not runtime combat logic.

@@ -1,30 +1,37 @@
 # ORIGINS Database
 
-ORIGINS keeps Zircon as the authoritative database and server data model.
+ORIGINS uses the **official current Suprcode/Zircon runtime** as its database foundation.
 
-## Runtime split verified from Zircon
+## Authoritative runtime
 
-The current Zircon server initializes one `MirDB.Session` with two model assemblies:
+Pinned upstream commit: `cbf1aa919083bc13fc3f23f93772a8ab8370632d` (2026-08-12).
 
-1. **LibraryCore** — static/game definitions.
-2. **ServerLibrary** — persistent player/server data.
+The current Zircon server initializes one `MirDB.Session` with two assemblies:
 
-The MirDB engine used by this runtime lives inside `LibraryCore/MirDB`.
+1. `LibraryCore` — MirDB engine + static/game definitions.
+2. `ServerLibrary` — persistent player/server definitions and runtime models.
 
-> The top-level legacy `MirDB/SystemModels` project also exists upstream, but it is **not** the source loaded by the current `SEnvir.LoadDatabase()` runtime. ORIGINS must follow the LibraryCore + ServerLibrary path.
+Runtime layout:
 
-## ORIGINS rule
+```text
+LibraryCore/MirDB            -> DB engine
+LibraryCore/SystemModels     -> static definitions -> System.db
+ServerLibrary/DBModels       -> persistent definitions -> Users.db
+ServerLibrary/Envir/SEnvir   -> server collection wiring
+```
 
-- DB engine: Zircon `LibraryCore/MirDB`.
-- Static definitions: Zircon `LibraryCore/SystemModels`.
-- Persistent/player definitions: Zircon `ServerLibrary/DBModels`.
-- Runtime collection wiring: Zircon `ServerLibrary/Envir/SEnvir.LoadDatabase()`.
-- Crystal never replaces these database layers.
-- Crystal spell catalogue maps into Zircon `MagicInfo`; learned/player spell state remains Zircon `UserMagic`.
-- ORIGINS adds execution metadata only when a Crystal spell cannot be represented by Zircon native execution.
+## ORIGINS rules
 
-See:
+- Zircon remains the single DB engine.
+- Zircon remains the single server/combat foundation.
+- Crystal database formats are not imported.
+- Crystal spell content is mapped into Zircon `MagicInfo` and player spell state stays in Zircon `UserMagic`.
+- Spell execution is implemented through Zircon's existing `MagicObject` classes and `[MagicType(...)]` registration. We do not create a second spell engine.
+- A Crystal-derived handler is added only when a spell cannot be represented by an existing/derived Zircon `MagicObject`.
 
-- `zircon-model-manifest.json`
-- `zircon-runtime-collections.json`
-- `magic/execution-profiles.json`
+## Files
+
+- `zircon-model-manifest.json` — pinned official model trees.
+- `zircon-runtime-collections.json` — collections actually wired by the current server.
+- `runtime-layout.json` — `System.db` / `Users.db` behavior.
+- `magic/execution-profiles.json` — integration audit metadata only; not a second runtime dispatcher.

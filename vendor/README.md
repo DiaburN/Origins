@@ -1,15 +1,17 @@
 # Vendor sources
 
-`vendor/zircon` is intentionally not committed. Run one of the bootstrap scripts from the repository root to install the exact Zircon revision used by ORIGINS.
+`vendor/zircon` is intentionally not committed. Run `scripts/bootstrap-zircon.sh` or `scripts/bootstrap-zircon.ps1` from the ORIGINS repository to install the exact upstream source used by the database/server foundation.
 
-Pinned source:
+Pinned upstream:
 
-- repository: `mir-ethernity/mir3-zircon`
-- commit: `820bf6d4a11d89cac7f87b81446567095f2e38b8`
+- repository: `Suprcode/Zircon`
+- branch: `master`
+- commit: `cbf1aa919083bc13fc3f23f93772a8ab8370632d`
+- upstream commit date: 2026-08-12
 
-The ORIGINS database project references:
+ORIGINS references the current official projects directly:
 
 - `vendor/zircon/LibraryCore/LibraryCore.csproj`
 - `vendor/zircon/ServerLibrary/ServerLibrary.csproj`
 
-This keeps a clean, reproducible upstream reference while ORIGINS-specific adaptations stay in `src/`.
+ORIGINS-specific code remains under `src/`; upstream code is not silently copied and modified.

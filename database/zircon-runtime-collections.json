@@ -1,19 +1,27 @@
 {
-  "schemaVersion": 1,
-  "source": "ServerLibrary/Envir/SEnvir.cs::LoadDatabase",
+  "schemaVersion": 2,
+  "source": {
+    "repository": "Suprcode/Zircon",
+    "commit": "cbf1aa919083bc13fc3f23f93772a8ab8370632d",
+    "method": "ServerLibrary/Envir/SEnvir.cs::LoadDatabase"
+  },
   "sessionMode": "Users",
   "initializedAssemblies": ["LibraryCore", "ServerLibrary"],
   "collections": [
-    "MapInfo", "InstanceInfo", "SafeZoneInfo", "ItemInfo", "MonsterInfo",
-    "RespawnInfo", "MagicInfo", "CurrencyInfo", "AccountInfo", "CharacterInfo",
-    "CharacterBeltLink", "AutoPotionLink", "UserItem", "UserCurrency", "UserItemStat",
+    "MapInfo", "InstanceInfo", "DungeonInfo", "SafeZoneInfo", "ItemInfo",
+    "MonsterInfo", "FishingInfo", "DisciplineInfo", "RespawnInfo", "MagicInfo",
+    "CurrencyInfo", "FameInfo", "AccountInfo", "CharacterInfo", "CharacterBeltLink",
+    "AutoPotionLink", "UserItem", "UserCurrency", "UserItemStat", "UserItemSocket",
     "RefineInfo", "UserMagic", "BuffInfo", "SetInfo", "AuctionInfo", "MailInfo",
-    "AuctionHistoryInfo", "UserDrop", "StoreInfo", "BaseStat", "MovementInfo", "NPCInfo",
-    "MapRegion", "GuildInfo", "GuildMemberInfo", "UserQuest", "UserQuestTask",
-    "CompanionSkillInfo", "CompanionInfo", "CompanionLevelInfo", "UserCompanion",
-    "CompanionFilters", "UserCompanionUnlock", "BlockInfo", "CastleInfo", "UserConquest",
-    "GameGoldPayment", "GameStoreSale", "GuildWarInfo", "UserConquestStats",
-    "UserFortuneInfo", "WeaponCraftStatInfo"
+    "QuestInfo", "AuctionHistoryInfo", "UserDrop", "StoreInfo", "BaseStat",
+    "MovementInfo", "NPCInfo", "MapRegion", "GuildInfo", "GuildMemberInfo",
+    "UserQuest", "UserQuestTask", "CompanionSkillInfo", "CompanionInfo",
+    "CompanionLevelInfo", "UserCompanion", "CompanionFilters", "UserCompanionUnlock",
+    "GameStoreFavourite", "BlockInfo", "FriendInfo", "CastleInfo", "UserConquest",
+    "GameGoldPayment", "GameStoreSale", "GameNPCList", "GuildWarInfo",
+    "UserConquestStats", "UserFortuneInfo", "WeaponCraftStatInfo", "UserDiscipline",
+    "BundleInfo", "LootBoxInfo", "MilestoneInfo", "UserMilestoneLog", "UserMilestone",
+    "WorldEventTrigger", "PlayerEventTrigger"
   ],
-  "declaredButNotConfirmedInCapturedInitializationBlock": ["InstanceMapInfo"]
+  "declaredButNotAssignedInLoadDatabaseExcerpt": ["InstanceMapInfo"]
 }

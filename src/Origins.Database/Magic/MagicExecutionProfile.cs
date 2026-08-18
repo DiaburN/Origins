@@ -1,8 +1,8 @@
 namespace Origins.Database.Magic;
 
 /// <summary>
-/// Optional execution metadata attached to a Zircon MagicInfo row.
-/// It deliberately does not duplicate Zircon combat/database fields.
+/// Audit metadata describing how a Crystal spell maps to Zircon.
+/// It is intentionally not a combat dispatcher and does not duplicate MagicInfo.
 /// </summary>
 public sealed class MagicExecutionProfile
 {
@@ -10,22 +10,17 @@ public sealed class MagicExecutionProfile
     public string CrystalSpellKey { get; init; } = string.Empty;
     public MagicExecutionKind ExecutionKind { get; init; } = MagicExecutionKind.ZirconNative;
 
-    // Used only when ExecutionKind == SpecialHandler.
-    public string? HandlerKey { get; init; }
+    /// <summary>Zircon MagicType used by MagicInfo.</summary>
+    public string? ZirconMagicType { get; init; }
 
-    // Animation/effect choreography. Values are filled only after verification.
-    public string? CastProfile { get; init; }
-    public int? ReleaseFrame { get; init; }
-    public int? ReleaseDelayMs { get; init; }
-    public string? ProjectileProfile { get; init; }
-    public string? ImpactProfile { get; init; }
+    /// <summary>Concrete MagicObject class used by the server.</summary>
+    public string? HandlerClass { get; init; }
 
-    // Execution geometry/timing not already represented by MagicInfo.
-    public string? TargetMode { get; init; }
-    public int? Radius { get; init; }
-    public int? TickCount { get; init; }
-    public int? TickIntervalMs { get; init; }
+    /// <summary>Crystal method/class inspected when validating behaviour.</summary>
+    public string? CrystalSourceReference { get; init; }
 
-    // If true, damage/power calculation stays entirely in Zircon.
-    public bool UseZirconDamage { get; init; } = true;
+    /// <summary>True only after Crystal call path and Zircon handler have been compared.</summary>
+    public bool Verified { get; init; }
+
+    public string? Notes { get; init; }
 }
