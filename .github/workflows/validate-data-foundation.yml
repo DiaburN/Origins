@@ -1,0 +1,153 @@
+name: Validate ORIGINS data foundation
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [feature/origins-data-foundation-v1]
+    paths:
+      - ".github/workflows/validate-data-foundation.yml"
+      - "packages/database/**"
+      - "tools/data-foundation/**"
+  pull_request:
+    paths:
+      - ".github/workflows/validate-data-foundation.yml"
+      - "packages/database/**"
+      - "tools/data-foundation/**"
+
+permissions:
+  contents: read
+
+jobs:
+  postgres-contract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: origins
+          POSTGRES_DB: origins
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres -d origins"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 20
+    env:
+      PGHOST: localhost
+      PGPORT: 5432
+      PGUSER: postgres
+      PGPASSWORD: origins
+      PGDATABASE: origins
+      CRYSTAL_SHA: 0e315fe327192afe52c3d7357ddd1f5b7e26c5b8
+      MONK_SHA: 381e589e3d7ee736cdf0583c8315c0d144ab058f
+
+    steps:
+      - name: Checkout ORIGINS
+        uses: actions/checkout@v4
+
+      - name: Install PostgreSQL client
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y postgresql-client
+
+      - name: Checkout pinned Crystal sources
+        run: |
+          set -euo pipefail
+          git clone https://github.com/Suprcode/Crystal.git .source/Crystal
+          git -C .source/Crystal checkout "$CRYSTAL_SHA"
+          git clone https://github.com/JevLOMCN/Crystal-Monk.git .source/Crystal-Monk
+          git -C .source/Crystal-Monk checkout "$MONK_SHA"
+          test "$(git -C .source/Crystal rev-parse HEAD)" = "$CRYSTAL_SHA"
+          test "$(git -C .source/Crystal-Monk rev-parse HEAD)" = "$MONK_SHA"
+
+      - name: Build canonical 114-spell catalog from source
+        run: |
+          set -euo pipefail
+          mkdir -p .build/data-foundation
+          python3 tools/data-foundation/build_crystal_magic_catalog.py \
+            --crystal-enums .source/Crystal/Shared/Enums.cs \
+            --crystal-envir .source/Crystal/Server/MirEnvir/Envir.cs \
+            --monk-common .source/Crystal-Monk/Common.cs \
+            --monk-envir .source/Crystal-Monk/Server/MirEnvir/Envir.cs \
+            --crystal-sha "$CRYSTAL_SHA" \
+            --monk-sha "$MONK_SHA" \
+            --out .build/data-foundation/magic-catalog.json
+          python3 tools/data-foundation/magic_catalog_to_sql.py \
+            --catalog .build/data-foundation/magic-catalog.json \
+            --out .build/data-foundation/0003_magics.sql
+
+      - name: Apply migrations and seeds
+        run: |
+          set -euo pipefail
+          psql -v ON_ERROR_STOP=1 -f packages/database/migrations/0001_core.sql
+          psql -v ON_ERROR_STOP=1 -f packages/database/migrations/0002_zircon_crystal_extensions.sql
+          psql -v ON_ERROR_STOP=1 -f packages/database/seeds/0001_classes.sql
+          psql -v ON_ERROR_STOP=1 -f .build/data-foundation/0003_magics.sql
+
+      - name: Validate source-derived content contract
+        run: |
+          set -euo pipefail
+          test "$(psql -Atqc 'SELECT count(*) FROM content.class_definitions')" = "6"
+          test "$(psql -Atqc 'SELECT count(*) FROM content.magic_definitions')" = "114"
+          test "$(psql -Atqc 'SELECT count(*) FROM content.magic_definitions WHERE source_implemented')" = "113"
+          test "$(psql -Atqc \"SELECT count(*) FROM content.magic_definitions WHERE game_key='wizard.fastmove' AND source_implemented=false AND icon_index IS NULL\")" = "1"
+          test "$(psql -Atqc \"SELECT concat_ws(',',icon_index,need_level_1,need_level_2,need_level_3) FROM content.magic_definitions WHERE game_key='taoist.healingcircle'\")" = "82,39,41,43"
+          test "$(psql -Atqc \"SELECT concat_ws(',',icon_index,need_level_1,need_level_2,need_level_3,experience_3) FROM content.magic_definitions WHERE game_key='archer.stonetrap'\")" = "97,40,43,46,141"
+          echo "Content contract: PASS"
+
+      - name: Validate Zircon-style player magic lifecycle
+        run: |
+          set -euo pipefail
+          psql -v ON_ERROR_STOP=1 <<'SQL'
+          INSERT INTO player.accounts (account_name) VALUES ('qa_account');
+          INSERT INTO player.characters (account_id, character_name, class_id, current_hp, current_mp)
+          SELECT id, 'qa_wizard', 2, 100, 100 FROM player.accounts WHERE account_name='qa_account';
+
+          DO $$
+          DECLARE
+            c uuid;
+            m bigint;
+            missing_count integer;
+          BEGIN
+            SELECT id INTO c FROM player.characters WHERE character_name='qa_wizard';
+            SELECT id INTO m FROM content.magic_definitions WHERE game_key='wizard.fireball';
+
+            SELECT count(*) INTO missing_count
+            FROM player.character_magics
+            WHERE character_id=c AND magic_definition_id=m;
+            IF missing_count <> 0 THEN
+              RAISE EXCEPTION 'Unlearned magic must be represented by absence of UserMagic row';
+            END IF;
+
+            INSERT INTO player.character_magics (character_id, magic_definition_id, level, experience)
+            VALUES (c, m, 1, 250);
+
+            IF NOT EXISTS (
+              SELECT 1 FROM player.character_magics
+              WHERE character_id=c AND magic_definition_id=m AND level=1 AND experience=250
+            ) THEN
+              RAISE EXCEPTION 'Learned UserMagic lifecycle failed';
+            END IF;
+          END $$;
+          SQL
+          echo "Player/UserMagic contract: PASS"
+
+      - name: Validate required tables
+        run: |
+          python3 - <<'PY'
+          import subprocess
+          expected = {
+              'content': {'class_definitions','map_definitions','magic_definitions','item_definitions','item_stats','monster_definitions','monster_stats','monster_drops','monster_respawns','buff_definitions','quest_definitions'},
+              'player': {'accounts','characters','character_stats','character_magics','item_instances','character_item_slots','character_buffs','character_quests'},
+              'gameplay': {'dungeon_runs','combat_sessions','combat_events','monster_kills'},
+          }
+          for schema, required in expected.items():
+              output = subprocess.check_output(['psql','-Atqc',f"SELECT tablename FROM pg_tables WHERE schemaname='{schema}'"]).decode().splitlines()
+              missing = required - set(output)
+              if missing:
+                  raise SystemExit(f'{schema}: missing tables {sorted(missing)}')
+              print(schema, 'tables:', len(output), 'PASS')
+          PY
