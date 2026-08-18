@@ -223,6 +223,7 @@ jobs:
           PY
 
       - name: Upload 80-window visual review evidence
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: zircon-ui-visual-review-${{ steps.revision.outputs.sha }}
@@ -231,6 +232,7 @@ jobs:
             .visual/source-summary.json
             .visual/window-ids.txt
             .visual/screenshots/
+            .visual/doms/
             .visual/http-server.log
-          if-no-files-found: error
+          if-no-files-found: warn
           retention-days: 21
