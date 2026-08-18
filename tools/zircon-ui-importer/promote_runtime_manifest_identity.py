@@ -115,6 +115,7 @@ def main() -> None:
         "audit_config_source_contracts.py",
         "audit_inventory_source_contracts.py",
         "audit_quest_source_contracts.py",
+        "audit_guild_source_contracts.py",
     ):
         subprocess.run([
             sys.executable,
