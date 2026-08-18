@@ -1,64 +1,26 @@
 #!/usr/bin/env python3
-"""Legacy compatibility pass for CurrencyDialog deterministic rows.
+"""Compatibility gate for retired fixed Currency rows.
 
-The authoritative source expansion is augment_currency_array_controls.py and is
-strictly verified by audit_currency_array_controls.py. The supplemental runner
-executes every augment_*.py, so this older emitter must not add a second set of
-four CurrencyRow controls.
+Current Zircon constructs one CurrencyTree. CurrencyTreeHeader/CurrencyItem are
+runtime-created from the live user's currencies. This pass emits zero controls;
+augment_currency_tree_shell.py owns the deterministic tree + scrollbar shell.
 """
 from __future__ import annotations
-
-import argparse
-import json
+import argparse,json
 from pathlib import Path
 
-
-def assert_source(root: Path) -> None:
-    text = (root / "Client/Scenes/Views/CurrencyDialog.cs").read_text(encoding="utf-8-sig")
-    for needle in (
-        "CurrencyRow[] CurrencyRows;",
-        "CurrencyRows = new CurrencyRow[4];",
-        "CurrencyRows[i] = new CurrencyRow",
-        "Location = new Point(10, 35 + i * 40)",
-        "public sealed class CurrencyRow : DXControl",
-    ):
-        if needle not in text:
-            raise SystemExit(f"Legacy Currency source compatibility changed: missing {needle!r}")
-
-
-def main() -> None:
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--spec", type=Path, required=True)
-    parser.add_argument("--zircon-root", type=Path, required=True)
-    args = parser.parse_args()
-
-    assert_source(args.zircon_root)
-    spec = json.loads(args.spec.read_text(encoding="utf-8"))
-    window = next((w for w in spec.get("windows", []) if w.get("field") == "CurrencyBox"), None)
-    if window is None:
-        raise SystemExit("CurrencyBox missing from manifest")
-
-    authoritative = window.get("currencyArrayControlPass") or {}
-    if authoritative.get("passed") is not True or authoritative.get("controlsAdded") != 4:
-        raise SystemExit(f"Authoritative Currency array pass must run before legacy compatibility gate: {authoritative}")
-
-    legacy = [
-        str(control.get("name") or "")
-        for control in window.get("controls", [])
-        if str(control.get("sourceGenerated") or "").startswith("deterministic-currency:CurrencyDialog constructor loop")
-    ]
-    if legacy:
-        raise SystemExit(f"Legacy duplicate Currency rows remain before compatibility gate: {legacy}")
-
-    window["legacyCurrencyRowCompatibility"] = {
-        "passed": True,
-        "legacyControlsEmitted": 0,
-        "authoritativeOwner": "augment_currency_array_controls.py",
-        "duplicateRowsInvented": False,
-    }
-    args.spec.write_text(json.dumps(spec, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
-    print("Legacy Currency row compatibility: PASS -> emitted=0; authoritative rows=4")
-
-
-if __name__ == "__main__":
-    main()
+def main():
+    p=argparse.ArgumentParser();p.add_argument('--spec',type=Path,required=True);p.add_argument('--zircon-root',type=Path,required=True);a=p.parse_args()
+    source=(a.zircon_root/'Client/Scenes/Views/CurrencyDialog.cs').read_text(encoding='utf-8-sig')
+    for needle in ('private CurrencyTree BindTree;','BindTree = new CurrencyTree','public class CurrencyTree : DXControl','ScrollBar = new DXVScrollBar','CurrencyTreeHeader header = new CurrencyTreeHeader','CurrencyItem entry = new CurrencyItem'):
+        if needle not in source: raise SystemExit(f'Current Currency tree source changed: missing {needle!r}')
+    for retired in ('CurrencyRows = new CurrencyRow[4];','public sealed class CurrencyRow : DXControl'):
+        if retired in source: raise SystemExit(f'Retired Currency fixed-row source returned: {retired}')
+    spec=json.loads(a.spec.read_text(encoding='utf-8'));w=next((x for x in spec.get('windows',[]) if x.get('field')=='CurrencyBox'),None)
+    if not w: raise SystemExit('CurrencyBox missing')
+    stale=[str(c.get('name') or '') for c in w.get('controls',[]) if str(c.get('sourceGenerated') or '').startswith(('deterministic-currency:CurrencyDialog constructor loop','deterministic-currency-array:CurrencyDialog constructor array loop'))]
+    if stale: raise SystemExit(f'Retired Currency fixed rows remain: {stale}')
+    w['legacyCurrencyRowCompatibility']={'passed':True,'legacyControlsEmitted':0,'authoritativeOwner':'augment_currency_tree_shell.py','duplicateRowsInvented':False,'runtimeCurrencyRowsInvented':False}
+    a.spec.write_text(json.dumps(spec,indent=2,ensure_ascii=False)+'\n',encoding='utf-8')
+    print('Currency compatibility: PASS -> fixed rows=0; CurrencyTree is authoritative')
+if __name__=='__main__':main()
