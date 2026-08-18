@@ -2,6 +2,8 @@ name: Database Foundation
 
 on:
   push:
+    branches:
+      - main
     paths:
       - 'src/Origins.Database/**'
       - 'tools/Origins.Database.Verify/**'
@@ -28,7 +30,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   build:
@@ -98,7 +100,7 @@ jobs:
       - name: Verify reconstructed database
         run: dotnet run --project tools/Origins.Database.Verify/Origins.Database.Verify.csproj --configuration Release -- ./DatabaseRoundTrip ./BackupRoundTrip
 
-      - name: Publish migration report
+      - name: Publish migration report artifact
         if: always()
         uses: actions/upload-artifact@v4
         with:
@@ -108,7 +110,7 @@ jobs:
             DatabaseRoundTrip/import-report.json
           if-no-files-found: warn
 
-      - name: Publish editable system snapshot
+      - name: Publish editable system snapshot artifact
         if: success()
         uses: actions/upload-artifact@v4
         with:
@@ -116,7 +118,7 @@ jobs:
           path: Snapshot2026/
           if-no-files-found: error
 
-      - name: Publish upgraded and reconstructed System.db files
+      - name: Publish upgraded and reconstructed System.db artifacts
         if: success()
         uses: actions/upload-artifact@v4
         with:
@@ -125,3 +127,27 @@ jobs:
             Database2026/System.db
             DatabaseRoundTrip/System.db
           if-no-files-found: error
+
+      - name: Publish validated snapshot to generated branch
+        if: success() && github.event_name != 'pull_request'
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf database/generated/zircon-system
+          mkdir -p database/generated/zircon-system
+          cp -a Snapshot2026/. database/generated/zircon-system/
+          cp Database2026/migration-report.json database/generated/zircon-system/migration-report.json
+          cp DatabaseRoundTrip/import-report.json database/generated/zircon-system/import-report.json
+
+          git config user.name "ORIGINS Database Bot"
+          git config user.email "actions@users.noreply.github.com"
+          git checkout -B generated/zircon-system-snapshot
+          git add database/generated/zircon-system
+
+          if git diff --cached --quiet; then
+            echo "Generated snapshot is unchanged."
+            exit 0
+          fi
+
+          git commit -m "generated(db): refresh validated Zircon system snapshot"
+          git push --force origin HEAD:generated/zircon-system-snapshot
