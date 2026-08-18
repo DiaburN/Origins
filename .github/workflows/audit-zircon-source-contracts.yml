@@ -95,14 +95,27 @@ jobs:
           assert spec['complexActionAudit']['contractCount'] == 5
           combo=spec['comboOptionPass']
           assert combo['runtimeOptionsInvented'] is False
-          assert combo['deterministicOptionCount'] >= 2
-          assert combo['combosWithDeterministicOptions'] >= 1
+          assert combo['deterministicOptionCount'] >= 6
+          assert combo['combosWithDeterministicOptions'] >= 2
+          assert combo['helperBuiltOptionCount'] >= 4
+
           nested_lfg=next(window for window in spec['nestedWindows'] if window['sourceClass']=='GroupLFGInputWindow')
           lfg_combo=next(control for control in nested_lfg['controls'] if control['name']=='TypeComboBox')
           assert [option['label'] for option in lfg_combo['comboOptions']] == ['PvE','PvP']
+          assert [option['valueExpression'] for option in lfg_combo['comboOptions']] == ['"PvE"','"PvP"']
           assert lfg_combo['comboSelectedOptionIndex'] == 0
 
           by_field={window['field']:window for window in spec['windows']}
+          store_sort=next(control for control in by_field['GameStoreBox']['controls'] if control['name']=='SortBox')
+          assert [option['valueExpression'] for option in store_sort['comboOptions']] == [
+              'MarketPlaceStoreSort.Alphabetical',
+              'MarketPlaceStoreSort.HighestPrice',
+              'MarketPlaceStoreSort.LowestPrice',
+              'MarketPlaceStoreSort.Favourite',
+          ]
+          assert all(option.get('sourceBuilder') == 'AddSortOption' for option in store_sort['comboOptions'])
+          assert store_sort['comboSelectedOptionIndex'] == 0
+
           assert by_field['BeltBox']['root']['Size'] == 'new Size(64, 54)'
           assert by_field['MiniMapBox']['root']['Size'] == 'new Size(200, 200)'
           assert by_field['ChatTextBox']['root']['Size'] == 'new Size(493, 118)'
@@ -127,6 +140,7 @@ jobs:
           print('Custom-draw classes:',spec['customDrawAudit']['windowCountWithManualDrawHooks'])
           print('Complex action contracts:',spec['complexActionAudit']['contractCount'])
           print('Deterministic combo options:',combo['deterministicOptionCount'])
+          print('Helper-built combo options:',combo['helperBuiltOptionCount'])
           PY
 
       - name: Check source runtime syntax
