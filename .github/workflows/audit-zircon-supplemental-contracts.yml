@@ -54,17 +54,24 @@ jobs:
           by={w['field']:w for w in spec['windows']}
           game_controls=sum(len(w.get('controls',[])) for w in spec['windows'])
           nested_controls=sum(len(w.get('controls',[])) for w in spec.get('nestedWindows',[]))
-          assert game_controls >= 2466, game_controls
+          assert game_controls >= 2507, game_controls
           assert nested_controls >= 143, nested_controls
+          final=spec['finalSupplementalSourceMatrix']
+          assert final['passed'] is True
+          assert final['minimumGameSceneControls'] == 2507
+          assert final['minimumNestedControls'] == 143
+          assert final['gameSceneControls'] == game_controls
+          assert final['nestedControls'] == nested_controls
           assert by['RankingBox']['rankingSourceAudit']['passed'] is True
           assert by['RankingBox']['rankingSourceState']['sourceIndex'] == 210
           assert by['GroupBox']['groupSourceAudit']['passed'] is True
           assert by['GroupHealthBox']['groupHealthSourceAudit']['passed'] is True
-          assert spec['deterministicSourceRowAudit']['passed'] is True
-          assert spec['deterministicSourceRowAudit']['rankingRows'] == 12
-          assert spec['deterministicSourceRowAudit']['dungeonRows'] == 9
-          assert spec['deterministicSourceRowAudit']['fortuneRows'] == 9
-          assert spec['deterministicSourceRowAudit']['bigMapRows'] == 48
+          rows=spec['deterministicSourceRowAudit']
+          assert rows['passed'] is True
+          assert rows['rankingRows'] == 12
+          assert rows['dungeonRows'] == 9
+          assert rows['fortuneRows'] == 9
+          assert rows['bigMapRows'] == 48
           guild_rows=spec['guildMemberRowAudit']
           assert guild_rows['passed'] is True
           assert guild_rows['headerRows'] == 1
@@ -119,6 +126,45 @@ jobs:
           assert currency['runtimeHeadersInvented'] is False
           assert currency['runtimeCurrencyItemsInvented'] is False
           assert currency['runtimeCurrencyDataInvented'] is False
+          companion=spec['companionBonusRowAudit']
+          assert companion['passed'] is True
+          assert companion['rows'] == 7
+          assert companion['deterministicControls'] == 21
+          assert companion['targetTypedNewSource'] is True
+          assert companion['runtimeBonusStatsInvented'] is False
+          assert companion['runtimeBonusTextInvented'] is False
+          npc_quest=spec['npcQuestListRowAudit']
+          assert npc_quest['passed'] is True
+          assert npc_quest['rows'] == 6
+          assert npc_quest['deterministicControls'] == 18
+          assert npc_quest['blankRowsVisibleAtConstruction'] is True
+          assert npc_quest['runtimeQuestInfoInvented'] is False
+          assert npc_quest['runtimeUserQuestInvented'] is False
+          assert npc_quest['runtimeQuestTextInvented'] is False
+          help_menu=spec['helpMenuShellAudit']
+          assert help_menu['passed'] is True
+          assert help_menu['deterministicControls'] == 2
+          assert help_menu['runtimeButtonsInvented'] is False
+          assert help_menu['runtimeHelpContainersInvented'] is False
+          assert help_menu['runtimeHelpTabsInvented'] is False
+          assert help_menu['runtimeHelpItemsInvented'] is False
+          assert help_menu['runtimeHelpInfoInvented'] is False
+          anonymous=spec['anonymousConstructorControlAudit']
+          assert anonymous['passed'] is True
+          assert anonymous['parserSyntheticSmokePassed'] is True
+          assert anonymous['sourceAnonymousControls'] == anonymous['manifestAnonymousControls']
+          assert anonymous['tradeAnonymousGoldLabels'] == 2
+          target=spec['targetTypedCustomControlAudit']
+          assert target['passed'] is True
+          assert target['allResolvedCustomControlsMaterialized'] is True
+          assert target['resolvedCustomCreations'] >= 7
+          assert target['eventCallbackBodiesExcluded'] is True
+          assert target['runtimePayloadsInvented'] is False
+          custom=spec['customCompositeInventory']
+          assert custom['passed'] is True
+          assert custom['version'] == 3
+          assert custom['constructorAndHelperReachability'] is True
+          assert custom['eventCallbacksExcluded'] is True
           direct=spec['directCustomCompositeInventory']
           assert direct['passed'] is True
           assert direct['allDirectCustomTypesMaterialized'] is True
