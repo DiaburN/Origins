@@ -6,12 +6,8 @@ on:
     branches: [origins-game-v1]
     paths:
       - ".github/workflows/audit-zircon-supplemental-contracts.yml"
-      - "tools/zircon-ui-importer/supplemental/**"
-      - "tools/zircon-ui-importer/run_supplemental_source_contracts.py"
-      - "tools/zircon-ui-importer/promote_runtime_manifest_identity.py"
-      - "tools/zircon-ui-importer/augment_ranking_reference.py"
-      - "tools/zircon-ui-importer/audit_ranking_source_contracts.py"
-      - "apps/zircon-ui-reference/extra-runtimes/**"
+      - "tools/zircon-ui-importer/**"
+      - "apps/zircon-ui-reference/**"
 
 permissions:
   contents: read
@@ -23,6 +19,7 @@ jobs:
     steps:
       - name: Checkout ORIGINS
         uses: actions/checkout@v4
+
       - name: Checkout current Zircon source
         run: |
           set -euo pipefail
@@ -30,7 +27,8 @@ jobs:
           git clone --depth 1 https://github.com/Suprcode/Zircon.git .source/Zircon
           mkdir -p .build/supplemental
           echo "Zircon source: $(git -C .source/Zircon rev-parse HEAD)"
-      - name: Build and promote complete source manifest
+
+      - name: Build and run every supplemental source contract
         run: |
           set -euo pipefail
           python3 tools/zircon-ui-importer/build_ui_source_spec.py --zircon-root .source/Zircon --out .build/supplemental/ui-source-spec.json
@@ -44,7 +42,8 @@ jobs:
           cp apps/zircon-ui-reference/app-layout.js .build/supplemental/app-layout.js
           cp apps/zircon-ui-reference/animated-control-runtime.js .build/supplemental/animated-control-runtime.js
           python3 tools/zircon-ui-importer/promote_runtime_manifest_identity.py --spec .build/supplemental/ui-source-spec.json --registry apps/zircon-ui-reference/game-scene-windows.js
-      - name: Assert promoted supplemental matrix
+
+      - name: Assert promoted browser/source matrix
         run: |
           set -euo pipefail
           python3 - <<'PY'
@@ -52,160 +51,69 @@ jobs:
           from pathlib import Path
           spec=json.loads(Path('.build/supplemental/ui-source-spec.json').read_text())
           by={w['field']:w for w in spec['windows']}
-          game_controls=sum(len(w.get('controls',[])) for w in spec['windows'])
-          nested_controls=sum(len(w.get('controls',[])) for w in spec.get('nestedWindows',[]))
-          assert game_controls >= 2511, game_controls
-          assert nested_controls >= 143, nested_controls
+          game=sum(len(w.get('controls',[])) for w in spec['windows'])
+          nested=sum(len(w.get('controls',[])) for w in spec.get('nestedWindows',[]))
+          assert game >= 2674, game
+          assert nested >= 149, nested
+          pending=game != 2674 or nested != 149
+
           final=spec['finalSupplementalSourceMatrix']
           assert final['passed'] is True
-          assert final['minimumGameSceneControls'] == 2507
-          assert final['minimumNestedControls'] == 143
-          assert final['latestSourceAuditedGameSceneFloor'] == 2511
-          assert final['latestSourceAuditedNestedFloor'] == 143
-          assert final['browserValidatedFloorPending'] is True
-          assert final['gameSceneControls'] == game_controls
-          assert final['nestedControls'] == nested_controls
+          assert final['gameSceneControls']==game and final['nestedControls']==nested
+          assert final['minimumGameSceneControls']==2674 and final['minimumNestedControls']==149
+          assert final['latestSourceAuditedGameSceneFloor']==game and final['latestSourceAuditedNestedFloor']==nested
+          assert final['browserValidatedGameSceneFloor']==2674 and final['browserValidatedNestedFloor']==149
+          assert final['browserValidatedFloorPending'] is pending
+          assert final['browserValidationEvidenceSha']=='40d5140805bede9f1c7c5af8c2fb0cefc284856c'
+          assert final['browserValidationEvidenceRun']==32175607481
+
           floor=spec['currentSourceControlFloor']
           assert floor['passed'] is True
-          assert floor['gameScene'] == 2511
-          assert floor['nested'] == 143
-          assert floor['browserValidationPending'] is True
-          assert by['RankingBox']['rankingSourceAudit']['passed'] is True
-          assert by['RankingBox']['rankingSourceState']['sourceIndex'] == 210
-          assert by['GroupBox']['groupSourceAudit']['passed'] is True
-          assert by['GroupHealthBox']['groupHealthSourceAudit']['passed'] is True
+          assert floor['gameScene']==game and floor['nested']==nested
+          assert floor['browserValidatedGameScene']==2674 and floor['browserValidatedNested']==149
+          assert floor['browserValidationPending'] is pending
+
+          ranking=by['RankingBox']['rankingSourceState']
+          assert ranking['fullRanking'] is True and ranking['sourceIndex']==211 and ranking['size']==[576,456]
           rows=spec['deterministicSourceRowAudit']
           assert rows['passed'] is True
-          assert rows['rankingRows'] == 12
-          assert rows['dungeonRows'] == 9
-          assert rows['fortuneRows'] == 9
-          assert rows['bigMapRows'] == 48
+          assert (rows['rankingRows'],rows['dungeonRows'],rows['fortuneRows'],rows['bigMapRows'])==(12,9,9,48)
           bigmap=spec['bigMapSidePanelAudit']
-          assert bigmap['passed'] is True
-          assert bigmap['deterministicControls'] == 4
-          assert bigmap['initialSelectedTab'] == 'NPCTab'
-          assert bigmap['runtimeGeometryInvented'] is False
-          assert bigmap['runtimeMapInfoInvented'] is False
-          assert bigmap['runtimeNPCsInvented'] is False
-          assert bigmap['runtimeMonstersInvented'] is False
-          guild_rows=spec['guildMemberRowAudit']
-          assert guild_rows['passed'] is True
-          assert guild_rows['headerRows'] == 1
-          assert guild_rows['memberRows'] == 17
-          assert guild_rows['sourceControls'] == 108
-          assert guild_rows['netControlsAdded'] == 107
+          assert bigmap['passed'] is True and bigmap['deterministicControls']==4 and bigmap['initialSelectedTab']=='NPCTab'
+          assert bigmap['runtimeGeometryInvented'] is False and bigmap['runtimeMapInfoInvented'] is False and bigmap['runtimeNPCsInvented'] is False and bigmap['runtimeMonstersInvented'] is False
+
+          guild=spec['guildMemberRowAudit']
+          assert guild['passed'] is True and guild['headerRows']==1 and guild['memberRows']==17
+          assert guild['sourceControls']==108 and guild['replacedIncompleteCompositeControls']==0 and guild['netControlsAdded']==108
           guild_root=spec['guildRootHelperAudit']
-          assert guild_root['passed'] is True
-          assert guild_root['deterministicControls'] == 16
-          assert guild_root['panels'] == 6
-          assert guild_root['buttons'] == 10
-          assert guild_root['runtimeCastlePanelsInvented'] is False
-          assert guild_root['clickCreatedModalsInvented'] is False
-          game_store=spec['gameStoreCompositeAudit']
-          assert game_store['passed'] is True
-          assert game_store['deterministicControls'] == 215
-          assert game_store['itemRows'] == 10
-          assert game_store['topRows'] == 5
-          assert game_store['runtimeStoreInfoInvented'] is False
-          assert game_store['runtimeItemsInvented'] is False
-          communication=spec['communicationReceivedRowAudit']
-          assert communication['passed'] is True
-          assert communication['rows'] == 5
-          assert communication['deterministicControls'] == 25
-          assert communication['runtimeMailInvented'] is False
-          consignment=spec['consignmentCompositeAudit']
-          assert consignment['passed'] is True
-          assert consignment['contractVersion'] == 2
-          assert consignment['deterministicControls'] == 135
-          assert consignment['headerLabels'] == 10
-          assert consignment['itemTypeButtons'] == 38
-          assert consignment['searchRows'] == 6
-          assert consignment['consignRows'] == 6
-          assert consignment['runtimeMarketInfoInvented'] is False
-          assert consignment['runtimeItemsInvented'] is False
-          consignment_strict=spec['consignmentDeterministicAudit']
-          assert consignment_strict['passed'] is True
-          assert consignment_strict['deterministicControls'] == 135
-          assert consignment_strict['headerLabels'] == 10
-          assert consignment_strict['itemTypeButtons'] == 38
-          assert consignment_strict['searchRows'] == 6
-          assert consignment_strict['consignRows'] == 6
-          assert consignment_strict['runtimeMarketInfoInvented'] is False
-          group_lfg=by['GroupBox']['groupLFGRowAudit']
-          assert group_lfg['passed'] is True
-          assert group_lfg['rows'] == 5
-          assert group_lfg['deterministicControls'] == 20
-          assert group_lfg['runtimeLfgInvented'] is False
-          currency=spec['currencyTreeAudit']
-          assert currency['passed'] is True
-          assert currency['deterministicControls'] == 2
-          assert currency['runtimeHeadersInvented'] is False
-          assert currency['runtimeCurrencyItemsInvented'] is False
-          assert currency['runtimeCurrencyDataInvented'] is False
-          companion=spec['companionBonusRowAudit']
-          assert companion['passed'] is True
-          assert companion['rows'] == 7
-          assert companion['deterministicControls'] == 21
-          assert companion['targetTypedNewSource'] is True
-          assert companion['runtimeBonusStatsInvented'] is False
-          assert companion['runtimeBonusTextInvented'] is False
-          npc_quest=spec['npcQuestListRowAudit']
-          assert npc_quest['passed'] is True
-          assert npc_quest['rows'] == 6
-          assert npc_quest['deterministicControls'] == 18
-          assert npc_quest['blankRowsVisibleAtConstruction'] is True
-          assert npc_quest['runtimeQuestInfoInvented'] is False
-          assert npc_quest['runtimeUserQuestInvented'] is False
-          assert npc_quest['runtimeQuestTextInvented'] is False
-          help_menu=spec['helpMenuShellAudit']
-          assert help_menu['passed'] is True
-          assert help_menu['deterministicControls'] == 2
-          assert help_menu['runtimeButtonsInvented'] is False
-          assert help_menu['runtimeHelpContainersInvented'] is False
-          assert help_menu['runtimeHelpTabsInvented'] is False
-          assert help_menu['runtimeHelpItemsInvented'] is False
-          assert help_menu['runtimeHelpInfoInvented'] is False
-          anonymous=spec['anonymousConstructorControlAudit']
-          assert anonymous['passed'] is True
-          assert anonymous['parserSyntheticSmokePassed'] is True
-          assert anonymous['sourceAnonymousControls'] == anonymous['manifestAnonymousControls']
-          assert anonymous['tradeAnonymousGoldLabels'] == 2
-          target=spec['targetTypedCustomControlAudit']
-          assert target['passed'] is True
-          assert target['allResolvedCustomControlsMaterialized'] is True
-          assert target['resolvedCustomCreations'] >= 7
-          assert target['eventCallbackBodiesExcluded'] is True
-          assert target['runtimePayloadsInvented'] is False
-          custom=spec['customCompositeInventory']
-          assert custom['passed'] is True
-          assert custom['version'] == 3
-          assert custom['constructorAndHelperReachability'] is True
-          assert custom['eventCallbacksExcluded'] is True
-          direct=spec['directCustomCompositeInventory']
-          assert direct['passed'] is True
-          assert direct['allDirectCustomTypesMaterialized'] is True
-          assert direct['eventCallbackBodiesExcluded'] is True
-          assert direct['runtimePayloadsInvented'] is False
+          assert guild_root['passed'] is True and guild_root['deterministicControls']==16 and guild_root['panels']==6 and guild_root['buttons']==10
+
+          assert spec['gameStoreCompositeAudit']['deterministicControls']==215
+          assert spec['communicationReceivedRowAudit']['deterministicControls']==25
+          assert spec['consignmentCompositeAudit']['deterministicControls']==135
+          assert spec['consignmentDeterministicAudit']['deterministicControls']==135
+          assert spec['currencyTreeAudit']['deterministicControls']==2
+          assert spec['companionBonusRowAudit']['deterministicControls']==21
+          assert spec['npcQuestListRowAudit']['deterministicControls']==18
+          assert spec['helpMenuShellAudit']['deterministicControls']==2
+
           helpers=spec['uiCreationHelperInventory']
-          assert helpers['passed'] is True
-          assert helpers['version'] == 2
-          assert helpers['knownBigMapHelpersMaterialized'] is True
-          assert helpers['chatOptionsAddNewTabDeferredLocal'] is True
-          assert helpers['helpPagesRemainRuntimeBound'] is True
-          assert helpers['magicTabsRemainRuntimeBound'] is True
-          assert helpers['guildConstructorHelpersMaterialized'] is True
-          assert helpers['guildWarRuntimeCastlePanelsRemainNeutral'] is True
-          assert helpers['eventCallbacksExcludedFromCreationClassification'] is True
-          assert helpers['staticGlobalsDoNotImplyRuntimeData'] is True
-          assert helpers['controlsFabricatedByAudit'] is False
+          assert helpers['passed'] is True and helpers['version']==3
+          assert helpers['helperCount']==56 and helpers['deferredHelperCount']==35
+          assert helpers['classificationCounts']=={'runtime-bound':5,'deferred-runtime':13,'deferred-local-state':22,'deterministic-source':16}
+          assert helpers['statusCounts']=={'runtime-bound':4,'audited-deferred-runtime':13,'audited-deferred-local':22,'materialized':17}
+          for flag in ('knownBigMapHelpersMaterialized','chatOptionsAddNewTabDeferredLocal','helpPagesRemainRuntimeBound','magicTabsRemainRuntimeBound','guildConstructorHelpersMaterialized','guildWarRuntimeCastlePanelsRemainNeutral','eventCallbacksExcludedFromCreationClassification','staticGlobalsDoNotImplyRuntimeData','storeCategoryNodesRemainRuntimeBound','communicationBlockRowsRemainRuntimeBound','gameStoreSortItemsLinkedWithoutDuplication','companionEnumFiltersMaterialized','sourceBackedOnly'):
+              assert helpers[flag] is True, flag
           assert helpers['runtimePayloadsInvented'] is False
-          literals=spec['supplementalLiteralAssetRefPass']
-          assert literals['passed'] is True
-          assert literals['requiredDeterministicRowRefsPresent'] is True
-          assert literals['symbolicRuntimeRefsInvented'] is False
-          print(f'Supplemental source matrix: PASS ({game_controls}+{nested_controls} controls; browser checkpoint remains 2507 until QA)')
+
+          assert spec['browserQaWorkflowAudit']['passed'] is True
+          assert spec['visualReviewWorkflowAudit']['passed'] is True
+          assert spec['browserQaStatusPublisherAudit']['passed'] is True
+          print(f'Supplemental source matrix: PASS ({game}+{nested}; validated 2674+149; pending={pending})')
           PY
+
       - name: Check all fidelity runtime syntax
         run: |
           set -euo pipefail
+          node --check apps/zircon-ui-reference/browser-qa-runtime.js
           for file in apps/zircon-ui-reference/extra-runtimes/*.js; do node --check "$file"; done

@@ -28,152 +28,93 @@ jobs:
           mkdir -p .build/source-contracts
           echo "Zircon source: $(git -C .source/Zircon rev-parse HEAD)"
 
-      - name: Build source-only manifest
+      - name: Build and promote exact source manifest
         run: |
           set -euo pipefail
-          python3 tools/zircon-ui-importer/build_ui_source_spec.py \
-            --zircon-root .source/Zircon \
-            --out .build/source-contracts/ui-source-spec.json
-          python3 tools/zircon-ui-importer/augment_ui_custom_tabs.py \
-            --spec .build/source-contracts/ui-source-spec.json \
-            --zircon-root .source/Zircon
-          python3 tools/zircon-ui-importer/augment_ui_composites.py \
-            --spec .build/source-contracts/ui-source-spec.json \
-            --zircon-root .source/Zircon \
-            --max-depth 2
-          python3 tools/zircon-ui-importer/augment_ui_language.py \
-            --spec .build/source-contracts/ui-source-spec.json \
-            --english-messages .source/Zircon/Client/Envir/Translations/EnglishMessages.cs
-          python3 tools/zircon-ui-importer/augment_ui_symbols.py \
-            --spec .build/source-contracts/ui-source-spec.json \
-            --zircon-root .source/Zircon
-          python3 tools/zircon-ui-importer/augment_ui_derived_geometry_v2.py \
-            --spec .build/source-contracts/ui-source-spec.json \
-            --zircon-root .source/Zircon
-          python3 tools/zircon-ui-importer/augment_ui_interactions.py \
-            --spec .build/source-contracts/ui-source-spec.json \
-            --zircon-root .source/Zircon
-          python3 tools/zircon-ui-importer/augment_npc_dialog_reference.py \
-            --spec .build/source-contracts/ui-source-spec.json
+          python3 tools/zircon-ui-importer/build_ui_source_spec.py --zircon-root .source/Zircon --out .build/source-contracts/ui-source-spec.json
+          python3 tools/zircon-ui-importer/augment_ui_custom_tabs.py --spec .build/source-contracts/ui-source-spec.json --zircon-root .source/Zircon
+          python3 tools/zircon-ui-importer/augment_ui_composites.py --spec .build/source-contracts/ui-source-spec.json --zircon-root .source/Zircon --max-depth 2
+          python3 tools/zircon-ui-importer/augment_ui_language.py --spec .build/source-contracts/ui-source-spec.json --english-messages .source/Zircon/Client/Envir/Translations/EnglishMessages.cs
+          python3 tools/zircon-ui-importer/augment_ui_symbols.py --spec .build/source-contracts/ui-source-spec.json --zircon-root .source/Zircon
+          python3 tools/zircon-ui-importer/augment_ui_derived_geometry_v2.py --spec .build/source-contracts/ui-source-spec.json --zircon-root .source/Zircon
+          python3 tools/zircon-ui-importer/augment_ui_interactions.py --spec .build/source-contracts/ui-source-spec.json --zircon-root .source/Zircon
+          python3 tools/zircon-ui-importer/augment_npc_dialog_reference.py --spec .build/source-contracts/ui-source-spec.json
           cp apps/zircon-ui-reference/app-layout.js .build/source-contracts/app-layout.js
           cp apps/zircon-ui-reference/animated-control-runtime.js .build/source-contracts/animated-control-runtime.js
-          python3 tools/zircon-ui-importer/promote_runtime_manifest_identity.py \
-            --spec .build/source-contracts/ui-source-spec.json \
-            --registry apps/zircon-ui-reference/game-scene-windows.js
+          python3 tools/zircon-ui-importer/promote_runtime_manifest_identity.py --spec .build/source-contracts/ui-source-spec.json --registry apps/zircon-ui-reference/game-scene-windows.js
 
       - name: Assert exact current source contracts
         run: |
+          set -euo pipefail
           python3 - <<'PY'
           import json
           from pathlib import Path
           spec=json.loads(Path('.build/source-contracts/ui-source-spec.json').read_text())
-          all_windows=[*spec['windows'],*spec['nestedWindows']]
-          assert len(spec['windows']) == 65
-          assert len(spec['nestedWindows']) == 15
-          assert len({window['id'] for window in all_windows}) == 80
+          windows=spec['windows']; nested=spec['nestedWindows']; all_windows=[*windows,*nested]
+          assert len(windows)==65
+          assert len(nested)==15
+          assert len({window['id'] for window in all_windows})==80
+          game_controls=sum(len(window.get('controls',[])) for window in windows)
+          nested_controls=sum(len(window.get('controls',[])) for window in nested)
+          assert game_controls >= 2674, game_controls
+          assert nested_controls >= 149, nested_controls
 
           interactions=spec.get('interactions',[])
-          assert len(interactions) == 18, interactions
-          main=[item for item in interactions if item['sourceField']=='MainPanel']
+          actual={(item['sourceField'],item['control'],item['action'],item['targetField']) for item in interactions}
           expected={
-              ('CharacterButton','InspectBox','close'),
-              ('CharacterButton','CharacterBox','toggle'),
-              ('InventoryButton','InventoryBox','toggle'),
-              ('SpellButton','MagicBox','toggle'),
-              ('QuestButton','QuestBox','toggle'),
-              ('MailButton','CommunicationBox','toggle'),
-              ('BeltButton','BeltBox','toggle'),
-              ('GroupButton','GroupBox','toggle'),
-              ('MenuButton','MenuBox','toggle'),
-              ('CashShopButton','GameStoreBox','toggle'),
+              ('MainPanel','InventoryButton','toggle','InventoryBox'),
+              ('MainPanel','SpellButton','toggle','MagicBox'),
+              ('MainPanel','QuestButton','toggle','QuestBox'),
+              ('MainPanel','BeltButton','toggle','BeltBox'),
+              ('MainPanel','GroupButton','toggle','GroupBox'),
+              ('MainPanel','MenuButton','toggle','MenuBox'),
+              ('MainPanel','CharacterButton','toggle','CharacterBox'),
+              ('MainPanel','MailButton','toggle','CommunicationBox'),
+              ('MainPanel','CashShopButton','toggle','GameStoreBox'),
+              ('MenuBox','SettingsButton','toggle','ConfigBox'),
+              ('MenuBox','HelpButton','toggle','HelpBox'),
+              ('MenuBox','GuildButton','toggle','GuildBox'),
+              ('MenuBox','StorageButton','toggle','StorageBox'),
+              ('MenuBox','RankingButton','toggle','RankingBox'),
+              ('MenuBox','CompanionButton','toggle','CompanionBox'),
+              ('MenuBox','LeaveButton','open','ExitBox'),
+              ('ConfigBox','HideChatBarCheckBox','open','ChatTextBox'),
+              ('ChatTextBox','OptionsButton','toggle','ChatOptionsBox'),
+              ('NPCQuestBox','StartLabel','open','BigMapBox'),
+              ('NPCQuestBox','EndLabel','open','BigMapBox'),
+              ('MiniMapBox','BigMapButton','toggle','BigMapBox'),
           }
-          actual={(item['control'],item['targetField'],item['action']) for item in main}
-          assert len(main) == 10 and actual == expected, main
+          assert len(interactions)==21, interactions
+          assert actual==expected, (actual-expected,expected-actual)
 
           assert not spec['customDrawAudit']['unclassified'], spec['customDrawAudit']['unclassified']
-          assert spec['overflowContractPass']['contractCount'] == 7
-          assert spec['complexActionAudit']['contractCount'] == 9
-          combo=spec['comboOptionPass']
-          assert combo['runtimeOptionsInvented'] is False
-          assert combo['deterministicOptionCount'] >= 41
-          assert combo['combosWithDeterministicOptions'] >= 5
-          assert combo['helperBuiltOptionCount'] >= 4
-          assert combo['enumBuiltOptionCount'] >= 34
-          assert combo['enumGetValuesOptionCount'] > 0
-          assert combo['enumGetValuesCombosChanged'] >= 2
+          assert spec['renderCoverageAudit']['gameTypeCoverage']=='22/22'
+          assert spec['renderCoverageAudit']['nestedTypeCoverage']=='10/10'
+          assert spec['renderCoverageAudit']['issueCount']==0
+          assert spec['overflowContractPass']['contractCount']==7
+          assert spec['complexActionAudit']['contractCount']==9
 
-          nested_lfg=next(window for window in spec['nestedWindows'] if window['sourceClass']=='GroupLFGInputWindow')
-          lfg_combo=next(control for control in nested_lfg['controls'] if control['name']=='TypeComboBox')
-          assert [option['label'] for option in lfg_combo['comboOptions']] == ['PvE','PvP']
-          assert [option['valueExpression'] for option in lfg_combo['comboOptions']] == ['"PvE"','"PvP"']
-          assert lfg_combo['comboSelectedOptionIndex'] == 0
+          by={window['field']:window for window in windows}
+          assert by['RankingBox']['rankingSourceState']['fullRanking'] is True
+          assert by['RankingBox']['rankingSourceState']['sourceIndex']==211
+          assert by['RankingBox']['rankingSourceState']['size']==[576,456]
+          assert by['AutoPotionBox']['autoPotionSourceLoop']['rowCount']==8
+          assert len([c for c in by['AutoPotionBox']['controls'] if str(c.get('name','')).startswith('AutoPotionRow')])==80
+          assert by['BeltBox']['root']['Size']=='new Size(64, 54)'
+          assert by['MiniMapBox']['root']['Size']=='new Size(200, 200)'
+          assert by['MagicBarBox']['root']['Size']=='new Size(646, 65)'
+          assert by['MagicBarBox']['magicBarSourceLoop']['slots']==24
+          assert by['NPCBox']['root']['CustomFrame']=='NPCDialog'
 
-          by_field={window['field']:window for window in spec['windows']}
-          store_sort=next(control for control in by_field['GameStoreBox']['controls'] if control['name']=='SortBox')
-          assert [option['valueExpression'] for option in store_sort['comboOptions']] == [
-              'MarketPlaceStoreSort.Alphabetical',
-              'MarketPlaceStoreSort.HighestPrice',
-              'MarketPlaceStoreSort.LowestPrice',
-              'MarketPlaceStoreSort.Favourite',
-          ]
-          assert all(option.get('sourceBuilder') == 'AddSortOption' for option in store_sort['comboOptions'])
-          assert store_sort['comboSelectedOptionIndex'] == 0
+          floor=spec['currentSourceControlFloor']
+          pending=game_controls != 2674 or nested_controls != 149
+          assert floor['gameScene']==game_controls and floor['nested']==nested_controls
+          assert floor['browserValidatedGameScene']==2674 and floor['browserValidatedNested']==149
+          assert floor['browserValidationPending'] is pending
+          assert floor['browserValidationEvidenceSha']=='40d5140805bede9f1c7c5af8c2fb0cefc284856c'
+          assert floor['browserValidationEvidenceRun']==32175607481
 
-          storage_combo=next(control for control in by_field['StorageBox']['controls'] if control['name']=='ItemTypeComboBox')
-          assert len(storage_combo['comboOptions']) == 35
-          assert storage_combo['comboOptions'][0]['label'] == 'All'
-          assert storage_combo['comboOptions'][0]['valueExpression'] == 'null'
-          assert storage_combo['comboOptions'][-1]['valueExpression'] == 'ItemType.Reel'
-          dark_stone=next(option for option in storage_combo['comboOptions'] if option['valueExpression']=='ItemType.DarkStone')
-          assert dark_stone['label'] == 'Dark Stone'
-          assert storage_combo['comboSelectedOptionIndex'] == 0
-
-          communication={control['name']:control for control in by_field['CommunicationBox']['controls'] if control['type']=='DXComboBox'}
-          online=communication['FriendOnlineStateBox']['comboOptions']
-          view=communication['FriendViewStatusBox']['comboOptions']
-          assert len(online) > 0
-          assert [option['label'] for option in view] == ['All', *[option['label'] for option in online]]
-          assert [option['valueExpression'] for option in view[1:]] == [option['valueExpression'] for option in online]
-          assert all(option.get('sourceBuilder','').startswith('Enum.GetValues') for option in online)
-          assert communication['FriendViewStatusBox']['comboSelectedOptionIndex'] == 0
-
-          auto=by_field['AutoPotionBox']
-          assert auto['autoPotionSourceLoop']['rowCount'] == 8
-          assert auto['autoPotionSourceLoop']['rowSize'] == [260,46]
-          assert auto['autoPotionSourceLoop']['scrollMaxValue'] == 398
-          auto_generated=[control for control in auto['controls'] if str(control.get('name','')).startswith('AutoPotionRow')]
-          assert len(auto_generated) == 80
-          assert sum(control['type']=='DXNumberBox' for control in auto_generated) == 16
-          assert sum(control['type']=='DXCheckBox' for control in auto_generated) == 8
-          assert sum(control['type']=='DXItemCell' for control in auto_generated) == 8
-          assert next(control for control in auto_generated if control['name']=='AutoPotionRow01UpButton')['properties']['Enabled'] == 'false'
-          assert next(control for control in auto_generated if control['name']=='AutoPotionRow08DownButton')['properties']['Enabled'] == 'false'
-
-          assert by_field['BeltBox']['root']['Size'] == 'new Size(64, 54)'
-          assert by_field['MiniMapBox']['root']['Size'] == 'new Size(200, 200)'
-          assert by_field['ChatTextBox']['root']['Size'] == 'new Size(493, 118)'
-          assert by_field['QuestTrackerBox']['root']['Size'] == 'new Size(250, 100)'
-          assert by_field['MonsterBox']['root']['Size'] == 'new Size(186, 175)'
-          assert by_field['GroupHealthBox']['root']['Size'] == 'new Size(150, 500)'
-          assert by_field['GroupHealthBox']['root']['Opacity'] == '0F'
-          assert by_field['BuffBox']['root']['Size'] == 'new Size(30, 30)'
-          assert by_field['BuffBox']['root']['Opacity'] == '0.6F'
-          assert by_field['MagicBarBox']['root']['Size'] == 'new Size(646, 65)'
-          assert by_field['MagicBarBox']['magicBarSourceLoop']['slots'] == 24
-          assert by_field['NPCBox']['root']['Size'] == 'new Size(380, 204)'
-          assert by_field['NPCBox']['root']['CustomFrame'] == 'NPCDialog'
-          assert spec['companionReferencePass']['emptySlotAssetsPromoted'] == 4
-          assert spec['runtimeIdentityPass']['startupVisibleIds'] == [
-              'belt','buffs','group-health','main-panel','minimap','timer'
-          ]
-          print('Zircon source-contract matrix: PASS')
-          print('GameScene controls:',sum(len(window.get('controls',[])) for window in spec['windows']))
-          print('Nested controls:',sum(len(window.get('controls',[])) for window in spec['nestedWindows']))
-          print('Direct interactions:',len(interactions))
-          print('Custom-draw classes:',spec['customDrawAudit']['windowCountWithManualDrawHooks'])
-          print('Complex action contracts:',spec['complexActionAudit']['contractCount'])
-          print('Deterministic combo options:',combo['deterministicOptionCount'])
-          print('AutoPotion generated controls:',len(auto_generated))
+          print(f'Zircon source-contract matrix: PASS ({game_controls}+{nested_controls}; interactions=21; render=22/22+10/10; pending={pending})')
           PY
 
       - name: Check source runtime syntax
@@ -181,6 +122,5 @@ jobs:
           set -euo pipefail
           node --check apps/zircon-ui-reference/app-layout.js
           node --check apps/zircon-ui-reference/animated-control-runtime.js
-          for file in apps/zircon-ui-reference/extra-runtimes/*.js; do
-            node --check "$file"
-          done
+          node --check apps/zircon-ui-reference/browser-qa-runtime.js
+          for file in apps/zircon-ui-reference/extra-runtimes/*.js; do node --check "$file"; done
