@@ -113,6 +113,7 @@ def main() -> None:
     for helper in (
         "audit_complex_action_contracts.py",
         "audit_config_source_contracts.py",
+        "audit_inventory_source_contracts.py",
     ):
         subprocess.run([
             sys.executable,
