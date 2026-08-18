@@ -87,14 +87,15 @@ if (params.get('qa') === '1') {
       }
       gameControlCount = (qaSpec.windows || []).reduce((sum, item) => sum + (item.controls || []).length, 0);
       nestedControlCount = (qaSpec.nestedWindows || []).reduce((sum, item) => sum + (item.controls || []).length, 0);
-      if (gameControlCount < 2450) failures.push({ id: 'manifest', issue: `Expanded GameScene control coverage regressed: ${gameControlCount} < 2450` });
+      if (gameControlCount < 2464) failures.push({ id: 'manifest', issue: `Expanded GameScene control coverage regressed: ${gameControlCount} < 2464` });
       if (nestedControlCount < 143) failures.push({ id: 'manifest', issue: `Nested control coverage regressed: ${nestedControlCount} < 143` });
       if (qaSpec.deterministicSourceRowAudit?.passed !== true) failures.push({ id: 'manifest', issue: 'Deterministic source row audit missing/not PASS in built artifact' });
       if (qaSpec.guildMemberRowAudit?.passed !== true) failures.push({ id: 'manifest', issue: 'Guild member deterministic row audit missing/not PASS in built artifact' });
       if (qaSpec.guildRootHelperAudit?.passed !== true) failures.push({ id: 'manifest', issue: 'Guild root helper audit missing/not PASS in built artifact' });
       if (qaSpec.gameStoreCompositeAudit?.passed !== true) failures.push({ id: 'manifest', issue: 'GameStore composite audit missing/not PASS in built artifact' });
       if (qaSpec.communicationReceivedRowAudit?.passed !== true) failures.push({ id: 'manifest', issue: 'Communication received-row audit missing/not PASS in built artifact' });
-      if (qaSpec.consignmentCompositeAudit?.passed !== true) failures.push({ id: 'manifest', issue: 'Consignment composite audit missing/not PASS in built artifact' });
+      if (qaSpec.consignmentCompositeAudit?.passed !== true) failures.push({ id: 'manifest', issue: 'Consignment compatibility audit missing/not PASS in built artifact' });
+      if (qaSpec.consignmentDeterministicAudit?.passed !== true) failures.push({ id: 'manifest', issue: 'Consignment strict deterministic audit missing/not PASS in built artifact' });
       if (qaSpec.uiCreationHelperInventory?.passed !== true) failures.push({ id: 'manifest', issue: 'UI creation helper inventory missing/not PASS in built artifact' });
       if (qaSpec.sourceSearchFlowAudit?.passed !== true) failures.push({ id: 'manifest', issue: 'Source search flow audit missing/not PASS in built artifact' });
       const rowAudit = qaSpec.deterministicSourceRowAudit || {};
@@ -118,8 +119,12 @@ if (params.get('qa') === '1') {
         failures.push({ id: 'manifest', issue: `Communication received-row matrix mismatch: ${JSON.stringify(communication)}` });
       }
       const consignment = qaSpec.consignmentCompositeAudit || {};
-      if (consignment.deterministicControls !== 121 || consignment.itemTypeButtons !== 34 || consignment.searchRows !== 6 || consignment.consignRows !== 6 || consignment.runtimeMarketInfoInvented !== false || consignment.runtimeItemsInvented !== false) {
-        failures.push({ id: 'manifest', issue: `Consignment deterministic composite matrix mismatch: ${JSON.stringify(consignment)}` });
+      if (consignment.contractVersion !== 2 || consignment.deterministicControls !== 135 || consignment.headerLabels !== 10 || consignment.itemTypeButtons !== 38 || consignment.searchRows !== 6 || consignment.consignRows !== 6 || consignment.runtimeMarketInfoInvented !== false || consignment.runtimeItemsInvented !== false) {
+        failures.push({ id: 'manifest', issue: `Consignment compatibility matrix mismatch: ${JSON.stringify(consignment)}` });
+      }
+      const consignmentStrict = qaSpec.consignmentDeterministicAudit || {};
+      if (consignmentStrict.deterministicControls !== 135 || consignmentStrict.headerLabels !== 10 || consignmentStrict.itemTypeButtons !== 38 || consignmentStrict.searchRows !== 6 || consignmentStrict.consignRows !== 6 || consignmentStrict.runtimeMarketInfoInvented !== false) {
+        failures.push({ id: 'manifest', issue: `Consignment strict deterministic matrix mismatch: ${JSON.stringify(consignmentStrict)}` });
       }
       const groupLfg = qaSpec.windows?.find(item => item.field === 'GroupBox')?.groupLFGRowAudit || {};
       if (groupLfg.passed !== true || groupLfg.rows !== 5 || groupLfg.deterministicControls !== 20 || groupLfg.runtimeLfgInvented !== false) {
