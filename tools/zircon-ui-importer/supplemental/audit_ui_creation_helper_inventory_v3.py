@@ -49,13 +49,21 @@ def main():
  if list_audit.get('passed') is not True:raise SystemExit(f'DXListBoxItem boundary audit missing/not green: {list_audit}')
  store_window=next((w for w in spec.get('windows',[]) if w.get('field')=='GameStoreBox'),None)
  if not store_window:raise SystemExit('GameStoreBox missing')
- sort_items=[c for c in store_window.get('controls',[]) if c.get('type')=='DXListBoxItem' and str((c.get('properties') or {}).get('Parent') or '')=='SortBox.ListBox']
- if len(sort_items)!=4:raise SystemExit(f'GameStore SortBox source item count drifted: {len(sort_items)} != 4')
- names=[str(c.get('name') or '') for c in sort_items]
- if any(not n for n in names) or len(set(names))!=4:raise SystemExit(f'GameStore SortBox source item names invalid: {names}')
+ sort_box=next((c for c in store_window.get('controls',[]) if c.get('type')=='DXComboBox' and str(c.get('sourceName') or c.get('name') or '')=='SortBox'),None)
+ if not sort_box:raise SystemExit('GameStore SortBox DXComboBox missing')
+ sort_options=sort_box.get('comboOptions') or []
+ expected_values=['MarketPlaceStoreSort.Alphabetical','MarketPlaceStoreSort.HighestPrice','MarketPlaceStoreSort.LowestPrice','MarketPlaceStoreSort.Favourite']
+ actual_values=[str(option.get('valueExpression') or '') for option in sort_options]
+ if actual_values!=expected_values:raise SystemExit(f'GameStore SortBox helper option values drifted: {actual_values}')
+ if any(option.get('sourceBuilder')!='AddSortOption' for option in sort_options):raise SystemExit(f'GameStore SortBox helper provenance drifted: {sort_options}')
+ labels=[str(option.get('label') or '') for option in sort_options]
+ if any(not label for label in labels) or len(set(labels))!=4:raise SystemExit(f'GameStore SortBox helper labels invalid: {labels}')
+ if str(sort_box.get('comboSelectedExpression') or '')!='MarketPlaceStoreSort.Alphabetical' or sort_box.get('comboSelectedOptionIndex')!=0:raise SystemExit(f'GameStore SortBox initial Alphabetical selection drifted: {sort_box}')
+ physical_sort_items=[c for c in store_window.get('controls',[]) if c.get('type')=='DXListBoxItem' and str((c.get('properties') or {}).get('Parent') or '')=='SortBox.ListBox']
+ if physical_sort_items:raise SystemExit(f'GameStore SortBox options must remain deferred combo metadata, found physical rows: {physical_sort_items}')
  sort_row=find_row(rows,'GameStoreDialog','AddSortOption')
  if not sort_row.get('constructorReachable') or sort_row.get('classification')!='deterministic-source' or 'DXListBoxItem' not in (sort_row.get('createdTypes') or []):raise SystemExit(f'GameStore AddSortOption contract drifted: {sort_row}')
- sort_row.update({'status':'materialized','materializedControlNames':sorted(names),'existingSourceControlsLinked':True,'duplicateControlsAdded':0,'v3Refined':True})
+ sort_row.update({'status':'materialized','materializedControlNames':[f'SortBox.comboOptions[{index}]' for index in range(4)],'existingSourceOptionsLinked':True,'comboRepresentation':'DXComboBox.comboOptions','duplicateControlsAdded':0,'v3Refined':True})
  companion=next((w for w in spec.get('windows',[]) if w.get('field')=='CompanionBox'),None)
  if not companion:raise SystemExit('CompanionBox missing')
  contract=companion.get('deterministicCompanionFilters') or {}
@@ -65,7 +73,7 @@ def main():
   if not row.get('constructorReachable') or row.get('classification')!='deterministic-source' or row.get('status')!='materialized' or not row.get('materializedControlNames'):raise SystemExit(f'Companion {helper} not source-materialized: {row}')
  inv['classificationCounts']=dict(Counter(r.get('classification') for r in rows));inv['statusCounts']=dict(Counter(r.get('status') for r in rows));inv['version']=3
  inv.update({'storeCategoryNodesRemainRuntimeBound':True,'communicationBlockRowsRemainRuntimeBound':True,'gameStoreSortItemsLinkedWithoutDuplication':True,'companionEnumFiltersMaterialized':True,'runtimePayloadsInvented':False,'sourceBackedOnly':True})
- spec['uiCreationHelperInventory']=inv;spec['uiCreationHelperInventoryV3Audit']={'passed':True,'runtimeHelpersRefined':['GameStoreDialog.AddCategoryNode','CommunicationDialog.RefreshBlockList'],'existingSortItemsLinked':4,'sortItemsDuplicated':0,'companionFilterControls':contract.get('controlsAdded'),'runtimePayloadsInvented':False,'sourceBackedOnly':True}
+ spec['uiCreationHelperInventory']=inv;spec['uiCreationHelperInventoryV3Audit']={'passed':True,'runtimeHelpersRefined':['GameStoreDialog.AddCategoryNode','CommunicationDialog.RefreshBlockList'],'existingSortItemsLinked':4,'sortItemsDuplicated':0,'sortRepresentation':'DXComboBox.comboOptions','companionFilterControls':contract.get('controlsAdded'),'runtimePayloadsInvented':False,'sourceBackedOnly':True}
  a.spec.write_text(json.dumps(spec,indent=2,ensure_ascii=False)+'\n',encoding='utf-8')
- print(f'UI helper inventory v3: PASS -> runtime Store/category + block rows; 4 sort items linked; Companion filters={contract.get("controlsAdded")}')
+ print(f'UI helper inventory v3: PASS -> runtime Store/category + block rows; 4 SortBox combo options linked; Companion filters={contract.get("controlsAdded")}')
 if __name__=='__main__':main()
