@@ -58,14 +58,18 @@ jobs:
           assert nested_controls >= 143, nested_controls
           final=spec['finalSupplementalSourceMatrix']
           assert final['passed'] is True
-          assert final['minimumGameSceneControls'] == 2511
+          assert final['minimumGameSceneControls'] == 2507
           assert final['minimumNestedControls'] == 143
+          assert final['latestSourceAuditedGameSceneFloor'] == 2511
+          assert final['latestSourceAuditedNestedFloor'] == 143
+          assert final['browserValidatedFloorPending'] is True
           assert final['gameSceneControls'] == game_controls
           assert final['nestedControls'] == nested_controls
           floor=spec['currentSourceControlFloor']
           assert floor['passed'] is True
           assert floor['gameScene'] == 2511
           assert floor['nested'] == 143
+          assert floor['browserValidationPending'] is True
           assert by['RankingBox']['rankingSourceAudit']['passed'] is True
           assert by['RankingBox']['rankingSourceState']['sourceIndex'] == 210
           assert by['GroupBox']['groupSourceAudit']['passed'] is True
@@ -199,7 +203,7 @@ jobs:
           assert literals['passed'] is True
           assert literals['requiredDeterministicRowRefsPresent'] is True
           assert literals['symbolicRuntimeRefsInvented'] is False
-          print(f'Supplemental source matrix: PASS ({game_controls}+{nested_controls} controls)')
+          print(f'Supplemental source matrix: PASS ({game_controls}+{nested_controls} controls; browser checkpoint remains 2507 until QA)')
           PY
       - name: Check all fidelity runtime syntax
         run: |
