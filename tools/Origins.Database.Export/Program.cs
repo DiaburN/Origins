@@ -5,6 +5,8 @@ using System.Text.Json;
 using Library.SystemModels;
 using MirDB;
 using Origins.Database.Runtime;
+using Origins.Database.Snapshots;
+using Server.DBModels;
 
 if (args.Length < 2)
 {
@@ -38,53 +40,66 @@ try
         return 2;
     }
 
-    var files = new SortedDictionary<string, int>(StringComparer.OrdinalIgnoreCase);
+    var assemblies = new[] { typeof(ItemInfo).Assembly, typeof(AccountInfo).Assembly };
+    var systemTypes = assemblies
+        .SelectMany(x => x.GetTypes())
+        .Where(x => x.IsSubclassOf(typeof(DBObject)))
+        .Where(x => !x.IsAbstract)
+        .Where(x => x.GetCustomAttribute<UserObjectAttribute>() == null)
+        .Distinct()
+        .OrderBy(x => x.Assembly.GetName().Name, StringComparer.Ordinal)
+        .ThenBy(x => x.FullName, StringComparer.Ordinal)
+        .ToList();
 
-    Export(session.GetCollection<CurrencyInfo>(), outputRoot, "currencies.json", files);
-    Export(session.GetCollection<ItemInfo>(), outputRoot, "items.json", files);
-    Export(session.GetCollection<ItemInfoStat>(), outputRoot, "item-stats.json", files);
-    Export(session.GetCollection<SetInfo>(), outputRoot, "sets.json", files);
-    Export(session.GetCollection<SetInfoStat>(), outputRoot, "set-stats.json", files);
+    var manifestCollections = new List<SystemSnapshotCollection>();
 
-    Export(session.GetCollection<BaseStat>(), outputRoot, "base-stats.json", files);
-    Export(session.GetCollection<MovementInfo>(), outputRoot, "movements.json", files);
-
-    Export(session.GetCollection<MapInfo>(), outputRoot, "maps.json", files);
-    Export(session.GetCollection<MapRegion>(), outputRoot, "map-regions.json", files);
-    Export(session.GetCollection<SafeZoneInfo>(), outputRoot, "safe-zones.json", files);
-    Export(session.GetCollection<InstanceInfo>(), outputRoot, "instances.json", files);
-    Export(session.GetCollection<DungeonInfo>(), outputRoot, "dungeons.json", files);
-
-    Export(session.GetCollection<MonsterInfo>(), outputRoot, "monsters.json", files);
-    Export(session.GetCollection<MonsterInfoStat>(), outputRoot, "monster-stats.json", files);
-    Export(session.GetCollection<DropInfo>(), outputRoot, "drops.json", files);
-    Export(session.GetCollection<RespawnInfo>(), outputRoot, "respawns.json", files);
-
-    Export(session.GetCollection<NPCInfo>(), outputRoot, "npcs.json", files);
-    Export(session.GetCollection<StoreInfo>(), outputRoot, "stores.json", files);
-    Export(session.GetCollection<QuestInfo>(), outputRoot, "quests.json", files);
-    Export(session.GetCollection<MagicInfo>(), outputRoot, "magics.json", files);
-
-    var manifest = new
+    foreach (var type in systemTypes)
     {
-        schemaVersion = 1,
-        source = new
+        var collection = session.GetCollection(type);
+        var collectionType = collection.GetType();
+        var bindingField = collectionType.GetField("Binding", BindingFlags.Public | BindingFlags.Instance)
+            ?? throw new InvalidOperationException($"Binding field not found for {type.FullName}.");
+        var collectionIndexProperty = collectionType.GetProperty("Index", BindingFlags.Public | BindingFlags.Instance)
+            ?? throw new InvalidOperationException($"Index property not found for {type.FullName} collection.");
+
+        var objects = ((IEnumerable)(bindingField.GetValue(collection)
+            ?? throw new InvalidOperationException($"Binding is null for {type.FullName}.")))
+            .Cast<DBObject>()
+            .OrderBy(x => x.Index)
+            .Select(Flatten)
+            .ToList();
+
+        var fileName = FileNameFor(type);
+        File.WriteAllText(
+            Path.Combine(outputRoot, fileName),
+            JsonSerializer.Serialize(objects, jsonOptions));
+
+        manifestCollections.Add(new SystemSnapshotCollection
         {
-            systemDb = systemDbPath,
-            sha256 = Sha256(systemDbPath),
-            systemVersion = session.SystemDatabaseVersion
-        },
-        exportedUtc = DateTime.UtcNow,
-        collections = files
+            AssemblyName = type.Assembly.GetName().Name ?? string.Empty,
+            TypeName = type.FullName ?? type.Name,
+            FileName = fileName,
+            Count = objects.Count,
+            CollectionIndex = (int)(collectionIndexProperty.GetValue(collection) ?? 0)
+        });
+    }
+
+    var manifest = new SystemSnapshotManifest
+    {
+        SchemaVersion = 1,
+        SourceSystemDbSha256 = Sha256(systemDbPath),
+        SourceSystemVersion = session.SystemDatabaseVersion,
+        ExportedUtc = DateTime.UtcNow,
+        Collections = manifestCollections
     };
 
     File.WriteAllText(
         Path.Combine(outputRoot, "manifest.json"),
         JsonSerializer.Serialize(manifest, jsonOptions));
 
-    Console.WriteLine($"ORIGINS SYSTEM.DB EXPORT: PASS ({files.Count} collections)");
-    foreach (var pair in files)
-        Console.WriteLine($"{pair.Key}: {pair.Value}");
+    Console.WriteLine($"ORIGINS SYSTEM.DB EXPORT: PASS ({manifestCollections.Count} collections)");
+    foreach (var entry in manifestCollections)
+        Console.WriteLine($"{entry.TypeName}: {entry.Count} (collection index {entry.CollectionIndex})");
 
     return 0;
 }
@@ -95,27 +110,13 @@ catch (Exception ex)
     return 1;
 }
 
-void Export<T>(DBCollection<T> collection, string targetRoot, string fileName, IDictionary<string, int> files)
-    where T : DBObject, new()
-{
-    var rows = collection.Binding
-        .OrderBy(x => x.Index)
-        .Select(Flatten)
-        .ToList();
-
-    File.WriteAllText(
-        Path.Combine(targetRoot, fileName),
-        JsonSerializer.Serialize(rows, jsonOptions));
-
-    files[fileName] = rows.Count;
-}
-
-Dictionary<string, object?> Flatten<T>(T value) where T : DBObject
+Dictionary<string, object?> Flatten(DBObject value)
 {
     var result = new SortedDictionary<string, object?>(StringComparer.Ordinal)
     {
         ["Index"] = value.Index,
-        ["$type"] = value.GetType().Name
+        ["$assembly"] = value.GetType().Assembly.GetName().Name,
+        ["$type"] = value.GetType().FullName
     };
 
     var properties = value.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
@@ -150,7 +151,8 @@ Dictionary<string, object?> Flatten<T>(T value) where T : DBObject
         {
             result[property.Name] = new Dictionary<string, object?>
             {
-                ["$ref"] = reference.GetType().Name,
+                ["$refAssembly"] = reference.GetType().Assembly.GetName().Name,
+                ["$refType"] = reference.GetType().FullName,
                 ["Index"] = reference.Index
             };
             continue;
@@ -158,7 +160,8 @@ Dictionary<string, object?> Flatten<T>(T value) where T : DBObject
 
         if (propertyValue is IEnumerable && propertyValue is not string)
         {
-            // Child/association collections have their own exported collection.
+            // Reverse/child association collections are recreated by assigning
+            // the referenced DBObject properties during import.
             continue;
         }
 
@@ -180,6 +183,18 @@ Dictionary<string, object?> Flatten<T>(T value) where T : DBObject
     }
 
     return new Dictionary<string, object?>(result);
+}
+
+string FileNameFor(Type type)
+{
+    var assembly = type.Assembly.GetName().Name ?? "Assembly";
+    var fullName = type.FullName ?? type.Name;
+    var safeName = fullName
+        .Replace('.', '_')
+        .Replace('+', '_')
+        .Replace('`', '_');
+
+    return $"{assembly}__{safeName}.json";
 }
 
 string Sha256(string path)
