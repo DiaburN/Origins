@@ -4,13 +4,16 @@ using Origins.Database.Snapshots;
 
 if (args.Length < 3)
 {
-    Console.Error.WriteLine("Usage: Origins.Database.ApplyOverlay <snapshot-root> <overlay-root> <output-root>");
+    Console.Error.WriteLine("Usage: Origins.Database.ApplyOverlay <snapshot-root> <overlay-root> <output-root> [index-policy]");
     return 64;
 }
 
 var snapshotRoot = Path.GetFullPath(args[0]);
 var overlayRoot = Path.GetFullPath(args[1]);
 var outputRoot = Path.GetFullPath(args[2]);
+var policyPath = args.Length > 3
+    ? Path.GetFullPath(args[3])
+    : Path.Combine(Directory.GetParent(overlayRoot)?.FullName ?? overlayRoot, "index-policy.json");
 var sourceManifestPath = Path.Combine(snapshotRoot, "manifest.json");
 
 var jsonOptions = new JsonSerializerOptions
@@ -28,6 +31,12 @@ if (!File.Exists(sourceManifestPath))
 if (!Directory.Exists(overlayRoot))
 {
     Console.Error.WriteLine($"Overlay directory not found: {overlayRoot}");
+    return 66;
+}
+
+if (!File.Exists(policyPath))
+{
+    Console.Error.WriteLine($"ORIGINS index policy not found: {policyPath}");
     return 66;
 }
 
@@ -49,13 +58,41 @@ try
     if (manifest.SchemaVersion != 1)
         throw new InvalidOperationException($"Unsupported snapshot schema version {manifest.SchemaVersion}.");
 
+    var policy = JsonSerializer.Deserialize<OriginsIndexPolicy>(File.ReadAllText(policyPath), jsonOptions)
+        ?? throw new InvalidOperationException("Could not deserialize ORIGINS index policy.");
+
+    if (policy.SchemaVersion != 1)
+        throw new InvalidOperationException($"Unsupported index policy schema version {policy.SchemaVersion}.");
+
     var entries = manifest.Collections.ToDictionary(
         x => TypeKey(x.AssemblyName, x.TypeName),
         StringComparer.Ordinal);
 
+    var ranges = policy.Ranges.ToDictionary(
+        x => TypeKey(x.AssemblyName, x.TypeName),
+        StringComparer.Ordinal);
+
+    foreach (var range in policy.Ranges)
+    {
+        var key = TypeKey(range.AssemblyName, range.TypeName);
+        if (!entries.TryGetValue(key, out var entry))
+            throw new InvalidOperationException($"Index policy targets unknown snapshot type {key}.");
+
+        if (entry.CollectionIndex != range.LegacyCollectionIndex)
+            throw new InvalidOperationException(
+                $"Index policy drift for {range.TypeName}: snapshot collection index {entry.CollectionIndex} != locked legacy index {range.LegacyCollectionIndex}. Review the new upstream database before allocating ORIGINS rows.");
+
+        if (range.OriginsStart <= range.LegacyCollectionIndex)
+            throw new InvalidOperationException(
+                $"Invalid ORIGINS start for {range.TypeName}: {range.OriginsStart} must be above legacy index {range.LegacyCollectionIndex}.");
+    }
+
     var states = new Dictionary<string, CollectionState>(StringComparer.Ordinal);
     var appliedFiles = new List<string>();
     var operationCount = 0;
+    var createdCount = 0;
+    var updatedCount = 0;
+    var deletedCount = 0;
 
     foreach (var overlayFile in Directory.EnumerateFiles(overlayRoot, "*.json", SearchOption.TopDirectoryOnly)
                  .OrderBy(x => Path.GetFileName(x), StringComparer.Ordinal))
@@ -68,7 +105,7 @@ try
 
         foreach (var operation in overlay.Operations)
         {
-            Apply(operation);
+            Apply(operation, Path.GetFileName(overlayFile));
             operationCount++;
         }
 
@@ -96,8 +133,12 @@ try
         schemaVersion = 1,
         baseSystemDbSha256 = manifest.SourceSystemDbSha256,
         baseSystemVersion = manifest.SourceSystemVersion,
+        indexPolicy = policyPath,
         overlays = appliedFiles,
         operationCount,
+        createdCount,
+        updatedCount,
+        deletedCount,
         completedUtc = DateTime.UtcNow
     };
 
@@ -105,10 +146,10 @@ try
         Path.Combine(outputRoot, "overlay-report.json"),
         JsonSerializer.Serialize(report, jsonOptions));
 
-    Console.WriteLine($"ORIGINS SNAPSHOT OVERLAY: PASS ({appliedFiles.Count} files, {operationCount} operations)");
+    Console.WriteLine($"ORIGINS SNAPSHOT OVERLAY: PASS ({appliedFiles.Count} files, {operationCount} operations; {createdCount} created, {updatedCount} updated, {deletedCount} deleted)");
     return 0;
 
-    void Apply(SystemSnapshotOperation operation)
+    void Apply(SystemSnapshotOperation operation, string overlayName)
     {
         if (operation.Index <= 0)
             throw new InvalidOperationException($"{operation.TypeName}: overlay index must be greater than zero.");
@@ -130,11 +171,20 @@ try
 
                 state.Rows.Remove(row);
                 entry.Count--;
+                deletedCount++;
                 return;
 
             case "upsert":
                 if (row == null)
                 {
+                    if (!ranges.TryGetValue(key, out var range))
+                        throw new InvalidOperationException(
+                            $"{overlayName}: cannot create {operation.TypeName} index {operation.Index}; no ORIGINS index range is reserved for this collection.");
+
+                    if (operation.Index < range.OriginsStart)
+                        throw new InvalidOperationException(
+                            $"{overlayName}: refusing to fill legacy gap {operation.TypeName}#{operation.Index}. New ORIGINS rows must start at {range.OriginsStart}.");
+
                     row = new JsonObject
                     {
                         ["Index"] = operation.Index,
@@ -144,6 +194,11 @@ try
                     state.Rows.Add(row);
                     entry.Count++;
                     entry.CollectionIndex = Math.Max(entry.CollectionIndex, operation.Index);
+                    createdCount++;
+                }
+                else
+                {
+                    updatedCount++;
                 }
 
                 foreach (var pair in operation.Set)
