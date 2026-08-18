@@ -10,25 +10,31 @@ def main():
  text=path.read_text(encoding='utf-8')
  required=(
   'name: Publish Zircon Browser QA status',
-  'workflows: ["Browser QA Zircon UI reference"]',
-  'types: [completed]',
+  'workflow_dispatch:',
+  'push:',
+  'branches: [origins-game-v1]',
+  'apps/zircon-ui-reference/**',
+  'tools/zircon-ui-importer/**',
+  'actions: read',
   'statuses: write',
-  "github.event.workflow_run.head_branch == 'origins-game-v1'",
-  'QA_SHA: ${{ github.event.workflow_run.head_sha }}',
-  'QA_CONCLUSION: ${{ github.event.workflow_run.conclusion }}',
-  'QA_URL: ${{ github.event.workflow_run.html_url }}',
-  'if [[ "$QA_CONCLUSION" == "success" ]]',
+  'cancel-in-progress: true',
+  'sha="${GITHUB_SHA}"',
+  'branches/origins-game-v1',
+  'browser-qa-zircon-ui-reference.yml/runs?head_sha=${sha}&branch=origins-game-v1&per_page=20',
+  'status" == "completed"',
+  'conclusion" == "success"',
   'state="success"',
   'state="failure"',
-  'repos/${GITHUB_REPOSITORY}/statuses/${QA_SHA}',
+  'repos/${GITHUB_REPOSITORY}/statuses/${sha}',
   '-f context="origins/zircon-browser-qa"',
-  '-f target_url="$QA_URL"',
+  'actions/runs/${run_id}',
+  'result unavailable for exact SHA',
  )
  for needle in required:
   if needle not in text:raise SystemExit(f'Browser QA status publisher contract drifted: {needle}')
- forbidden=('2511 checkpoint validated','browserValidationPending=false','minimumGameSceneControls=2511')
+ forbidden=('workflow_run:','github.event.workflow_run','2511 checkpoint validated','browserValidationPending=false','minimumGameSceneControls=2511')
  for needle in forbidden:
-  if needle in text:raise SystemExit(f'status publisher must report CI conclusion only, not mutate/promote source contracts: {needle}')
- report={'passed':True,'trigger':'Browser QA Zircon UI reference completed','branch':'origins-game-v1','statusPermissionWrite':True,'exactHeadSha':True,'context':'origins/zircon-browser-qa','successMapsToSuccess':True,'nonSuccessMapsToFailure':True,'targetUrlIsWorkflowRun':True,'mutatesSourceContracts':False,'runtimePayloadsInvented':False,'controlsAdded':0}
- spec['browserQaStatusPublisherAudit']=report;a.spec.write_text(json.dumps(spec,indent=2,ensure_ascii=False)+'\n',encoding='utf-8');print('Browser QA status publisher audit: PASS -> exact SHA success/failure status, source contracts untouched')
+  if needle in text:raise SystemExit(f'Browser QA status publisher contains forbidden/default-branch-dependent or promotion marker: {needle}')
+ report={'passed':True,'trigger':'push/workflow_dispatch exact-SHA poll','branch':'origins-game-v1','branchSafeWithoutDefaultBranch':True,'statusPermissionWrite':True,'actionsPermissionRead':True,'exactHeadSha':True,'exactBrowserQaRunRequired':True,'context':'origins/zircon-browser-qa','successMapsToSuccess':True,'nonSuccessMapsToFailure':True,'timeoutMapsToFailure':True,'targetUrlIsWorkflowRun':True,'mutatesSourceContracts':False,'runtimePayloadsInvented':False,'controlsAdded':0}
+ spec['browserQaStatusPublisherAudit']=report;a.spec.write_text(json.dumps(spec,indent=2,ensure_ascii=False)+'\n',encoding='utf-8');print('Browser QA status publisher audit: PASS -> branch-safe exact-SHA Browser QA polling and commit status, source contracts untouched')
 if __name__=='__main__':main()
