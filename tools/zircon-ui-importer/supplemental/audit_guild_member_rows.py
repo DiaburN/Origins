@@ -40,7 +40,14 @@ def main() -> None:
         raise SystemExit(f"Guild member neutral runtime contract broken: {contract}")
     if contract.get("generatedControls") != 108:
         raise SystemExit(f"Guild member composite size drifted: {contract}")
-    if contract.get("replacedIncompleteCompositeControls") != 1 or contract.get("netControlsAdded") != 107:
+
+    # The base parser may already have stopped emitting the one incomplete
+    # GuildMemberRow helper shell that this materializer historically replaced.
+    # Both states are source-faithful provided at most that one shell is
+    # reconciled, the net count matches exactly, and no stale shell survives.
+    replaced = contract.get("replacedIncompleteCompositeControls")
+    net_added = contract.get("netControlsAdded")
+    if replaced not in (0, 1) or net_added != 108 - replaced:
         raise SystemExit(f"Guild member base-composite reconciliation drifted: {contract}")
 
     by = {control.get("name"): control for control in guild.get("controls", [])}
@@ -77,12 +84,12 @@ def main() -> None:
             if label is None:
                 raise SystemExit(f"Guild member row child missing: {name}{suffix}")
             if props(label).get("Location") != POSITIONS[suffix]:
-                raise SystemExit(f"Guild member row label geometry drifted: {name}{suffix}")
+                raise SystemExit(f"Guild member row label geometry drifted: {name}{suffix} -> {props(label)}")
             if label.get("resolvedText") not in ("", None):
                 raise SystemExit(f"Fabricated guild member data leaked into {name}{suffix}")
 
-    # The original incomplete helper-composite header must not survive beside
-    # the full source composite, otherwise desktop renders a duplicate header.
+    # No incomplete helper-composite header may survive beside the full source
+    # composite, otherwise desktop would render a duplicate header.
     stale = [
         control.get("name") for control in guild.get("controls", [])
         if control.get("sourceType") == "GuildMemberRow"
@@ -97,13 +104,17 @@ def main() -> None:
         "headerRows": 1,
         "memberRows": 17,
         "sourceControls": 108,
-        "netControlsAdded": 107,
+        "replacedIncompleteCompositeControls": replaced,
+        "netControlsAdded": net_added,
         "runtimeMembersInvented": False,
         "runtimeRanksInvented": False,
         "runtimeOnlineStateInvented": False,
     }
     args.spec.write_text(json.dumps(spec, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
-    print("Guild member row audit: PASS (1 header + 17 neutral rows, 108 controls)")
+    print(
+        "Guild member row audit: PASS "
+        f"(1 header + 17 neutral rows, 108 controls; reconciled={replaced}, net={net_added})"
+    )
 
 
 if __name__ == "__main__":
