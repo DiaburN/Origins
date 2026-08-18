@@ -57,6 +57,12 @@ if (params.get('qa') === '1') {
     return patterns.filter(pattern => pattern.test(text)).map(pattern => pattern.source);
   };
 
+  const directText = element => [...element.childNodes]
+    .filter(node => node.nodeType === Node.TEXT_NODE)
+    .map(node => node.nodeValue || '')
+    .join(' ')
+    .trim();
+
   const run = async () => {
     const sourceStatus = await waitFor(() => {
       const text = document.querySelector('#source-status')?.textContent?.trim() || '';
@@ -68,6 +74,19 @@ if (params.get('qa') === '1') {
         issue: `Full generated manifest did not become active: ${document.querySelector('#source-status')?.textContent?.trim() || '(missing)'}`,
       });
     }
+
+    let qaSpec = null;
+    try {
+      const response = await fetch('ui-source-spec.json', { cache: 'no-store' });
+      if (!response.ok) throw new Error(`ui-source-spec.json ${response.status}`);
+      qaSpec = await response.json();
+      if ((qaSpec.windows || []).length !== 65 || (qaSpec.nestedWindows || []).length !== 15) {
+        failures.push({ id: 'manifest', issue: `Manifest inventory mismatch: ${(qaSpec.windows || []).length}+${(qaSpec.nestedWindows || []).length}` });
+      }
+    } catch (error) {
+      failures.push({ id: 'manifest', issue: String(error?.stack || error) });
+    }
+    const specById = new Map([...(qaSpec?.windows || []), ...(qaSpec?.nestedWindows || [])].map(item => [item.id, item]));
 
     const buttons = await waitFor(() => {
       const found = [...document.querySelectorAll('.catalog-item[data-window-id]')];
@@ -117,6 +136,17 @@ if (params.get('qa') === '1') {
         const text = root.innerText || '';
         const technical = syntheticTechnicalText(text);
         if (technical.length) failures.push({ id, issue: 'Technical/reference text leaked into game window', patterns: technical });
+
+        const sourceItem = specById.get(id);
+        if (!sourceItem) {
+          failures.push({ id, issue: 'Window not present in generated source manifest' });
+        } else {
+          const internalNames = new Set((sourceItem.controls || []).map(control => String(control.name || '').trim()).filter(Boolean));
+          const leakedNames = [...new Set([...root.querySelectorAll('*')]
+            .map(directText)
+            .filter(value => value && internalNames.has(value)))];
+          if (leakedNames.length) failures.push({ id, issue: 'C# control name leaked as visible game text', names: leakedNames });
+        }
 
         const syntheticTitle = [...root.querySelectorAll('.generic-window-title,.window-title,.generic-title')]
           .map(node => node.textContent?.trim())
