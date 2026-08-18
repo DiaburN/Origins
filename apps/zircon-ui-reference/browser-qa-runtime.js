@@ -58,6 +58,17 @@ if (params.get('qa') === '1') {
   };
 
   const run = async () => {
+    const sourceStatus = await waitFor(() => {
+      const text = document.querySelector('#source-status')?.textContent?.trim() || '';
+      return /65 GameScene \+ 15 nested\/transient/.test(text) ? text : null;
+    }, 15000);
+    if (!sourceStatus) {
+      failures.push({
+        id: 'source-status',
+        issue: `Full generated manifest did not become active: ${document.querySelector('#source-status')?.textContent?.trim() || '(missing)'}`,
+      });
+    }
+
     const buttons = await waitFor(() => {
       const found = [...document.querySelectorAll('.catalog-item[data-window-id]')];
       return found.length >= 80 ? found : null;
@@ -130,6 +141,7 @@ if (params.get('qa') === '1') {
       status: failures.length || browserErrors.length ? 'fail' : 'pass',
       expectedWindows: 80,
       testedWindows: buttons?.length || 0,
+      sourceStatus: sourceStatus || null,
       failures,
       warnings,
       browserErrors,
@@ -144,7 +156,7 @@ if (params.get('qa') === '1') {
   };
 
   run().catch(error => {
-    const report = { status: 'fail', expectedWindows: 80, testedWindows: 0, failures: [{ id: 'runner', issue: String(error?.stack || error) }], warnings, browserErrors };
+    const report = { status: 'fail', expectedWindows: 80, testedWindows: 0, sourceStatus: null, failures: [{ id: 'runner', issue: String(error?.stack || error) }], warnings, browserErrors };
     resultNode.textContent = JSON.stringify(report, null, 2);
     resultNode.dataset.status = 'fail';
     resultNode.hidden = false;
