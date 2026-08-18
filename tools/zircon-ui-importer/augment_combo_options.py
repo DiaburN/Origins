@@ -246,7 +246,11 @@ def main() -> None:
 
     for owner in [*(spec.get("windows") or []), *(spec.get("nestedWindows") or [])]:
         source_path = owner.get("sourcePath")
-        class_name = owner.get("class") or owner.get("sourceClass")
+        # Nested/transient records retain sourceClass as the canonical concrete
+        # Zircon class even when a later reconstruction pass attaches a generic
+        # render/base class. Prefer sourceClass so deterministic constructor
+        # options are always read from the actual source body.
+        class_name = owner.get("sourceClass") or owner.get("class")
         if not source_path or not class_name: continue
         path = args.zircon_root / source_path
         if not path.exists(): continue
