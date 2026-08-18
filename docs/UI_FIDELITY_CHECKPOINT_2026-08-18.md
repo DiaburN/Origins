@@ -1,96 +1,69 @@
 # ORIGINS — Zircon UI fidelity checkpoint — 2026-08-18
 
 Branch: `origins-game-v1`
-Source of truth: current `Suprcode/Zircon` C# + extracted Zircon artwork.
+Source of truth: current `Suprcode/Zircon` C# + original Zircon `.Zl` artwork.
 
-This checkpoint is additive to `docs/BUILD_STATUS.md`. Do not use it to replace owner approval; it records the current implementation/fidelity floor so later work does not regress already reconstructed source behavior.
+This checkpoint records the desktop source-faithful floor. It does not authorize mobile/Archero redesign until the 80-window visual review is complete.
 
-## Current source inventory floor
+## Browser-validated floor
 
-Validated locally against a fresh download of current `Suprcode/Zircon` master:
+Exact Chrome evidence exists for:
 
-- 65 GameScene windows.
-- 15 nested/transient source windows.
-- 80 unique stable viewer IDs.
-- 1,634 GameScene controls.
-- 143 nested controls.
-- 18 direct source-backed window interactions.
-- 0 unclassified custom-draw windows in the strict custom-draw audit.
-- 7 explicit top-level overflow contracts; no generic overflow whitelist.
-- 9 high-value complex source-action contracts in the core audit.
-- All `apps/zircon-ui-reference/extra-runtimes/*.js` pass `node --check` in the local fresh-source validation pipeline.
+- ORIGINS SHA: `40d5140805bede9f1c7c5af8c2fb0cefc284856c`
+- Zircon source SHA: `cbf1aa919083bc13fc3f23f93772a8ab8370632d`
+- Build run: `32175607406`
+- Browser QA run: `32175607481`
+- Complete build artifact: `9338931478`
+- Browser evidence artifact: `9338953250`
+- 65 GameScene + 15 nested/transient = **80/80 Chrome PASS**
+- **2674 GameScene + 149 nested controls**
+- Browser failures: `0`
+- Browser JS errors: `0`
+- Chat Options Add/Remove smoke: `PASS`
 
-## Fidelity work already locked
+Therefore **2674+149 is browser-validated**, not merely source-audited. The promoted manifest must encode `browserValidationPending=false` while its actual source count stays exactly at that floor. If source growth occurs later, pending must become true again automatically.
 
-### Shared DX control behavior
+## Current deterministic/source-backed trees
 
-- `DXWindow` source frame pieces, footer/slim-footer, title/close/chrome and reflow.
-- `DXAnimatedControl` frame timing, loop semantics, per-frame source offsets and Index/BaseIndex behavior.
-- `DXButton`/indexed source artwork and source text without internal control-name fallbacks.
-- `DXCheckBox` source state, ReadOnly behavior, `LabelBoxPadding`, effective `Enabled`, and source custom ReadOnly click support.
-- Effective `DXControl.Enabled` follows own `Enabled` plus parent chain and supports real post-constructor source overrides.
-- Disabled source controls also receive disabled visual treatment.
-- `DXComboBox` source options, selected label, GameInter #795 arrow, ActiveScene list, source selection/hover styling and source-like 14px scrollbar using Interface #44/#46/#45 with Change=15.
-- `DXSoundBar` GameInter #4740–#4746, mute, value 0..100, click/wheel/drag.
-- Generic `DXVScrollBar` / `DXHScrollBar` Value/Change/Min/Max/VisibleSize, wheel, arrows, track and thumb drag; emits source-scroll events.
-- Generic `DXTextBox` / `DXNumberTextBox` local editing with source MaxLength, ReadOnly, effective Enabled and source text-change events.
-- Source `Visible`, opacity, PassThrough/IsControl hit testing, tab hierarchy, modal blocking, z-order, moving and source resize behavior.
+- Ranking: full current Zircon variant **Interface #211, 576×456**; SearchLine + 11 rows = 12 rows / 72 deterministic controls. RankInfo remains runtime-bound.
+- DungeonFinder: 9 rows / 54 controls; InstanceInfo remains runtime-bound.
+- Fortune: 9 rows / 90 controls; runtime item/fortune data remains neutral.
+- BigMap: 24 NPC + 24 Monster rows, scrollbars and 4-control side shell; live map/NPC/monster data remains neutral.
+- Guild: header + 17 member rows = 108 deterministic controls; source helper roots included; live guild/castle/member data neutral.
+- GameStore: 215 deterministic controls; no StoreInfo/catalog/currency fabrication.
+- Consignment: 135 deterministic controls; 38 ItemType buttons including All; 6 Search + 6 Consign rows.
+- Communication: 5 blank received rows / 25 controls.
+- Group LFG: 5 neutral rows / 20 controls.
+- Currency: tree shell + scrollbar only; headers/items remain runtime-bound.
+- Companion: 7 bonus rows / 21 controls plus deterministic source filter controls.
+- NPCQuestList: 6 blank visible source rows / 18 controls.
+- HelpMenu: 2-control shell only; pages/items remain runtime-bound.
+- AutoPotion: 8 rows / 80 controls.
+- FilterDrop: 10 source labels + 10 source textboxes; no user configuration invented.
+- Belt: hotkey labels are generated dynamically from the real grid and do not belong to the fixed floor.
 
-### Initial HUD / game desktop
+## Shared fidelity rules locked
 
-- MainPanel source art and complete 9-button / 10-action navigation.
-- Belt final constructor state 64x54.
-- MiniMap final constructor state 200x200, source buttons/hover and source resize behavior; map content remains runtime-only.
-- GroupHealth 150x500, opacity 0, no fabricated members.
-- BuffBox 30x30, opacity 0.6, no fabricated buffs.
-- Timer 120x100, source egg animation from GameInter 960..965; timer values runtime-only.
-- MonsterBox expanded default 186x175 with source expand/collapse behavior.
-- MagicBar 646x65 with all 24 deterministic source slots; spell/icon/cooldown data remains runtime-only.
+- All known GameScene DX types render: **22/22**.
+- Nested renderer coverage: **10/10**.
+- `DXListBoxItem` rows declared under closed `DXComboBox` remain deferred/hidden until the combo opens.
+- Empty auto-size `DXLabel` follows current Zircon `DXLabel.GetSize`: empty text => `Size.Empty`.
+- Scrollbar source children with `LibraryFile.None / Index=-1` produce no image element.
+- MiniMap `TimeOfDayImage` constructor index 0 is a runtime sentinel; live time-of-day selects the real source index.
+- Timer preserves source `GameInter 960..965`, `FrameCount=6`, `333ms`, `Loop=false`; `.Zl` slots 961..964 are legitimately empty and draw nothing.
+- Chat Options constructor has 0 tabs; Add creates local source-backed UI and Remove destroys it. No fake tabs enter the manifest.
+- PNG artwork never carries burned-in dynamic text; visible runtime/localized text stays in runtime/HTML.
 
-### Reconstructed constructor loops / composites
+## Runtime-bound data that must remain neutral
 
-- AutoPotion: 8 rows / 80 deterministic controls. HP/MP/Enabled and row reorder work locally; linked items and `C.AutoPotionLinkChanged` are never fabricated/executed.
-- FilterDrop: 10 source labels + 10 source textboxes. Local Save updates reference `Config.HighlightedItems`; game-chat side effect remains unexecuted.
-- Config `DXColourControlPair`: 13 source pairs / 26 actual `DXColourControl` swatches.
-- CurrencyTree neutral structure: source border + 14px scrollbar; 0 headers/currencies until real `GameScene.User.Currencies` exist.
-- Companion empty-slot deterministic help artwork Interface #99–#102 at source opacity; companion model/bars remain runtime-only.
-- NPC custom frame GameInter #380/#381/#382 and special scrollbar assets #385/#387.
+Never precreate/fabricate CurrencyTreeHeader/CurrencyItem, Chat Options user tabs, Help pages/items, Magic data-driven tabs/cells, Guild CastleInfo, HorseTame MonsterObject, AutoPathRouteControl, Timer server data, or any player/item/map/NPC/monster/store/quest/rank/fortune/dungeon payload.
 
-### Source-backed window behavior
+## Next gate before desktop phase closure
 
-- Config/Settings: checked-in `Config.cs` defaults, English/Chinese source language list, 5 GameScene dynamic Enabled overrides, Network tab hidden in GameScene, Key Bind source window, local sound state, 13 colour pairs + source picker/reset. Renderer/server effects are annotated but not faked.
-- Inventory: neutral Normal mode, 6x8 source grid, Trash visible/Sell hidden, Wallet toggles Currency. Item/currency/weight/server data remains runtime-only.
-- Storage: opens Inventory, source filters/clear/sort confirmation and Parts/Storage state; server sort packet not faked.
-- Trade: source confirm state and gold modal contract; trading/server state not faked.
-- Consignment: source Search/Consign tab state and dependent visibility.
-- GameStore: source sort options/default and Hunt/Game Gold local state; catalog/currency data remains runtime-only.
-- Communication: source tab backgrounds/visibility, Send draft reset and OnlineState combos; mail/friend/block payloads runtime-only.
-- Group: neutral 0 members, AllowGroup=false awaiting server acknowledgement, Remove/Options disabled, Add uses the source nested DXInputWindow, LFG modal source flow and no fabricated LFG rows.
-- Guild: true post-`ClearGuild()` no-guild state, CreateTab, Interface #266, Gold selected, 7,500,000 base cost, Create blocked without real user/name. Guild/member/storage/castle data runtime-only.
-- Quest: source tabs/composites, tracker Config default true but neutral tracker stays hidden with 0 real tracked quests. Quest/NPC/reward/task data is never invented.
-- Character / Inspect: Interface #110 / #115, CharacterTab source default, runtime Discipline/Hermit visibility, runtime identity/equipment/fame/guild/marriage/player preview. Constructor stat zero labels are preserved because they are genuine Zircon defaults.
-- Ranking: compact GameScene variant Interface #210, 330x456; selected rank/search/online/inspect information remains runtime-only.
-- Currency: runtime user currency rows remain neutral/empty.
-- FilterDrop: checked-in empty filters rather than fabricated filter values.
-- Exit, Chat, resize behavior and other previously locked direct interactions remain intact.
+1. Rebuild the promoted HEAD with the validated 2674+149 floor encoded.
+2. Obtain exact-SHA Browser QA 80/80 PASS again.
+3. Capture 80/80 screenshots through the visual-review workflow from that same SHA.
+4. Inspect all captures as QA; verify any suspected discrepancy against Zircon source/`.Zl` before changing code.
+5. Close desktop reconstruction only after visual evidence is complete.
 
-## Strict source gates
-
-Core source gate:
-- `.github/workflows/audit-zircon-source-contracts.yml`
-
-Additive auto-discovered gate:
-- `.github/workflows/audit-zircon-supplemental-contracts.yml`
-- `tools/zircon-ui-importer/run_supplemental_source_contracts.py`
-- New `tools/zircon-ui-importer/supplemental/augment_*.py` are run before all `supplemental/audit_*.py` automatically.
-
-The supplemental gate currently includes strict Ranking, Group, shared scrollbar and shared textbox contracts plus a complete source MouseClick inventory.
-
-## Non-negotiable continuation rules
-
-1. Never fabricate player, map, item, quest, guild, ranking, mail, dungeon, NPC or server-response data into the Zircon reference.
-2. Preserve genuine constructor defaults even when they are zero/blank.
-3. If a source value is runtime-dependent, keep it neutral and record the source dependency.
-4. Reconstruct deterministic constructor loops/composites instead of replacing them with generic placeholders.
-5. New custom draws, overflows, constructor loops or local source actions must be classified/implemented rather than silently whitelisted.
-6. Keep desktop/source fidelity work on `origins-game-v1`; final ORIGINS mobile/Archero redesign comes only after the desktop reference pass is owner-approved.
+Desktop fidelity remains first. Mobile/Archero adaptation is explicitly later.

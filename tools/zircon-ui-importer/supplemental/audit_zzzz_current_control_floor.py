@@ -1,25 +1,93 @@
 #!/usr/bin/env python3
-"""Last supplemental floor gate for the current source-faithful manifest.
+"""Promote the exact browser-validated Zircon desktop control floor.
 
-2511+143 is the current source-audited inventory after BigMap side-shell recovery.
-The checkpoint/minimum field in finalSupplementalSourceMatrix stays at the prior
-browser-validated floor until GitHub Browser QA passes this larger artifact.
+Browser QA run 32175607481 validated the exact build artifact for ORIGINS SHA
+40d5140805bede9f1c7c5af8c2fb0cefc284856c in Chrome across all 80 windows.
+That artifact contained 2674 GameScene + 149 nested controls with zero browser
+failures/errors and a passing Chat Options Add/Remove smoke.
+
+Future source growth is allowed, but it immediately becomes pending again until
+a later exact-SHA Browser QA promotion updates the validated constants/evidence.
 """
 from __future__ import annotations
-import argparse,json
-from pathlib import Path
-MIN_GAME=2511
-MIN_NESTED=143
 
-def main():
- p=argparse.ArgumentParser();p.add_argument('--spec',type=Path,required=True);p.add_argument('--zircon-root',type=Path,required=True);a=p.parse_args();spec=json.loads(a.spec.read_text(encoding='utf-8'));windows=spec.get('windows',[]);nested=spec.get('nestedWindows',[]);game=sum(len(w.get('controls',[])) for w in windows);nested_count=sum(len(w.get('controls',[])) for w in nested);final=spec.get('finalSupplementalSourceMatrix') or {};fail=[]
- if len(windows)!=65:fail.append(f'GameScene windows {len(windows)} != 65')
- if len(nested)!=15:fail.append(f'nested windows {len(nested)} != 15')
- if game<MIN_GAME:fail.append(f'GameScene controls {game} < {MIN_GAME}')
- if nested_count<MIN_NESTED:fail.append(f'nested controls {nested_count} < {MIN_NESTED}')
- if final.get('passed') is not True:fail.append(f'prior final matrix missing/not PASS: {final}')
- final['gameSceneControls']=game;final['nestedControls']=nested_count;final['latestSourceAuditedGameSceneFloor']=MIN_GAME;final['latestSourceAuditedNestedFloor']=MIN_NESTED;final['browserValidatedFloorPending']=True;final['passed']=final.get('passed') is True and not fail;final['failures']=list(final.get('failures') or [])+fail;spec['finalSupplementalSourceMatrix']=final;spec['currentSourceControlFloor']={'passed':not fail,'gameScene':MIN_GAME,'nested':MIN_NESTED,'windows':[65,15],'browserValidationPending':True,'runtimePayloadsInvented':False,'controlsFabricatedByAudit':False}
- a.spec.write_text(json.dumps(spec,indent=2,ensure_ascii=False)+'\n',encoding='utf-8')
- if fail:raise SystemExit('Current source control floor failed:\n- '+'\n- '.join(fail))
- print(f'Current source-audited floor: PASS -> {game}+{nested_count}; browser checkpoint promotion pending')
-if __name__=='__main__':main()
+import argparse
+import json
+from pathlib import Path
+
+VALIDATED_GAME = 2674
+VALIDATED_NESTED = 149
+EVIDENCE_SHA = "40d5140805bede9f1c7c5af8c2fb0cefc284856c"
+EVIDENCE_RUN = 32175607481
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--spec", type=Path, required=True)
+    parser.add_argument("--zircon-root", type=Path, required=True)
+    args = parser.parse_args()
+
+    spec = json.loads(args.spec.read_text(encoding="utf-8"))
+    windows = spec.get("windows", [])
+    nested = spec.get("nestedWindows", [])
+    game = sum(len(window.get("controls", [])) for window in windows)
+    nested_count = sum(len(window.get("controls", [])) for window in nested)
+    final = spec.get("finalSupplementalSourceMatrix") or {}
+    failures: list[str] = []
+
+    if len(windows) != 65:
+        failures.append(f"GameScene windows {len(windows)} != 65")
+    if len(nested) != 15:
+        failures.append(f"nested windows {len(nested)} != 15")
+    if game < VALIDATED_GAME:
+        failures.append(f"GameScene controls {game} < browser-validated {VALIDATED_GAME}")
+    if nested_count < VALIDATED_NESTED:
+        failures.append(f"nested controls {nested_count} < browser-validated {VALIDATED_NESTED}")
+    if final.get("passed") is not True:
+        failures.append(f"prior final matrix missing/not PASS: {final}")
+
+    pending = game != VALIDATED_GAME or nested_count != VALIDATED_NESTED
+
+    final.update({
+        "gameSceneControls": game,
+        "nestedControls": nested_count,
+        "minimumGameSceneControls": VALIDATED_GAME,
+        "minimumNestedControls": VALIDATED_NESTED,
+        "latestSourceAuditedGameSceneFloor": game,
+        "latestSourceAuditedNestedFloor": nested_count,
+        "browserValidatedGameSceneFloor": VALIDATED_GAME,
+        "browserValidatedNestedFloor": VALIDATED_NESTED,
+        "browserValidatedFloorPending": pending,
+        "browserValidationEvidenceSha": EVIDENCE_SHA,
+        "browserValidationEvidenceRun": EVIDENCE_RUN,
+        "browserValidationEvidenceWindows": 80,
+        "browserValidationEvidenceFailures": 0,
+        "browserValidationEvidenceErrors": 0,
+        "passed": final.get("passed") is True and not failures,
+        "failures": list(final.get("failures") or []) + failures,
+    })
+    spec["finalSupplementalSourceMatrix"] = final
+    spec["currentSourceControlFloor"] = {
+        "passed": not failures,
+        "gameScene": game,
+        "nested": nested_count,
+        "windows": [65, 15],
+        "browserValidatedGameScene": VALIDATED_GAME,
+        "browserValidatedNested": VALIDATED_NESTED,
+        "browserValidationPending": pending,
+        "browserValidationEvidenceSha": EVIDENCE_SHA,
+        "browserValidationEvidenceRun": EVIDENCE_RUN,
+        "runtimePayloadsInvented": False,
+        "controlsFabricatedByAudit": False,
+    }
+
+    args.spec.write_text(json.dumps(spec, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+    if failures:
+        raise SystemExit("Current source/browser floor failed:\n- " + "\n- ".join(failures))
+
+    state = "pending newer source growth" if pending else "browser-validated"
+    print(f"Current source floor: PASS -> {game}+{nested_count}; {state}; evidence run {EVIDENCE_RUN}")
+
+
+if __name__ == "__main__":
+    main()

@@ -1,17 +1,63 @@
 #!/usr/bin/env python3
 """Late final bridge for exact-SHA Browser QA commit-status evidence."""
 from __future__ import annotations
-import argparse,json
+
+import argparse
+import json
 from pathlib import Path
 
-def main():
- p=argparse.ArgumentParser();p.add_argument('--spec',type=Path,required=True);p.add_argument('--zircon-root',type=Path,required=True);a=p.parse_args();spec=json.loads(a.spec.read_text(encoding='utf-8'));final=spec.get('finalSupplementalSourceMatrix') or {};audit=spec.get('browserQaStatusPublisherAudit') or {};fail=[]
- if final.get('passed') is not True:fail.append(f'prior final matrix missing/not PASS: {final}')
- expected={'passed':True,'trigger':'push/workflow_dispatch exact-SHA poll','branch':'origins-game-v1','branchSafeWithoutDefaultBranch':True,'statusPermissionWrite':True,'actionsPermissionRead':True,'exactHeadSha':True,'exactBrowserQaRunRequired':True,'context':'origins/zircon-browser-qa','successMapsToSuccess':True,'nonSuccessMapsToFailure':True,'timeoutMapsToFailure':True,'targetUrlIsWorkflowRun':True,'mutatesSourceContracts':False,'runtimePayloadsInvented':False,'controlsAdded':0}
- for key,value in expected.items():
-  if audit.get(key)!=value:fail.append(f'Browser QA status publisher drifted: {key}={audit.get(key)!r}, expected {value!r}')
- final['browserQaStatusPublisherPassed']=audit.get('passed') is True;final['browserQaStatusContext']=audit.get('context');final['browserQaStatusExactHeadSha']=audit.get('exactHeadSha') is True;final['browserQaStatusExactRunRequired']=audit.get('exactBrowserQaRunRequired') is True;final['browserQaStatusBranchSafe']=audit.get('branchSafeWithoutDefaultBranch') is True;final['browserQaStatusMutatesSourceContracts']=False;final['browserQaStatusControlsAdded']=0;final['passed']=final.get('passed') is True and not fail;final['failures']=list(final.get('failures') or [])+fail;spec['finalSupplementalSourceMatrix']=final
- a.spec.write_text(json.dumps(spec,indent=2,ensure_ascii=False)+'\n',encoding='utf-8')
- if fail:raise SystemExit('Final Browser QA status publisher contract failed:\n- '+'\n- '.join(fail))
- print('Final Browser QA status publisher: PASS -> branch-safe exact-SHA CI evidence readable as commit status; source floor remains pending until success')
-if __name__=='__main__':main()
+
+def main() -> None:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--spec", type=Path, required=True)
+    parser.add_argument("--zircon-root", type=Path, required=True)
+    args = parser.parse_args()
+    spec = json.loads(args.spec.read_text(encoding="utf-8"))
+    final = spec.get("finalSupplementalSourceMatrix") or {}
+    audit = spec.get("browserQaStatusPublisherAudit") or {}
+    failures: list[str] = []
+
+    if final.get("passed") is not True:
+        failures.append(f"prior final matrix missing/not PASS: {final}")
+    expected = {
+        "passed": True,
+        "trigger": "push/workflow_dispatch exact-SHA poll",
+        "branch": "origins-game-v1",
+        "branchSafeWithoutDefaultBranch": True,
+        "statusPermissionWrite": True,
+        "actionsPermissionRead": True,
+        "exactHeadSha": True,
+        "exactBrowserQaRunRequired": True,
+        "context": "origins/zircon-browser-qa",
+        "successMapsToSuccess": True,
+        "nonSuccessMapsToFailure": True,
+        "timeoutMapsToFailure": True,
+        "targetUrlIsWorkflowRun": True,
+        "mutatesSourceContracts": False,
+        "runtimePayloadsInvented": False,
+        "controlsAdded": 0,
+    }
+    for key, value in expected.items():
+        if audit.get(key) != value:
+            failures.append(f"Browser QA status publisher drifted: {key}={audit.get(key)!r}, expected {value!r}")
+
+    final.update({
+        "browserQaStatusPublisherPassed": audit.get("passed") is True,
+        "browserQaStatusContext": audit.get("context"),
+        "browserQaStatusExactHeadSha": audit.get("exactHeadSha") is True,
+        "browserQaStatusExactRunRequired": audit.get("exactBrowserQaRunRequired") is True,
+        "browserQaStatusBranchSafe": audit.get("branchSafeWithoutDefaultBranch") is True,
+        "browserQaStatusMutatesSourceContracts": False,
+        "browserQaStatusControlsAdded": 0,
+        "passed": final.get("passed") is True and not failures,
+        "failures": list(final.get("failures") or []) + failures,
+    })
+    spec["finalSupplementalSourceMatrix"] = final
+    args.spec.write_text(json.dumps(spec, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+    if failures:
+        raise SystemExit("Final Browser QA status publisher contract failed:\n- " + "\n- ".join(failures))
+    print("Final Browser QA status publisher: PASS -> exact-SHA commit status evidence; source floor promotion remains source-owned")
+
+
+if __name__ == "__main__":
+    main()
