@@ -80,7 +80,7 @@ Esos campos se muestran únicamente cuando exista binding con datos reales del j
 
 Crystal/Crystal-Monk separan el ID lógico del icono de los frames de la librería cliente.
 
-Binding confirmado en `Crystal-Monk`:
+Binding confirmado en source:
 
 - librería: `MagIcon2`
 - asset lógico: `Settings.DataPath + "MagIcon2"`
@@ -89,11 +89,11 @@ Binding confirmado en `Crystal-Monk`:
 
 El manifest documenta para cada skill el `iconId`. La fuente y la librería se resuelven por clase/globalmente, y los frames se calculan de forma determinista.
 
-### Estado del binario gráfico
+### Estado del asset gráfico
 
-Los repositorios source auditados definen la librería y todos los índices verificables, pero **no incluyen el binario cliente `MagIcon2`** con los píxeles de los iconos. No se ha generado ningún icono sustituto.
+En las fuentes accesibles auditadas se ha podido cerrar la librería y los índices verificables, pero **no se ha podido recuperar el asset cliente `MagIcon2` con los píxeles finales de los iconos**. No se ha generado ningún icono sustituto.
 
-En cuanto el binario/asset real `MagIcon2` esté disponible dentro del repositorio o del pack cliente, la extracción puede hacerse de forma determinista con los índices ya cerrados.
+En cuanto el asset real `MagIcon2` esté disponible dentro del repositorio o del pack cliente, la extracción puede hacerse de forma determinista con los índices ya cerrados.
 
 ## 5. Hallazgos de source que no deben ocultarse
 
@@ -138,7 +138,7 @@ Esta repetición viene del fork y no es un placeholder añadido por ORIGINS.
 
 ## 7. Orden de render
 
-V1 mantiene el orden canónico de las listas/enums del source, no una clasificación inventada.
+V1 conserva el orden del alcance definido para ORIGINS dentro de cada clase, manteniendo siempre los `spellId`, `iconId` y requisitos tomados del source. No se usa el orden para reinterpretar IDs ni para inventar categorías.
 
 Si posteriormente se decide ordenar visualmente por nivel requerido, el cambio debe hacerse en presentación, sin alterar IDs ni mappings.
 
@@ -173,6 +173,6 @@ El verificador exige:
 Quedan dos dependencias externas a este commit:
 
 1. **Conectar el catálogo al MagicDialog source-faithful** cuando esa reconstrucción esté añadida al repositorio ORIGINS.
-2. **Añadir/extractar el binario cliente real `MagIcon2`** para disponer de los píxeles finales de los 113 mappings verificables.
+2. **Añadir/extractar el asset cliente real `MagIcon2`** para disponer de los píxeles finales de los 113 mappings verificables.
 
 No hay ningún otro placeholder visual introducido por esta fase.
