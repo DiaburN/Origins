@@ -92,6 +92,16 @@ jobs:
 
           assert not spec['customDrawAudit']['unclassified'], spec['customDrawAudit']['unclassified']
           assert spec['overflowContractPass']['contractCount'] == 7
+          assert spec['complexActionAudit']['contractCount'] == 5
+          combo=spec['comboOptionPass']
+          assert combo['runtimeOptionsInvented'] is False
+          assert combo['deterministicOptionCount'] >= 2
+          assert combo['combosWithDeterministicOptions'] >= 1
+          nested_lfg=next(window for window in spec['nestedWindows'] if window['sourceClass']=='GroupLFGInputWindow')
+          lfg_combo=next(control for control in nested_lfg['controls'] if control['name']=='TypeComboBox')
+          assert [option['label'] for option in lfg_combo['comboOptions']] == ['PvE','PvP']
+          assert lfg_combo['comboSelectedOptionIndex'] == 0
+
           by_field={window['field']:window for window in spec['windows']}
           assert by_field['BeltBox']['root']['Size'] == 'new Size(64, 54)'
           assert by_field['MiniMapBox']['root']['Size'] == 'new Size(200, 200)'
@@ -115,6 +125,8 @@ jobs:
           print('Nested controls:',sum(len(window.get('controls',[])) for window in spec['nestedWindows']))
           print('Direct interactions:',len(interactions))
           print('Custom-draw classes:',spec['customDrawAudit']['windowCountWithManualDrawHooks'])
+          print('Complex action contracts:',spec['complexActionAudit']['contractCount'])
+          print('Deterministic combo options:',combo['deterministicOptionCount'])
           PY
 
       - name: Check source runtime syntax
