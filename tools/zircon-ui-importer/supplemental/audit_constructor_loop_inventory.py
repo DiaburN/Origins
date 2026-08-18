@@ -22,6 +22,15 @@ PROTECTED={
  'CommunicationBox':lambda w:(w.get('deterministicCommunicationReceivedRows') or {}).get('rows')==5,
  'GroupBox':lambda w:(w.get('deterministicGroupLFGRows') or {}).get('rows')==5,
  'NPCQuestListBox':lambda w:(w.get('deterministicNPCQuestRows') or {}).get('rows')==6,
+ 'ConsignmentBox':lambda w:(
+     (w.get('deterministicConsignmentComposites') or {}).get('passed') is True
+     and (w.get('deterministicConsignmentComposites') or {}).get('searchRows')==6
+     and (w.get('deterministicConsignmentComposites') or {}).get('searchRowControls')==42
+     and (w.get('deterministicConsignmentComposites') or {}).get('consignRows')==6
+     and (w.get('deterministicConsignmentComposites') or {}).get('consignRowControls')==42
+     and (w.get('deterministicConsignmentComposites') or {}).get('runtimeMarketInfoInvented') is False
+     and (w.get('deterministicConsignmentComposites') or {}).get('runtimeItemsInvented') is False
+ ),
 }
 
 def match_brace(text,o):
@@ -55,7 +64,7 @@ def main():
  p=argparse.ArgumentParser();p.add_argument('--spec',type=Path,required=True);p.add_argument('--zircon-root',type=Path,required=True);a=p.parse_args();spec=json.loads(a.spec.read_text(encoding='utf-8'))
  rows=[];unexpected=[];loop_re=re.compile(r'\b(for|foreach)\s*\(([^)]*)\)\s*\{');new_re=re.compile(r'\bnew\s+([A-Za-z_][A-Za-z0-9_]*)\b')
  for w in [*(spec.get('windows') or []),*(spec.get('nestedWindows') or [])]:
-  path=a.zircon_root/str(w.get('sourcePath') or '');name=w.get('class') or w.get('sourceClass')
+  path=a.zircon_root/str(w.get('sourcePath') or '');name=w.get('sourceClass') or w.get('class')
   if not path.exists() or not name:continue
   body=class_body(path.read_text(encoding='utf-8-sig'),name);ctor=constructor_body(body,name)
   for m in loop_re.finditer(ctor):
@@ -68,8 +77,8 @@ def main():
     except Exception:protected=False
    row={'id':w.get('id'),'field':w.get('field'),'sourceClass':name,'loopType':m.group(1),'header':header[:300],'createdTypes':controlish,'runtimeCollectionLikely':runtime,'deterministicBoundLikely':deterministic,'protectedDeterministic':protected};rows.append(row)
    if deterministic and not protected:unexpected.append(row)
- counts=Counter('runtime' if r['runtimeCollectionLikely'] else 'deterministic' if r['deterministicBoundLikely'] else 'review' for r in rows);report={'passed':not unexpected,'version':2,'loopCount':len(rows),'classificationCounts':dict(counts),'protectedDeterministicFields':sorted(PROTECTED),'unexpectedDeterministicLoops':unexpected,'sourceBackedOnly':True,'controlsFabricatedByAudit':False,'runtimePayloadsInvented':False,'rows':rows};spec['constructorLoopInventory']=report;a.spec.write_text(json.dumps(spec,indent=2,ensure_ascii=False)+'\n',encoding='utf-8')
+ counts=Counter('runtime' if r['runtimeCollectionLikely'] else 'deterministic' if r['deterministicBoundLikely'] else 'review' for r in rows);report={'passed':not unexpected,'version':2,'loopCount':len(rows),'classificationCounts':dict(counts),'protectedDeterministicFields':sorted(PROTECTED),'consignmentRowsProtectedByDeterministicComposite':True,'unexpectedDeterministicLoops':unexpected,'sourceBackedOnly':True,'controlsFabricatedByAudit':False,'runtimePayloadsInvented':False,'rows':rows};spec['constructorLoopInventory']=report;a.spec.write_text(json.dumps(spec,indent=2,ensure_ascii=False)+'\n',encoding='utf-8')
  if unexpected:
   detail='; '.join(f"{r.get('field')}:{r.get('header')} -> {','.join(r.get('createdTypes') or [])}" for r in unexpected);raise SystemExit('Uncovered deterministic constructor control loops: '+detail)
- print('Constructor control-loop inventory v2: PASS',len(rows),dict(counts),'unexpected=0')
+ print('Constructor control-loop inventory v2: PASS',len(rows),dict(counts),'unexpected=0','Consignment 6+6 source rows protected')
 if __name__=='__main__':main()
