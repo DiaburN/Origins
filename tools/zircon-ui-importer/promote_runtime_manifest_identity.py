@@ -98,7 +98,12 @@ def main() -> None:
         "augment_companion_reference.py",
     ):
         subprocess.run([sys.executable, str(here / helper), "--spec", str(args.spec)], check=True)
-    for helper in ("augment_combo_options.py", "augment_combo_enum_values.py", "augment_config_defaults.py"):
+    for helper in (
+        "augment_combo_options.py",
+        "augment_combo_enum_values.py",
+        "augment_combo_static_lists.py",
+        "augment_config_defaults.py",
+    ):
         subprocess.run([
             sys.executable,
             str(here / helper),
