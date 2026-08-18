@@ -54,7 +54,7 @@ jobs:
           by={w['field']:w for w in spec['windows']}
           game_controls=sum(len(w.get('controls',[])) for w in spec['windows'])
           nested_controls=sum(len(w.get('controls',[])) for w in spec.get('nestedWindows',[]))
-          assert game_controls >= 2053, game_controls
+          assert game_controls >= 2069, game_controls
           assert nested_controls >= 143, nested_controls
           assert by['RankingBox']['rankingSourceAudit']['passed'] is True
           assert by['RankingBox']['rankingSourceState']['sourceIndex'] == 210
@@ -71,12 +71,24 @@ jobs:
           assert guild_rows['memberRows'] == 17
           assert guild_rows['sourceControls'] == 108
           assert guild_rows['netControlsAdded'] == 107
+          guild_root=spec['guildRootHelperAudit']
+          assert guild_root['passed'] is True
+          assert guild_root['deterministicControls'] == 16
+          assert guild_root['panels'] == 6
+          assert guild_root['buttons'] == 10
+          assert guild_root['runtimeCastlePanelsInvented'] is False
+          assert guild_root['clickCreatedModalsInvented'] is False
           helpers=spec['uiCreationHelperInventory']
           assert helpers['passed'] is True
+          assert helpers['version'] == 2
           assert helpers['knownBigMapHelpersMaterialized'] is True
           assert helpers['chatOptionsAddNewTabDeferredLocal'] is True
           assert helpers['helpPagesRemainRuntimeBound'] is True
           assert helpers['magicTabsRemainRuntimeBound'] is True
+          assert helpers['guildConstructorHelpersMaterialized'] is True
+          assert helpers['guildWarRuntimeCastlePanelsRemainNeutral'] is True
+          assert helpers['eventCallbacksExcludedFromCreationClassification'] is True
+          assert helpers['staticGlobalsDoNotImplyRuntimeData'] is True
           assert helpers['controlsFabricatedByAudit'] is False
           assert helpers['runtimePayloadsInvented'] is False
           literals=spec['supplementalLiteralAssetRefPass']
