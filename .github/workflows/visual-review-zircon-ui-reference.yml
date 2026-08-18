@@ -7,6 +7,12 @@ on:
         description: Exact origins-game-v1 SHA to review (blank = current branch HEAD)
         required: false
         type: string
+  push:
+    branches: [origins-game-v1]
+    paths:
+      - ".github/workflows/visual-review-zircon-ui-reference.yml"
+      - "apps/zircon-ui-reference/**"
+      - "tools/zircon-ui-importer/**"
   workflow_run:
     workflows: ["Browser QA Zircon UI reference"]
     types: [completed]
@@ -15,11 +21,16 @@ permissions:
   actions: read
   contents: read
 
+concurrency:
+  group: zircon-ui-visual-review-${{ github.event.workflow_run.head_branch || github.ref_name }}
+  cancel-in-progress: true
+
 jobs:
   capture-visual-reference:
     if: >-
       ${{
         github.event_name == 'workflow_dispatch' ||
+        github.event_name == 'push' ||
         (github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_branch == 'origins-game-v1')
       }}
     runs-on: ubuntu-latest
@@ -34,6 +45,8 @@ jobs:
           set -euo pipefail
           if [[ "${GITHUB_EVENT_NAME}" == "workflow_run" ]]; then
             sha='${{ github.event.workflow_run.head_sha }}'
+          elif [[ "${GITHUB_EVENT_NAME}" == "push" ]]; then
+            sha="${GITHUB_SHA}"
           else
             sha='${{ inputs.source_sha }}'
             if [[ -z "$sha" ]]; then
@@ -49,18 +62,39 @@ jobs:
         with:
           ref: ${{ steps.revision.outputs.sha }}
 
-      - name: Require successful Browser QA for exact SHA
-        if: github.event_name == 'workflow_dispatch'
+      - name: Wait for successful Browser QA for exact SHA
+        if: github.event_name != 'workflow_run'
         shell: bash
         run: |
           set -euo pipefail
           sha='${{ steps.revision.outputs.sha }}'
-          payload="$(gh api "repos/${GITHUB_REPOSITORY}/actions/workflows/browser-qa-zircon-ui-reference.yml/runs?head_sha=${sha}&branch=origins-game-v1&status=completed&per_page=20")"
-          conclusion="$(python3 -c 'import json,sys; d=json.load(sys.stdin); xs=d.get("workflow_runs",[]); print(xs[0].get("conclusion","") if xs else "")' <<<"$payload")"
-          if [[ "$conclusion" != "success" ]]; then
-            echo "Exact SHA ${sha} has no successful Browser QA run; visual review evidence is not eligible yet."
-            exit 1
-          fi
+          for attempt in $(seq 1 100); do
+            payload="$(gh api "repos/${GITHUB_REPOSITORY}/actions/workflows/browser-qa-zircon-ui-reference.yml/runs?head_sha=${sha}&branch=origins-game-v1&per_page=20")"
+            status="$(python3 -c 'import json,sys; d=json.load(sys.stdin); xs=d.get("workflow_runs",[]); print(xs[0].get("status","") if xs else "")' <<<"$payload")"
+            conclusion="$(python3 -c 'import json,sys; d=json.load(sys.stdin); xs=d.get("workflow_runs",[]); print((xs[0].get("conclusion") or "") if xs else "")' <<<"$payload")"
+            run_id="$(python3 -c 'import json,sys; d=json.load(sys.stdin); xs=d.get("workflow_runs",[]); print(xs[0].get("id","") if xs else "")' <<<"$payload")"
+            if [[ -n "$run_id" && "$status" == "completed" ]]; then
+              if [[ "$conclusion" != "success" ]]; then
+                echo "Browser QA ${run_id} for ${sha} completed with ${conclusion}; visual review is ineligible."
+                exit 1
+              fi
+              echo "Browser QA ${run_id}: PASS for ${sha}"
+              exit 0
+            fi
+            echo "Waiting for Browser QA for ${sha} (${attempt}/100; run=${run_id:-none}; status=${status:-none})"
+            sleep 20
+          done
+          echo "Timed out waiting for Browser QA for ${sha}"
+          exit 1
+
+      - name: Verify triggering Browser QA exact SHA
+        if: github.event_name == 'workflow_run'
+        shell: bash
+        run: |
+          set -euo pipefail
+          [[ '${{ github.event.workflow_run.conclusion }}' == 'success' ]] || exit 1
+          [[ '${{ github.event.workflow_run.head_sha }}' == '${{ steps.revision.outputs.sha }}' ]] || exit 1
+          echo "Trigger Browser QA PASS belongs to exact reviewed SHA."
 
       - name: Download exact complete viewer artifact
         shell: bash
@@ -134,8 +168,7 @@ jobs:
               --disable-gpu \
               --hide-scrollbars \
               --window-size=1600,1000 \
-              --virtual-time-budget=6000 \
-              --screenshot=".visual/screenshots/${safe}.png" \
+              --virtual-time-budget=5000 \
               --dump-dom \
               "$url" > ".visual/doms/${safe}.html"
             python3 - "$id" ".visual/doms/${safe}.html" <<'PY'
@@ -153,6 +186,15 @@ jobs:
           if 'data-visual-review-target="true"' not in text:
               raise SystemExit(f'{wanted}: reconstructed target root not marked ready')
           PY
+            "$chrome" \
+              --headless=new \
+              --no-sandbox \
+              --disable-gpu \
+              --hide-scrollbars \
+              --window-size=1600,1000 \
+              --virtual-time-budget=5000 \
+              --screenshot=".visual/screenshots/${safe}.png" \
+              "$url" >/dev/null 2>&1
             test -s ".visual/screenshots/${safe}.png"
             echo "Captured ${index}/80 ${id}"
           done < .visual/window-ids.txt
