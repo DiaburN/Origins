@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
-"""Annotate deterministic DXListBoxItem rows already reconstructed in nested Zircon windows.
+"""Resolve deterministic DXListBoxItem rows declared in nested Zircon windows.
 
-The nested/composite parser already materializes direct constructor-created
-DXListBoxItem controls. This pass must never duplicate them. It only attaches
-source-backed label/item metadata and records that their initial visual state is
-deferred because DXComboBox starts closed.
+If the nested/composite parser already reconstructed a source DXListBoxItem, this
+pass annotates it. If it did not, the pass materializes the missing constructor
+row exactly once from source. This makes the pass idempotent across parser
+versions and prevents both omissions and duplicate rows. DXComboBox starts
+closed, so these rows remain visually deferred. No runtime payload is invented.
 """
 from __future__ import annotations
 
@@ -35,6 +36,7 @@ def main() -> None:
     spec = json.loads(args.spec.read_text(encoding="utf-8"))
     messages = (spec.get("language") or {}).get("English") or {}
     annotated: list[dict] = []
+    materialized: list[dict] = []
     failures: list[str] = []
 
     for owner in spec.get("nestedWindows") or []:
@@ -59,6 +61,7 @@ def main() -> None:
             continue
 
         source_rows: list[dict] = []
+        combo_ordinals: dict[str, int] = {}
         for initializer in list_item_initializers(body):
             parent_match = PARENT_RE.search(initializer)
             if not parent_match or parent_match.group(1) not in combos:
@@ -67,8 +70,11 @@ def main() -> None:
             if not label:
                 continue
             item_match = ITEM_RE.search(initializer)
+            combo_source = parent_match.group(1)
+            combo_ordinals[combo_source] = combo_ordinals.get(combo_source, 0) + 1
             source_rows.append({
-                "comboSourceName": parent_match.group(1),
+                "comboSourceName": combo_source,
+                "ordinal": combo_ordinals[combo_source],
                 "label": label[0],
                 "labelExpression": label[1],
                 "itemExpression": " ".join(item_match.group(1).split()) if item_match else None,
@@ -77,21 +83,69 @@ def main() -> None:
         if not source_rows:
             continue
 
+        combo_parent_names = {f"{combo.get('name')}.ListBox" for combo in combos.values()}
         existing_rows = [
             control for control in controls
             if control.get("type") == "DXListBoxItem"
-            and not control.get("sourceGenerated")
-            and not control.get("deterministicNestedComboRow")
-            and any(
-                str((control.get("properties") or {}).get("Parent") or "").endswith(f"{combo.get('name')}.ListBox")
-                for combo in combos.values()
-            )
+            and str((control.get("properties") or {}).get("Parent") or "") in combo_parent_names
         ]
-        existing_rows.sort(key=lambda control: int(control.get("sourceInitializerOffset") or 0))
+        existing_rows.sort(key=lambda control: (
+            int(control.get("sourceInitializerOffset") or 0),
+            str(control.get("name") or ""),
+        ))
+
+        if len(existing_rows) not in (0, len(source_rows)):
+            failures.append(
+                f"{class_name}: source DXListBoxItem rows={len(source_rows)} but reconstructed matching rows={len(existing_rows)}; refusing partial duplication"
+            )
+            continue
+
+        if not existing_rows:
+            additions: list[dict] = []
+            for source_row in source_rows:
+                combo = combos[source_row["comboSourceName"]]
+                name = f"{class_name}__{source_row['comboSourceName']}__ListItem{source_row['ordinal']:02d}"
+                row = {
+                    "name": name,
+                    "sourceName": "_",
+                    "sourceType": "DXListBoxItem",
+                    "type": "DXListBoxItem",
+                    "properties": {
+                        "Parent": f"{combo.get('name')}.ListBox",
+                        "DrawTexture": "true",
+                    },
+                    "sourceGenerated": True,
+                    "sourceGeneratedReason": "nested constructor DXListBoxItem omitted by base composite parser",
+                    "compositeChild": True,
+                    "compositeOwner": str(class_name),
+                    "deterministicNestedComboRow": True,
+                    "sourceDeferredByClosedCombo": True,
+                    "sourceLabel": source_row["label"],
+                    "sourceLabelExpression": source_row["labelExpression"],
+                    "sourceItemExpression": source_row["itemExpression"],
+                    "runtimePayloadInvented": False,
+                }
+                additions.append(row)
+                materialized.append({
+                    "window": owner.get("field"),
+                    "control": name,
+                    "combo": combo.get("name"),
+                    "comboSourceName": source_row["comboSourceName"],
+                    "label": source_row["label"],
+                    "itemExpression": source_row["itemExpression"],
+                })
+            controls.extend(additions)
+            owner["controls"] = controls
+            existing_rows = additions
+
+            for inventory in (spec.get("nestedWindowInventory") or {}).get("windows") or []:
+                if inventory.get("sourceClass") == class_name:
+                    inventory["controlCount"] = len(controls)
+                    break
 
         if len(existing_rows) != len(source_rows):
             failures.append(
-                f"{class_name}: direct source DXListBoxItem rows={len(source_rows)} but reconstructed existing rows={len(existing_rows)}"
+                f"{class_name}: resolved DXListBoxItem rows={len(existing_rows)} != source rows={len(source_rows)}"
             )
             continue
 
@@ -117,11 +171,12 @@ def main() -> None:
                 "comboSourceName": source_row["comboSourceName"],
                 "label": source_row["label"],
                 "itemExpression": source_row["itemExpression"],
+                "materializedByThisPass": bool(control.get("sourceGenerated")),
             })
 
     lfg = next((owner for owner in spec.get("nestedWindows") or [] if owner.get("sourceClass") == "GroupLFGInputWindow"), None)
     if lfg is None:
-        failures.append("GroupLFGInputWindow missing while annotating nested combo rows")
+        failures.append("GroupLFGInputWindow missing while resolving nested combo rows")
         lfg_rows = []
     else:
         lfg_rows = [
@@ -130,13 +185,17 @@ def main() -> None:
         ]
     labels = [str(control.get("sourceLabel") or "") for control in lfg_rows]
     if labels != ["PvE", "PvP"]:
-        failures.append(f"GroupLFG existing DXListBoxItem rows drifted: {labels}")
+        failures.append(f"GroupLFG deterministic DXListBoxItem rows drifted: {labels}")
 
     report = {
         "passed": not failures,
-        "sourceRowsAnnotated": len(annotated),
-        "controlsAdded": 0,
+        "sourceRowsResolved": len(annotated),
+        "sourceRowsAnnotated": len(annotated) - len(materialized),
+        "sourceRowsMaterialized": len(materialized),
+        "controlsAdded": len(materialized),
         "controlsRemoved": 0,
+        "idempotentNoDuplicatePolicy": True,
+        "partialExistingRowsRejected": True,
         "groupLFGSourceRows": len(lfg_rows),
         "groupLFGLabels": labels,
         "initialComboShowing": False,
@@ -148,8 +207,11 @@ def main() -> None:
     spec["nestedComboListBoxItemMaterialization"] = report
     args.spec.write_text(json.dumps(spec, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
     if failures:
-        raise SystemExit("Nested DXListBoxItem annotation failed:\n- " + "\n- ".join(failures))
-    print(f"Nested deterministic DXListBoxItem rows annotated: {len(annotated)}; controls added=0; GroupLFG={labels}")
+        raise SystemExit("Nested DXListBoxItem resolution failed:\n- " + "\n- ".join(failures))
+    print(
+        "Nested deterministic DXListBoxItem rows resolved: "
+        f"{len(annotated)}; materialized={len(materialized)}; existing={len(annotated)-len(materialized)}; GroupLFG={labels}"
+    )
 
 
 if __name__ == "__main__":
