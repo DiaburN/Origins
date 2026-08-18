@@ -87,8 +87,10 @@ if (params.get('qa') === '1') {
       }
       gameControlCount = (qaSpec.windows || []).reduce((sum, item) => sum + (item.controls || []).length, 0);
       nestedControlCount = (qaSpec.nestedWindows || []).reduce((sum, item) => sum + (item.controls || []).length, 0);
-      if (gameControlCount < 2466) failures.push({ id: 'manifest', issue: `Expanded GameScene control coverage regressed: ${gameControlCount} < 2466` });
+      if (gameControlCount < 2507) failures.push({ id: 'manifest', issue: `Expanded GameScene control coverage regressed: ${gameControlCount} < 2507` });
       if (nestedControlCount < 143) failures.push({ id: 'manifest', issue: `Nested control coverage regressed: ${nestedControlCount} < 143` });
+      if (qaSpec.finalSupplementalSourceMatrix?.passed !== true) failures.push({ id: 'manifest', issue: 'Final supplemental source matrix missing/not PASS in built artifact' });
+      if (qaSpec.finalSupplementalSourceMatrix?.minimumGameSceneControls !== 2507) failures.push({ id: 'manifest', issue: `Final source floor mismatch: ${JSON.stringify(qaSpec.finalSupplementalSourceMatrix)}` });
       if (qaSpec.deterministicSourceRowAudit?.passed !== true) failures.push({ id: 'manifest', issue: 'Deterministic source row audit missing/not PASS in built artifact' });
       if (qaSpec.guildMemberRowAudit?.passed !== true) failures.push({ id: 'manifest', issue: 'Guild member deterministic row audit missing/not PASS in built artifact' });
       if (qaSpec.guildRootHelperAudit?.passed !== true) failures.push({ id: 'manifest', issue: 'Guild root helper audit missing/not PASS in built artifact' });
@@ -97,6 +99,12 @@ if (params.get('qa') === '1') {
       if (qaSpec.consignmentCompositeAudit?.passed !== true) failures.push({ id: 'manifest', issue: 'Consignment compatibility audit missing/not PASS in built artifact' });
       if (qaSpec.consignmentDeterministicAudit?.passed !== true) failures.push({ id: 'manifest', issue: 'Consignment strict deterministic audit missing/not PASS in built artifact' });
       if (qaSpec.currencyTreeAudit?.passed !== true) failures.push({ id: 'manifest', issue: 'Currency tree audit missing/not PASS in built artifact' });
+      if (qaSpec.companionBonusRowAudit?.passed !== true) failures.push({ id: 'manifest', issue: 'Companion bonus-row audit missing/not PASS in built artifact' });
+      if (qaSpec.npcQuestListRowAudit?.passed !== true) failures.push({ id: 'manifest', issue: 'NPC quest-list row audit missing/not PASS in built artifact' });
+      if (qaSpec.helpMenuShellAudit?.passed !== true) failures.push({ id: 'manifest', issue: 'Help menu shell audit missing/not PASS in built artifact' });
+      if (qaSpec.anonymousConstructorControlAudit?.passed !== true) failures.push({ id: 'manifest', issue: 'Anonymous constructor control audit missing/not PASS in built artifact' });
+      if (qaSpec.targetTypedCustomControlAudit?.passed !== true) failures.push({ id: 'manifest', issue: 'Target-typed custom control audit missing/not PASS in built artifact' });
+      if (qaSpec.customCompositeInventory?.passed !== true) failures.push({ id: 'manifest', issue: 'Custom composite inventory missing/not PASS in built artifact' });
       if (qaSpec.directCustomCompositeInventory?.passed !== true) failures.push({ id: 'manifest', issue: 'Direct custom composite inventory missing/not PASS in built artifact' });
       if (qaSpec.uiCreationHelperInventory?.passed !== true) failures.push({ id: 'manifest', issue: 'UI creation helper inventory missing/not PASS in built artifact' });
       if (qaSpec.sourceSearchFlowAudit?.passed !== true) failures.push({ id: 'manifest', issue: 'Source search flow audit missing/not PASS in built artifact' });
@@ -135,6 +143,30 @@ if (params.get('qa') === '1') {
       const currency = qaSpec.currencyTreeAudit || {};
       if (currency.deterministicControls !== 2 || currency.runtimeHeadersInvented !== false || currency.runtimeCurrencyItemsInvented !== false || currency.runtimeCurrencyDataInvented !== false) {
         failures.push({ id: 'manifest', issue: `Currency tree deterministic matrix mismatch: ${JSON.stringify(currency)}` });
+      }
+      const companion = qaSpec.companionBonusRowAudit || {};
+      if (companion.rows !== 7 || companion.deterministicControls !== 21 || companion.targetTypedNewSource !== true || companion.runtimeBonusStatsInvented !== false || companion.runtimeBonusTextInvented !== false) {
+        failures.push({ id: 'manifest', issue: `Companion deterministic bonus matrix mismatch: ${JSON.stringify(companion)}` });
+      }
+      const npcQuest = qaSpec.npcQuestListRowAudit || {};
+      if (npcQuest.rows !== 6 || npcQuest.deterministicControls !== 18 || npcQuest.blankRowsVisibleAtConstruction !== true || npcQuest.runtimeQuestInfoInvented !== false || npcQuest.runtimeUserQuestInvented !== false || npcQuest.runtimeQuestTextInvented !== false) {
+        failures.push({ id: 'manifest', issue: `NPC quest-list deterministic matrix mismatch: ${JSON.stringify(npcQuest)}` });
+      }
+      const helpMenu = qaSpec.helpMenuShellAudit || {};
+      if (helpMenu.deterministicControls !== 2 || helpMenu.runtimeButtonsInvented !== false || helpMenu.runtimeHelpContainersInvented !== false || helpMenu.runtimeHelpTabsInvented !== false || helpMenu.runtimeHelpItemsInvented !== false || helpMenu.runtimeHelpInfoInvented !== false) {
+        failures.push({ id: 'manifest', issue: `Help menu deterministic shell mismatch: ${JSON.stringify(helpMenu)}` });
+      }
+      const anonymous = qaSpec.anonymousConstructorControlAudit || {};
+      if (anonymous.parserSyntheticSmokePassed !== true || anonymous.sourceAnonymousControls !== anonymous.manifestAnonymousControls || anonymous.tradeAnonymousGoldLabels !== 2 || anonymous.runtimePayloadsInvented !== false) {
+        failures.push({ id: 'manifest', issue: `Anonymous constructor coverage mismatch: ${JSON.stringify(anonymous)}` });
+      }
+      const targetTyped = qaSpec.targetTypedCustomControlAudit || {};
+      if (targetTyped.allResolvedCustomControlsMaterialized !== true || Number(targetTyped.resolvedCustomCreations || 0) < 7 || targetTyped.eventCallbackBodiesExcluded !== true || targetTyped.runtimePayloadsInvented !== false) {
+        failures.push({ id: 'manifest', issue: `Target-typed custom coverage mismatch: ${JSON.stringify(targetTyped)}` });
+      }
+      const custom = qaSpec.customCompositeInventory || {};
+      if (custom.version !== 3 || custom.constructorAndHelperReachability !== true || custom.eventCallbacksExcluded !== true || custom.runtimePayloadsInvented !== false) {
+        failures.push({ id: 'manifest', issue: `Custom composite inventory mismatch: ${JSON.stringify(custom)}` });
       }
       const direct = qaSpec.directCustomCompositeInventory || {};
       if (direct.allDirectCustomTypesMaterialized !== true || direct.eventCallbackBodiesExcluded !== true || direct.runtimePayloadsInvented !== false) {
