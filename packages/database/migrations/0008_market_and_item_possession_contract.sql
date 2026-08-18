@@ -79,6 +79,81 @@ CREATE TABLE economy.item_transactions (
     CHECK (transaction_type IN ('loot','npc_buy','npc_sell','direct_trade','auction_list','auction_sale','auction_cancel','mail','gm','system'))
 );
 
+-- Explicit helper used by server/UI. Note that this does NOT inspect class.
+CREATE FUNCTION content.can_character_possess_item(p_item_definition_id bigint, p_mode varchar)
+RETURNS boolean
+LANGUAGE sql
+STABLE
+AS $$
+    SELECT CASE lower(p_mode)
+        WHEN 'inventory' THEN true
+        WHEN 'loot' THEN true
+        WHEN 'storage' THEN i.can_store
+        WHEN 'trade' THEN i.can_trade
+        WHEN 'sell' THEN i.can_sell
+        WHEN 'auction' THEN i.can_auction AND i.can_trade
+        ELSE false
+    END
+    FROM content.item_definitions i
+    WHERE i.id = p_item_definition_id;
+$$;
+
+-- Listing validation is ownership/transfer based, never class based.
+CREATE FUNCTION economy.validate_market_listing()
+RETURNS trigger
+LANGUAGE plpgsql
+AS $$
+DECLARE
+    v_owner uuid;
+    v_item_definition_id bigint;
+    v_count bigint;
+    v_bound boolean;
+BEGIN
+    IF NEW.status <> 'active' THEN
+        RETURN NEW;
+    END IF;
+
+    SELECT owner_character_id, item_definition_id, count, bound
+      INTO v_owner, v_item_definition_id, v_count, v_bound
+      FROM player.item_instances
+     WHERE id = NEW.item_instance_id;
+
+    IF v_item_definition_id IS NULL THEN
+        RAISE EXCEPTION 'Unknown market item instance %', NEW.item_instance_id;
+    END IF;
+
+    IF v_owner IS DISTINCT FROM NEW.seller_character_id THEN
+        RAISE EXCEPTION 'Seller % does not own item instance %', NEW.seller_character_id, NEW.item_instance_id;
+    END IF;
+
+    IF v_bound THEN
+        RAISE EXCEPTION 'Bound item instance % cannot be auctioned', NEW.item_instance_id;
+    END IF;
+
+    IF NOT content.can_character_possess_item(v_item_definition_id, 'auction') THEN
+        RAISE EXCEPTION 'Item definition % cannot be auctioned', v_item_definition_id;
+    END IF;
+
+    IF NEW.quantity > v_count THEN
+        RAISE EXCEPTION 'Auction quantity % exceeds item count %', NEW.quantity, v_count;
+    END IF;
+
+    IF EXISTS (
+        SELECT 1 FROM player.character_item_slots s
+        WHERE s.item_instance_id = NEW.item_instance_id
+    ) THEN
+        RAISE EXCEPTION 'Item instance % must leave inventory/storage/equipment before market listing', NEW.item_instance_id;
+    END IF;
+
+    RETURN NEW;
+END;
+$$;
+
+CREATE TRIGGER market_listing_integrity_trigger
+BEFORE INSERT OR UPDATE ON economy.market_listings
+FOR EACH ROW
+EXECUTE FUNCTION economy.validate_market_listing();
+
 -- Market escrow rule: an actively listed item cannot simultaneously sit in a
 -- character slot. This is NOT a class rule; it only prevents duplication.
 CREATE FUNCTION player.validate_item_not_in_market_escrow()
@@ -102,24 +177,5 @@ CREATE TRIGGER character_item_market_escrow_trigger
 BEFORE INSERT OR UPDATE ON player.character_item_slots
 FOR EACH ROW
 EXECUTE FUNCTION player.validate_item_not_in_market_escrow();
-
--- Explicit helper used by server/UI. Note that this does NOT inspect class.
-CREATE FUNCTION content.can_character_possess_item(p_item_definition_id bigint, p_mode varchar)
-RETURNS boolean
-LANGUAGE sql
-STABLE
-AS $$
-    SELECT CASE lower(p_mode)
-        WHEN 'inventory' THEN true
-        WHEN 'loot' THEN true
-        WHEN 'storage' THEN i.can_store
-        WHEN 'trade' THEN i.can_trade
-        WHEN 'sell' THEN i.can_sell
-        WHEN 'auction' THEN i.can_auction AND i.can_trade
-        ELSE false
-    END
-    FROM content.item_definitions i
-    WHERE i.id = p_item_definition_id;
-$$;
 
 COMMIT;
