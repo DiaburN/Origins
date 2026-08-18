@@ -7,8 +7,8 @@ constructors that reuse locals such as `label` therefore expose two late cases:
 1. constructor post-assignments (for example `label.Location = ...`) are replayed
    by the canonicalizer after scalar symbols such as left/right/y/rowSpacing were
    already resolved; and
-2. anonymous controls keep source expressions such as `label.Location.X` even
-   after that source local has become `label__srcNN` in the flat manifest.
+2. scalar locals can themselves depend on the currently-active reused control,
+   for example `x += button.Size.Width + 5` before `button` is assigned again.
 
 This pass runs immediately after augment_reused_local_control_identity.py. It
 uses exact constructor offsets plus the existing deterministic scalar resolver
@@ -37,11 +37,20 @@ POST_GEOMETRY_RE = re.compile(
     r"^([A-Za-z_][A-Za-z0-9_]*)\.(Location|Size|GridSize)\s*=\s*(.+)$",
     re.S,
 )
-PREFIX = "reused-local-geometry-v1"
+PREPROCESSOR_RE = re.compile(r"(?m)^\s*#(?:region|endregion)\b[^\n]*\n?")
+PREFIX = "reused-local-geometry-v2"
 
 
 def normalise(expression: str) -> str:
     return " ".join(str(expression).strip().split())
+
+
+def clean_statement(statement: str) -> str:
+    # `split_top_level` correctly preserves constructor ordering, but a region
+    # directive can share the same segment as the following local declaration.
+    # Region directives are not executable C# and must not block deterministic
+    # local parsing (e.g. CharacterDialog's `int xOffset = 40`).
+    return strip_leading_comments(PREPROCESSOR_RE.sub("", statement)).strip()
 
 
 def repeated_groups(item: dict) -> dict[str, list[dict]]:
@@ -93,7 +102,7 @@ def main() -> None:
     spec = json.loads(args.spec.read_text(encoding="utf-8"))
     controls_before = sum(len(item.get("controls") or []) for item in [*(spec.get("windows") or []), *(spec.get("nestedWindows") or [])])
     expression_rebindings = 0
-    anonymous_rebindings = 0
+    scalar_statement_rebindings = 0
     post_geometry_assignments = 0
     post_geometry_resolved = 0
     windows_changed = 0
@@ -120,9 +129,10 @@ def main() -> None:
 
         changed_here = 0
 
-        # Rebind controls that the reused-local canonicalizer deliberately did
-        # not own (most importantly anonymous DX controls). Their exact lexical
-        # initializer offset is already emitted by the base parser.
+        # Rebind render-facing expressions at the exact initializer position.
+        # This catches ordinary references to a previously-created reused local;
+        # the scalar replay below additionally fixes references embedded inside
+        # locals such as CharacterDialog's `x += button.Size.Width + 5`.
         for control in item.get("controls") or []:
             offset = control.get("sourceInitializerOffset")
             if not isinstance(offset, int):
@@ -135,16 +145,20 @@ def main() -> None:
                 properties[property_name] = rebound
                 expression_rebindings += count
                 changed_here += count
-                if control.get("sourceAnonymous") is True:
-                    anonymous_rebindings += count
 
-        # Replay top-level constructor scalar state in exact source order. For a
-        # post-assignment targeting a reused local, resolve local deterministic
-        # symbols on a copy (so provenance remains intact), then let
-        # update_local_symbols mutate the shared y/x/etc state exactly once.
+        # Replay deterministic constructor scalar state in exact source order.
+        # Crucially, rebind the *statement before* adding it to the symbol table.
+        # Otherwise `x += button.Size.Width` stores the obsolete plain identifier
+        # and leaks it back into a later Location when `x` is substituted.
         symbols = parse_class_symbols(source)
         for position, raw_statement in statement_spans(body):
-            statement = strip_leading_comments(raw_statement)
+            statement = clean_statement(raw_statement)
+            if not statement:
+                continue
+            canonical_statement, statement_rebindings = rebind_expression(statement, position, groups)
+            scalar_statement_rebindings += statement_rebindings
+            expression_rebindings += statement_rebindings
+
             match = POST_GEOMETRY_RE.match(statement)
             if match:
                 source_name, property_name, expression = match.groups()
@@ -152,7 +166,10 @@ def main() -> None:
                 if target is not None:
                     original = normalise(expression)
                     canonical_source, source_rebindings = rebind_expression(original, position, groups)
-                    resolved = resolve_inline_geometry_side_effects(original, dict(symbols))
+                    # Resolve from the canonical source expression so any scalar
+                    # substitution that expands a prior control reference remains
+                    # resolvable by the browser layout engine.
+                    resolved = resolve_inline_geometry_side_effects(canonical_source, dict(symbols))
                     resolved, resolved_rebindings = rebind_expression(resolved, position, groups)
                     post_geometry_assignments += 1
                     expression_rebindings += source_rebindings + resolved_rebindings
@@ -173,7 +190,7 @@ def main() -> None:
                     properties[property_name] = final_value
                     changed_here += 1
 
-            update_local_symbols(statement, symbols)
+            update_local_symbols(canonical_statement, symbols)
 
         # Hard boundary: once a source local has an active canonical occurrence,
         # no render-facing property at a known lexical position may still point
@@ -205,14 +222,15 @@ def main() -> None:
 
     report = {
         "passed": not failures,
-        "version": 1,
+        "version": 2,
         "windowsChanged": windows_changed,
         "expressionRebindings": expression_rebindings,
-        "anonymousExpressionRebindings": anonymous_rebindings,
+        "scalarStatementRebindings": scalar_statement_rebindings,
         "postGeometryAssignments": post_geometry_assignments,
         "postGeometryResolved": post_geometry_resolved,
         "sourceExpressionsPreserved": True,
         "exactConstructorOffsetsUsed": True,
+        "preprocessorRegionDirectivesIgnored": True,
         "controlsAdded": 0,
         "controlsRemoved": 0,
         "runtimePayloadsInvented": False,
@@ -225,8 +243,8 @@ def main() -> None:
     if failures:
         raise SystemExit("Reused-local geometry pass failed:\n- " + "\n- ".join(failures))
     print(
-        "Reused-local geometry: PASS -> "
-        f"windows={windows_changed}, rebindings={expression_rebindings}, anonymous={anonymous_rebindings}, "
+        "Reused-local geometry v2: PASS -> "
+        f"windows={windows_changed}, rebindings={expression_rebindings}, scalar={scalar_statement_rebindings}, "
         f"post geometry={post_geometry_assignments}, resolved={post_geometry_resolved}; controls +0"
     )
 
