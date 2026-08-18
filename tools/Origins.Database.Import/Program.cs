@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Reflection;
 using System.Text.Json;
-using System.Text.Json.Serialization;
 using Library.SystemModels;
 using MirDB;
 using Origins.Database.Runtime;
@@ -25,7 +24,6 @@ var jsonOptions = new JsonSerializerOptions
     PropertyNameCaseInsensitive = true,
     WriteIndented = true
 };
-jsonOptions.Converters.Add(new JsonStringEnumConverter());
 
 if (!File.Exists(manifestPath))
 {
@@ -177,12 +175,12 @@ try
                 object? value;
                 try
                 {
-                    value = JsonSerializer.Deserialize(element.GetRawText(), property.PropertyType, jsonOptions);
+                    value = ZirconValueCodec.Decode(element, property.PropertyType);
                 }
                 catch (Exception ex)
                 {
                     throw new InvalidOperationException(
-                        $"{loaded.Entry.TypeName}[{index}].{pair.Key}: cannot deserialize into {property.PropertyType.FullName}.", ex);
+                        $"{loaded.Entry.TypeName}[{index}].{pair.Key}: cannot decode {property.PropertyType.FullName}.", ex);
                 }
 
                 property.SetValue(target, value);
