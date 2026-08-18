@@ -141,12 +141,6 @@ Dictionary<string, object?> Flatten(DBObject value)
             continue;
         }
 
-        if (propertyValue is null)
-        {
-            result[property.Name] = null;
-            continue;
-        }
-
         if (propertyValue is DBObject reference)
         {
             result[property.Name] = new Dictionary<string, object?>
@@ -165,21 +159,7 @@ Dictionary<string, object?> Flatten(DBObject value)
             continue;
         }
 
-        var propertyType = propertyValue.GetType();
-        if (propertyType.IsEnum)
-        {
-            result[property.Name] = propertyValue.ToString();
-            continue;
-        }
-
-        try
-        {
-            result[property.Name] = JsonSerializer.SerializeToElement(propertyValue, propertyType, jsonOptions);
-        }
-        catch
-        {
-            result[property.Name] = propertyValue.ToString();
-        }
+        result[property.Name] = ZirconValueCodec.Encode(propertyValue, property.PropertyType);
     }
 
     return new Dictionary<string, object?>(result);
