@@ -96,9 +96,11 @@ jobs:
           combo=spec['comboOptionPass']
           assert combo['runtimeOptionsInvented'] is False
           assert combo['deterministicOptionCount'] >= 41
-          assert combo['combosWithDeterministicOptions'] >= 3
+          assert combo['combosWithDeterministicOptions'] >= 5
           assert combo['helperBuiltOptionCount'] >= 4
           assert combo['enumBuiltOptionCount'] >= 34
+          assert combo['enumGetValuesOptionCount'] > 0
+          assert combo['enumGetValuesCombosChanged'] >= 2
 
           nested_lfg=next(window for window in spec['nestedWindows'] if window['sourceClass']=='GroupLFGInputWindow')
           lfg_combo=next(control for control in nested_lfg['controls'] if control['name']=='TypeComboBox')
@@ -126,6 +128,15 @@ jobs:
           assert dark_stone['label'] == 'Dark Stone'
           assert storage_combo['comboSelectedOptionIndex'] == 0
 
+          communication={control['name']:control for control in by_field['CommunicationBox']['controls'] if control['type']=='DXComboBox'}
+          online=communication['FriendOnlineStateBox']['comboOptions']
+          view=communication['FriendViewStatusBox']['comboOptions']
+          assert len(online) > 0
+          assert [option['label'] for option in view] == ['All', *[option['label'] for option in online]]
+          assert [option['valueExpression'] for option in view[1:]] == [option['valueExpression'] for option in online]
+          assert all(option.get('sourceBuilder','').startswith('Enum.GetValues') for option in online)
+          assert communication['FriendViewStatusBox']['comboSelectedOptionIndex'] == 0
+
           assert by_field['BeltBox']['root']['Size'] == 'new Size(64, 54)'
           assert by_field['MiniMapBox']['root']['Size'] == 'new Size(200, 200)'
           assert by_field['ChatTextBox']['root']['Size'] == 'new Size(493, 118)'
@@ -151,7 +162,8 @@ jobs:
           print('Complex action contracts:',spec['complexActionAudit']['contractCount'])
           print('Deterministic combo options:',combo['deterministicOptionCount'])
           print('Helper-built combo options:',combo['helperBuiltOptionCount'])
-          print('Enum-built combo options:',combo['enumBuiltOptionCount'])
+          print('Enum-range combo options:',combo['enumBuiltOptionCount'])
+          print('Enum.GetValues combo options:',combo['enumGetValuesOptionCount'])
           PY
 
       - name: Check source runtime syntax
