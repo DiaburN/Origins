@@ -59,8 +59,22 @@ try
     var objectMap = new Dictionary<ObjectKey, DBObject>();
     var loadedCollections = new List<LoadedCollection>();
 
-    // Pass 1: create every object with its exact original Index. No references
-    // are assigned yet, so creation order between collections does not matter.
+    var objectIndexProperty = typeof(DBObject).GetProperty(
+        "Index",
+        BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance)
+        ?? throw new InvalidOperationException("DBObject.Index property not found.");
+
+    var objectCollectionProperty = typeof(DBObject).GetProperty(
+        "Collection",
+        BindingFlags.NonPublic | BindingFlags.Instance)
+        ?? throw new InvalidOperationException("DBObject.Collection property not found.");
+
+    // Pass 1 deliberately mirrors DBCollection.Load(): instantiate each object,
+    // attach its collection (which creates DBBindingList bindings), assign the
+    // original Index, and add it directly to Binding. We DO NOT call
+    // CreateNewObject()/OnCreated(), because several Zircon system models create
+    // default child records there (QuestInfo is one example) and that would
+    // duplicate rows / shift indices during a round-trip rebuild.
     foreach (var entry in manifest.Collections)
     {
         var typeKey = BuildTypeKey(entry.AssemblyName, entry.TypeName);
@@ -81,40 +95,49 @@ try
 
         var collection = session.GetCollection(type);
         var collectionType = collection.GetType();
-        var indexProperty = collectionType.GetProperty("Index", BindingFlags.Public | BindingFlags.Instance)
+        var collectionIndexProperty = collectionType.GetProperty("Index", BindingFlags.Public | BindingFlags.Instance)
             ?? throw new InvalidOperationException($"Collection Index property not found for {entry.TypeName}.");
-        var createMethod = collectionType.GetMethod("CreateNewObject", BindingFlags.Public | BindingFlags.Instance)
-            ?? throw new InvalidOperationException($"CreateNewObject method not found for {entry.TypeName}.");
+        var bindingField = collectionType.GetField("Binding", BindingFlags.Public | BindingFlags.Instance)
+            ?? throw new InvalidOperationException($"Binding field not found for {entry.TypeName}.");
+        var binding = bindingField.GetValue(collection) as IList
+            ?? throw new InvalidOperationException($"Binding is not IList for {entry.TypeName}.");
 
         var expectedIndices = new List<int>(rows.Count);
+        var previousIndex = 0;
+
         foreach (var row in rows)
         {
             var desiredIndex = GetIndex(row);
             if (desiredIndex <= 0)
                 throw new InvalidOperationException($"{entry.TypeName}: invalid object index {desiredIndex}.");
+            if (desiredIndex <= previousIndex)
+                throw new InvalidOperationException($"{entry.TypeName}: duplicate or unordered index {desiredIndex}.");
 
-            indexProperty.SetValue(collection, desiredIndex - 1);
-            var created = (DBObject)(createMethod.Invoke(collection, null)
-                ?? throw new InvalidOperationException($"Could not create {entry.TypeName} index {desiredIndex}."));
+            var created = (DBObject)(Activator.CreateInstance(type)
+                ?? throw new InvalidOperationException($"Could not instantiate {entry.TypeName} index {desiredIndex}."));
 
-            if (created.Index != desiredIndex)
-                throw new InvalidOperationException($"{entry.TypeName}: expected index {desiredIndex}, created {created.Index}.");
+            objectIndexProperty.SetValue(created, desiredIndex);
+            objectCollectionProperty.SetValue(created, collection);
+            binding.Add(created);
 
             var key = new ObjectKey(entry.AssemblyName, entry.TypeName, desiredIndex);
             if (!objectMap.TryAdd(key, created))
                 throw new InvalidOperationException($"Duplicate snapshot object {key}.");
 
             expectedIndices.Add(desiredIndex);
+            previousIndex = desiredIndex;
         }
 
-        var currentIndex = (int)(indexProperty.GetValue(collection) ?? 0);
-        indexProperty.SetValue(collection, Math.Max(currentIndex, entry.CollectionIndex));
+        if (entry.CollectionIndex < previousIndex)
+            throw new InvalidOperationException($"{entry.TypeName}: collection index {entry.CollectionIndex} is below highest object index {previousIndex}.");
 
+        collectionIndexProperty.SetValue(collection, entry.CollectionIndex);
         loadedCollections.Add(new LoadedCollection(entry, type, rows, expectedIndices));
     }
 
-    // Pass 2: apply scalar values and DBObject references. Zircon's own
-    // OnChanged/CreateLink machinery rebuilds reverse DBBindingList associations.
+    // Pass 2: apply only properties that Zircon DBMapping can persist. DBObject
+    // references are resolved after all records exist, so forward/circular links
+    // are safe. Zircon OnChanged/CreateLink rebuilds reverse DBBindingList links.
     foreach (var loaded in loadedCollections)
     {
         foreach (var row in loaded.Rows)
@@ -128,26 +151,32 @@ try
                 if (pair.Key is "Index" or "$assembly" or "$type")
                     continue;
 
-                var property = loaded.Type.GetProperty(pair.Key, BindingFlags.Public | BindingFlags.Instance);
+                var property = loaded.Type.GetProperty(
+                    pair.Key,
+                    BindingFlags.FlattenHierarchy | BindingFlags.Public | BindingFlags.Instance | BindingFlags.GetProperty | BindingFlags.SetProperty);
+
                 if (property == null)
                     throw new InvalidOperationException($"{loaded.Entry.TypeName}.{pair.Key}: property not found in pinned Zircon model.");
 
-                if (!property.CanWrite || property.GetIndexParameters().Length != 0)
-                    continue;
-
                 if (property.GetCustomAttribute<IgnorePropertyAttribute>() != null)
-                    continue;
+                    throw new InvalidOperationException($"{loaded.Entry.TypeName}.{pair.Key}: ignored property cannot appear in a persisted snapshot.");
 
-                if (IsBindingList(property.PropertyType))
-                    continue;
+                if (!ZirconValueCodec.IsPersistedPropertyType(property.PropertyType))
+                    throw new InvalidOperationException($"{loaded.Entry.TypeName}.{pair.Key}: property type {property.PropertyType.FullName} is not persisted by Zircon DBMapping.");
 
                 var element = pair.Value;
 
                 if (element.ValueKind == JsonValueKind.Null)
                 {
-                    if (!property.PropertyType.IsValueType || Nullable.GetUnderlyingType(property.PropertyType) != null)
+                    if (typeof(DBObject).IsAssignableFrom(property.PropertyType) ||
+                        !property.PropertyType.IsValueType ||
+                        Nullable.GetUnderlyingType(property.PropertyType) != null)
+                    {
                         property.SetValue(target, null);
-                    continue;
+                        continue;
+                    }
+
+                    throw new InvalidOperationException($"{loaded.Entry.TypeName}[{index}].{pair.Key}: null is invalid for {property.PropertyType.FullName}.");
                 }
 
                 if (typeof(DBObject).IsAssignableFrom(property.PropertyType))
@@ -167,6 +196,9 @@ try
 
                     if (!objectMap.TryGetValue(refKey, out var referenced))
                         throw new InvalidOperationException($"{loaded.Entry.TypeName}[{index}].{pair.Key}: unresolved reference {refKey}.");
+
+                    if (!property.PropertyType.IsInstanceOfType(referenced))
+                        throw new InvalidOperationException($"{loaded.Entry.TypeName}[{index}].{pair.Key}: reference {refKey} is not assignable to {property.PropertyType.FullName}.");
 
                     property.SetValue(target, referenced);
                     continue;
@@ -190,8 +222,9 @@ try
 
     session.Save(commit: true);
 
-    // Reopen the written database to prove the file itself can be consumed by
-    // the pinned Zircon mapping and that no indices/collection counts drifted.
+    // Reopen the physical file through the pinned Zircon Session. This invokes
+    // normal OnLoaded() hooks and proves the generated DB is consumable by the
+    // real runtime, not merely by our in-memory representation.
     var verifySession = ZirconDatabaseRuntime.OpenSystemWriter(outputRoot, backupRoot);
     var preflight = ZirconDatabasePreflight.Validate(verifySession);
     var validationErrors = new List<string>(preflight.Errors);
@@ -262,11 +295,6 @@ int GetIndex(Dictionary<string, JsonElement> row)
         throw new InvalidOperationException("Snapshot row is missing Index.");
 
     return indexElement.GetInt32();
-}
-
-bool IsBindingList(Type type)
-{
-    return type.IsGenericType && type.GetGenericTypeDefinition() == typeof(DBBindingList<>);
 }
 
 string TypeKeyFromType(Type type) => BuildTypeKey(type.Assembly.GetName().Name ?? string.Empty, type.FullName ?? type.Name);
