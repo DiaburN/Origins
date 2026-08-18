@@ -55,7 +55,15 @@ public static class ZirconDatabaseRuntime
         string backupRoot,
         int backupDelayMinutes)
     {
-        var session = new Session(mode, databaseRoot, backupRoot)
+        // Current Zircon Session builds paths with string concatenation
+        // (Root + "System.db" / Root + "Users.db"). Always pass an absolute
+        // directory root ending in a separator. Resolving relative paths here,
+        // before Session sees them, also makes CLI tools relative to their
+        // working directory instead of AppDomain.CurrentDomain.BaseDirectory.
+        var normalizedDatabaseRoot = NormalizeDirectoryRoot(databaseRoot);
+        var normalizedBackupRoot = NormalizeDirectoryRoot(backupRoot);
+
+        var session = new Session(mode, normalizedDatabaseRoot, normalizedBackupRoot)
         {
             BackUpDelay = backupDelayMinutes,
         };
@@ -66,5 +74,18 @@ public static class ZirconDatabaseRuntime
             typeof(AccountInfo).Assembly);
 
         return session;
+    }
+
+    private static string NormalizeDirectoryRoot(string root)
+    {
+        if (string.IsNullOrWhiteSpace(root))
+            throw new ArgumentException("Database directory root cannot be empty.", nameof(root));
+
+        var fullPath = Path.GetFullPath(root);
+
+        if (!Path.EndsInDirectorySeparator(fullPath))
+            fullPath += Path.DirectorySeparatorChar;
+
+        return fullPath;
     }
 }
