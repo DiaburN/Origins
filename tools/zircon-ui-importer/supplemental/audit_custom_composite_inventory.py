@@ -3,9 +3,10 @@
 
 `build_ui_source_spec.object_initializers()` intentionally parses `new DX*`.
 Zircon view files also use custom controls derived from DXControl, frequently in
-fixed arrays. This audit walks constructor-reachable custom composite types,
-records their source/materialisation state, and strictly protects all families
-already expanded by supplemental source passes. It never creates UI itself.
+fixed arrays or constructor-called helper methods. This audit walks both direct
+constructor code and immediate constructor/helper call graphs, records custom
+composite materialisation, and strictly protects all families already expanded
+by supplemental source passes. It never creates UI itself.
 """
 from __future__ import annotations
 
@@ -15,7 +16,13 @@ import re
 from collections import defaultdict, deque
 from pathlib import Path
 
-from audit_ui_creation_helper_inventory import class_body, constructor_body, strip_event_lambdas
+from audit_ui_creation_helper_inventory import (
+    class_body,
+    constructor_body,
+    constructor_reachability,
+    methods,
+    strip_event_lambdas,
+)
 
 
 CLASS_RE = re.compile(
@@ -25,10 +32,9 @@ CLASS_RE = re.compile(
 NEW_RE = re.compile(r"\bnew\s+([A-Za-z_][A-Za-z0-9_]*)\b")
 ARRAY_RE = re.compile(r"\bnew\s+([A-Za-z_][A-Za-z0-9_]*)\s*\[([^\]]+)\]")
 
-# These are source-fixed families already proven/materialised in this branch.
-# `minimumEvidence` is deliberately evidence-count based: older row augmenters
-# did not stamp sourceType on row roots, but their sourceGenerated provenance is
-# still strict and audited separately.
+# Source-fixed families already expanded/audited elsewhere. Older deterministic
+# row passes did not stamp sourceType on roots, so positive provenance evidence
+# is accepted here while their dedicated auditors continue enforcing exact rows.
 KNOWN = {
     ("RankingBox", "RankingLine"): 12,
     ("DungeonFinderBox", "DungeonRow"): 9,
@@ -61,6 +67,25 @@ def derives_dx(name: str, bases: dict[str, str]) -> bool:
             return True
         current = base
     return False
+
+
+def creation_chunk(source_text: str, class_name: str) -> tuple[str, list[str]]:
+    """Return constructor code plus helpers executed immediately by it.
+
+    Event-lambda bodies are masked by the shared helper inventory logic, so a
+    modal created by MouseClick is never promoted to constructor structure.
+    """
+    body = class_body(source_text, class_name)
+    ctor = constructor_body(body, class_name)
+    if not ctor:
+        return "", []
+    method_map = methods(body)
+    reach = constructor_reachability(ctor, method_map)
+    chunks = [strip_event_lambdas(ctor)]
+    for helper in sorted(reach, key=lambda name: (reach[name], name)):
+        for method_body in method_map.get(helper, []):
+            chunks.append(strip_event_lambdas(method_body))
+    return "\n".join(chunks), sorted(reach, key=lambda name: (reach[name], name))
 
 
 def runtime_markers(chunk: str) -> list[str]:
@@ -99,43 +124,42 @@ def materialisation(window: dict, type_name: str) -> dict:
 def reachable_custom_types(source_text: str, root_class: str) -> tuple[list[dict], dict[str, str]]:
     bases = class_bases(source_text)
     dx_custom = {name for name in bases if not name.startswith("DX") and derives_dx(name, bases)}
-    root_body = class_body(source_text, root_class)
-    root_ctor = constructor_body(root_body, root_class)
-    if not root_ctor:
+    root_chunk, root_helpers = creation_chunk(source_text, root_class)
+    if not root_chunk:
         return [], bases
 
     rows: list[dict] = []
-    queue = deque([(root_class, strip_event_lambdas(root_ctor), 0, None)])
-    visited: set[tuple[str, int | str | None]] = set()
+    queue = deque([(root_class, root_chunk, 0, None, root_helpers)])
+    visited: set[str] = set()
 
     while queue:
-        owner, ctor, depth, parent_type = queue.popleft()
-        key = (owner, depth if depth == 0 else parent_type)
-        if key in visited:
+        owner, chunk, depth, parent_type, helpers = queue.popleft()
+        if owner in visited:
             continue
-        visited.add(key)
+        visited.add(owner)
+
         arrays = defaultdict(list)
-        for match in ARRAY_RE.finditer(ctor):
+        for match in ARRAY_RE.finditer(chunk):
             arrays[match.group(1)].append(" ".join(match.group(2).split()))
-        created = [name for name in NEW_RE.findall(ctor) if name in dx_custom]
+        created = [name for name in NEW_RE.findall(chunk) if name in dx_custom]
         for type_name in sorted(set(created)):
-            body = class_body(source_text, type_name)
-            child_ctor = constructor_body(body, type_name)
-            structural = strip_event_lambdas(child_ctor) if child_ctor else ""
+            child_chunk, child_helpers = creation_chunk(source_text, type_name)
             row = {
                 "owner": owner,
                 "type": type_name,
                 "constructorDepth": depth + 1,
                 "parentComposite": parent_type,
-                "arrayExpressions": arrays.get(type_name, []),
+                "arrayExpressions": sorted(set(arrays.get(type_name, []))),
                 "newOccurrences": created.count(type_name),
-                "constructorRuntimeMarkers": runtime_markers(structural),
+                "ownerImmediateHelpers": helpers,
+                "compositeImmediateHelpers": child_helpers,
+                "constructorRuntimeMarkers": runtime_markers(child_chunk),
                 "customComposite": True,
                 "sourceBackedOnly": True,
             }
             rows.append(row)
-            if child_ctor:
-                queue.append((type_name, structural, depth + 1, type_name))
+            if child_chunk and type_name not in visited:
+                queue.append((type_name, child_chunk, depth + 1, type_name, child_helpers))
     return rows, bases
 
 
@@ -179,11 +203,8 @@ def main() -> None:
         evidence = materialisation(window, type_name)
         source_entries = [row for row in report_rows if row["field"] == field and row["type"] == type_name]
         if not source_entries:
-            failures.append(f"{field}.{type_name} no longer constructor-reachable from current Zircon source")
+            failures.append(f"{field}.{type_name} no longer constructor/helper-reachable from current Zircon source")
             continue
-        # Exact root-instance counts are available where sourceType is stamped.
-        # Older deterministic-row passes use provenance; those have their own
-        # exact row-count auditors and only need positive evidence here.
         typed_count = evidence["sourceTypeInstances"]
         provenance_count = evidence["provenanceControls"]
         if typed_count:
@@ -198,8 +219,9 @@ def main() -> None:
             **evidence,
         })
 
-    # Surface every constructor-reachable non-DX composite not yet in the strict
-    # matrix. This is an explicit review queue, not permission to invent UI.
+    # Every unprotected constructor/helper-reachable custom composite is emitted
+    # as a review queue. This is an explicit completeness backlog, never a basis
+    # for fabricating runtime instances.
     review = [
         {
             "field": row["field"],
@@ -216,7 +238,10 @@ def main() -> None:
 
     report = {
         "passed": not failures,
+        "version": 2,
         "parserBoundary": "base object_initializers parses new DX*; custom DX-derived composites require explicit expansion/audit",
+        "constructorAndHelperReachability": True,
+        "eventCallbacksExcluded": True,
         "constructorReachableCompositeOccurrences": len(report_rows),
         "protectedFamilyCount": len(KNOWN),
         "protectedFamilies": protected,
@@ -232,7 +257,7 @@ def main() -> None:
     if failures:
         raise SystemExit("Custom composite inventory failed:\n- " + "\n- ".join(failures))
     print(
-        "Custom composite inventory: PASS -> "
+        "Custom composite inventory v2: PASS -> "
         f"protected={len(KNOWN)} source-occurrences={len(report_rows)} review={len(review)}"
     )
 
