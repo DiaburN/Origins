@@ -87,7 +87,7 @@ if (params.get('qa') === '1') {
       }
       gameControlCount = (qaSpec.windows || []).reduce((sum, item) => sum + (item.controls || []).length, 0);
       nestedControlCount = (qaSpec.nestedWindows || []).reduce((sum, item) => sum + (item.controls || []).length, 0);
-      if (gameControlCount < 2464) failures.push({ id: 'manifest', issue: `Expanded GameScene control coverage regressed: ${gameControlCount} < 2464` });
+      if (gameControlCount < 2466) failures.push({ id: 'manifest', issue: `Expanded GameScene control coverage regressed: ${gameControlCount} < 2466` });
       if (nestedControlCount < 143) failures.push({ id: 'manifest', issue: `Nested control coverage regressed: ${nestedControlCount} < 143` });
       if (qaSpec.deterministicSourceRowAudit?.passed !== true) failures.push({ id: 'manifest', issue: 'Deterministic source row audit missing/not PASS in built artifact' });
       if (qaSpec.guildMemberRowAudit?.passed !== true) failures.push({ id: 'manifest', issue: 'Guild member deterministic row audit missing/not PASS in built artifact' });
@@ -96,6 +96,8 @@ if (params.get('qa') === '1') {
       if (qaSpec.communicationReceivedRowAudit?.passed !== true) failures.push({ id: 'manifest', issue: 'Communication received-row audit missing/not PASS in built artifact' });
       if (qaSpec.consignmentCompositeAudit?.passed !== true) failures.push({ id: 'manifest', issue: 'Consignment compatibility audit missing/not PASS in built artifact' });
       if (qaSpec.consignmentDeterministicAudit?.passed !== true) failures.push({ id: 'manifest', issue: 'Consignment strict deterministic audit missing/not PASS in built artifact' });
+      if (qaSpec.currencyTreeAudit?.passed !== true) failures.push({ id: 'manifest', issue: 'Currency tree audit missing/not PASS in built artifact' });
+      if (qaSpec.directCustomCompositeInventory?.passed !== true) failures.push({ id: 'manifest', issue: 'Direct custom composite inventory missing/not PASS in built artifact' });
       if (qaSpec.uiCreationHelperInventory?.passed !== true) failures.push({ id: 'manifest', issue: 'UI creation helper inventory missing/not PASS in built artifact' });
       if (qaSpec.sourceSearchFlowAudit?.passed !== true) failures.push({ id: 'manifest', issue: 'Source search flow audit missing/not PASS in built artifact' });
       const rowAudit = qaSpec.deterministicSourceRowAudit || {};
@@ -129,6 +131,14 @@ if (params.get('qa') === '1') {
       const groupLfg = qaSpec.windows?.find(item => item.field === 'GroupBox')?.groupLFGRowAudit || {};
       if (groupLfg.passed !== true || groupLfg.rows !== 5 || groupLfg.deterministicControls !== 20 || groupLfg.runtimeLfgInvented !== false) {
         failures.push({ id: 'manifest', issue: `Group LFG deterministic row matrix mismatch: ${JSON.stringify(groupLfg)}` });
+      }
+      const currency = qaSpec.currencyTreeAudit || {};
+      if (currency.deterministicControls !== 2 || currency.runtimeHeadersInvented !== false || currency.runtimeCurrencyItemsInvented !== false || currency.runtimeCurrencyDataInvented !== false) {
+        failures.push({ id: 'manifest', issue: `Currency tree deterministic matrix mismatch: ${JSON.stringify(currency)}` });
+      }
+      const direct = qaSpec.directCustomCompositeInventory || {};
+      if (direct.allDirectCustomTypesMaterialized !== true || direct.eventCallbackBodiesExcluded !== true || direct.runtimePayloadsInvented !== false) {
+        failures.push({ id: 'manifest', issue: `Direct custom composite coverage mismatch: ${JSON.stringify(direct)}` });
       }
       const helperAudit = qaSpec.uiCreationHelperInventory || {};
       if (helperAudit.version !== 2 || helperAudit.chatOptionsAddNewTabDeferredLocal !== true || helperAudit.helpPagesRemainRuntimeBound !== true || helperAudit.magicTabsRemainRuntimeBound !== true || helperAudit.knownBigMapHelpersMaterialized !== true || helperAudit.guildConstructorHelpersMaterialized !== true || helperAudit.guildWarRuntimeCastlePanelsRemainNeutral !== true || helperAudit.eventCallbacksExcludedFromCreationClassification !== true || helperAudit.staticGlobalsDoNotImplyRuntimeData !== true) {
