@@ -10,6 +10,7 @@ on:
       - 'tools/Origins.Database.Upgrade/**'
       - 'tools/Origins.Database.Export/**'
       - 'tools/Origins.Database.Import/**'
+      - 'tools/Origins.Database.ApplyOverlay/**'
       - 'database/**'
       - 'scripts/bootstrap-zircon.*'
       - 'scripts/fetch-zircon-system-db.*'
@@ -22,6 +23,7 @@ on:
       - 'tools/Origins.Database.Upgrade/**'
       - 'tools/Origins.Database.Export/**'
       - 'tools/Origins.Database.Import/**'
+      - 'tools/Origins.Database.ApplyOverlay/**'
       - 'database/**'
       - 'scripts/bootstrap-zircon.*'
       - 'scripts/fetch-zircon-system-db.*'
@@ -62,6 +64,9 @@ jobs:
       - name: Build database importer
         run: dotnet build tools/Origins.Database.Import/Origins.Database.Import.csproj --configuration Release
 
+      - name: Build overlay tool
+        run: dotnet build tools/Origins.Database.ApplyOverlay/Origins.Database.ApplyOverlay.csproj --configuration Release
+
   migrate-and-roundtrip-system-db:
     runs-on: ubuntu-latest
     steps:
@@ -92,52 +97,59 @@ jobs:
         run: dotnet run --project tools/Origins.Database.Verify/Origins.Database.Verify.csproj --configuration Release -- ./Database2026 ./Backup2026
 
       - name: Export every Zircon system collection to JSON
-        run: dotnet run --project tools/Origins.Database.Export/Origins.Database.Export.csproj --configuration Release -- ./Database2026 ./Snapshot2026 ./Backup2026
+        run: dotnet run --project tools/Origins.Database.Export/Origins.Database.Export.csproj --configuration Release -- ./Database2026 ./SnapshotBase ./Backup2026
 
-      - name: Rebuild System.db from JSON snapshot
-        run: dotnet run --project tools/Origins.Database.Import/Origins.Database.Import.csproj --configuration Release -- ./Snapshot2026 ./DatabaseRoundTrip ./BackupRoundTrip
+      - name: Apply ORIGINS overlays
+        run: dotnet run --project tools/Origins.Database.ApplyOverlay/Origins.Database.ApplyOverlay.csproj --configuration Release -- ./SnapshotBase ./database/overlays ./SnapshotOrigins
 
-      - name: Verify reconstructed database
-        run: dotnet run --project tools/Origins.Database.Verify/Origins.Database.Verify.csproj --configuration Release -- ./DatabaseRoundTrip ./BackupRoundTrip
+      - name: Rebuild ORIGINS System.db from overlayed JSON snapshot
+        run: dotnet run --project tools/Origins.Database.Import/Origins.Database.Import.csproj --configuration Release -- ./SnapshotOrigins ./DatabaseOrigins ./BackupOrigins
 
-      - name: Publish migration report artifact
+      - name: Verify ORIGINS reconstructed database
+        run: dotnet run --project tools/Origins.Database.Verify/Origins.Database.Verify.csproj --configuration Release -- ./DatabaseOrigins ./BackupOrigins
+
+      - name: Publish reports
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: zircon-system-db-migration-report
+          name: zircon-system-db-reports
           path: |
             Database2026/migration-report.json
-            DatabaseRoundTrip/import-report.json
+            SnapshotOrigins/overlay-report.json
+            DatabaseOrigins/import-report.json
           if-no-files-found: warn
 
-      - name: Publish editable system snapshot artifact
+      - name: Publish editable snapshots
         if: success()
         uses: actions/upload-artifact@v4
         with:
-          name: origins-zircon-system-snapshot
-          path: Snapshot2026/
+          name: origins-zircon-system-snapshots
+          path: |
+            SnapshotBase/
+            SnapshotOrigins/
           if-no-files-found: error
 
-      - name: Publish upgraded and reconstructed System.db artifacts
+      - name: Publish upgraded and ORIGINS System.db files
         if: success()
         uses: actions/upload-artifact@v4
         with:
           name: origins-zircon-system-db-2026
           path: |
             Database2026/System.db
-            DatabaseRoundTrip/System.db
+            DatabaseOrigins/System.db
           if-no-files-found: error
 
-      - name: Publish validated snapshot to generated branch
+      - name: Publish validated base snapshot to generated branch
         if: success() && github.event_name != 'pull_request'
         shell: bash
         run: |
           set -euo pipefail
           rm -rf database/generated/zircon-system
           mkdir -p database/generated/zircon-system
-          cp -a Snapshot2026/. database/generated/zircon-system/
+          cp -a SnapshotBase/. database/generated/zircon-system/
           cp Database2026/migration-report.json database/generated/zircon-system/migration-report.json
-          cp DatabaseRoundTrip/import-report.json database/generated/zircon-system/import-report.json
+          cp DatabaseOrigins/import-report.json database/generated/zircon-system/import-report.json
+          cp SnapshotOrigins/overlay-report.json database/generated/zircon-system/overlay-report.json
 
           git config user.name "ORIGINS Database Bot"
           git config user.email "actions@users.noreply.github.com"
