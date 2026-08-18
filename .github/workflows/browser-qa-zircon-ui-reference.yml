@@ -141,6 +141,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          mkdir -p .qa
           if [[ ! -f .qa/chrome-path ]]; then
             echo '{"status":"fail","failures":["Chrome path missing after main Browser QA"]}' > .qa/chat-options-browser-qa-report.json
             exit 0
