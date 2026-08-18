@@ -87,6 +87,7 @@ def main() -> None:
     )
 
     here = Path(__file__).resolve().parent
+    zircon_root = here.parents[1] / ".source" / "Zircon"
     for helper in (
         "augment_constructor_final_states.py",
         "augment_group_health_reference.py",
@@ -98,9 +99,21 @@ def main() -> None:
         subprocess.run([sys.executable, str(here / helper), "--spec", str(args.spec)], check=True)
     subprocess.run([
         sys.executable,
+        str(here / "augment_combo_options.py"),
+        "--spec", str(args.spec),
+        "--zircon-root", str(zircon_root),
+    ], check=True)
+    subprocess.run([
+        sys.executable,
+        str(here / "audit_complex_action_contracts.py"),
+        "--spec", str(args.spec),
+        "--zircon-root", str(zircon_root),
+    ], check=True)
+    subprocess.run([
+        sys.executable,
         str(here / "audit_custom_draw_contracts.py"),
         "--spec", str(args.spec),
-        "--zircon-root", str(here.parents[1] / ".source" / "Zircon"),
+        "--zircon-root", str(zircon_root),
         "--strict",
     ], check=True)
     subprocess.run(
