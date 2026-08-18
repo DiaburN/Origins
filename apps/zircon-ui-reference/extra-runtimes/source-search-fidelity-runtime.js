@@ -18,8 +18,9 @@ function installRanking(root,item){
   const submit=()=>{const text=String(input?.textContent||'').trim();if(!text)return;markPending(root,'C.RankSearch',{name:text});root.dataset.rankingRuntimeResults='not-fabricated'};
   input?.addEventListener('origins:source-text-enter',submit);button?.addEventListener('click',submit);
   const classBox=elementByName(root,item,'RequiredClassBox');const online=elementByName(root,item,'OnlineOnlyBox');
-  classBox?.addEventListener('origins:source-combo-selected',()=>{root.dataset.rankingFilterChanged='true';root.dataset.rankingRuntimeResults='not-fabricated';hideGeneratedRows(root,item,['RankingLineSource'])});
-  online?.addEventListener('change',()=>{root.dataset.rankingFilterChanged='true';root.dataset.rankingRuntimeResults='not-fabricated';hideGeneratedRows(root,item,['RankingLineSource'])});
+  const filterChanged=()=>{root.dataset.rankingFilterChanged='true';root.dataset.rankingRuntimeResults='not-fabricated';hideGeneratedRows(root,item,['RankingLineSource'])};
+  classBox?.addEventListener('origins:source-combo-selected',filterChanged);
+  online?.addEventListener('click',()=>queueMicrotask(filterChanged));
 }
 function installDungeon(root,item){
   if(root.dataset.sourceDungeonSearchRuntime==='true')return;root.dataset.sourceDungeonSearchRuntime='true';root.dataset.dungeonRuntimeCatalog='Globals.InstanceInfoList.Binding required';
