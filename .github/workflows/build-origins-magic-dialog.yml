@@ -1,0 +1,146 @@
+name: Build ORIGINS MagicDialog
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [feature/origins-mobile-magic-dialog-v2]
+    paths:
+      - ".github/workflows/build-origins-magic-dialog.yml"
+      - "tools/crystal-magic-importer/**"
+      - "apps/origins-magic-dialog-reference/**"
+  pull_request:
+    branches: [origins-game-v1]
+    paths:
+      - ".github/workflows/build-origins-magic-dialog.yml"
+      - "tools/crystal-magic-importer/**"
+      - "apps/origins-magic-dialog-reference/**"
+
+permissions:
+  contents: read
+
+jobs:
+  build-magic-dialog:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      ZIRCON_SHA: cbf1aa919083bc13fc3f23f93772a8ab8370632d
+      CRYSTAL_SHA: 0e315fe327192afe52c3d7357ddd1f5b7e26c5b8
+      MONK_SHA: 381e589e3d7ee736cdf0583c8315c0d144ab058f
+    steps:
+      - name: Checkout ORIGINS
+        uses: actions/checkout@v4
+
+      - name: Install image dependency
+        run: python3 -m pip install --user Pillow
+
+      - name: Prepare source and build directories
+        run: |
+          set -euo pipefail
+          rm -rf .source/magic .build/magic-dialog
+          mkdir -p .source/magic .build/magic-dialog/assets/Interface .build/magic-dialog/assets/CrystalMagIcon2 .build/magic-dialog/data/magic
+
+      - name: Download exact public Zircon and Crystal artwork
+        shell: bash
+        run: |
+          set -euo pipefail
+          UA="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 Chrome/126 Safari/537.36"
+          ZBASE="https://files.lomcn.co.uk/resources/mir3/zircon/patch"
+          CBASE="https://files.lomcn.co.uk/resources/mir2/crystal/patch/Data"
+
+          curl -fL --retry 5 --retry-delay 3 -A "$UA" \
+            "$ZBASE/Data-Interface.Zl.gz" -o .source/magic/Interface.Zl.gz
+          gzip -dc .source/magic/Interface.Zl.gz > .source/magic/Interface.Zl
+
+          curl -fL --retry 5 --retry-delay 3 -A "$UA" \
+            "$CBASE/MagIcon2.Lib" -o .source/magic/MagIcon2.Lib
+
+          test -s .source/magic/Interface.Zl
+          test -s .source/magic/MagIcon2.Lib
+          ls -lh .source/magic/Interface.Zl .source/magic/MagIcon2.Lib
+
+      - name: Download pinned source-of-truth code
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl -fL --retry 5 "https://raw.githubusercontent.com/Suprcode/Crystal/${CRYSTAL_SHA}/Shared/Enums.cs" -o .source/magic/Crystal.Enums.cs
+          curl -fL --retry 5 "https://raw.githubusercontent.com/Suprcode/Crystal/${CRYSTAL_SHA}/Server/MirEnvir/Envir.cs" -o .source/magic/Crystal.Envir.cs
+          curl -fL --retry 5 "https://raw.githubusercontent.com/JevLOMCN/Crystal-Monk/${MONK_SHA}/Common.cs" -o .source/magic/Monk.Common.cs
+          curl -fL --retry 5 "https://raw.githubusercontent.com/JevLOMCN/Crystal-Monk/${MONK_SHA}/Server/MirEnvir/Envir.cs" -o .source/magic/Monk.Envir.cs
+          curl -fL --retry 5 "https://raw.githubusercontent.com/Suprcode/Zircon/${ZIRCON_SHA}/Client/Scenes/Views/MagicDialog.cs" -o .source/magic/Zircon.MagicDialog.cs
+          grep -Fq "public sealed class MagicDialog" .source/magic/Zircon.MagicDialog.cs
+          grep -Fq "LibraryFile.MagicIcon" .source/magic/Zircon.MagicDialog.cs
+
+      - name: Generate canonical 114-spell catalog from source
+        run: |
+          set -euo pipefail
+          python3 tools/crystal-magic-importer/build_magic_catalog.py \
+            --crystal-enums .source/magic/Crystal.Enums.cs \
+            --crystal-envir .source/magic/Crystal.Envir.cs \
+            --monk-common .source/magic/Monk.Common.cs \
+            --monk-envir .source/magic/Monk.Envir.cs \
+            --zircon-sha "$ZIRCON_SHA" \
+            --crystal-sha "$CRYSTAL_SHA" \
+            --monk-sha "$MONK_SHA" \
+            --out .build/magic-dialog/data/magic/magic-catalog.json
+          python3 tools/crystal-magic-importer/verify_magic_catalog.py \
+            --catalog .build/magic-dialog/data/magic/magic-catalog.json
+
+      - name: Extract exact Zircon MagicDialog artwork
+        run: |
+          set -euo pipefail
+          python3 tools/zircon-ui-importer/extract_zl_assets.py \
+            .source/magic/Interface.Zl \
+            .build/magic-dialog/assets/Interface \
+            --ids "0-18,53-62,160-165"
+          for ID in 00000 00001 00002 00003 00004 00005 00011 00012 00015 00053 00054 00055 00056 00057 00058 00060 00061 00062 00160 00161 00162 00163 00164 00165; do
+            test -s ".build/magic-dialog/assets/Interface/${ID}.png"
+          done
+
+      - name: Extract every source-backed Crystal skill icon
+        run: |
+          set -euo pipefail
+          python3 tools/crystal-magic-importer/extract_magicon2.py \
+            --lib .source/magic/MagIcon2.Lib \
+            --catalog .build/magic-dialog/data/magic/magic-catalog.json \
+            --out .build/magic-dialog/assets/CrystalMagIcon2
+          python3 tools/crystal-magic-importer/verify_magic_catalog.py \
+            --catalog .build/magic-dialog/data/magic/magic-catalog.json \
+            --icons .build/magic-dialog/assets/CrystalMagIcon2
+
+      - name: Assemble navigable MagicDialog reference
+        run: |
+          set -euo pipefail
+          cp apps/origins-magic-dialog-reference/index.html .build/magic-dialog/index.html
+          cp apps/origins-magic-dialog-reference/magic-dialog.css .build/magic-dialog/magic-dialog.css
+          cp apps/origins-magic-dialog-reference/magic-dialog.js .build/magic-dialog/magic-dialog.js
+          node --check .build/magic-dialog/magic-dialog.js
+          test -s .build/magic-dialog/index.html
+          test -s .build/magic-dialog/data/magic/magic-catalog.json
+          test -s .build/magic-dialog/assets/CrystalMagIcon2/manifest.json
+
+      - name: Final source-fidelity assertions
+        run: |
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          root=Path('.build/magic-dialog')
+          data=json.loads((root/'data/magic/magic-catalog.json').read_text())
+          assert data['uiContract']['size']==[419,511]
+          assert data['uiContract']['body']['index']==164
+          assert data['uiContract']['cell']['size']==[369,54]
+          assert data['uiContract']['cell']['background']['index']==165
+          assert data['uiContract']['scroll']=={'library':'Interface','thumb':60,'up':61,'down':62}
+          assert data['iconContract']['library']=='MagIcon2.Lib'
+          assert data['runtimeFields']==['currentMagicLevel','currentExperience','keybind','cooldown','playerUnlockState']
+          incomplete=[f"{klass}.{spell['spell']}" for klass,c in data['classes'].items() for spell in c['spells'] if not spell['sourceImplemented']]
+          assert incomplete==['Wizard.FastMove'], incomplete
+          print('FINAL MAGIC DIALOG CONTRACT: PASS')
+          PY
+
+      - name: Upload complete reference
+        uses: actions/upload-artifact@v4
+        with:
+          name: origins-magic-dialog-reference
+          path: .build/magic-dialog
+          if-no-files-found: error
+          retention-days: 14
