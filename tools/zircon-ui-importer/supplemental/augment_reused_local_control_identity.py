@@ -4,9 +4,11 @@
 Zircon constructors often reuse locals such as `panel`, `label` and `icon`.
 The flat parser preserves every initializer, but a repeated local name is not a
 stable manifest identity and later Parent/Tag/geometry expressions can bind to
-the wrong occurrence. This pass gives only repeated locals a stable `__srcNN`
-identity and rebinds source expressions/post-assignments to the occurrence that
-was active at that exact constructor position. It creates no controls.
+the wrong occurrence. This pass gives only true repeated named locals a stable
+`__srcNN` identity and rebinds source expressions/post-assignments to the
+occurrence active at that exact constructor position. C# discard assignments
+(`_ = new DX...`) are creations, not reusable variables, and are deliberately
+excluded. The pass creates/removes no controls.
 """
 from __future__ import annotations
 
@@ -30,6 +32,7 @@ POST_RE = re.compile(
 )
 POST_PROPS = {"Location", "Size", "Index", "Visible", "LibraryFile", "Opacity", "ButtonType", "Checked"}
 PREFIX = "reused-local-identity-v1"
+DISCARD_NAME = "_"
 
 
 def initializer_occurrences(body: str) -> list[dict]:
@@ -59,7 +62,7 @@ def initializer_occurrences(body: str) -> list[dict]:
         ordinals[name] += 1
         row["ordinal"] = ordinals[name]
         row["count"] = counts[name]
-        row["canonicalName"] = f"{name}__src{ordinals[name]:02d}" if counts[name] > 1 else name
+        row["canonicalName"] = f"{name}__src{ordinals[name]:02d}" if counts[name] > 1 and name != DISCARD_NAME else name
     return rows
 
 
@@ -103,8 +106,8 @@ def rewrite_expression(expression: str, position: int, repeated: dict[str, list[
 
 def manifest_candidates(item: dict, source_name: str) -> list[dict]:
     # First execution sees the flat-parser source name. A defensive second run
-    # sees the canonical sourceName metadata instead; keeping both paths makes
-    # this pass idempotent without accepting generated supplemental controls.
+    # sees canonical sourceName metadata. Generated supplemental controls are not
+    # accepted as lexical constructor occurrences.
     direct = [
         control for control in item.get("controls", [])
         if control.get("name") == source_name
@@ -141,10 +144,12 @@ def main() -> None:
     canonicalized_controls = 0
     expression_rebindings = 0
     post_assignment_rebindings = 0
+    discarded_initializers_excluded = 0
+    single_name_candidate_mismatches_ignored = 0
 
     for item in [*(spec.get("windows") or []), *(spec.get("nestedWindows") or [])]:
         source_path = item.get("sourcePath")
-        class_name = item.get("class") or item.get("sourceClass")
+        class_name = item.get("sourceClass") or item.get("class")
         if not source_path or not class_name:
             continue
         path = args.zircon_root / source_path
@@ -161,28 +166,48 @@ def main() -> None:
         rows_by_name: dict[str, list[dict]] = defaultdict(list)
         for row in occurrences:
             rows_by_name[row["sourceName"]].append(row)
-        repeated = {name: rows for name, rows in rows_by_name.items() if len(rows) > 1}
+
+        discarded_initializers_excluded += len(rows_by_name.get(DISCARD_NAME) or [])
+        repeated = {
+            name: rows
+            for name, rows in rows_by_name.items()
+            if name != DISCARD_NAME and len(rows) > 1
+        }
 
         mapped: dict[int, dict] = {}
         for source_name, rows in rows_by_name.items():
-            candidates = manifest_candidates(item, source_name)
-            if len(candidates) != len(rows):
-                failures.append(
-                    f"{item.get('field') or item.get('id')}: source/manifest occurrences for {source_name}: "
-                    f"{len(rows)} != {len(candidates)}"
-                )
+            if source_name == DISCARD_NAME:
                 continue
+            candidates = manifest_candidates(item, source_name)
+
+            # This pass is strict only for *reused* named locals. Single-use
+            # constructor identifiers may have been materialised/renamed by a
+            # later deterministic composite pass; they do not need lexical
+            # disambiguation. Preserve best-effort source metadata only when the
+            # mapping is unambiguous.
+            strict_reuse = source_name in repeated
+            if len(candidates) != len(rows):
+                if strict_reuse:
+                    failures.append(
+                        f"{item.get('field') or item.get('id')}: source/manifest reused occurrences for {source_name}: "
+                        f"{len(rows)} != {len(candidates)}"
+                    )
+                else:
+                    single_name_candidate_mismatches_ignored += 1
+                continue
+
             for row, control in zip(rows, candidates):
                 if control.get("type") != row["type"]:
-                    failures.append(
-                        f"{item.get('field') or item.get('id')}: {source_name}#{row['ordinal']} type "
-                        f"{control.get('type')} != {row['type']}"
-                    )
+                    if strict_reuse:
+                        failures.append(
+                            f"{item.get('field') or item.get('id')}: {source_name}#{row['ordinal']} type "
+                            f"{control.get('type')} != {row['type']}"
+                        )
                     continue
                 mapped[id(row)] = control
                 control["sourceName"] = source_name
                 control["sourceInitializerOffset"] = row["offset"]
-                if row["count"] > 1:
+                if strict_reuse:
                     control["name"] = row["canonicalName"]
                     control["sourceRepeatedLocal"] = True
                     control["sourceRepeatedOrdinal"] = row["ordinal"]
@@ -210,9 +235,9 @@ def main() -> None:
             if not match:
                 continue
             source_name, prop, expression = match.groups()
-            if source_name not in rows_by_name:
+            if source_name not in repeated:
                 continue
-            active = active_occurrence(rows_by_name, source_name, position)
+            active = active_occurrence(repeated, source_name, position)
             if active is None:
                 continue
             value, changed = rewrite_expression(" ".join(expression.split()), position, repeated)
@@ -264,6 +289,11 @@ def main() -> None:
         "controlsCanonicalized": canonicalized_controls,
         "expressionRebindings": expression_rebindings,
         "postAssignmentRebindings": post_assignment_rebindings,
+        "discardAssignmentsExcluded": True,
+        "discardInitializersExcluded": discarded_initializers_excluded,
+        "singleUseIdentifiersStrictlyCanonicalized": False,
+        "singleUseCandidateMismatchesIgnored": single_name_candidate_mismatches_ignored,
+        "strictScope": "repeated named local variables only",
         "windows": windows_report,
         "duplicateIdentityWindows": duplicate_windows,
         "controlsAdded": 0,
@@ -277,8 +307,9 @@ def main() -> None:
         raise SystemExit("Reused local control identity pass failed:\n- " + "\n- ".join(failures))
     print(
         "Reused local control identity: PASS -> "
-        f"{len(windows_report)} windows, {repeated_identifiers} reused names, "
-        f"{canonicalized_controls} controls canonicalized, {expression_rebindings} expressions rebound"
+        f"{len(windows_report)} windows, {repeated_identifiers} true reused names, "
+        f"{canonicalized_controls} controls canonicalized, {expression_rebindings} expressions rebound; "
+        f"C# discard initializers excluded={discarded_initializers_excluded}"
     )
 
 
