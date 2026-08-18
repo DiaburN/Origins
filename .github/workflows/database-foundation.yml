@@ -6,6 +6,8 @@ on:
       - 'src/Origins.Database/**'
       - 'tools/Origins.Database.Verify/**'
       - 'tools/Origins.Database.Upgrade/**'
+      - 'tools/Origins.Database.Export/**'
+      - 'tools/Origins.Database.Import/**'
       - 'database/**'
       - 'scripts/bootstrap-zircon.*'
       - 'scripts/fetch-zircon-system-db.*'
@@ -16,6 +18,8 @@ on:
       - 'src/Origins.Database/**'
       - 'tools/Origins.Database.Verify/**'
       - 'tools/Origins.Database.Upgrade/**'
+      - 'tools/Origins.Database.Export/**'
+      - 'tools/Origins.Database.Import/**'
       - 'database/**'
       - 'scripts/bootstrap-zircon.*'
       - 'scripts/fetch-zircon-system-db.*'
@@ -50,7 +54,13 @@ jobs:
       - name: Build database upgrader
         run: dotnet build tools/Origins.Database.Upgrade/Origins.Database.Upgrade.csproj --configuration Release
 
-  migrate-published-system-db:
+      - name: Build database exporter
+        run: dotnet build tools/Origins.Database.Export/Origins.Database.Export.csproj --configuration Release
+
+      - name: Build database importer
+        run: dotnet build tools/Origins.Database.Import/Origins.Database.Import.csproj --configuration Release
+
+  migrate-and-roundtrip-system-db:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout ORIGINS
@@ -70,7 +80,7 @@ jobs:
       - name: Fetch published Zircon System.db
         run: bash scripts/fetch-zircon-system-db.sh
 
-      - name: Verify source database before migration
+      - name: Verify source database
         run: dotnet run --project tools/Origins.Database.Verify/Origins.Database.Verify.csproj --configuration Release -- ./Database ./Backup
 
       - name: Upgrade copied System.db using current Zircon mappings
@@ -79,18 +89,39 @@ jobs:
       - name: Verify upgraded database
         run: dotnet run --project tools/Origins.Database.Verify/Origins.Database.Verify.csproj --configuration Release -- ./Database2026 ./Backup2026
 
+      - name: Export every Zircon system collection to JSON
+        run: dotnet run --project tools/Origins.Database.Export/Origins.Database.Export.csproj --configuration Release -- ./Database2026 ./Snapshot2026 ./Backup2026
+
+      - name: Rebuild System.db from JSON snapshot
+        run: dotnet run --project tools/Origins.Database.Import/Origins.Database.Import.csproj --configuration Release -- ./Snapshot2026 ./DatabaseRoundTrip ./BackupRoundTrip
+
+      - name: Verify reconstructed database
+        run: dotnet run --project tools/Origins.Database.Verify/Origins.Database.Verify.csproj --configuration Release -- ./DatabaseRoundTrip ./BackupRoundTrip
+
       - name: Publish migration report
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: zircon-system-db-migration-report
-          path: Database2026/migration-report.json
+          path: |
+            Database2026/migration-report.json
+            DatabaseRoundTrip/import-report.json
           if-no-files-found: warn
 
-      - name: Publish upgraded System.db
+      - name: Publish editable system snapshot
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: origins-zircon-system-snapshot
+          path: Snapshot2026/
+          if-no-files-found: error
+
+      - name: Publish upgraded and reconstructed System.db files
         if: success()
         uses: actions/upload-artifact@v4
         with:
           name: origins-zircon-system-db-2026
-          path: Database2026/System.db
+          path: |
+            Database2026/System.db
+            DatabaseRoundTrip/System.db
           if-no-files-found: error
