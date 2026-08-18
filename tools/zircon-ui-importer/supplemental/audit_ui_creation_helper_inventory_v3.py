@@ -33,16 +33,18 @@ def main():
  ),'GameStoreDialog helpers')
  communication=(a.zircon_root/'Client/Scenes/Views/CommunicationDialog.cs').read_text(encoding='utf-8-sig')
  require_source(communication,(
-  'foreach (long index in CEnvir.BlockList)',
-  'ClientBlockInfo blockInfo = CEnvir.BlockInfoList[index];',
-  'Text = blockInfo.Name,','Tag = blockInfo',
+  'foreach (ClientBlockInfo info in CEnvir.BlockList)',
+  'BlockListBoxItems.Add(new DXListBoxItem',
+  'Parent = BlockListBox,',
+  'Label = { Text = info.Name },',
+  'Item = info.Index',
  ),'CommunicationDialog.RefreshBlockList')
  category=find_row(rows,'GameStoreDialog','AddCategoryNode')
  if not category.get('constructorReachable') or 'DXTreeNode' not in (category.get('createdTypes') or []):raise SystemExit(f'GameStore AddCategoryNode structural contract drifted: {category}')
  category.update({'externalRuntimeData':True,'classification':'runtime-bound','status':'runtime-bound','materializedControlNames':[],'runtimeProvenance':'BuildFolderTree -> Globals.StoreInfoList?.Binding -> List<StoreInfo>','runtimePayloadInvented':False,'v3Refined':True})
  block=find_row(rows,'CommunicationDialog','RefreshBlockList')
- if not block.get('constructorReachable') or not {'DXControl','DXLabel'}.issubset(set(block.get('createdTypes') or [])):raise SystemExit(f'Communication RefreshBlockList structural contract drifted: {block}')
- block.update({'externalRuntimeData':True,'classification':'runtime-bound','status':'runtime-bound','materializedControlNames':[],'runtimeProvenance':'CEnvir.BlockList + CEnvir.BlockInfoList[index]','runtimePayloadInvented':False,'v3Refined':True})
+ if not block.get('constructorReachable') or 'DXListBoxItem' not in (block.get('createdTypes') or []):raise SystemExit(f'Communication RefreshBlockList structural contract drifted: {block}')
+ block.update({'externalRuntimeData':True,'classification':'runtime-bound','status':'runtime-bound','materializedControlNames':[],'runtimeProvenance':'foreach ClientBlockInfo in CEnvir.BlockList','runtimePayloadInvented':False,'v3Refined':True})
  list_audit=spec.get('listBoxItemSourceBoundaryAudit') or {}
  if list_audit.get('passed') is not True:raise SystemExit(f'DXListBoxItem boundary audit missing/not green: {list_audit}')
  store_window=next((w for w in spec.get('windows',[]) if w.get('field')=='GameStoreBox'),None)
