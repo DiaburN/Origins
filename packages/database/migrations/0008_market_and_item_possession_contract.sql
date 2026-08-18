@@ -7,11 +7,9 @@ BEGIN;
 
 CREATE SCHEMA IF NOT EXISTS economy;
 
--- Optional item-level transfer policy, independent from class equipability.
+-- can_trade/can_sell/can_store already exist in 0001_core.sql. Auction is the
+-- only additional transfer capability introduced by the market layer.
 ALTER TABLE content.item_definitions
-    ADD COLUMN can_trade boolean NOT NULL DEFAULT true,
-    ADD COLUMN can_sell boolean NOT NULL DEFAULT true,
-    ADD COLUMN can_store boolean NOT NULL DEFAULT true,
     ADD COLUMN can_auction boolean NOT NULL DEFAULT true;
 
 -- Active auction/consignment listing. The item remains a unique UserItem and is
