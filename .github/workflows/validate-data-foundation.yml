@@ -42,6 +42,7 @@ jobs:
       PGDATABASE: origins
       CRYSTAL_SHA: 0e315fe327192afe52c3d7357ddd1f5b7e26c5b8
       MONK_SHA: 381e589e3d7ee736cdf0583c8315c0d144ab058f
+      CRYSTAL_DB_SHA: a19f6dca8f5e238d4ed79801820777abbf0a9ca4
 
     steps:
       - uses: actions/checkout@v4
@@ -51,15 +52,19 @@ jobs:
           sudo apt-get update -y
           sudo apt-get install -y postgresql-client
 
-      - name: Checkout pinned Crystal sources
+      - name: Checkout pinned Crystal sources and database
         run: |
           set -euo pipefail
           git clone https://github.com/Suprcode/Crystal.git .source/Crystal
           git -C .source/Crystal checkout "$CRYSTAL_SHA"
           git clone https://github.com/JevLOMCN/Crystal-Monk.git .source/Crystal-Monk
           git -C .source/Crystal-Monk checkout "$MONK_SHA"
+          git clone https://github.com/Suprcode/Crystal.Database.git .source/Crystal.Database
+          git -C .source/Crystal.Database checkout "$CRYSTAL_DB_SHA"
           test "$(git -C .source/Crystal rev-parse HEAD)" = "$CRYSTAL_SHA"
           test "$(git -C .source/Crystal-Monk rev-parse HEAD)" = "$MONK_SHA"
+          test "$(git -C .source/Crystal.Database rev-parse HEAD)" = "$CRYSTAL_DB_SHA"
+          test -f .source/Crystal.Database/Jev/Server.MirDB
 
       - name: Build canonical 114-spell catalog
         run: |
@@ -77,6 +82,16 @@ jobs:
             --catalog .build/data-foundation/magic-catalog.json \
             --out .build/data-foundation/magics.sql
 
+      - name: Extract Crystal class equipment progression
+        run: |
+          set -euo pipefail
+          python3 tools/data-foundation/extract_crystal_equipment.py \
+            --db .source/Crystal.Database/Jev/Server.MirDB \
+            --enums .source/Crystal/Shared/Enums.cs \
+            --source-commit "$CRYSTAL_DB_SHA" \
+            --out-json .build/data-foundation/crystal-equipment-report.json \
+            --out-sql .build/data-foundation/crystal-equipment.sql
+
       - name: Apply database foundation
         run: |
           set -euo pipefail
@@ -90,6 +105,8 @@ jobs:
           psql -v ON_ERROR_STOP=1 -f packages/database/migrations/0006_class_combat_and_equipment_contract.sql
           psql -v ON_ERROR_STOP=1 -f packages/database/migrations/0007_equipment_persistence_enforcement.sql
           psql -v ON_ERROR_STOP=1 -f packages/database/migrations/0008_market_and_item_possession_contract.sql
+          psql -v ON_ERROR_STOP=1 -f packages/database/migrations/0009_equipment_progression_and_zircon_runtime.sql
+          psql -v ON_ERROR_STOP=1 -f .build/data-foundation/crystal-equipment.sql
 
       - name: Validate spell source contract
         run: |
@@ -110,6 +127,21 @@ jobs:
           test "$(psql -Atqc "SELECT primary_offense_stat FROM content.class_combat_profiles WHERE class_id=4")" = "DC"
           test "$(psql -Atqc "SELECT concat_ws('+',primary_offense_stat,secondary_offense_stat) FROM content.class_combat_profiles WHERE class_id=5")" = "DC+MC"
           test "$(psql -Atqc "SELECT concat_ws('+',primary_offense_stat,secondary_offense_stat) FROM content.class_combat_profiles WHERE class_id=6")" = "DC+SC"
+
+      - name: Validate Crystal equipment import contract
+        run: |
+          set -euo pipefail
+          # We must have real class-specific Crystal equipment, never generated names.
+          test "$(psql -Atqc "SELECT count(*) FROM content.item_definitions WHERE source_system='crystal'")" -gt 0
+          test "$(psql -Atqc "SELECT count(*) FROM content.equipment_progression")" -gt 0
+          test "$(psql -Atqc "SELECT count(*) FROM content.equipment_progression p JOIN content.item_definitions i ON i.id=p.item_definition_id WHERE p.original_name<>i.item_name")" = "0"
+          # Base import is deliberately flat/core. Extra Crystal stats remain in metadata for later opt-in.
+          test "$(psql -Atqc "SELECT count(*) FROM content.item_stats s JOIN content.item_definitions i ON i.id=s.item_definition_id WHERE i.source_system='crystal' AND s.stat_code IN ('AttackSpeed','CriticalRate','CriticalDamage','Luck')")" = "0"
+          # Every imported Crystal progression item is class restricted and has a server equip rule.
+          test "$(psql -Atqc "SELECT count(*) FROM content.equipment_progression p JOIN content.item_definitions i ON i.id=p.item_definition_id WHERE i.class_restriction_mode<>'restricted'")" = "0"
+          test "$(psql -Atqc "SELECT count(*) FROM content.item_set_bonuses")" = "0"
+          echo 'Equipment coverage:'
+          psql -P pager=off -c "SELECT class_code,progression_items,covered_families,max_required_level,max_tier FROM content.equipment_class_coverage ORDER BY class_id;"
 
       - name: Validate class equip lock without possession lock
         run: |
@@ -153,12 +185,10 @@ jobs:
             IF content.can_class_equip_item(item_id,1) THEN RAISE EXCEPTION 'Warrior allowed Archer-only item'; END IF;
             IF NOT content.can_class_equip_item_in_slot(item_id,5,'weapon') THEN RAISE EXCEPTION 'Archer weapon rejected'; END IF;
 
-            -- Correct class can equip it.
             INSERT INTO player.character_item_slots(character_id,slot_group,slot_index,item_instance_id)
             VALUES (archer_id,'equipment',0,item_instance);
             DELETE FROM player.character_item_slots WHERE item_instance_id=item_instance;
 
-            -- Transfer ownership to a Warrior: possession is valid despite class lock.
             UPDATE player.item_instances SET owner_character_id=warrior_id WHERE id=item_instance;
             IF NOT content.can_character_possess_item(item_id,'inventory') THEN RAISE EXCEPTION 'Warrior cannot possess Archer item'; END IF;
             IF NOT content.can_character_possess_item(item_id,'storage') THEN RAISE EXCEPTION 'Warrior cannot store Archer item'; END IF;
@@ -172,7 +202,6 @@ jobs:
             VALUES (warrior_id,'storage',0,item_instance);
             DELETE FROM player.character_item_slots WHERE item_instance_id=item_instance;
 
-            -- But Warrior still cannot equip it.
             blocked := false;
             BEGIN
               INSERT INTO player.character_item_slots(character_id,slot_group,slot_index,item_instance_id)
@@ -181,7 +210,6 @@ jobs:
             END;
             IF NOT blocked THEN RAISE EXCEPTION 'Persistence allowed Warrior to equip Archer-only item'; END IF;
 
-            -- Same Warrior may list it at auction because auction is not an equip action.
             INSERT INTO economy.market_listings(seller_character_id,item_instance_id,unit_price,quantity)
             VALUES (warrior_id,item_instance,1000,1) RETURNING id INTO listing_id;
             blocked := false;
@@ -221,7 +249,7 @@ jobs:
           python3 - <<'PY'
           import subprocess
           expected={
-            'content':{'class_definitions','class_combat_profiles','equipment_slot_definitions','map_definitions','map_regions','map_connections','magic_definitions','item_definitions','item_stats','item_source_links','item_class_profiles','item_class_stats','item_source_policy','item_allowed_classes','item_equip_slots','monster_definitions','monster_stats','monster_drops','monster_respawns','monster_magics','buff_definitions','quest_definitions','quest_tasks','quest_rewards','currency_definitions','npc_definitions','npc_shop_goods','dungeon_definitions','dungeon_maps','summon_definitions'},
+            'content':{'class_definitions','class_combat_profiles','equipment_slot_definitions','map_definitions','map_regions','map_connections','magic_definitions','item_definitions','item_stats','item_source_links','item_class_profiles','item_class_stats','item_source_policy','item_allowed_classes','item_equip_slots','equipment_progression','equipment_source_policy','item_set_definitions','item_set_members','item_set_bonuses','item_buff_effects','monster_definitions','monster_stats','monster_drops','monster_respawns','monster_magics','buff_definitions','quest_definitions','quest_tasks','quest_rewards','currency_definitions','npc_definitions','npc_shop_goods','dungeon_definitions','dungeon_maps','summon_definitions'},
             'player':{'accounts','characters','character_stats','character_magics','item_instances','character_item_slots','character_buffs','character_quests','character_currencies','character_pets'},
             'gameplay':{'dungeon_runs','combat_sessions','combat_events','monster_kills'},
             'economy':{'market_listings','market_transactions','item_transactions'}
@@ -232,3 +260,13 @@ jobs:
             if missing: raise SystemExit(f'{schema}: missing {sorted(missing)}')
             print(schema,len(actual),'tables PASS')
           PY
+
+      - name: Upload data foundation reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: origins-data-foundation-report
+          path: |
+            .build/data-foundation/magic-catalog.json
+            .build/data-foundation/crystal-equipment-report.json
+          if-no-files-found: warn
