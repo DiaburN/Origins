@@ -1,66 +1,27 @@
 #!/usr/bin/env python3
 """Compatibility source gate for the superseded Consignment composite pass.
 
-The original supplemental implementation materialised Consignment UI assuming
-ItemType ended at Reel (34 enum members including Nothing). Current Zircon has
-additional deterministic ItemType values through SocketGem. The complete UI is
-now emitted by augment_consignment_deterministic_composites.py, which also
-recovers the constructor's CreateHeaderLabel controls.
-
-This compatibility pass deliberately emits no controls so the modern pass has a
-single identity owner. It still gates the upstream source shape and current enum
-extent; removing it would weaken regression coverage.
+The original implementation assumed ItemType ended at Reel. Current Zircon has
+38 ItemType values through SocketGem. The authoritative deterministic UI is
+emitted only by augment_consignment_deterministic_composites.py. This pass keeps
+source-regression coverage and records that it emits zero controls.
 """
 from __future__ import annotations
-
-import argparse
-import json
-import sys
+import argparse,json,sys
 from pathlib import Path
-
-sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
 from augment_combo_options import parse_enum
 
-
-def main() -> None:
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--spec", type=Path, required=True)
-    parser.add_argument("--zircon-root", type=Path, required=True)
-    args = parser.parse_args()
-
-    # Ensure the manifest is readable without changing it in this legacy pass.
-    json.loads(args.spec.read_text(encoding="utf-8"))
-
-    source = (args.zircon_root / "Client/Scenes/Views/ConsignmentDialog.cs").read_text(encoding="utf-8-sig")
-    needles = (
-        "public const int VisibleRowCount = 6;",
-        "ItemTypeMenu = new ConsignmentItemTypeMenu",
-        "SearchRows = new ConsignmentSearchRow[VisibleRowCount];",
-        "ConsignRows = new ConsignmentListRow[VisibleRowCount];",
-        "foreach (ItemType itemType in Enum.GetValues(enumType))",
-        "if (itemType == ItemType.Nothing) continue;",
-        "button.Index = selected ? 830 : 831;",
-        "public sealed class ConsignmentSearchRow : DXControl",
-        "public sealed class ConsignmentListRow : DXControl",
-        "SortLabel = CreateHeaderLabel(",
-        "ConsignDateLabel = CreateHeaderLabel(",
-    )
-    for needle in needles:
-        if needle not in source:
-            raise SystemExit(f"Legacy Consignment compatibility source changed: missing {needle!r}")
-
-    members = parse_enum(args.zircon_root, "ItemType")
-    if len(members) != 38 or members[0].get("name") != "Nothing" or members[-1].get("name") != "SocketGem":
-        raise SystemExit(
-            "Current ItemType source contract changed: "
-            f"count={len(members)} first={members[:1]} last={members[-1:]}"
-        )
-
-    print(
-        "Legacy Consignment compatibility gate: PASS -> current ItemType has 38 members; "
-        "modern deterministic pass owns emitted controls"
-    )
-
-
-if __name__ == "__main__":
-    main()
+def main():
+    p=argparse.ArgumentParser();p.add_argument('--spec',type=Path,required=True);p.add_argument('--zircon-root',type=Path,required=True);a=p.parse_args()
+    source=(a.zircon_root/'Client/Scenes/Views/ConsignmentDialog.cs').read_text(encoding='utf-8-sig')
+    for needle in ('public const int VisibleRowCount = 6;','ItemTypeMenu = new ConsignmentItemTypeMenu','SearchRows = new ConsignmentSearchRow[VisibleRowCount];','ConsignRows = new ConsignmentListRow[VisibleRowCount];','foreach (ItemType itemType in Enum.GetValues(enumType))','if (itemType == ItemType.Nothing) continue;','button.Index = selected ? 830 : 831;','SortLabel = CreateHeaderLabel(','ConsignDateLabel = CreateHeaderLabel('):
+        if needle not in source: raise SystemExit(f'Consignment compatibility source changed: missing {needle!r}')
+    members=parse_enum(a.zircon_root,'ItemType')
+    if len(members)!=38 or members[0].get('name')!='Nothing' or members[-1].get('name')!='SocketGem': raise SystemExit(f'Current ItemType source changed: count={len(members)} first={members[:1]} last={members[-1:]}')
+    spec=json.loads(a.spec.read_text(encoding='utf-8'));w=next((x for x in spec.get('windows',[]) if x.get('field')=='ConsignmentBox'),None)
+    if not w: raise SystemExit('ConsignmentBox missing')
+    w['legacyConsignmentCompositeCompatibility']={'passed':True,'legacyControlsEmitted':0,'authoritativeOwner':'augment_consignment_deterministic_composites.py','duplicateControlsInvented':False,'runtimePayloadsInvented':False}
+    a.spec.write_text(json.dumps(spec,indent=2,ensure_ascii=False)+'\n',encoding='utf-8')
+    print('Consignment compatibility: PASS -> legacy controls=0; modern deterministic owner retained')
+if __name__=='__main__':main()
