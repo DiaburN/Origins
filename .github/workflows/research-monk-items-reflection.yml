@@ -22,6 +22,13 @@ jobs:
           New-Item -ItemType Directory -Force -Path research_out | Out-Null
           Invoke-WebRequest -Uri 'https://github.com/JevLOMCN/Crystal-Monk/releases/download/Server/Server.rar' -OutFile 'research_out/Server.rar'
           7z x -y 'research_out/Server.rar' '-oresearch_out/release' | Out-Null
+          nuget install log4net -Version 2.0.14 -OutputDirectory research_out/deps -NonInteractive
+          $libDir = (Resolve-Path 'research_out/release/Server/netstandard2.0').Path
+          Get-ChildItem research_out/deps -Recurse -Filter *.dll | Where-Object { $_.FullName -match '\\lib\\netstandard2\.0\\' } | ForEach-Object {
+            $dest = Join-Path $libDir $_.Name
+            if (-not (Test-Path $dest)) { Copy-Item $_.FullName $dest }
+          }
+          Get-ChildItem $libDir -Filter *.dll | Select-Object Name,Length | Sort-Object Name | Format-Table -AutoSize
 
       - name: Load exact netstandard Server.Library and exact release database
         shell: pwsh
@@ -31,8 +38,6 @@ jobs:
           $serverDir = (Resolve-Path 'research_out/release/Server').Path
           Set-Location $serverDir
           [Environment]::CurrentDirectory = $serverDir
-          Write-Host "PowerShell cwd: $(Get-Location)"
-          Write-Host "Process cwd: $([Environment]::CurrentDirectory)"
           Write-Host "Real DB exists: $([IO.File]::Exists((Join-Path $serverDir 'Server.MirDB')))"
           Write-Host "Real DB size: $((Get-Item (Join-Path $serverDir 'Server.MirDB')).Length)"
           $assemblyPath = Join-Path $serverDir 'netstandard2.0/Server.Library.dll'
@@ -40,13 +45,7 @@ jobs:
           $asm.FullName | Tee-Object -FilePath (Join-Path $outDir 'assembly.txt') | Write-Host
           $types = $asm.GetTypes() | Sort-Object FullName
           $types.FullName | Set-Content -Encoding UTF8 (Join-Path $outDir 'types.txt')
-          $types | Where-Object { $_.FullName -match 'Envir|ItemInfo|Database' } | Select-Object -ExpandProperty FullName | Tee-Object -FilePath (Join-Path $outDir 'candidate_types.txt') | Write-Host
-
-          $envirType = $asm.GetType('Server.MirEnvir.Envir', $false)
-          if (-not $envirType) {
-            $envirType = $types | Where-Object { $_.Name -eq 'Envir' -and $_.GetField('ItemInfoList') } | Select-Object -First 1
-          }
-          if (-not $envirType) { throw 'Envir type with ItemInfoList not found in netstandard Server.Library.dll' }
+          $envirType = $asm.GetType('Server.MirEnvir.Envir', $true)
           Write-Host "Envir type: $($envirType.FullName)"
           $dbPathField = $envirType.GetField('DatabasePath', [System.Reflection.BindingFlags]'Static,Public,NonPublic')
           if ($dbPathField) { Write-Host "Compiled DatabasePath: $($dbPathField.GetValue($null))" }
@@ -54,11 +53,8 @@ jobs:
           if ($versionField) { Write-Host "Compiled DB Version: $($versionField.GetValue($null))" }
           $envir = [Activator]::CreateInstance($envirType)
           $load = $envirType.GetMethod('LoadDB', [System.Reflection.BindingFlags]'Instance,Public,NonPublic')
-          if (-not $load) { throw 'LoadDB method not found' }
           try { $load.Invoke($envir, @()) | Out-Null } catch { Write-Host $_; if ($_.Exception.InnerException) { Write-Host $_.Exception.InnerException }; throw }
-
           $itemsField = $envirType.GetField('ItemInfoList', [System.Reflection.BindingFlags]'Instance,Public,NonPublic')
-          if (-not $itemsField) { throw 'ItemInfoList field not found' }
           $dict = $itemsField.GetValue($envir)
           Write-Host "Loaded item count: $($dict.Count)"
           if ($dict.Count -eq 0) { throw 'Exact Server.MirDB loaded zero items' }
@@ -84,19 +80,12 @@ jobs:
             }
             return $value
           }
-
           function Item-ToObject($item) {
             $o = [ordered]@{}
-            foreach ($f in $pubFields) {
-              try { $o[$f.Name] = Convert-Value ($f.GetValue($item)) } catch { $o[$f.Name] = "<ERROR:$($_.Exception.Message)>" }
-            }
-            foreach ($p in $pubProps) {
-              if ($o.Contains($p.Name)) { continue }
-              try { $o[$p.Name] = Convert-Value ($p.GetValue($item, $null)) } catch { }
-            }
+            foreach ($f in $pubFields) { try { $o[$f.Name] = Convert-Value ($f.GetValue($item)) } catch { $o[$f.Name] = "<ERROR:$($_.Exception.Message)>" } }
+            foreach ($p in $pubProps) { if ($o.Contains($p.Name)) { continue }; try { $o[$p.Name] = Convert-Value ($p.GetValue($item, $null)) } catch { } }
             return [pscustomobject]$o
           }
-
           $rcField = $itemType.GetField('RequiredClass', [System.Reflection.BindingFlags]'Instance,Public,NonPublic')
           $rcProp = $itemType.GetProperty('RequiredClass', [System.Reflection.BindingFlags]'Instance,Public,NonPublic')
           $monk = @()
