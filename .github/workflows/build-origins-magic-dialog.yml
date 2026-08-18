@@ -36,8 +36,8 @@ jobs:
       - name: Prepare source and build directories
         run: |
           set -euo pipefail
-          rm -rf .source/magic .build/magic-dialog
-          mkdir -p .source/magic .build/magic-dialog/assets/Interface .build/magic-dialog/assets/CrystalMagIcon2 .build/magic-dialog/data/magic
+          rm -rf .source/magic .build/magic-dialog .qa/magic-dialog
+          mkdir -p .source/magic .build/magic-dialog/assets/Interface .build/magic-dialog/assets/CrystalMagIcon2 .build/magic-dialog/data/magic .qa/magic-dialog
 
       - name: Download exact public Zircon and Crystal artwork
         shell: bash
@@ -69,6 +69,9 @@ jobs:
           curl -fL --retry 5 "https://raw.githubusercontent.com/Suprcode/Zircon/${ZIRCON_SHA}/Client/Scenes/Views/MagicDialog.cs" -o .source/magic/Zircon.MagicDialog.cs
           grep -Fq "public sealed class MagicDialog" .source/magic/Zircon.MagicDialog.cs
           grep -Fq "LibraryFile.MagicIcon" .source/magic/Zircon.MagicDialog.cs
+          grep -Fq "Size = new Size(419, 511)" .source/magic/Zircon.MagicDialog.cs
+          grep -Fq "Index = 164" .source/magic/Zircon.MagicDialog.cs
+          grep -Fq "Index = 165" .source/magic/Zircon.MagicDialog.cs
 
       - name: Generate canonical 114-spell catalog from source
         run: |
@@ -92,7 +95,7 @@ jobs:
             .source/magic/Interface.Zl \
             .build/magic-dialog/assets/Interface \
             --ids "0-18,53-62,160-165"
-          for ID in 00000 00001 00002 00003 00004 00005 00011 00012 00015 00053 00054 00055 00056 00057 00058 00060 00061 00062 00160 00161 00162 00163 00164 00165; do
+          for ID in 00000 00001 00002 00003 00004 00005 00008 00009 00011 00012 00015 00053 00054 00055 00056 00057 00058 00060 00061 00062 00160 00161 00162 00163 00164 00165; do
             test -s ".build/magic-dialog/assets/Interface/${ID}.png"
           done
 
@@ -113,7 +116,9 @@ jobs:
           cp apps/origins-magic-dialog-reference/index.html .build/magic-dialog/index.html
           cp apps/origins-magic-dialog-reference/magic-dialog.css .build/magic-dialog/magic-dialog.css
           cp apps/origins-magic-dialog-reference/magic-dialog.js .build/magic-dialog/magic-dialog.js
+          cp apps/origins-magic-dialog-reference/browser-qa.js .build/magic-dialog/browser-qa.js
           node --check .build/magic-dialog/magic-dialog.js
+          node --check .build/magic-dialog/browser-qa.js
           test -s .build/magic-dialog/index.html
           test -s .build/magic-dialog/data/magic/magic-catalog.json
           test -s .build/magic-dialog/assets/CrystalMagIcon2/manifest.json
@@ -137,7 +142,58 @@ jobs:
           print('FINAL MAGIC DIALOG CONTRACT: PASS')
           PY
 
+      - name: Run browser QA across all six classes
+        shell: bash
+        run: |
+          set -euo pipefail
+          chrome="$(command -v google-chrome || command -v google-chrome-stable || command -v chromium || true)"
+          [[ -n "$chrome" ]] || { echo "No Chrome/Chromium executable available"; exit 1; }
+          "$chrome" --version
+          python3 -m http.server 8768 --bind 127.0.0.1 --directory .build/magic-dialog > .qa/magic-dialog/http-server.log 2>&1 &
+          server_pid=$!
+          trap 'kill "$server_pid" 2>/dev/null || true' EXIT
+          sleep 1
+          "$chrome" --headless=new --no-sandbox --disable-gpu --hide-scrollbars --window-size=1000,800 --virtual-time-budget=30000 --dump-dom \
+            "http://127.0.0.1:8768/index.html?qa=1" > .qa/magic-dialog/browser-dom.html
+          "$chrome" --headless=new --no-sandbox --disable-gpu --hide-scrollbars --window-size=1000,800 --virtual-time-budget=5000 \
+            --screenshot=.qa/magic-dialog/magic-dialog.png "http://127.0.0.1:8768/index.html" >/dev/null 2>&1
+          python3 - <<'PY'
+          import html,json,re
+          from pathlib import Path
+          dom=Path('.qa/magic-dialog/browser-dom.html').read_text(encoding='utf-8')
+          match=re.search(r'<pre[^>]*id="magic-browser-qa-result"[^>]*>(.*?)</pre>',dom,re.S)
+          if not match:
+              report={'status':'fail','failures':[{'id':'runner','issue':'MagicDialog Browser QA result node missing'}],'browserErrors':[]}
+          else:
+              report=json.loads(html.unescape(re.sub(r'<[^>]+>','',match.group(1))).strip())
+          Path('.qa/magic-dialog/browser-report.json').write_text(json.dumps(report,indent=2)+'\n',encoding='utf-8')
+          print(json.dumps(report,indent=2))
+          if report.get('status') != 'pass': raise SystemExit('MagicDialog Browser QA failed')
+          if report.get('testedClasses') != 6: raise SystemExit(f"Browser QA classes={report.get('testedClasses')}, expected 6")
+          if report.get('testedSpells') != 114: raise SystemExit(f"Browser QA spells={report.get('testedSpells')}, expected 114")
+          if report.get('browserErrors'): raise SystemExit(f"Browser errors: {report['browserErrors']}")
+          expected={'Warrior':17,'Wizard':25,'Taoist':25,'Assassin':17,'Archer':21,'Monk':9}
+          classes=report.get('classReport') or {}
+          for name,count in expected.items():
+              if (classes.get(name) or {}).get('cells') != count: raise SystemExit(f'{name} browser cell count mismatch: {classes.get(name)}')
+          if report.get('geometry',{}).get('cell') != [369,54]: raise SystemExit(f"Cell geometry mismatch: {report.get('geometry')}")
+          scroll=report.get('scroll') or {}
+          if scroll.get('buttonMoved') is not True or scroll.get('wheelMoved') is not True: raise SystemExit(f'Scroll QA failed: {scroll}')
+          print('BROWSER MAGIC QA: PASS (6 classes / 114 spells)')
+          PY
+
+      - name: Copy QA evidence into artifact
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p .build/magic-dialog/qa
+          cp .qa/magic-dialog/browser-report.json .build/magic-dialog/qa/browser-report.json 2>/dev/null || true
+          cp .qa/magic-dialog/magic-dialog.png .build/magic-dialog/qa/magic-dialog.png 2>/dev/null || true
+          cp .qa/magic-dialog/http-server.log .build/magic-dialog/qa/http-server.log 2>/dev/null || true
+
       - name: Upload complete reference
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: origins-magic-dialog-reference
