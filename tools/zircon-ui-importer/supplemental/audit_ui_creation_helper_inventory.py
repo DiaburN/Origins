@@ -4,9 +4,9 @@
 The flat constructor parser can miss controls when a window delegates creation to
 helpers (BigMap.CreateRows/CreateScrollBar), while other helpers intentionally
 create UI only later (ChatOptions.AddNewTab) or from server/runtime data
-(HelpDialog.Add). This pass inventories both classes of helper, follows only
-*immediate* constructor/helper calls, and records deferred/runtime composites
-without fabricating controls or payloads.
+(HelpDialog.Add, MagicDialog.CreateTabs). This pass inventories both classes of
+helper, follows only *immediate* constructor/helper calls, and records deferred/
+runtime composites without fabricating controls or payloads.
 """
 from __future__ import annotations
 
@@ -17,7 +17,10 @@ from collections import Counter, deque
 from pathlib import Path
 
 
-CONTROL_SUFFIXES = ("Row", "Line", "Control", "Dialog", "Panel", "Window", "Tab", "Container", "Item")
+CONTROL_SUFFIXES = (
+    "Row", "Line", "Control", "Dialog", "Panel", "Window", "Tab",
+    "Container", "Item", "Cell",
+)
 
 
 def match_brace(text: str, opening: int) -> int:
@@ -161,6 +164,8 @@ def external_runtime_bound(chunk: str) -> bool:
         r"\bInstanceInfo\b",
         r"\bHelpInfo\b",
         r"\bHelpItemInfo\b",
+        r"\bMagicInfo\b",
+        r"\bClientUserMagic\b",
         r"\bMonsterObject\b",
         r"\bNPCInfo\b",
         r"\bClientObjectData\b",
@@ -347,6 +352,20 @@ def main() -> None:
     if "HelpContainer" not in help_add["createdTypes"]:
         raise SystemExit(f"HelpDialog.Add no longer creates HelpContainer: {help_add}")
 
+    # Magic: CreateTabs is not constructor UI. It is invoked later when real
+    # MagicInfo/user-class/learned-magic state exists. Source school variants may
+    # be retained as templates, but no school tab or MagicCell is assumed visible.
+    magic_rows = {row["helper"]: row for row in rows if row["sourceClass"] == "MagicDialog"}
+    if "CreateTabs" not in magic_rows:
+        raise SystemExit("MagicDialog.CreateTabs runtime UI helper missing from inventory")
+    magic_tabs = magic_rows["CreateTabs"]
+    if magic_tabs["constructorReachable"]:
+        raise SystemExit(f"MagicDialog.CreateTabs incorrectly treated as constructor UI: {magic_tabs}")
+    if magic_tabs["classification"] != "deferred-runtime" or magic_tabs["status"] != "audited-deferred-runtime":
+        raise SystemExit(f"MagicDialog.CreateTabs must remain deferred runtime UI: {magic_tabs}")
+    if not {"MagicTab", "MagicCell"}.issubset(set(magic_tabs["createdTypes"])):
+        raise SystemExit(f"MagicDialog.CreateTabs source-created controls changed: {magic_tabs['createdTypes']}")
+
     counts = Counter(row["classification"] for row in rows)
     statuses = Counter(row["status"] for row in rows)
     deferred = [row for row in rows if row["deferredUntilCalled"]]
@@ -362,6 +381,7 @@ def main() -> None:
         "knownBigMapHelpersMaterialized": True,
         "chatOptionsAddNewTabDeferredLocal": True,
         "helpPagesRemainRuntimeBound": True,
+        "magicTabsRemainRuntimeBound": True,
         "eventCallbacksExcludedFromConstructorReachability": True,
         "controlsFabricatedByAudit": False,
         "runtimePayloadsInvented": False,
