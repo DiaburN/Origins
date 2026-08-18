@@ -71,8 +71,10 @@ jobs:
           set -euo pipefail
           cp apps/zircon-ui-reference/browser-qa-runtime.js .qa/viewer/browser-qa-runtime.js
           cp apps/zircon-ui-reference/browser-qa-window-runtime.js .qa/viewer/browser-qa-window-runtime.js
+          cp apps/zircon-ui-reference/browser-qa-chat-options-runtime.js .qa/viewer/browser-qa-chat-options-runtime.js
           node --check .qa/viewer/browser-qa-runtime.js
           node --check .qa/viewer/browser-qa-window-runtime.js
+          node --check .qa/viewer/browser-qa-chat-options-runtime.js
           python3 - <<'PY'
           from pathlib import Path
           path=Path('.qa/viewer/index.html')
@@ -80,6 +82,7 @@ jobs:
           markers=[
               '<script type="module" src="browser-qa-runtime.js"></script>',
               '<script type="module" src="browser-qa-window-runtime.js"></script>',
+              '<script type="module" src="browser-qa-chat-options-runtime.js"></script>',
           ]
           if '</body>' not in text:
               raise SystemExit('Built viewer has no </body> marker')
@@ -133,6 +136,43 @@ jobs:
           print(json.dumps(report, indent=2))
           PY
 
+      - name: Run Chrome Chat Options local Add smoke
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ ! -f .qa/chrome-path ]]; then
+            echo '{"status":"fail","failures":["Chrome path missing after main Browser QA"]}' > .qa/chat-options-browser-qa-report.json
+            exit 0
+          fi
+          chrome="$(cat .qa/chrome-path)"
+          python3 -m http.server 8766 --bind 127.0.0.1 --directory .qa/viewer > .qa/chat-options-http-server.log 2>&1 &
+          server_pid=$!
+          trap 'kill "$server_pid" 2>/dev/null || true' EXIT
+          sleep 1
+          "$chrome" \
+            --headless=new \
+            --no-sandbox \
+            --disable-gpu \
+            --hide-scrollbars \
+            --window-size=1600,1000 \
+            --virtual-time-budget=30000 \
+            --dump-dom \
+            "http://127.0.0.1:8766/index.html?qaChatOptions=1" > .qa/chat-options-browser-qa-dom.html
+          python3 - <<'PY'
+          import html, json, re
+          from pathlib import Path
+          dom=Path('.qa/chat-options-browser-qa-dom.html').read_text(encoding='utf-8')
+          match=re.search(r'<pre[^>]*id="chat-options-qa-result"[^>]*>(.*?)</pre>', dom, re.S)
+          if not match:
+              report={'status':'fail','failures':['Chat Options QA result node missing from rendered DOM']}
+          else:
+              raw=html.unescape(re.sub(r'<[^>]+>', '', match.group(1))).strip()
+              report=json.loads(raw)
+          Path('.qa/chat-options-browser-qa-report.json').write_text(json.dumps(report,indent=2)+'\n',encoding='utf-8')
+          print(json.dumps(report,indent=2))
+          PY
+
       - name: Capture screenshots for failing windows
         if: always()
         shell: bash
@@ -171,16 +211,28 @@ jobs:
           import json
           from pathlib import Path
           report_path=Path('.qa/browser-qa-report.json')
+          chat_report_path=Path('.qa/chat-options-browser-qa-report.json')
           spec_path=Path('.qa/viewer/ui-source-spec.json')
           if not report_path.exists(): raise SystemExit('Browser QA report missing')
+          if not chat_report_path.exists(): raise SystemExit('Chat Options Browser QA report missing')
           if not spec_path.exists(): raise SystemExit('Exact artifact source spec missing')
           report=json.loads(report_path.read_text(encoding='utf-8'))
+          chat=json.loads(chat_report_path.read_text(encoding='utf-8'))
           spec=json.loads(spec_path.read_text(encoding='utf-8'))
           if report.get('status') != 'pass': raise SystemExit('Browser QA reported failures; see uploaded report/screenshots')
           if report.get('testedWindows') != 80: raise SystemExit(f"Browser QA covered {report.get('testedWindows')} windows, expected 80")
           if report.get('browserErrors'): raise SystemExit(f"Browser JS errors: {report['browserErrors']}")
           if int(report.get('gameControlCount') or 0) < 2511: raise SystemExit(f"Browser QA artifact has {report.get('gameControlCount')} GameScene controls, expected >=2511")
           if int(report.get('nestedControlCount') or 0) < 143: raise SystemExit(f"Browser QA artifact has {report.get('nestedControlCount')} nested controls, expected >=143")
+          if chat.get('status') != 'pass': raise SystemExit(f"Chat Options Browser QA failed: {chat}")
+          if chat.get('browserErrors'): raise SystemExit(f"Chat Options browser JS errors: {chat['browserErrors']}")
+          expected_zero={'listItems':0,'panels':0,'tabControls':0,'chatTabs':0}
+          expected_one={'listItems':1,'panels':1,'tabControls':1,'chatTabs':1}
+          if chat.get('before') != expected_zero: raise SystemExit(f"Chat Options constructor local state drifted: {chat.get('before')}")
+          if chat.get('afterAdd') != expected_one: raise SystemExit(f"Chat Options Add local tree drifted: {chat.get('afterAdd')}")
+          if chat.get('afterRemove') != expected_zero: raise SystemExit(f"Chat Options Remove local tree drifted: {chat.get('afterRemove')}")
+          if chat.get('checkboxes') != 16: raise SystemExit(f"Chat Options local checkbox count drifted: {chat.get('checkboxes')}")
+          if chat.get('manifestControlsAdded') != 0 or chat.get('runtimePayloadsInvented') is not False: raise SystemExit(f"Chat Options runtime boundary drifted: {chat}")
           floor=spec.get('currentSourceControlFloor') or {}
           if floor.get('passed') is not True or floor.get('gameScene') != 2511 or floor.get('nested') != 143: raise SystemExit(f"Current source floor contract mismatch: {floor}")
           if floor.get('browserValidationPending') is not True: raise SystemExit(f"2511 floor was prematurely marked browser-validated: {floor}")
@@ -192,7 +244,7 @@ jobs:
           expected={'passed':True,'deterministicControls':4,'initialSelectedTab':'NPCTab','runtimeGeometryInvented':False,'runtimeMapInfoInvented':False,'runtimeNPCsInvented':False,'runtimeMonstersInvented':False}
           for key,value in expected.items():
               if bigmap.get(key) != value: raise SystemExit(f"BigMap side-panel contract drifted: {key}={bigmap.get(key)!r}, expected {value!r}; full={bigmap}")
-          print(f"Browser QA: PASS (80/80 windows; source floor {report.get('gameControlCount')}+{report.get('nestedControlCount')}; 2511 checkpoint eligible for promotion)")
+          print(f"Browser QA: PASS (80/80 windows; Chat Options local Add/Remove PASS; source floor {report.get('gameControlCount')}+{report.get('nestedControlCount')}; 2511 checkpoint eligible for promotion)")
           PY
 
       - name: Upload browser QA evidence
@@ -204,6 +256,9 @@ jobs:
             .qa/browser-qa-report.json
             .qa/browser-qa-dom.html
             .qa/http-server.log
+            .qa/chat-options-browser-qa-report.json
+            .qa/chat-options-browser-qa-dom.html
+            .qa/chat-options-http-server.log
             .qa/failed-window-ids.txt
             .qa/screenshots/
             .qa/screenshot-http-server.log
