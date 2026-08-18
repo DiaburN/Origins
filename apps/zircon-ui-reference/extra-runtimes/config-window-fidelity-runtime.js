@@ -39,6 +39,7 @@ function install(root){
 
   for(const sourceControl of item.controls||[]){
     const element=control(root,sourceControl.name);if(!element)continue;
+    let soundValue=null,soundMuted=null;
     for(const binding of sourceControl.sourceConfigBindings||[]){
       const value=binding.default;element.dataset.sourceConfigProperty=binding.configProperty;element.dataset.sourceConfigBindingKind=binding.kind;
       root.dataset[`config${binding.configProperty}`]=Array.isArray(value)?JSON.stringify(value):String(value??'');
@@ -49,8 +50,22 @@ function install(root){
         }
       } else if(binding.kind==='selected') setComboDefault(element,value);
       else if(binding.kind==='value'){
-        element.dataset.sourceConfigValue=String(value??'');element.dataset.value=String(value??'');const field=element.querySelector('.dx-number-value,.dx-sound-value');if(field&&value!==undefined)field.textContent=String(value);
-      } else if(binding.kind==='muted') element.dataset.sourceConfigMuted=String(Boolean(value));
+        element.dataset.sourceConfigValue=String(value??'');element.dataset.value=String(value??'');soundValue=value;const field=element.querySelector('.dx-number-value,.dx-sound-value');if(field&&value!==undefined)field.textContent=String(value);
+      } else if(binding.kind==='muted') {element.dataset.sourceConfigMuted=String(Boolean(value));soundMuted=Boolean(value)}
+    }
+    if(sourceControl.type==='DXSoundBar'){
+      element.dispatchEvent(new CustomEvent('origins:source-config-sound-default',{bubbles:false,detail:{value:soundValue??0,muted:soundMuted??false}}));
+      if(element.dataset.sourceConfigSoundBound!=='true'){
+        element.dataset.sourceConfigSoundBound='true';
+        element.addEventListener('origins:source-sound-changed',event=>{
+          for(const binding of sourceControl.sourceConfigBindings||[]){
+            if(binding.kind==='value')root.dataset[`config${binding.configProperty}`]=String(event.detail?.value??0);
+            else if(binding.kind==='muted')root.dataset[`config${binding.configProperty}`]=String(Boolean(event.detail?.muted));
+          }
+          root.dataset.sourceAudioEngineEffect='Config volume/mute updated locally; CEnvir audio engine side effect not executed';
+          root.dataset.sourceAudioEngineEffectExecuted='false';
+        });
+      }
     }
     if(sourceControl.sourceEnabledInGameScene)setDynamicEnabled(element,true);
   }
@@ -78,4 +93,4 @@ function install(root){
 }
 function scan(node){if(!(node instanceof Element))return;if(node.id==='w-config')queueMicrotask(()=>install(node));node.querySelectorAll?.('#w-config').forEach(root=>queueMicrotask(()=>install(root)))}
 new MutationObserver(records=>records.forEach(record=>record.addedNodes.forEach(scan))).observe(stage,{childList:true,subtree:true});
-fetch('ui-source-spec.json',{cache:'no-store'}).then(r=>{if(!r.ok)throw new Error(`ui-source-spec.json ${r.status}`);return r.json()}).then(value=>{spec=value;install(document.querySelector('#w-config'));console.info('ORIGINS Config source runtime active: Config.cs defaults + GameScene enable/tab overrides + KeyBind source window')}).catch(error=>console.error('Unable to load Config source manifest',error));
+fetch('ui-source-spec.json',{cache:'no-store'}).then(r=>{if(!r.ok)throw new Error(`ui-source-spec.json ${r.status}`);return r.json()}).then(value=>{spec=value;install(document.querySelector('#w-config'));console.info('ORIGINS Config source runtime active: Config.cs defaults + GameScene enable/tab overrides + KeyBind + local sound state')}).catch(error=>console.error('Unable to load Config source manifest',error));
