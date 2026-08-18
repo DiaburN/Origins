@@ -97,12 +97,13 @@ def main() -> None:
         "augment_companion_reference.py",
     ):
         subprocess.run([sys.executable, str(here / helper), "--spec", str(args.spec)], check=True)
-    subprocess.run([
-        sys.executable,
-        str(here / "augment_combo_options.py"),
-        "--spec", str(args.spec),
-        "--zircon-root", str(zircon_root),
-    ], check=True)
+    for helper in ("augment_combo_options.py", "augment_combo_enum_values.py"):
+        subprocess.run([
+            sys.executable,
+            str(here / helper),
+            "--spec", str(args.spec),
+            "--zircon-root", str(zircon_root),
+        ], check=True)
     subprocess.run([
         sys.executable,
         str(here / "audit_complex_action_contracts.py"),
