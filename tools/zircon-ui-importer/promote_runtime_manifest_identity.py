@@ -93,6 +93,7 @@ def main() -> None:
         "augment_group_health_reference.py",
         "augment_buff_reference.py",
         "augment_magic_bar_reference.py",
+        "augment_auto_potion_reference.py",
         "augment_overflow_contracts.py",
         "augment_companion_reference.py",
     ):
