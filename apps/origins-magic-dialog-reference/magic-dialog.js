@@ -26,9 +26,11 @@ function buildShell() {
   img(ui(3),'shell-title-fill');
   img(ui(4),'shell-title-left');
   img(ui(5),'shell-title-right');
-  img(ui(11),'shell-bottom-left');
-  img(ui(12),'shell-bottom-right');
+  img(ui(11),'shell-top-left');
+  img(ui(12),'shell-top-right');
   img(ui(2),'shell-bottom dx-stretch-x');
+  img(ui(8),'shell-bottom-left');
+  img(ui(9),'shell-bottom-right');
 
   const title = document.createElement('div');
   title.className = 'window-title';
