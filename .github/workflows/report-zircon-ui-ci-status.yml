@@ -1,0 +1,51 @@
+name: Report Zircon UI CI status
+
+on:
+  workflow_run:
+    workflows:
+      - "Build complete Zircon UI reference"
+      - "Audit Zircon supplemental source contracts"
+      - "Browser QA Zircon UI reference"
+    types: [completed]
+    branches: [origins-game-v1]
+
+permissions:
+  contents: read
+  statuses: write
+
+jobs:
+  report:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Publish workflow result on source commit
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const run = context.payload.workflow_run;
+            const contexts = {
+              'Build complete Zircon UI reference': 'zircon-ui/build',
+              'Audit Zircon supplemental source contracts': 'zircon-ui/supplemental',
+              'Browser QA Zircon UI reference': 'zircon-ui/browser',
+            };
+            const statusContext = contexts[run.name];
+            if (!statusContext) {
+              core.setFailed(`Unexpected monitored workflow: ${run.name}`);
+              return;
+            }
+            const state = run.conclusion === 'success'
+              ? 'success'
+              : ['failure', 'timed_out', 'action_required', 'startup_failure'].includes(run.conclusion)
+                ? 'failure'
+                : 'error';
+            const description = `${run.name}: ${run.conclusion || 'unknown'}`.slice(0, 140);
+            await github.rest.repos.createCommitStatus({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              sha: run.head_sha,
+              state,
+              context: statusContext,
+              description,
+              target_url: run.html_url,
+            });
+            core.info(`${statusContext} -> ${state} on ${run.head_sha}; run=${run.id}`);
