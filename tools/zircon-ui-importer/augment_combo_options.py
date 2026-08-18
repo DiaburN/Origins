@@ -124,6 +124,11 @@ def merge_entries(target: list[dict], incoming: list[dict]) -> None:
             target.append(entry)
 
 
+def source_control_name(control: dict) -> str:
+    """Return the C# constructor name even after nested controls are namespaced."""
+    return str(control.get("sourceName") or control.get("name") or "")
+
+
 def helper_options(body: str, combo_names: set[str], messages: dict[str, str]) -> dict[str, list[dict]]:
     found: dict[str, list[dict]] = {name: [] for name in combo_names}
     method_re = re.compile(r"\b(?:public|private|protected|internal)\s+(?:static\s+)?(?:void|[A-Za-z_][A-Za-z0-9_<>,.? ]*)\s+([A-Za-z_][A-Za-z0-9_]*)\s*\(([^)]*)\)\s*\{")
@@ -256,7 +261,15 @@ def main() -> None:
         if not path.exists(): continue
         body = class_body(path.read_text(encoding="utf-8-sig"), str(class_name))
         if not body: continue
-        combo_controls = {c.get("name"): c for c in owner.get("controls", []) if c.get("type") == "DXComboBox"}
+        # Nested reconstruction namespaces DOM/manifest identities (for example
+        # GroupLFGInputWindow__TypeComboBox) but keeps the original C# variable in
+        # sourceName. Parse source with that canonical name and attach the result
+        # to the already-namespaced control object.
+        combo_controls = {
+            source_control_name(c): c
+            for c in owner.get("controls", [])
+            if c.get("type") == "DXComboBox" and source_control_name(c)
+        }
         combos += len(combo_controls)
         if not combo_controls: continue
         found: dict[str, list[dict]] = {name: [] for name in combo_controls}
@@ -291,7 +304,7 @@ def main() -> None:
 
     lfg = next((w for w in spec.get("nestedWindows", []) if w.get("sourceClass") == "GroupLFGInputWindow"), None)
     if not lfg: raise SystemExit("GroupLFGInputWindow missing from nested source inventory")
-    type_combo = next((c for c in lfg.get("controls", []) if c.get("name") == "TypeComboBox"), None)
+    type_combo = next((c for c in lfg.get("controls", []) if c.get("type") == "DXComboBox" and source_control_name(c) == "TypeComboBox"), None)
     labels = [o.get("label") for o in (type_combo or {}).get("comboOptions", [])]
     if labels != ["PvE", "PvP"]: raise SystemExit(f"DXComboBox static option extraction drifted for GroupLFG TypeComboBox: {labels}")
     if type_combo.get("comboSelectedOptionIndex") != 0: raise SystemExit(f"GroupLFG TypeComboBox initial PvE selection not resolved: {type_combo}")
