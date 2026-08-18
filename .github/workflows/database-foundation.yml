@@ -19,6 +19,7 @@ on:
       - 'scripts/fetch-zircon-system-db.*'
       - 'vendor/README.md'
       - '.github/workflows/database-foundation.yml'
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -43,3 +44,26 @@ jobs:
 
       - name: Build database verifier
         run: dotnet build tools/Origins.Database.Verify/Origins.Database.Verify.csproj --configuration Release
+
+  verify-published-system-db:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout ORIGINS
+        uses: actions/checkout@v4
+
+      - name: Install .NET 10
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Install 7-Zip
+        run: sudo apt-get update && sudo apt-get install -y p7zip-full
+
+      - name: Pin official Zircon source
+        run: bash scripts/bootstrap-zircon.sh
+
+      - name: Fetch published Zircon System.db
+        run: bash scripts/fetch-zircon-system-db.sh
+
+      - name: Verify published System.db against pinned Zircon runtime
+        run: dotnet run --project tools/Origins.Database.Verify/Origins.Database.Verify.csproj --configuration Release -- ./Database ./Backup
