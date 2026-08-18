@@ -1,4 +1,4 @@
-name: Extract Crystal-Monk items by Server reflection
+name: Extract Crystal-Monk items by Server.Library reflection
 
 on:
   push:
@@ -22,43 +22,55 @@ jobs:
           New-Item -ItemType Directory -Force -Path research_out | Out-Null
           Invoke-WebRequest -Uri 'https://github.com/JevLOMCN/Crystal-Monk/releases/download/Server/Server.rar' -OutFile 'research_out/Server.rar'
           7z x -y 'research_out/Server.rar' '-oresearch_out/release' | Out-Null
-          Get-ChildItem -Path research_out/release -Recurse -Filter Server.MirDB | Select-Object FullName,Length | Format-Table -AutoSize
 
-      - name: Load exact release database with exact release Server assembly
+      - name: Load exact managed Server.Library and exact release database
         shell: pwsh
         run: |
           $ErrorActionPreference = 'Stop'
+          $outDir = Join-Path $env:GITHUB_WORKSPACE 'research_out'
           $serverDir = (Resolve-Path 'research_out/release/Server').Path
           Set-Location $serverDir
-          $assemblyPath = Join-Path $serverDir 'Server.exe'
+          $assemblyPath = Join-Path $serverDir 'Server.Library.dll'
           $asm = [System.Reflection.Assembly]::LoadFrom($assemblyPath)
+          $asm.FullName | Tee-Object -FilePath (Join-Path $outDir 'assembly.txt') | Write-Host
+          $types = $asm.GetTypes() | Sort-Object FullName
+          $types.FullName | Set-Content -Encoding UTF8 (Join-Path $outDir 'types.txt')
+          $types | Where-Object { $_.FullName -match 'Envir|ItemInfo|Database' } | Select-Object -ExpandProperty FullName | Tee-Object -FilePath (Join-Path $outDir 'candidate_types.txt') | Write-Host
 
-          $envirType = $asm.GetType('Server.MirEnvir.Envir', $true)
+          $envirType = $asm.GetType('Server.MirEnvir.Envir', $false)
+          if (-not $envirType) {
+            $envirType = $types | Where-Object { $_.Name -eq 'Envir' -and $_.GetField('ItemInfoList') } | Select-Object -First 1
+          }
+          if (-not $envirType) { throw 'Envir type with ItemInfoList not found in Server.Library.dll' }
+          Write-Host "Envir type: $($envirType.FullName)"
           $envir = [Activator]::CreateInstance($envirType)
-          $load = $envirType.GetMethod('LoadDB', [System.Reflection.BindingFlags]'Instance,Public')
+          $load = $envirType.GetMethod('LoadDB', [System.Reflection.BindingFlags]'Instance,Public,NonPublic')
           if (-not $load) { throw 'LoadDB method not found' }
           $load.Invoke($envir, @()) | Out-Null
 
-          $itemsField = $envirType.GetField('ItemInfoList', [System.Reflection.BindingFlags]'Instance,Public')
+          $itemsField = $envirType.GetField('ItemInfoList', [System.Reflection.BindingFlags]'Instance,Public,NonPublic')
+          if (-not $itemsField) { throw 'ItemInfoList field not found' }
           $dict = $itemsField.GetValue($envir)
           Write-Host "Loaded item count: $($dict.Count)"
 
           $first = $dict.Values | Select-Object -First 1
           $itemType = $first.GetType()
+          Write-Host "Item type: $($itemType.FullName)"
           $pubFields = $itemType.GetFields([System.Reflection.BindingFlags]'Instance,Public')
           $pubProps = $itemType.GetProperties([System.Reflection.BindingFlags]'Instance,Public') | Where-Object { $_.GetIndexParameters().Count -eq 0 }
-          $pubFields.Name | Sort-Object | Set-Content -Encoding UTF8 (Join-Path $env:GITHUB_WORKSPACE 'research_out/item_fields.txt')
-          $pubProps.Name | Sort-Object | Set-Content -Encoding UTF8 (Join-Path $env:GITHUB_WORKSPACE 'research_out/item_properties.txt')
+          $pubFields.Name | Sort-Object | Set-Content -Encoding UTF8 (Join-Path $outDir 'item_fields.txt')
+          $pubProps.Name | Sort-Object | Set-Content -Encoding UTF8 (Join-Path $outDir 'item_properties.txt')
 
           function Convert-Value($value) {
             if ($null -eq $value) { return $null }
             $t = $value.GetType()
             if ($t.IsEnum) { return $value.ToString() }
             if ($value -is [System.Drawing.Color]) { return $value.Name }
+            if ($value -is [System.Collections.IDictionary]) {
+              $o=[ordered]@{}; foreach($k in $value.Keys){$o[$k.ToString()] = Convert-Value $value[$k]}; return [pscustomobject]$o
+            }
             if ($value -is [System.Collections.IEnumerable] -and -not ($value -is [string])) {
-              $arr = @()
-              foreach ($x in $value) { $arr += (Convert-Value $x) }
-              return $arr
+              $arr = @(); foreach ($x in $value) { $arr += (Convert-Value $x) }; return $arr
             }
             return $value
           }
@@ -75,61 +87,25 @@ jobs:
             return [pscustomobject]$o
           }
 
-          $all = @()
+          $rcField = $itemType.GetField('RequiredClass', [System.Reflection.BindingFlags]'Instance,Public,NonPublic')
+          $rcProp = $itemType.GetProperty('RequiredClass', [System.Reflection.BindingFlags]'Instance,Public,NonPublic')
           $monk = @()
           foreach ($item in $dict.Values) {
-            $obj = Item-ToObject $item
-            $all += $obj
-            $rcField = $itemType.GetField('RequiredClass', [System.Reflection.BindingFlags]'Instance,Public')
-            if ($rcField) {
-              $rc = $rcField.GetValue($item)
-              if ($null -ne $rc -and $rc.ToString() -eq 'Monk') { $monk += $obj }
-            }
+            $rc = if ($rcField) { $rcField.GetValue($item) } elseif ($rcProp) { $rcProp.GetValue($item) } else { $null }
+            if ($null -ne $rc -and $rc.ToString() -eq 'Monk') { $monk += (Item-ToObject $item) }
           }
-
-          $outDir = Join-Path $env:GITHUB_WORKSPACE 'research_out'
-          $all | Sort-Object Index | ConvertTo-Json -Depth 8 | Set-Content -Encoding UTF8 (Join-Path $outDir 'all_items.json')
-          $monk | Sort-Object Index | ConvertTo-Json -Depth 8 | Set-Content -Encoding UTF8 (Join-Path $outDir 'monk_items.json')
-
-          $summary = @()
-          foreach ($i in ($monk | Sort-Object Index)) {
-            $summary += [pscustomobject]@{
-              Index = $i.Index
-              InternalName = $i.Name
-              FriendlyName = $i.FriendlyName
-              Type = $i.Type
-              Shape = $i.Shape
-              RequiredType = $i.RequiredType
-              RequiredClass = $i.RequiredClass
-              RequiredAmount = $i.RequiredAmount
-              Set = $i.Set
-              Weight = $i.Weight
-              Durability = $i.Durability
-              MinAC = $i.MinAC
-              MaxAC = $i.MaxAC
-              MinMAC = $i.MinMAC
-              MaxMAC = $i.MaxMAC
-              MinDC = $i.MinDC
-              MaxDC = $i.MaxDC
-              MinMC = $i.MinMC
-              MaxMC = $i.MaxMC
-              MinSC = $i.MinSC
-              MaxSC = $i.MaxSC
-              Image = $i.Image
-            }
-          }
+          $monk = @($monk | Sort-Object Index)
+          $monk | ConvertTo-Json -Depth 10 | Set-Content -Encoding UTF8 (Join-Path $outDir 'monk_items.json')
+          $monk | Export-Csv -NoTypeInformation -Encoding UTF8 (Join-Path $outDir 'monk_items_full.csv')
+          $summary = $monk | Select-Object Index,Name,FriendlyName,Type,Shape,RequiredClass,RequiredType,RequiredAmount,Set,Weight,Durability,MinAC,MaxAC,MinMAC,MaxMAC,MinDC,MaxDC,MinMC,MaxMC,MinSC,MaxSC,Image
           $summary | Export-Csv -NoTypeInformation -Encoding UTF8 (Join-Path $outDir 'monk_items.csv')
-          $summary | Format-Table -AutoSize | Out-String -Width 400 | Tee-Object -FilePath (Join-Path $outDir 'monk_items.txt') | Write-Host
+          $summary | Format-Table -AutoSize | Out-String -Width 500 | Tee-Object -FilePath (Join-Path $outDir 'monk_items.txt') | Write-Host
           Write-Host "Monk item count: $($monk.Count)"
 
-      - name: Upload extracted item records
+      - name: Upload extracted item records and diagnostics
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: crystal-monk-exact-items
-          path: |
-            research_out/item_fields.txt
-            research_out/item_properties.txt
-            research_out/monk_items.json
-            research_out/monk_items.csv
-            research_out/monk_items.txt
-          if-no-files-found: error
+          path: research_out/*.txt
+          if-no-files-found: warn
