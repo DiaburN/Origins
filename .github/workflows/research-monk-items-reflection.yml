@@ -30,6 +30,11 @@ jobs:
           $outDir = Join-Path $env:GITHUB_WORKSPACE 'research_out'
           $serverDir = (Resolve-Path 'research_out/release/Server').Path
           Set-Location $serverDir
+          [Environment]::CurrentDirectory = $serverDir
+          Write-Host "PowerShell cwd: $(Get-Location)"
+          Write-Host "Process cwd: $([Environment]::CurrentDirectory)"
+          Write-Host "Real DB exists: $([IO.File]::Exists((Join-Path $serverDir 'Server.MirDB')))"
+          Write-Host "Real DB size: $((Get-Item (Join-Path $serverDir 'Server.MirDB')).Length)"
           $assemblyPath = Join-Path $serverDir 'netstandard2.0/Server.Library.dll'
           $asm = [System.Reflection.Assembly]::LoadFrom($assemblyPath)
           $asm.FullName | Tee-Object -FilePath (Join-Path $outDir 'assembly.txt') | Write-Host
@@ -43,15 +48,20 @@ jobs:
           }
           if (-not $envirType) { throw 'Envir type with ItemInfoList not found in netstandard Server.Library.dll' }
           Write-Host "Envir type: $($envirType.FullName)"
+          $dbPathField = $envirType.GetField('DatabasePath', [System.Reflection.BindingFlags]'Static,Public,NonPublic')
+          if ($dbPathField) { Write-Host "Compiled DatabasePath: $($dbPathField.GetValue($null))" }
+          $versionField = $envirType.GetField('Version', [System.Reflection.BindingFlags]'Static,Public,NonPublic')
+          if ($versionField) { Write-Host "Compiled DB Version: $($versionField.GetValue($null))" }
           $envir = [Activator]::CreateInstance($envirType)
           $load = $envirType.GetMethod('LoadDB', [System.Reflection.BindingFlags]'Instance,Public,NonPublic')
           if (-not $load) { throw 'LoadDB method not found' }
-          $load.Invoke($envir, @()) | Out-Null
+          try { $load.Invoke($envir, @()) | Out-Null } catch { Write-Host $_; if ($_.Exception.InnerException) { Write-Host $_.Exception.InnerException }; throw }
 
           $itemsField = $envirType.GetField('ItemInfoList', [System.Reflection.BindingFlags]'Instance,Public,NonPublic')
           if (-not $itemsField) { throw 'ItemInfoList field not found' }
           $dict = $itemsField.GetValue($envir)
           Write-Host "Loaded item count: $($dict.Count)"
+          if ($dict.Count -eq 0) { throw 'Exact Server.MirDB loaded zero items' }
 
           $first = $dict.Values | Select-Object -First 1
           $itemType = $first.GetType()
