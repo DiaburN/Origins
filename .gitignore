@@ -1,6 +1,9 @@
 # Local pinned Zircon source (installed by scripts/bootstrap-zircon.*)
 vendor/zircon/
 
+# Download/cache material
+.cache/
+
 # .NET build output
 **/bin/
 **/obj/
