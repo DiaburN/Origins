@@ -269,9 +269,11 @@ def simple_assignments(body: str, allowed: set[str] | None = None) -> dict[str, 
 def object_initializers(body: str) -> list[dict]:
     controls: list[dict] = []
     pat = re.compile(
-        r"(?:(?:[A-Za-z_][A-Za-z0-9_<>]*\s+)?([A-Za-z_][A-Za-z0-9_]*)\s*=\s*)"
-        r"new\s+(DX[A-Za-z_][A-Za-z0-9_]*)\s*\{"
+        r"(?:(?:[A-Za-z_][A-Za-z0-9_<>]*\s+)?(?P<name>[A-Za-z_][A-Za-z0-9_]*)\s*=\s*)?"
+        r"new\s+(?P<type>DX[A-Za-z_][A-Za-z0-9_]*)\s*\{"
     )
+    anonymous_ordinals: dict[str, int] = {}
+    used_names: set[str] = set()
     for m in pat.finditer(body):
         opening = body.find("{", m.start())
         try:
@@ -284,11 +286,34 @@ def object_initializers(body: str) -> list[dict]:
             mm = re.match(r"\s*([A-Za-z_][A-Za-z0-9_]*)\s*=\s*(.+?)\s*$", entry, re.S)
             if mm:
                 props[mm.group(1)] = " ".join(mm.group(2).split())
-        controls.append({"name": m.group(1), "type": m.group(2), "properties": props})
+
+        source_name = m.group("name")
+        type_name = m.group("type")
+        anonymous = source_name is None
+        if anonymous:
+            ordinal = anonymous_ordinals.get(type_name, 0) + 1
+            while True:
+                name = f"Anonymous{type_name}{ordinal:02d}"
+                if name not in used_names:
+                    break
+                ordinal += 1
+            anonymous_ordinals[type_name] = ordinal
+        else:
+            name = source_name
+        used_names.add(name)
+
+        control = {"name": name, "type": type_name, "properties": props}
+        if anonymous:
+            control.update({
+                "sourceAnonymous": True,
+                "sourceAnonymousOrdinal": anonymous_ordinals[type_name],
+                "sourceInitializerOffset": m.start(),
+            })
+        controls.append(control)
 
     # Enrich only from constructor-level assignments. Event-handler changes are
     # later runtime states and must not overwrite the initial visual state.
-    by_name = {c["name"]: c for c in controls}
+    by_name = {c["name"]: c for c in controls if not c.get("sourceAnonymous")}
     for raw in top_level_statements(body):
         statement = strip_leading_comments(raw)
         m = re.match(
