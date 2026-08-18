@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>Origins.Database</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\vendor\zircon\LibraryCore\LibraryCore.csproj" />
+    <ProjectReference Include="..\..\vendor\zircon\ServerLibrary\ServerLibrary.csproj" />
+  </ItemGroup>
+</Project>

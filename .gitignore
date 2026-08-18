@@ -1,0 +1,16 @@
+# Local pinned Zircon source (installed by scripts/bootstrap-zircon.*)
+vendor/zircon/
+
+# .NET build output
+**/bin/
+**/obj/
+
+# Zircon runtime database files and backups
+Database/
+Backup/
+*.db.TMP
+
+# OS/editor
+.DS_Store
+.vscode/
+.idea/

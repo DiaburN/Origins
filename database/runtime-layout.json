@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "engine": "Zircon LibraryCore/MirDB",
+  "defaultDatabaseRoot": "./Database/",
+  "defaultBackupRoot": "./Backup/",
+  "files": {
+    "system": {
+      "name": "System.db",
+      "purpose": "Static game definitions",
+      "serverMode": "read",
+      "editorMode": "read-write"
+    },
+    "users": {
+      "name": "Users.db",
+      "purpose": "Accounts, characters and persistent player/server state",
+      "serverMode": "read-write",
+      "editorMode": "read-write"
+    }
+  },
+  "modes": {
+    "server": "SessionMode.Users",
+    "editor": "SessionMode.Both",
+    "systemWriter": "SessionMode.System"
+  }
+}
