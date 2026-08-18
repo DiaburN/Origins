@@ -2,6 +2,7 @@ using System.Collections;
 using System.Drawing;
 using System.Text.Json;
 using Library;
+using MirDB;
 
 namespace Origins.Database.Snapshots;
 
@@ -12,6 +13,42 @@ namespace Origins.Database.Snapshots;
 /// </summary>
 public static class ZirconValueCodec
 {
+    /// <summary>
+    /// Mirrors the inclusion rule used by Zircon DBMapping: a persisted
+    /// property is either a supported DBValue scalar, an enum, or a DBObject
+    /// reference. DBBindingList associations and unsupported/calculated
+    /// properties are not persisted in System.db.
+    /// </summary>
+    public static bool IsPersistedPropertyType(Type type)
+    {
+        return type.IsEnum ||
+               typeof(DBObject).IsAssignableFrom(type) ||
+               type == typeof(bool) ||
+               type == typeof(byte) ||
+               type == typeof(byte[]) ||
+               type == typeof(char) ||
+               type == typeof(Color) ||
+               type == typeof(DateTime) ||
+               type == typeof(decimal) ||
+               type == typeof(double) ||
+               type == typeof(short) ||
+               type == typeof(int) ||
+               type == typeof(int[]) ||
+               type == typeof(long) ||
+               type == typeof(Point) ||
+               type == typeof(sbyte) ||
+               type == typeof(float) ||
+               type == typeof(Size) ||
+               type == typeof(string) ||
+               type == typeof(TimeSpan) ||
+               type == typeof(ushort) ||
+               type == typeof(uint) ||
+               type == typeof(ulong) ||
+               type == typeof(Point[]) ||
+               type == typeof(Stats) ||
+               type == typeof(BitArray);
+    }
+
     public static object? Encode(object? value, Type declaredType)
     {
         if (value == null)
