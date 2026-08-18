@@ -1,6 +1,8 @@
-// Source-faithful DXCheckBox state on top of the base renderer. Zircon toggles
-// only when computed IsEnabled=true and ReadOnly=false; source initializers write
-// `Enabled`, while the global enabled runtime resolves the full parent chain.
+// Source-faithful DXCheckBox state on top of the base renderer. Zircon's default
+// ReadOnly path suppresses the internal toggle, but source windows may still bind
+// a custom MouseClick handler (Guild Gold/Horn is the canonical case). Those
+// controls opt in with data-source-readonly-custom-click so the specialized
+// source runtime can execute that handler while the base toggle stays suppressed.
 const stage=document.querySelector('#stage');
 let spec=null;
 const pad=value=>String(value).padStart(5,'0');
@@ -23,7 +25,8 @@ function apply(root){
       element.dataset.sourceCheckboxGuard='true';
       element.addEventListener('click',event=>{
         const ro=boolFrom(element.dataset.sourceReadOnly,false),en=boolFrom(element.dataset.sourceEnabled,ownEnabled(p));
-        if(en&&!ro)return; // allow the base source-style toggle handler
+        if(en&&!ro)return; // allow the normal source-style toggle handler
+        if(en&&ro&&element.dataset.sourceReadonlyCustomClick==='true')return; // custom source handler owns it
         event.preventDefault();event.stopImmediatePropagation();
       },true);
     }
@@ -31,4 +34,4 @@ function apply(root){
 }
 function scan(node){if(!(node instanceof Element))return;if(node.matches?.('.window,.generic-window'))queueMicrotask(()=>apply(node));node.querySelectorAll?.('.window,.generic-window').forEach(root=>queueMicrotask(()=>apply(root)))}
 new MutationObserver(records=>records.forEach(record=>record.addedNodes.forEach(scan))).observe(stage,{childList:true,subtree:true});
-fetch('ui-source-spec.json',{cache:'no-store'}).then(r=>{if(!r.ok)throw new Error(`ui-source-spec.json ${r.status}`);return r.json()}).then(value=>{spec=value;stage.querySelectorAll('.window,.generic-window').forEach(root=>queueMicrotask(()=>apply(root)));console.info('ORIGINS Zircon DXCheckBox readonly/enabled/padding fidelity active')}).catch(error=>console.error('Unable to load checkbox fidelity manifest',error));
+fetch('ui-source-spec.json',{cache:'no-store'}).then(r=>{if(!r.ok)throw new Error(`ui-source-spec.json ${r.status}`);return r.json()}).then(value=>{spec=value;stage.querySelectorAll('.window,.generic-window').forEach(root=>queueMicrotask(()=>apply(root)));console.info('ORIGINS Zircon DXCheckBox readonly/enabled/padding fidelity active with custom ReadOnly click support')}).catch(error=>console.error('Unable to load checkbox fidelity manifest',error));
