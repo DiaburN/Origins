@@ -59,11 +59,6 @@ jobs:
             --zircon-root .source/Zircon
           python3 tools/zircon-ui-importer/augment_npc_dialog_reference.py \
             --spec .build/zircon-ui/ui-source-spec.json
-          cp apps/zircon-ui-reference/app-layout.js .build/zircon-ui/app-layout.js
-          cp apps/zircon-ui-reference/animated-control-runtime.js .build/zircon-ui/animated-control-runtime.js
-          python3 tools/zircon-ui-importer/promote_runtime_manifest_identity.py \
-            --spec .build/zircon-ui/ui-source-spec.json \
-            --registry apps/zircon-ui-reference/game-scene-windows.js
 
       - name: Validate source, controls, composites, tabs and interactions
         run: |
@@ -182,10 +177,12 @@ jobs:
             --source-dir .source/zircon-ui-libraries \
             --out .build/zircon-ui
 
-      - name: Assemble complete navigable viewer
+      - name: Assemble complete navigable viewer and promote official manifest
         run: |
           cp apps/zircon-ui-reference/index-derived.html .build/zircon-ui/index.html
           cp apps/zircon-ui-reference/styles.css .build/zircon-ui/styles.css
+          cp apps/zircon-ui-reference/app-layout.js .build/zircon-ui/app-layout.js
+          cp apps/zircon-ui-reference/animated-control-runtime.js .build/zircon-ui/animated-control-runtime.js
           cp apps/zircon-ui-reference/window-runtime.js .build/zircon-ui/window-runtime.js
           cp apps/zircon-ui-reference/interaction-runtime.js .build/zircon-ui/interaction-runtime.js
           cp apps/zircon-ui-reference/nested-variant-runtime.js .build/zircon-ui/nested-variant-runtime.js
@@ -210,6 +207,33 @@ jobs:
           grep -Fq "interaction-runtime.js" .build/zircon-ui/index.html
           grep -Fq "nested-variant-runtime.js" .build/zircon-ui/index.html
           grep -Fq "messagebox-reference-variant" .build/zircon-ui/nested-variant-runtime.js
+
+      - name: Refresh artwork after supplemental manifest promotion
+        run: |
+          set -euo pipefail
+          python3 tools/zircon-ui-importer/build_full_reference_assets.py \
+            --spec .build/zircon-ui/ui-source-spec.json \
+            --source-dir .source/zircon-ui-libraries \
+            --out .build/zircon-ui
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          root=Path('.build/zircon-ui')
+          spec=json.loads((root/'ui-source-spec.json').read_text())
+          asset_build=json.loads((root/'asset-build.json').read_text())
+          literal=spec.get('supplementalLiteralAssetRefPass',{})
+          if literal.get('passed') is not True or literal.get('symbolicRuntimeRefsInvented') is not False:
+              raise SystemExit(f'Supplemental literal asset pass missing/invalid: {literal}')
+          required={'GameInter':{3624,6570},'Interface':{60,61,62}}
+          for library, ids in required.items():
+              promoted=set(int(value) for value in spec.get('assetRefs',{}).get(library,[]))
+              built=set(int(value) for value in (asset_build.get(library) or {}).get('ids',[]))
+              if not ids.issubset(promoted):
+                  raise SystemExit(f'{library} supplemental refs missing from manifest: {sorted(ids-promoted)}')
+              if not ids.issubset(built):
+                  raise SystemExit(f'{library} supplemental refs missing from extracted asset build: {sorted(ids-built)}')
+          print('Supplemental artwork refresh: PASS')
+          PY
 
       - name: Validate zero-fallback GameScene geometry
         run: |
