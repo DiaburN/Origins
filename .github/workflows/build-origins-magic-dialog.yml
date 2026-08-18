@@ -8,12 +8,14 @@ on:
       - ".github/workflows/build-origins-magic-dialog.yml"
       - "tools/crystal-magic-importer/**"
       - "apps/origins-magic-dialog-reference/**"
+      - "docs/MAGIC_DIALOG_V2.md"
   pull_request:
     branches: [origins-game-v1]
     paths:
       - ".github/workflows/build-origins-magic-dialog.yml"
       - "tools/crystal-magic-importer/**"
       - "apps/origins-magic-dialog-reference/**"
+      - "docs/MAGIC_DIALOG_V2.md"
 
 permissions:
   contents: read
