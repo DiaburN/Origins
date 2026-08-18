@@ -81,6 +81,17 @@ def main() -> None:
         ("ReadTab.Visible = ReadMail != null;", "Communication read-mail runtime visibility"),
     ): require(communication, needle, label)
 
+    storage = read(args.zircon_root, "Client/Scenes/Views/StorageDialog.cs")
+    for needle, label in (
+        ("if (IsVisible)\n                GameScene.Game.InventoryBox.Visible = true;", "Storage opens Inventory"),
+        ("ItemTypeComboBox.ListBox.SelectItem(null);", "Storage initial/clear All filter"),
+        ("ItemNameTextBox.TextBox.Text = string.Empty;", "Storage clear name filter"),
+        ('new DXMessageBox("Are you sure you want to sort your storage?", "Confirm Sort", DXMessageBoxButtons.YesNo)', "Storage sort confirmation"),
+        ("Grid = StorageTab.Visible ? GridType.Storage : GridType.PartsStorage", "Storage sort grid selection"),
+        ("CEnvir.Enqueue(packet);", "Storage sort packet enqueue"),
+        ("Visible = false,\n                BackColour = Color.Empty", "Storage PartsTab starts hidden"),
+    ): require(storage, needle, label)
+
     combo = read(args.zircon_root, "Client/Controls/DXComboBox.cs")
     require(combo, "public const int DefaultNormalHeight = 16;", "DXComboBox default normal height")
     require(combo, "DropDownHeight = 123;", "DXComboBox dropdown height")
@@ -91,20 +102,21 @@ def main() -> None:
     require(combo, "Showing = false;", "DXComboBox closes after selection")
 
     spec["complexActionAudit"] = {
-        "contractCount": 6,
+        "contractCount": 7,
         "contracts": {
             "TradeDialog": "confirm disables then C.TradeConfirm; gold modal requires runtime user gold; close packet only while trading",
             "ExitDialog": "modal; 10-second combat gate; logout/application-close actions remain runtime gated",
             "ConsignmentDialog": "Search/Consign tab artwork and dependent visibility set by SetActiveTab",
             "GameStoreDialog": "Alphabetical default sort; Hunt/Game Gold toggle rebuilds local store state",
             "CommunicationDialog": "Friend/Received/Send/Block backgrounds and button visibility; Send resets draft; ReadMail runtime-only",
+            "StorageDialog": "opening forces Inventory visible; filters clear to All/empty; sorting is confirmed then server-enqueued",
             "DXComboBox": "16px normal, 123px dropdown, GameInter 795 arrow, ActiveScene listbox, selection closes",
         },
         "runtimeServerDataInvented": False,
         "source": "current Suprcode/Zircon C# source",
     }
     args.spec.write_text(json.dumps(spec, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
-    print("Complex source action contracts: 6/6 PASS")
+    print("Complex source action contracts: 7/7 PASS")
 
 
 if __name__ == "__main__": main()
