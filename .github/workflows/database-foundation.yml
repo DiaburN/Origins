@@ -14,7 +14,10 @@ on:
       - 'tools/Origins.Database.Audit/**'
       - 'database/**'
       - 'scripts/bootstrap-zircon.*'
+      - 'scripts/bootstrap-crystal.*'
       - 'scripts/fetch-zircon-system-db.*'
+      - 'scripts/generate-crystal-magic-catalog.py'
+      - 'scripts/compare-crystal-zircon-magics.py'
       - 'vendor/README.md'
       - '.github/workflows/database-foundation.yml'
   pull_request:
@@ -28,7 +31,10 @@ on:
       - 'tools/Origins.Database.Audit/**'
       - 'database/**'
       - 'scripts/bootstrap-zircon.*'
+      - 'scripts/bootstrap-crystal.*'
       - 'scripts/fetch-zircon-system-db.*'
+      - 'scripts/generate-crystal-magic-catalog.py'
+      - 'scripts/compare-crystal-zircon-magics.py'
       - 'vendor/README.md'
       - '.github/workflows/database-foundation.yml'
   workflow_dispatch:
@@ -48,6 +54,10 @@ jobs:
           dotnet-version: '10.0.x'
       - name: Pin official Zircon source
         run: bash scripts/bootstrap-zircon.sh
+      - name: Pin official Crystal source
+        run: bash scripts/bootstrap-crystal.sh
+      - name: Validate magic research scripts
+        run: python3 -m py_compile scripts/generate-crystal-magic-catalog.py scripts/compare-crystal-zircon-magics.py
       - name: Build ORIGINS database foundation
         run: dotnet build src/Origins.Database/Origins.Database.csproj --configuration Release
       - name: Build database verifier
@@ -76,6 +86,8 @@ jobs:
         run: sudo apt-get update && sudo apt-get install -y p7zip-full
       - name: Pin official Zircon source
         run: bash scripts/bootstrap-zircon.sh
+      - name: Pin official Crystal source
+        run: bash scripts/bootstrap-crystal.sh
       - name: Fetch published Zircon System.db
         run: bash scripts/fetch-zircon-system-db.sh
       - name: Verify source database
@@ -88,8 +100,12 @@ jobs:
         run: dotnet run --project tools/Origins.Database.Audit/Origins.Database.Audit.csproj --configuration Release -- ./Database2026 ./Database2026/audit.json ./Backup2026
       - name: Export every Zircon system collection to JSON
         run: dotnet run --project tools/Origins.Database.Export/Origins.Database.Export.csproj --configuration Release -- ./Database2026 ./SnapshotBase ./Backup2026
+      - name: Generate Crystal source spell catalog
+        run: python3 scripts/generate-crystal-magic-catalog.py ./vendor/crystal ./MagicResearch/crystal-source-catalog.json
+      - name: Compare Crystal catalog against Zircon MagicInfo
+        run: python3 scripts/compare-crystal-zircon-magics.py ./MagicResearch/crystal-source-catalog.json ./SnapshotBase/LibraryCore__Library_SystemModels_MagicInfo.json ./MagicResearch/crystal-zircon-comparison.json
       - name: Apply ORIGINS overlays
-        run: dotnet run --project tools/Origins.Database.ApplyOverlay/Origins.Database.ApplyOverlay.csproj --configuration Release -- ./SnapshotBase ./database/overlays ./SnapshotOrigins
+        run: dotnet run --project tools/Origins.Database.ApplyOverlay/Origins.Database.ApplyOverlay.csproj --configuration Release -- ./SnapshotBase ./database/overlays ./SnapshotOrigins ./database/index-policy.json
       - name: Rebuild ORIGINS System.db from overlayed JSON snapshot
         run: dotnet run --project tools/Origins.Database.Import/Origins.Database.Import.csproj --configuration Release -- ./SnapshotOrigins ./DatabaseOrigins ./BackupOrigins
       - name: Verify ORIGINS reconstructed database
@@ -107,6 +123,8 @@ jobs:
             SnapshotOrigins/overlay-report.json
             DatabaseOrigins/import-report.json
             DatabaseOrigins/audit.json
+            MagicResearch/crystal-source-catalog.json
+            MagicResearch/crystal-zircon-comparison.json
           if-no-files-found: warn
       - name: Publish editable snapshots
         if: success()
@@ -126,28 +144,30 @@ jobs:
             Database2026/System.db
             DatabaseOrigins/System.db
           if-no-files-found: error
-      - name: Publish validated base snapshot to generated branch
+      - name: Publish validated snapshot and magic research to generated branch
         if: success() && github.event_name != 'pull_request'
         shell: bash
         run: |
           set -euo pipefail
-          rm -rf database/generated/zircon-system
-          mkdir -p database/generated/zircon-system
+          rm -rf database/generated/zircon-system database/generated/magic-research
+          mkdir -p database/generated/zircon-system database/generated/magic-research
           cp -a SnapshotBase/. database/generated/zircon-system/
           cp Database2026/migration-report.json database/generated/zircon-system/migration-report.json
           cp Database2026/audit.json database/generated/zircon-system/audit.json
           cp DatabaseOrigins/import-report.json database/generated/zircon-system/import-report.json
           cp SnapshotOrigins/overlay-report.json database/generated/zircon-system/overlay-report.json
+          cp MagicResearch/crystal-source-catalog.json database/generated/magic-research/crystal-source-catalog.json
+          cp MagicResearch/crystal-zircon-comparison.json database/generated/magic-research/crystal-zircon-comparison.json
 
           git config user.name "ORIGINS Database Bot"
           git config user.email "actions@users.noreply.github.com"
           git checkout -B generated/zircon-system-snapshot
-          git add database/generated/zircon-system
+          git add database/generated/zircon-system database/generated/magic-research
 
           if git diff --cached --quiet; then
-            echo "Generated snapshot is unchanged."
+            echo "Generated snapshot/research is unchanged."
             exit 0
           fi
 
-          git commit -m "generated(db): refresh validated Zircon system snapshot"
+          git commit -m "generated(db): refresh validated Zircon snapshot and Crystal magic research"
           git push --force origin HEAD:generated/zircon-system-snapshot
