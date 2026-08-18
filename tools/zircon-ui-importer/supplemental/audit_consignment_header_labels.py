@@ -1,5 +1,9 @@
 #!/usr/bin/env python3
-"""Strict gate for the ten Consignment CreateHeaderLabel call sites."""
+"""Strict compatibility gate for the ten Consignment CreateHeaderLabel calls.
+
+The controls are emitted by augment_consignment_deterministic_composites.py.
+This audit preserves the older focused contract without creating a second set.
+"""
 from __future__ import annotations
 
 import argparse
@@ -35,17 +39,22 @@ def main() -> None:
     window = next((w for w in spec.get("windows", []) if w.get("field") == "ConsignmentBox"), None)
     if window is None:
         raise SystemExit("ConsignmentBox missing")
-    contract = window.get("deterministicConsignmentHeaderLabels") or {}
-    if contract.get("passed") is not True or contract.get("callSites") != 10 or contract.get("controlsAdded") != 10:
-        raise SystemExit(f"Consignment header helper contract incomplete: {contract}")
-    if contract.get("runtimePayloadsInvented") is not False:
-        raise SystemExit(f"Consignment header helper introduced runtime payloads: {contract}")
+
+    modern = window.get("deterministicConsignmentComposites") or {}
+    compat = window.get("consignmentHeaderCompatibility") or {}
+    if modern.get("passed") is not True or modern.get("headerLabels") != 10 or modern.get("controlsAdded") != 135:
+        raise SystemExit(f"Modern Consignment header ownership incomplete: {modern}")
+    if compat.get("passed") is not True or compat.get("callSites") != 10 or compat.get("controlsAddedByCompatibilityPass") != 0:
+        raise SystemExit(f"Consignment header compatibility contract incomplete: {compat}")
+    if compat.get("duplicateHeadersInvented") is not False:
+        raise SystemExit(f"Consignment compatibility pass introduced duplicate headers: {compat}")
 
     by = {str(control.get("name") or ""): control for control in window.get("controls", [])}
-    for name, (parent, location, size) in HEADERS.items():
+    for source_name, (parent, location, size) in HEADERS.items():
+        name = f"ConsignmentHeaderSource{source_name}"
         label = by.get(name)
         if label is None or label.get("type") != "DXLabel":
-            raise SystemExit(f"Consignment helper header missing: {name}")
+            raise SystemExit(f"Consolidated Consignment helper header missing: {name}")
         p = props(label)
         expected = {
             "Parent": parent,
@@ -59,28 +68,30 @@ def main() -> None:
         for key, value in expected.items():
             if p.get(key) != value:
                 raise SystemExit(f"Consignment header source property drifted: {name}.{key}={p.get(key)!r}, expected {value!r}")
-        if label.get("sourceHelper") != "CreateHeaderLabel":
+        if "ConsignmentDialog.CreateHeaderLabel" not in str(label.get("sourceGenerated") or ""):
             raise SystemExit(f"Consignment header helper provenance missing: {name}")
+        if label.get("runtimePayloadInvented") is not False:
+            raise SystemExit(f"Consignment header unexpectedly carries runtime payload: {name}")
         if not str(label.get("resolvedText") or "").strip():
             raise SystemExit(f"Consignment header source text unresolved: {name}")
 
-    generated = [
-        control for control in window.get("controls", [])
+    legacy = [
+        control.get("name") for control in window.get("controls", [])
         if str(control.get("sourceGenerated") or "").startswith("deterministic-consignment-headers:")
     ]
-    if len(generated) != 10:
-        raise SystemExit(f"Consignment helper header generated count drifted: {len(generated)}")
-    if any(control.get("runtimePayloadInvented") is not False for control in generated):
-        raise SystemExit("Consignment helper headers introduced runtime payloads")
+    if legacy:
+        raise SystemExit(f"Legacy duplicate Consignment header controls remain: {legacy}")
 
     spec["consignmentHeaderHelperAudit"] = {
         "passed": True,
         "callSites": 10,
         "deterministicControls": 10,
+        "modernOwner": "augment_consignment_deterministic_composites.py",
+        "duplicateControls": 0,
         "runtimePayloadsInvented": False,
     }
     args.spec.write_text(json.dumps(spec, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
-    print("Consignment header helper audit: PASS (10 exact call sites)")
+    print("Consignment header helper audit: PASS -> 10 modern-owned labels, no duplicates")
 
 
 if __name__ == "__main__":
