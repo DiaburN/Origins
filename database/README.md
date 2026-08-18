@@ -2,23 +2,29 @@
 
 ORIGINS keeps Zircon as the authoritative database and server data model.
 
-## Rule
+## Runtime split verified from Zircon
 
-- Static/game definitions come from Zircon `MirDB/SystemModels`.
-- Persistent player/server data comes from Zircon `ServerLibrary/DBModels`.
-- Crystal does **not** replace either database layer.
-- Crystal spell content is mapped onto Zircon `MagicInfo` / `UserMagic`.
-- Spell execution differences are stored only in the additive ORIGINS execution profile layer under `database/magic` and `src/Origins.Database/Magic`.
+The current Zircon server initializes one `MirDB.Session` with two model assemblies:
 
-This prevents two competing database or combat engines from existing in ORIGINS.
+1. **LibraryCore** — static/game definitions.
+2. **ServerLibrary** — persistent player/server data.
 
-## Build order
+The MirDB engine used by this runtime lives inside `LibraryCore/MirDB`.
 
-1. Zircon DB core and SystemModels.
-2. Zircon ServerLibrary DBModels.
-3. Populate ORIGINS static data (items, monsters, maps, NPCs, drops, sets, magic).
-4. Populate persistent/player data models (accounts, characters, inventory, guilds, quests, buffs, user magic).
-5. Import Crystal spell catalogue into Zircon `MagicInfo`.
-6. Add execution profiles only when Crystal behaviour differs from Zircon native behaviour.
+> The top-level legacy `MirDB/SystemModels` project also exists upstream, but it is **not** the source loaded by the current `SEnvir.LoadDatabase()` runtime. ORIGINS must follow the LibraryCore + ServerLibrary path.
 
-See `zircon-model-manifest.json` for the pinned upstream model inventory.
+## ORIGINS rule
+
+- DB engine: Zircon `LibraryCore/MirDB`.
+- Static definitions: Zircon `LibraryCore/SystemModels`.
+- Persistent/player definitions: Zircon `ServerLibrary/DBModels`.
+- Runtime collection wiring: Zircon `ServerLibrary/Envir/SEnvir.LoadDatabase()`.
+- Crystal never replaces these database layers.
+- Crystal spell catalogue maps into Zircon `MagicInfo`; learned/player spell state remains Zircon `UserMagic`.
+- ORIGINS adds execution metadata only when a Crystal spell cannot be represented by Zircon native execution.
+
+See:
+
+- `zircon-model-manifest.json`
+- `zircon-runtime-collections.json`
+- `magic/execution-profiles.json`

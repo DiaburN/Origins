@@ -1,39 +1,45 @@
 # ORIGINS database architecture
 
-## Source of truth
+## Verified Zircon runtime
 
-ORIGINS uses Zircon's database split instead of Crystal's database layout.
+ORIGINS follows the database path that the current Zircon server actually loads, not the older duplicate model project.
 
-### Static definitions — Zircon MirDB
+`SEnvir.LoadDatabase()` creates `Session(SessionMode.Users)`, then initializes it with:
 
-Verified upstream models:
+- the assembly containing `ItemInfo` -> **LibraryCore**
+- the assembly containing `AccountInfo` -> **ServerLibrary**
 
-- DropInfo
-- GuardInfo
-- ItemInfo / ItemInfoStat
-- MagicInfo
-- MapInfo
-- MonsterInfo / MonsterInfoStat
-- MovementInfo
-- NPCInfo
-- RespawnInfo
-- SafeZoneInfo
-- SetInfo / SetInfoStat
+Therefore the ORIGINS database foundation is:
 
-### Persistent data — Zircon ServerLibrary/DBModels
+```text
+LibraryCore/MirDB            -> database engine
+LibraryCore/SystemModels     -> static/game definitions
+ServerLibrary/DBModels       -> persistent/player definitions
+ServerLibrary/Envir/SEnvir   -> runtime collection wiring
+```
 
-Verified upstream models include accounts, characters, auctions, belts, buffs, guilds, mail, refinement, companions, currencies, user drops, user items, UserMagic and UserQuest.
+The upstream top-level `MirDB/SystemModels` tree is retained only as a legacy/reference path and must not be treated as the current server runtime source.
+
+## Static/game definitions
+
+The current LibraryCore model set includes items, monsters, maps, regions, NPCs, drops, respawns, safe zones, magic, quests, stores, currencies, sets, instances, companions, events, castles, mining, base stats and weapon-craft stats.
+
+## Persistent/player definitions
+
+ServerLibrary DB models include accounts, characters, inventory, user item stats, `UserMagic`, buffs, guilds, mail, auctions, quests, currencies, belts, auto-potions, companions, conquest data and other player/server state.
 
 ## Crystal magic integration
 
-Crystal is a content/behaviour reference, not a second database engine.
+Crystal remains a spell content/behaviour reference, never a second database engine.
 
-`MagicInfo` remains the spell definition source of truth. `UserMagic` remains the player spell state source of truth. ORIGINS adds an optional `MagicExecutionProfile`, keyed by `MagicInfo.Index`, only for execution differences that Zircon does not already express.
+- `MagicInfo` = authoritative spell definition.
+- `UserMagic` = authoritative learned/player spell state.
+- `MagicExecutionProfile` = optional ORIGINS metadata describing execution differences only.
 
 Resolution rule:
 
-1. No execution profile -> run Zircon native magic logic.
-2. Profile with a generic execution kind -> run the ORIGINS adapter using Zircon combat primitives.
-3. `SpecialHandler` -> call one isolated ORIGINS handler ported/adapted from the verified Crystal behaviour.
+1. No profile -> execute Zircon native behaviour.
+2. Generic profile -> ORIGINS adapter executes with Zircon combat primitives.
+3. `SpecialHandler` -> one isolated handler is adapted/ported after the Crystal call path is verified.
 
-This guarantees one database model and one combat engine while allowing Crystal spell variety.
+We do not duplicate levels, costs, icon, class or base power in the execution profile; those remain in `MagicInfo`.

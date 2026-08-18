@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "source": "ServerLibrary/Envir/SEnvir.cs::LoadDatabase",
+  "sessionMode": "Users",
+  "initializedAssemblies": ["LibraryCore", "ServerLibrary"],
+  "collections": [
+    "MapInfo", "InstanceInfo", "SafeZoneInfo", "ItemInfo", "MonsterInfo",
+    "RespawnInfo", "MagicInfo", "CurrencyInfo", "AccountInfo", "CharacterInfo",
+    "CharacterBeltLink", "AutoPotionLink", "UserItem", "UserCurrency", "UserItemStat",
+    "RefineInfo", "UserMagic", "BuffInfo", "SetInfo", "AuctionInfo", "MailInfo",
+    "AuctionHistoryInfo", "UserDrop", "StoreInfo", "BaseStat", "MovementInfo", "NPCInfo",
+    "MapRegion", "GuildInfo", "GuildMemberInfo", "UserQuest", "UserQuestTask",
+    "CompanionSkillInfo", "CompanionInfo", "CompanionLevelInfo", "UserCompanion",
+    "CompanionFilters", "UserCompanionUnlock", "BlockInfo", "CastleInfo", "UserConquest",
+    "GameGoldPayment", "GameStoreSale", "GuildWarInfo", "UserConquestStats",
+    "UserFortuneInfo", "WeaponCraftStatInfo"
+  ],
+  "declaredButNotConfirmedInCapturedInitializationBlock": ["InstanceMapInfo"]
+}
