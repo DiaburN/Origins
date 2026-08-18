@@ -90,12 +90,18 @@ jobs:
       - name: Validate source-derived content contract
         run: |
           set -euo pipefail
-          test "$(psql -Atqc 'SELECT count(*) FROM content.class_definitions')" = "6"
-          test "$(psql -Atqc 'SELECT count(*) FROM content.magic_definitions')" = "114"
-          test "$(psql -Atqc 'SELECT count(*) FROM content.magic_definitions WHERE source_implemented')" = "113"
-          test "$(psql -Atqc \"SELECT count(*) FROM content.magic_definitions WHERE game_key='wizard.fastmove' AND source_implemented=false AND icon_index IS NULL\")" = "1"
-          test "$(psql -Atqc \"SELECT concat_ws(',',icon_index,need_level_1,need_level_2,need_level_3) FROM content.magic_definitions WHERE game_key='taoist.healingcircle'\")" = "82,39,41,43"
-          test "$(psql -Atqc \"SELECT concat_ws(',',icon_index,need_level_1,need_level_2,need_level_3,experience_3) FROM content.magic_definitions WHERE game_key='archer.stonetrap'\")" = "97,40,43,46,141"
+          classes="$(psql -Atqc "SELECT count(*) FROM content.class_definitions")"
+          magics="$(psql -Atqc "SELECT count(*) FROM content.magic_definitions")"
+          implemented="$(psql -Atqc "SELECT count(*) FROM content.magic_definitions WHERE source_implemented")"
+          fastmove="$(psql -Atqc "SELECT count(*) FROM content.magic_definitions WHERE game_key='wizard.fastmove' AND source_implemented=false AND icon_index IS NULL")"
+          healing="$(psql -Atqc "SELECT concat_ws(',',icon_index,need_level_1,need_level_2,need_level_3) FROM content.magic_definitions WHERE game_key='taoist.healingcircle'")"
+          stonetrap="$(psql -Atqc "SELECT concat_ws(',',icon_index,need_level_1,need_level_2,need_level_3,experience_3) FROM content.magic_definitions WHERE game_key='archer.stonetrap'")"
+          test "$classes" = "6"
+          test "$magics" = "114"
+          test "$implemented" = "113"
+          test "$fastmove" = "1"
+          test "$healing" = "82,39,41,43"
+          test "$stonetrap" = "97,40,43,46,141"
           echo "Content contract: PASS"
 
       - name: Validate Zircon-style player magic lifecycle
