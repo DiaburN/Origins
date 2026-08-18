@@ -16,6 +16,12 @@ function childSpec(raw,defaultIndex){
   const libraryMatch=text.match(/\bLibraryFile\s*=\s*LibraryFile\.([A-Za-z0-9_]+)/);
   return {index:indexMatch?Number(indexMatch[1]):defaultIndex,library:libraryMatch?.[1]||'Interface'};
 }
+function applyChildImage(image,spec){
+  if(!image)return;
+  const disabled=spec.index<0||spec.library==='None';
+  if(disabled){image.removeAttribute('src');image.style.display='none';image.dataset.sourceArtworkDisabled='true';return}
+  image.src=asset(spec.library,spec.index);image.style.display='';delete image.dataset.sourceArtworkDisabled;
+}
 function applyScrollbar(element,control){
   if(!(element instanceof Element))return;
   const p=control.properties||{},vertical=control.type==='DXVScrollBar';
@@ -25,9 +31,9 @@ function applyScrollbar(element,control){
   const previousImage=element.querySelector(':scope > .dx-scroll-prev');
   const nextImage=element.querySelector(':scope > .dx-scroll-next');
   const thumbImage=element.querySelector(':scope > .dx-scroll-thumb');
-  if(previousImage)previousImage.src=asset(previous.library,previous.index);
-  if(nextImage)nextImage.src=asset(next.library,next.index);
-  if(thumbImage)thumbImage.src=asset(thumb.library,thumb.index);
+  applyChildImage(previousImage,previous);
+  applyChildImage(nextImage,next);
+  applyChildImage(thumbImage,thumb);
 
   const border=boolFrom(p.Border,true);
   element.style.border=border?`1px solid ${colour(p.BorderColour,PRIMARY)}`:'none';
