@@ -18,13 +18,18 @@ def parse_defaults(text: str) -> dict[str, object]:
     values: dict[str, object] = {}
     intro = re.search(r"IntroSceneSize\s*=\s*new Size\(\s*(\d+)\s*,\s*(\d+)\s*\)", text)
     intro_size = [int(intro.group(1)), int(intro.group(2))] if intro else None
-    pattern = re.compile(r"public\s+static\s+(bool|int|string|Size)\s+([A-Za-z_][A-Za-z0-9_]*)\s*\{\s*get;\s*set;\s*\}\s*(?:=\s*([^;]+))?;")
+    # C# auto-properties without an explicit initializer end at `}` rather than
+    # `};`. For value types their checked-in default is the CLR default (false/0).
+    # Keep the initializer + semicolon optional so `VSync { get; set; }` and
+    # `LimitFPS { get; set; }` are parsed source-faithfully as false.
+    pattern = re.compile(r"public\s+static\s+(bool|int|string|Size)\s+([A-Za-z_][A-Za-z0-9_]*)\s*\{\s*get;\s*set;\s*\}\s*(?:=\s*([^;]+)\s*;)?")
     for match in pattern.finditer(text):
         type_name, name, expression = match.groups()
         expression = expression.strip() if expression else None
         if type_name == "bool": values[name] = expression == "true" if expression is not None else False
         elif type_name == "int":
             if expression and re.fullmatch(r"-?\d+", expression): values[name] = int(expression)
+            elif expression is None: values[name] = 0
         elif type_name == "string":
             if expression == "string.Empty": values[name] = ""
             elif expression:
@@ -75,6 +80,12 @@ def main() -> None:
     window_text = window_path.read_text(encoding="utf-8-sig")
     game_text = game_path.read_text(encoding="utf-8-sig")
     defaults = parse_defaults(config_text)
+
+    # Parser smoke for current implicit C# value-type defaults. These are source
+    # facts, not viewer guesses, and should fail loudly if Config.cs syntax moves.
+    for name in ("VSync", "LimitFPS"):
+        if defaults.get(name) is not False:
+            raise SystemExit(f"Implicit bool Config default parsing failed for {name}: {defaults.get(name)!r}")
 
     config_window = next((item for item in spec.get("windows", []) if item.get("field") == "ConfigBox"), None)
     if not config_window: raise SystemExit("ConfigBox missing from source manifest")
@@ -137,10 +148,10 @@ def main() -> None:
 
     config_window["sourceConfigDefaults"] = {key: defaults.get(key) for key in sorted({entry["configProperty"] for entry in bindings})}
     config_window["sourceConfigPass"] = {
-        "bindingCount": len(bindings),"resolvedComboDefaults": resolved_combo_defaults,"gameSceneDynamicEnabledControls": enabled_in_game,"checkedInDefaultsOnly": True,"zirconIniInvented": False,"runtimeRenderingEnvironmentInvented": False,
+        "bindingCount": len(bindings),"resolvedComboDefaults": resolved_combo_defaults,"gameSceneDynamicEnabledControls": enabled_in_game,"checkedInDefaultsOnly": True,"implicitValueTypeDefaultsParsed": True,"zirconIniInvented": False,"runtimeRenderingEnvironmentInvented": False,
     }
     args.spec.write_text(json.dumps(spec, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
-    print(f"Config source defaults promoted: {len(bindings)} OnVisible bindings; combo defaults={resolved_combo_defaults}; GameScene dynamic enabled={len(enabled_in_game)}")
+    print(f"Config source defaults promoted: {len(bindings)} OnVisible bindings; combo defaults={resolved_combo_defaults}; GameScene dynamic enabled={len(enabled_in_game)}; implicit bool defaults=2")
 
 
 if __name__ == "__main__": main()
