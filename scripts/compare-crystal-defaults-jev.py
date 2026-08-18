@@ -14,6 +14,10 @@ FIELDS = [
 ]
 
 
+def is_unresolved(value):
+    return isinstance(value, dict) and set(value.keys()) == {"raw"}
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("source_catalog", type=pathlib.Path)
@@ -28,11 +32,20 @@ def main() -> int:
     entries = []
     changed = 0
     jev_only = 0
+    unresolved_spell_count = 0
+    unresolved_field_count = 0
+
     for row in jev["magics"]:
         spell_id = row["SpellId"]
         src = source_by_id.get(spell_id)
         if src is None:
-            entries.append({"spellId": spell_id, "spell": row["Spell"], "status": "jev_only_unknown_enum", "differences": {}})
+            entries.append({
+                "spellId": spell_id,
+                "spell": row["Spell"],
+                "status": "legacy_unknown_not_in_current_enum",
+                "differences": {},
+                "unresolvedSourceFields": []
+            })
             jev_only += 1
             continue
 
@@ -40,23 +53,37 @@ def main() -> int:
         overrides = ((src.get("updateOverrides") or {}).get("fields") or {})
         defaults.update(overrides)
         differences = {}
+        unresolved = []
+
         for field in FIELDS:
-            source_field = "Name" if field == "Name" else field
-            source_value = defaults.get(source_field)
+            source_value = defaults.get(field)
             jev_value = row.get(field)
+            if is_unresolved(source_value):
+                unresolved.append({"field": field, "sourceExpression": source_value["raw"], "jevEffective": jev_value})
+                continue
             if source_value != jev_value:
                 differences[field] = {"sourceEffectiveDefault": source_value, "jevEffective": jev_value}
 
-        status = "jev_matches_source_defaults" if not differences else "jev_overrides_source_defaults"
+        if unresolved:
+            unresolved_spell_count += 1
+            unresolved_field_count += len(unresolved)
+
         if differences:
+            status = "jev_overrides_source_defaults"
             changed += 1
+        elif unresolved:
+            status = "matches_known_defaults_with_unresolved_source_fields"
+        else:
+            status = "jev_matches_source_defaults"
+
         entries.append({
             "spellId": spell_id,
             "spell": row["Spell"],
             "category": src["category"],
             "kind": src["kind"],
             "status": status,
-            "differences": differences
+            "differences": differences,
+            "unresolvedSourceFields": unresolved
         })
 
     output = {
@@ -64,16 +91,26 @@ def main() -> int:
         "sourceCatalogCommit": source["source"]["commit"],
         "jevDatabaseCommit": jev["source"]["commit"],
         "jevDatabaseVersion": jev["reader"]["loadVersion"],
+        "policy": {
+            "unresolvedSourceExpressionCountsAsOverride": False,
+            "legacyUnknownEnumAutoImported": False
+        },
         "counts": {
             "effectiveJevSpells": len(jev["magics"]),
             "jevOverridesSourceDefaults": changed,
-            "jevOnlyUnknownEnum": jev_only
+            "jevOnlyUnknownEnum": jev_only,
+            "spellsWithUnresolvedSourceFields": unresolved_spell_count,
+            "unresolvedSourceFieldCount": unresolved_field_count
         },
         "entries": entries
     }
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(output, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
-    print(f"Crystal Jev/default comparison: {len(entries)} spells, {changed} with effective value differences, {jev_only} unknown")
+    print(
+        f"Crystal Jev/default comparison: {len(entries)} spells, "
+        f"{changed} proven effective value differences, {jev_only} legacy unknown, "
+        f"{unresolved_field_count} unresolved source fields"
+    )
     return 0
 
 
