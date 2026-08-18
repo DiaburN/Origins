@@ -92,12 +92,13 @@ jobs:
 
           assert not spec['customDrawAudit']['unclassified'], spec['customDrawAudit']['unclassified']
           assert spec['overflowContractPass']['contractCount'] == 7
-          assert spec['complexActionAudit']['contractCount'] == 6
+          assert spec['complexActionAudit']['contractCount'] == 7
           combo=spec['comboOptionPass']
           assert combo['runtimeOptionsInvented'] is False
-          assert combo['deterministicOptionCount'] >= 6
-          assert combo['combosWithDeterministicOptions'] >= 2
+          assert combo['deterministicOptionCount'] >= 41
+          assert combo['combosWithDeterministicOptions'] >= 3
           assert combo['helperBuiltOptionCount'] >= 4
+          assert combo['enumBuiltOptionCount'] >= 34
 
           nested_lfg=next(window for window in spec['nestedWindows'] if window['sourceClass']=='GroupLFGInputWindow')
           lfg_combo=next(control for control in nested_lfg['controls'] if control['name']=='TypeComboBox')
@@ -115,6 +116,15 @@ jobs:
           ]
           assert all(option.get('sourceBuilder') == 'AddSortOption' for option in store_sort['comboOptions'])
           assert store_sort['comboSelectedOptionIndex'] == 0
+
+          storage_combo=next(control for control in by_field['StorageBox']['controls'] if control['name']=='ItemTypeComboBox')
+          assert len(storage_combo['comboOptions']) == 35
+          assert storage_combo['comboOptions'][0]['label'] == 'All'
+          assert storage_combo['comboOptions'][0]['valueExpression'] == 'null'
+          assert storage_combo['comboOptions'][-1]['valueExpression'] == 'ItemType.Reel'
+          dark_stone=next(option for option in storage_combo['comboOptions'] if option['valueExpression']=='ItemType.DarkStone')
+          assert dark_stone['label'] == 'Dark Stone'
+          assert storage_combo['comboSelectedOptionIndex'] == 0
 
           assert by_field['BeltBox']['root']['Size'] == 'new Size(64, 54)'
           assert by_field['MiniMapBox']['root']['Size'] == 'new Size(200, 200)'
@@ -141,6 +151,7 @@ jobs:
           print('Complex action contracts:',spec['complexActionAudit']['contractCount'])
           print('Deterministic combo options:',combo['deterministicOptionCount'])
           print('Helper-built combo options:',combo['helperBuiltOptionCount'])
+          print('Enum-built combo options:',combo['enumBuiltOptionCount'])
           PY
 
       - name: Check source runtime syntax
