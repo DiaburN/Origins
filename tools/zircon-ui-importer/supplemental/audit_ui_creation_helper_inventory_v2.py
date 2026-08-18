@@ -54,6 +54,107 @@ BIGMAP_FLATTENED_SOURCE = (
 )
 
 
+def strip_csharp_comments(text: str) -> str:
+    """Mask // and /* */ comments without corrupting C# string/char literals.
+
+    Newlines and non-comment text are preserved so the existing lightweight
+    structural parser sees the same executable source shape, but commented-out
+    constructors, loops and runtime references cannot become false UI evidence.
+    """
+    out: list[str] = []
+    i = 0
+    length = len(text)
+
+    def copy_normal_string(start: int, prefix_len: int) -> int:
+        j = start
+        out.extend(text[j : j + prefix_len])
+        j += prefix_len
+        while j < length:
+            ch = text[j]
+            out.append(ch)
+            j += 1
+            if ch == "\\" and j < length:
+                out.append(text[j])
+                j += 1
+                continue
+            if ch == '"':
+                break
+        return j
+
+    def copy_verbatim_string(start: int, prefix_len: int) -> int:
+        j = start
+        out.extend(text[j : j + prefix_len])
+        j += prefix_len
+        while j < length:
+            ch = text[j]
+            out.append(ch)
+            j += 1
+            if ch != '"':
+                continue
+            if j < length and text[j] == '"':
+                out.append(text[j])
+                j += 1
+                continue
+            break
+        return j
+
+    def copy_char_literal(start: int) -> int:
+        j = start
+        out.append(text[j])
+        j += 1
+        while j < length:
+            ch = text[j]
+            out.append(ch)
+            j += 1
+            if ch == "\\" and j < length:
+                out.append(text[j])
+                j += 1
+                continue
+            if ch == "'":
+                break
+        return j
+
+    while i < length:
+        if text.startswith("//", i):
+            out.extend("  ")
+            i += 2
+            while i < length and text[i] not in "\r\n":
+                out.append(" ")
+                i += 1
+            continue
+        if text.startswith("/*", i):
+            out.extend("  ")
+            i += 2
+            while i < length:
+                if text.startswith("*/", i):
+                    out.extend("  ")
+                    i += 2
+                    break
+                ch = text[i]
+                out.append(ch if ch in "\r\n" else " ")
+                i += 1
+            continue
+        if text.startswith('$@"', i) or text.startswith('@$"', i):
+            i = copy_verbatim_string(i, 3)
+            continue
+        if text.startswith('@"', i):
+            i = copy_verbatim_string(i, 2)
+            continue
+        if text.startswith('$"', i):
+            i = copy_normal_string(i, 2)
+            continue
+        if text[i] == '"':
+            i = copy_normal_string(i, 1)
+            continue
+        if text[i] == "'":
+            i = copy_char_literal(i)
+            continue
+        out.append(text[i])
+        i += 1
+
+    return "".join(out)
+
+
 def external_runtime_bound(structural_chunk: str) -> bool:
     return any(re.search(pattern, structural_chunk) for pattern in RUNTIME_PATTERNS)
 
@@ -160,7 +261,7 @@ def main() -> None:
         if not source_path or not source_class or not path.exists():
             continue
 
-        source_text = path.read_text(encoding="utf-8-sig")
+        source_text = strip_csharp_comments(path.read_text(encoding="utf-8-sig"))
         body = class_body(source_text, source_class)
         ctor = constructor_body(body, source_class)
         method_map = methods(body)
@@ -211,6 +312,7 @@ def main() -> None:
                 "externalRuntimeData": runtime_data,
                 "classification": classification,
                 "status": status,
+                "commentsExcludedFromCreationClassification": True,
                 "eventCallbacksExcludedFromCreationClassification": True,
                 "staticGlobalsDoNotImplyRuntimeData": True,
                 "sourceBackedOnly": True,
@@ -271,6 +373,8 @@ def main() -> None:
     # structurally deterministic. CreateWarTab is intentionally mixed because it
     # additionally loops over CEnvir.CastleInfoList.Binding; its deterministic
     # WarPanel/StartWarButton are materialised, but GuildCastlePanel rows are not.
+    # CreateCastleTab contains an old CastleInfo loop only inside comments; that
+    # dead source must not become runtime UI evidence.
     guild = rows_for("GuildDialog")
     guild_helpers = {
         "CreateCreateTab", "CreateHomeTab", "CreateMemberTab", "CreateStorageTab",
@@ -285,6 +389,9 @@ def main() -> None:
             raise SystemExit(f"Guild deterministic helper misclassified: {helper} -> {row}")
         if row["status"] != "materialized":
             raise SystemExit(f"Guild deterministic helper not materialized: {helper} -> {row}")
+    castle = guild["CreateCastleTab"]
+    if "GuildCastlePanel" in castle["createdTypes"] or castle["externalRuntimeData"]:
+        raise SystemExit(f"Guild CreateCastleTab commented CastleInfo loop leaked into live source inventory: {castle}")
     war = guild["CreateWarTab"]
     if not war["constructorReachable"] or war["classification"] != "runtime-bound" or war["status"] != "materialized":
         raise SystemExit(f"Guild CreateWarTab mixed source/runtime contract drifted: {war}")
@@ -313,6 +420,7 @@ def main() -> None:
         "magicTabsRemainRuntimeBound": True,
         "guildConstructorHelpersMaterialized": True,
         "guildWarRuntimeCastlePanelsRemainNeutral": True,
+        "commentsExcludedFromCreationClassification": True,
         "eventCallbacksExcludedFromConstructorReachability": True,
         "eventCallbacksExcludedFromCreationClassification": True,
         "staticGlobalsDoNotImplyRuntimeData": True,
