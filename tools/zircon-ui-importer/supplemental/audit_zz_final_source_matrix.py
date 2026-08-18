@@ -6,139 +6,36 @@ actual promoted manifest and current runtime-neutral contracts; it never creates
 controls or invents payloads.
 """
 from __future__ import annotations
-
-import argparse
-import json
+import argparse,json
 from pathlib import Path
+MIN_GAME_CONTROLS=2487
+MIN_NESTED_CONTROLS=143
 
-MIN_GAME_CONTROLS = 2487
-MIN_NESTED_CONTROLS = 143
+def require(failures,condition,message):
+    if not condition: failures.append(message)
 
-
-def require(failures: list[str], condition: bool, message: str) -> None:
-    if not condition:
-        failures.append(message)
-
-
-def main() -> None:
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--spec", type=Path, required=True)
-    parser.add_argument("--zircon-root", type=Path, required=True)
-    args = parser.parse_args()
-
-    spec = json.loads(args.spec.read_text(encoding="utf-8"))
-    windows = spec.get("windows", [])
-    nested = spec.get("nestedWindows", [])
-    by = {window.get("field"): window for window in windows}
-    game_controls = sum(len(window.get("controls", [])) for window in windows)
-    nested_controls = sum(len(window.get("controls", [])) for window in nested)
-    failures: list[str] = []
-
-    require(failures, len(windows) == 65, f"GameScene inventory {len(windows)} != 65")
-    require(failures, len(nested) == 15, f"nested inventory {len(nested)} != 15")
-    require(failures, game_controls >= MIN_GAME_CONTROLS, f"GameScene control floor regressed: {game_controls} < {MIN_GAME_CONTROLS}")
-    require(failures, nested_controls >= MIN_NESTED_CONTROLS, f"nested control floor regressed: {nested_controls} < {MIN_NESTED_CONTROLS}")
-
-    anonymous = spec.get("anonymousConstructorControlAudit") or {}
-    require(failures, anonymous.get("passed") is True, f"anonymous constructor audit missing/not PASS: {anonymous}")
-    require(failures, anonymous.get("parserSyntheticSmokePassed") is True, f"anonymous parser smoke missing/not PASS: {anonymous}")
-    require(failures, anonymous.get("sourceAnonymousControls") == anonymous.get("manifestAnonymousControls"), f"anonymous source/manifest mismatch: {anonymous}")
-    require(failures, anonymous.get("tradeAnonymousGoldLabels") == 2, f"Trade anonymous Gold contract drifted: {anonymous}")
-    require(failures, anonymous.get("controlsFabricatedByAudit") is False and anonymous.get("runtimePayloadsInvented") is False, f"anonymous audit fabrication/runtime boundary broken: {anonymous}")
-
-    custom = spec.get("customCompositeInventory") or {}
-    require(failures, custom.get("passed") is True and custom.get("version") == 2, f"custom composite inventory missing/not v2 PASS: {custom}")
-    require(failures, custom.get("constructorAndHelperReachability") is True and custom.get("eventCallbacksExcluded") is True, f"custom composite reachability boundary broken: {custom}")
-    require(failures, custom.get("controlsFabricatedByAudit") is False and custom.get("runtimePayloadsInvented") is False, f"custom composite audit fabricated state: {custom}")
-
-    direct = spec.get("directCustomCompositeInventory") or {}
-    require(failures, direct.get("passed") is True, f"direct custom composite inventory missing/not PASS: {direct}")
-    require(failures, direct.get("allDirectCustomTypesMaterialized") is True, f"direct custom composites not fully materialized: {direct}")
-    require(failures, direct.get("eventCallbackBodiesExcluded") is True and direct.get("runtimePayloadsInvented") is False, f"direct custom boundary broken: {direct}")
-
-    target = spec.get("targetTypedCustomControlAudit") or {}
-    require(failures, target.get("passed") is True, f"target-typed custom control audit missing/not PASS: {target}")
-    require(failures, target.get("allResolvedCustomControlsMaterialized") is True, f"target-typed custom controls incomplete: {target}")
-    require(failures, int(target.get("resolvedCustomCreations", 0)) >= 7, f"target-typed custom control baseline regressed below Companion rows: {target}")
-    require(failures, target.get("eventCallbackBodiesExcluded") is True and target.get("controlsFabricatedByAudit") is False and target.get("runtimePayloadsInvented") is False, f"target-typed audit boundary broken: {target}")
-
-    rows = spec.get("deterministicSourceRowAudit") or {}
-    require(failures, rows.get("passed") is True, "deterministic row audit missing/not PASS")
-    for key, value in {"rankingRows": 12, "dungeonRows": 9, "fortuneRows": 9, "bigMapRows": 48}.items():
-        require(failures, rows.get(key) == value, f"deterministic {key}={rows.get(key)!r}, expected {value}")
-
-    simple_checks = (
-        ("Guild member rows", spec.get("guildMemberRowAudit")),
-        ("Guild root helpers", spec.get("guildRootHelperAudit")),
-        ("GameStore", spec.get("gameStoreCompositeAudit")),
-        ("Communication", spec.get("communicationReceivedRowAudit")),
-        ("Consignment compatibility", spec.get("consignmentCompositeAudit")),
-        ("Consignment strict", spec.get("consignmentDeterministicAudit")),
-        ("Consignment headers", spec.get("consignmentHeaderHelperAudit")),
-        ("Currency tree", spec.get("currencyTreeAudit")),
-        ("Companion bonus rows", spec.get("companionBonusRowAudit")),
-        ("UI helper inventory", spec.get("uiCreationHelperInventory")),
-        ("source search flows", spec.get("sourceSearchFlowAudit")),
-        ("literal asset refs", spec.get("supplementalLiteralAssetRefPass")),
-    )
-    for label, report in simple_checks:
-        require(failures, isinstance(report, dict) and report.get("passed") is True, f"{label} audit missing/not PASS: {report}")
-
-    group_lfg = (by.get("GroupBox") or {}).get("groupLFGRowAudit") or {}
-    require(failures, group_lfg.get("passed") is True and group_lfg.get("rows") == 5 and group_lfg.get("deterministicControls") == 20 and group_lfg.get("runtimeLfgInvented") is False, f"Group LFG audit incomplete: {group_lfg}")
-
-    consignment = spec.get("consignmentCompositeAudit") or {}
-    require(failures, consignment.get("contractVersion") == 2 and consignment.get("deterministicControls") == 135 and consignment.get("headerLabels") == 10 and consignment.get("itemTypeButtons") == 38 and consignment.get("searchRows") == 6 and consignment.get("consignRows") == 6, f"Consignment v2 matrix drifted: {consignment}")
-    require(failures, consignment.get("runtimeMarketInfoInvented") is False and consignment.get("runtimeItemsInvented") is False, f"Consignment runtime-neutral boundary broken: {consignment}")
-    header = spec.get("consignmentHeaderHelperAudit") or {}
-    require(failures, header.get("deterministicControls") == 10 and header.get("duplicateControls") == 0 and header.get("runtimePayloadsInvented") is False, f"Consignment header compatibility matrix drifted: {header}")
-
-    currency = spec.get("currencyTreeAudit") or {}
-    require(failures, currency.get("deterministicControls") == 2 and currency.get("runtimeHeadersInvented") is False and currency.get("runtimeCurrencyItemsInvented") is False and currency.get("runtimeCurrencyDataInvented") is False, f"Currency tree matrix drifted: {currency}")
-
-    companion = spec.get("companionBonusRowAudit") or {}
-    require(failures, companion.get("rows") == 7 and companion.get("deterministicControls") == 21 and companion.get("targetTypedNewSource") is True, f"Companion target-typed bonus matrix drifted: {companion}")
-    require(failures, companion.get("runtimeBonusStatsInvented") is False and companion.get("runtimeBonusTextInvented") is False, f"Companion runtime-neutral boundary broken: {companion}")
-
-    helpers = spec.get("uiCreationHelperInventory") or {}
-    require(failures, helpers.get("version") == 2, f"UI helper inventory version drifted: {helpers.get('version')}")
-    for flag in (
-        "knownBigMapHelpersMaterialized",
-        "chatOptionsAddNewTabDeferredLocal",
-        "helpPagesRemainRuntimeBound",
-        "magicTabsRemainRuntimeBound",
-        "guildConstructorHelpersMaterialized",
-        "guildWarRuntimeCastlePanelsRemainNeutral",
-        "eventCallbacksExcludedFromCreationClassification",
-        "staticGlobalsDoNotImplyRuntimeData",
-    ):
-        require(failures, helpers.get(flag) is True, f"UI helper inventory flag missing: {flag}")
-    require(failures, helpers.get("controlsFabricatedByAudit") is False and helpers.get("runtimePayloadsInvented") is False, "UI helper inventory fabricated controls/runtime payloads")
-
-    report = {
-        "passed": not failures,
-        "gameSceneWindows": len(windows),
-        "nestedWindows": len(nested),
-        "gameSceneControls": game_controls,
-        "nestedControls": nested_controls,
-        "minimumGameSceneControls": MIN_GAME_CONTROLS,
-        "minimumNestedControls": MIN_NESTED_CONTROLS,
-        "anonymousSourceControls": anonymous.get("sourceAnonymousControls"),
-        "anonymousManifestControls": anonymous.get("manifestAnonymousControls"),
-        "targetTypedCustomCreations": target.get("resolvedCustomCreations"),
-        "runtimePayloadsInvented": False,
-        "controlsFabricatedByGate": False,
-        "failures": failures,
-    }
-    spec["finalSupplementalSourceMatrix"] = report
-    args.spec.write_text(json.dumps(spec, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
-    if failures:
-        raise SystemExit("Final supplemental source matrix failed:\n- " + "\n- ".join(failures))
-    print(
-        "Final supplemental source matrix: PASS -> "
-        f"65+15 windows, {game_controls}+{nested_controls} controls, targetTyped={target.get('resolvedCustomCreations')}"
-    )
-
-
-if __name__ == "__main__":
-    main()
+def main():
+    p=argparse.ArgumentParser();p.add_argument('--spec',type=Path,required=True);p.add_argument('--zircon-root',type=Path,required=True);a=p.parse_args()
+    spec=json.loads(a.spec.read_text(encoding='utf-8'));windows=spec.get('windows',[]);nested=spec.get('nestedWindows',[]);by={w.get('field'):w for w in windows};game_controls=sum(len(w.get('controls',[])) for w in windows);nested_controls=sum(len(w.get('controls',[])) for w in nested);failures=[]
+    require(failures,len(windows)==65,f'GameScene inventory {len(windows)} != 65');require(failures,len(nested)==15,f'nested inventory {len(nested)} != 15');require(failures,game_controls>=MIN_GAME_CONTROLS,f'GameScene control floor regressed: {game_controls} < {MIN_GAME_CONTROLS}');require(failures,nested_controls>=MIN_NESTED_CONTROLS,f'nested control floor regressed: {nested_controls} < {MIN_NESTED_CONTROLS}')
+    anonymous=spec.get('anonymousConstructorControlAudit') or {};require(failures,anonymous.get('passed') is True,f'anonymous constructor audit missing/not PASS: {anonymous}');require(failures,anonymous.get('parserSyntheticSmokePassed') is True,f'anonymous parser smoke missing/not PASS: {anonymous}');require(failures,anonymous.get('sourceAnonymousControls')==anonymous.get('manifestAnonymousControls'),f'anonymous source/manifest mismatch: {anonymous}');require(failures,anonymous.get('tradeAnonymousGoldLabels')==2,f'Trade anonymous Gold contract drifted: {anonymous}');require(failures,anonymous.get('controlsFabricatedByAudit') is False and anonymous.get('runtimePayloadsInvented') is False,f'anonymous audit boundary broken: {anonymous}')
+    custom=spec.get('customCompositeInventory') or {};require(failures,custom.get('passed') is True and custom.get('version')==3,f'custom composite inventory missing/not v3 PASS: {custom}');require(failures,custom.get('constructorAndHelperReachability') is True and custom.get('eventCallbacksExcluded') is True,f'custom composite reachability boundary broken: {custom}');require(failures,custom.get('controlsFabricatedByAudit') is False and custom.get('runtimePayloadsInvented') is False,f'custom composite audit fabricated state: {custom}')
+    direct=spec.get('directCustomCompositeInventory') or {};require(failures,direct.get('passed') is True,f'direct custom inventory missing/not PASS: {direct}');require(failures,direct.get('allDirectCustomTypesMaterialized') is True,f'direct custom composites incomplete: {direct}');require(failures,direct.get('eventCallbackBodiesExcluded') is True and direct.get('runtimePayloadsInvented') is False,f'direct custom boundary broken: {direct}')
+    target=spec.get('targetTypedCustomControlAudit') or {};require(failures,target.get('passed') is True,f'target-typed custom audit missing/not PASS: {target}');require(failures,target.get('allResolvedCustomControlsMaterialized') is True,f'target-typed custom controls incomplete: {target}');require(failures,int(target.get('resolvedCustomCreations',0))>=7,f'target-typed baseline regressed below Companion rows: {target}');require(failures,target.get('eventCallbackBodiesExcluded') is True and target.get('controlsFabricatedByAudit') is False and target.get('runtimePayloadsInvented') is False,f'target-typed audit boundary broken: {target}')
+    rows=spec.get('deterministicSourceRowAudit') or {};require(failures,rows.get('passed') is True,'deterministic row audit missing/not PASS')
+    for key,value in {'rankingRows':12,'dungeonRows':9,'fortuneRows':9,'bigMapRows':48}.items():require(failures,rows.get(key)==value,f'deterministic {key}={rows.get(key)!r}, expected {value}')
+    for label,report in (('Guild member rows',spec.get('guildMemberRowAudit')),('Guild root helpers',spec.get('guildRootHelperAudit')),('GameStore',spec.get('gameStoreCompositeAudit')),('Communication',spec.get('communicationReceivedRowAudit')),('Consignment compatibility',spec.get('consignmentCompositeAudit')),('Consignment strict',spec.get('consignmentDeterministicAudit')),('Consignment headers',spec.get('consignmentHeaderHelperAudit')),('Currency tree',spec.get('currencyTreeAudit')),('Companion bonus rows',spec.get('companionBonusRowAudit')),('UI helper inventory',spec.get('uiCreationHelperInventory')),('source search flows',spec.get('sourceSearchFlowAudit')),('literal asset refs',spec.get('supplementalLiteralAssetRefPass')),('duplicate deterministic emitters',spec.get('duplicateDeterministicEmitterAudit'))):require(failures,isinstance(report,dict) and report.get('passed') is True,f'{label} audit missing/not PASS: {report}')
+    group_lfg=(by.get('GroupBox') or {}).get('groupLFGRowAudit') or {};require(failures,group_lfg.get('passed') is True and group_lfg.get('rows')==5 and group_lfg.get('deterministicControls')==20 and group_lfg.get('runtimeLfgInvented') is False,f'Group LFG audit incomplete: {group_lfg}')
+    consignment=spec.get('consignmentCompositeAudit') or {};require(failures,consignment.get('contractVersion')==2 and consignment.get('deterministicControls')==135 and consignment.get('headerLabels')==10 and consignment.get('itemTypeButtons')==38 and consignment.get('searchRows')==6 and consignment.get('consignRows')==6,f'Consignment v2 matrix drifted: {consignment}');require(failures,consignment.get('runtimeMarketInfoInvented') is False and consignment.get('runtimeItemsInvented') is False,f'Consignment runtime boundary broken: {consignment}')
+    header=spec.get('consignmentHeaderHelperAudit') or {};require(failures,header.get('deterministicControls')==10 and header.get('duplicateControls')==0 and header.get('runtimePayloadsInvented') is False,f'Consignment header matrix drifted: {header}')
+    currency=spec.get('currencyTreeAudit') or {};require(failures,currency.get('deterministicControls')==2 and currency.get('runtimeHeadersInvented') is False and currency.get('runtimeCurrencyItemsInvented') is False and currency.get('runtimeCurrencyDataInvented') is False,f'Currency tree matrix drifted: {currency}')
+    companion=spec.get('companionBonusRowAudit') or {};require(failures,companion.get('rows')==7 and companion.get('deterministicControls')==21 and companion.get('targetTypedNewSource') is True,f'Companion target-typed bonus matrix drifted: {companion}');require(failures,companion.get('runtimeBonusStatsInvented') is False and companion.get('runtimeBonusTextInvented') is False,f'Companion runtime boundary broken: {companion}')
+    duplicate=spec.get('duplicateDeterministicEmitterAudit') or {};require(failures,duplicate.get('consignmentAuthoritativeControls')==135 and duplicate.get('currencyAuthoritativeControls')==2 and duplicate.get('duplicateControlIdentityWindows')=={},f'duplicate emitter matrix drifted: {duplicate}')
+    helpers=spec.get('uiCreationHelperInventory') or {};require(failures,helpers.get('version')==2,f'UI helper inventory version drifted: {helpers.get("version")}')
+    for flag in ('knownBigMapHelpersMaterialized','chatOptionsAddNewTabDeferredLocal','helpPagesRemainRuntimeBound','magicTabsRemainRuntimeBound','guildConstructorHelpersMaterialized','guildWarRuntimeCastlePanelsRemainNeutral','eventCallbacksExcludedFromCreationClassification','staticGlobalsDoNotImplyRuntimeData'):require(failures,helpers.get(flag) is True,f'UI helper flag missing: {flag}')
+    require(failures,helpers.get('controlsFabricatedByAudit') is False and helpers.get('runtimePayloadsInvented') is False,'UI helper inventory fabricated controls/runtime payloads')
+    report={'passed':not failures,'gameSceneWindows':len(windows),'nestedWindows':len(nested),'gameSceneControls':game_controls,'nestedControls':nested_controls,'minimumGameSceneControls':MIN_GAME_CONTROLS,'minimumNestedControls':MIN_NESTED_CONTROLS,'anonymousSourceControls':anonymous.get('sourceAnonymousControls'),'anonymousManifestControls':anonymous.get('manifestAnonymousControls'),'customCompositeInventoryVersion':custom.get('version'),'targetTypedCustomCreations':target.get('resolvedCustomCreations'),'runtimePayloadsInvented':False,'controlsFabricatedByGate':False,'failures':failures}
+    spec['finalSupplementalSourceMatrix']=report;a.spec.write_text(json.dumps(spec,indent=2,ensure_ascii=False)+'\n',encoding='utf-8')
+    if failures:raise SystemExit('Final supplemental source matrix failed:\n- '+'\n- '.join(failures))
+    print(f'Final supplemental source matrix: PASS -> 65+15 windows, {game_controls}+{nested_controls} controls, custom=v3, targetTyped={target.get("resolvedCustomCreations")}')
+if __name__=='__main__':main()
