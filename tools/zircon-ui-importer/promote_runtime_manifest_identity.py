@@ -124,6 +124,17 @@ def main() -> None:
             "--spec", str(args.spec),
             "--zircon-root", str(zircon_root),
         ], check=True)
+
+    # The fast supplemental gate and the heavy artifact build must operate on
+    # the same manifest. Run every auto-discovered supplemental augmenter/audit
+    # here as part of official promotion, not only in its standalone workflow.
+    subprocess.run([
+        sys.executable,
+        str(here / "run_supplemental_source_contracts.py"),
+        "--spec", str(args.spec),
+        "--zircon-root", str(zircon_root),
+    ], check=True)
+
     subprocess.run([
         sys.executable,
         str(here / "audit_custom_draw_contracts.py"),
