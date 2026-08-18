@@ -1,6 +1,6 @@
 $ErrorActionPreference = "Stop"
 
-$Url = "https://mirfiles.co.uk/resources/mir3/zircon/Database.7z"
+$Url = "https://files.lomcn.co.uk/resources/mir3/zircon/Database.7z"
 $Root = (Resolve-Path (Join-Path $PSScriptRoot "..")).Path
 $Cache = Join-Path $Root ".cache\zircon-database"
 $Archive = Join-Path $Cache "Database.7z"
@@ -18,6 +18,7 @@ New-Item -ItemType Directory -Force -Path $Extracted | Out-Null
 
 Invoke-WebRequest -Uri $Url -OutFile $Archive
 $Hash = Get-FileHash -Algorithm SHA256 $Archive
+Write-Host "Archive source: $Url"
 Write-Host "Archive SHA-256: $($Hash.Hash)"
 
 & $SevenZip.Source x -y "-o$Extracted" $Archive | Out-Null

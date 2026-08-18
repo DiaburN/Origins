@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-URL="https://mirfiles.co.uk/resources/mir3/zircon/Database.7z"
+URL="https://files.lomcn.co.uk/resources/mir3/zircon/Database.7z"
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 CACHE="$ROOT/.cache/zircon-database"
 ARCHIVE="$CACHE/Database.7z"
@@ -29,6 +29,7 @@ mkdir -p "$EXTRACTED"
 
 curl --fail --location --retry 3 --output "$ARCHIVE" "$URL"
 
+echo "Archive source: $URL"
 echo "Archive SHA-256:"
 sha256sum "$ARCHIVE" || shasum -a 256 "$ARCHIVE"
 
