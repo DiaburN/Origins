@@ -1,5 +1,11 @@
 #!/usr/bin/env python3
-"""Expand the ten deterministic Consignment CreateHeaderLabel() call sites."""
+"""Compatibility gate for Consignment CreateHeaderLabel call sites.
+
+The complete modern Consignment expansion is owned by
+augment_consignment_deterministic_composites.py, including all ten constructor
+CreateHeaderLabel(...) controls. This legacy pass must not emit duplicate labels;
+it only verifies source call sites and that the modern pass already owns them.
+"""
 from __future__ import annotations
 
 import argparse
@@ -7,23 +13,11 @@ import json
 from pathlib import Path
 
 
-PREFIX = "deterministic-consignment-headers:"
-HEADERS = (
-    ("SortLabel", "SearchTab", 10, 6, 50, 20, "ConsignmentDialogSortByLabel"),
-    ("ItemTypesLabel", "SearchTab", 4, 32, 160, 20, "ConsignmentDialogItemTypesLabel"),
-    ("SearchNameLabel", "SearchTab", 180, 32, 172, 20, "ConsignmentDialogNameLabel"),
-    ("SearchLevelLabel", "SearchTab", 356, 32, 55, 20, "ConsignmentDialogLevelLabel"),
-    ("SearchPriceLabel", "SearchTab", 415, 32, 110, 20, "ConsignmentDialogPriceLabel"),
-    ("SellerLabel", "SearchTab", 525, 32, 160, 20, "ConsignmentDialogSellerLabel"),
-    ("ConsignNameLabel", "ConsignTab", 14, 32, 250, 20, "ConsignmentDialogNameLabel"),
-    ("ConsignLevelLabel", "ConsignTab", 260, 32, 60, 20, "ConsignmentDialogLevelLabel"),
-    ("ConsignPriceLabel", "ConsignTab", 325, 32, 140, 20, "ConsignmentDialogPriceLabel"),
-    ("ConsignDateLabel", "ConsignTab", 479, 32, 200, 20, "ConsignmentDialogConsignDateLabel"),
+HEADER_NAMES = (
+    "SortLabel", "ItemTypesLabel", "SearchNameLabel", "SearchLevelLabel",
+    "SearchPriceLabel", "SellerLabel", "ConsignNameLabel", "ConsignLevelLabel",
+    "ConsignPriceLabel", "ConsignDateLabel",
 )
-
-
-def english(spec: dict, key: str) -> str:
-    return str(((spec.get("language") or {}).get("English") or {}).get(key) or "")
 
 
 def assert_source(root: Path) -> None:
@@ -60,46 +54,28 @@ def main() -> None:
     window = next((w for w in spec.get("windows", []) if w.get("field") == "ConsignmentBox"), None)
     if window is None:
         raise SystemExit("ConsignmentBox missing")
-    controls = [control for control in window.get("controls", []) if not str(control.get("sourceGenerated") or "").startswith(PREFIX)]
-    existing = {str(control.get("name") or "") for control in controls}
-    collisions = sorted(existing & {row[0] for row in HEADERS})
-    if collisions:
-        raise SystemExit(f"Consignment helper headers became parser-materialised; reconcile instead of duplicate: {collisions}")
 
-    generated = []
-    for name, parent, x, y, width, height, key in HEADERS:
-        text = english(spec, key)
-        if not text:
-            raise SystemExit(f"Consignment header source text unresolved: {key}")
-        generated.append({
-            "name": name,
-            "type": "DXLabel",
-            "properties": {
-                "Parent": parent,
-                "Location": f"new Point({x}, {y})",
-                "Size": f"new Size({width}, {height})",
-                "AutoSize": "false",
-                "DrawFormat": "TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter",
-                "Text": f"CEnvir.Language.{key}",
-                "ForeColour": "Constants.PrimaryColour",
-                "IsControl": "false",
-            },
-            "resolvedText": text,
-            "sourceGenerated": PREFIX + "ConsignmentDialog.CreateHeaderLabel call",
-            "sourceHelper": "CreateHeaderLabel",
-            "runtimePayloadInvented": False,
-        })
+    contract = window.get("deterministicConsignmentComposites") or {}
+    if contract.get("passed") is not True or contract.get("headerLabels") != 10 or contract.get("controlsAdded") != 135:
+        raise SystemExit(
+            "Modern Consignment deterministic pass must own header labels before legacy compatibility gate: "
+            f"{contract}"
+        )
+    by_name = {str(control.get("name") or ""): control for control in window.get("controls", [])}
+    missing = [name for name in HEADER_NAMES if f"ConsignmentHeaderSource{name}" not in by_name]
+    if missing:
+        raise SystemExit(f"Modern Consignment header controls missing before compatibility gate: {missing}")
 
-    window["controls"] = generated + controls
-    window["deterministicConsignmentHeaderLabels"] = {
+    # This pass intentionally changes no controls and writes no alternate identity.
+    window["consignmentHeaderCompatibility"] = {
         "passed": True,
         "callSites": 10,
-        "controlsAdded": 10,
-        "helper": "CreateHeaderLabel",
-        "runtimePayloadsInvented": False,
+        "modernOwner": "augment_consignment_deterministic_composites.py",
+        "controlsAddedByCompatibilityPass": 0,
+        "duplicateHeadersInvented": False,
     }
     args.spec.write_text(json.dumps(spec, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
-    print("Consignment CreateHeaderLabel expanded: 10 exact constructor call sites")
+    print("Legacy Consignment header compatibility: PASS -> modern pass owns 10 source labels; emitted=0")
 
 
 if __name__ == "__main__":
