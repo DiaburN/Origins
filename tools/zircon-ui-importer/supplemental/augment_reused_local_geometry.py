@@ -2,13 +2,15 @@
 """Resolve render geometry after reused-local identity canonicalization.
 
 The core symbol pass runs before the late reused-local canonicalizer. Zircon
-constructors that reuse locals such as `label` therefore expose two late cases:
+constructors that reuse locals such as `label` therefore expose three late cases:
 
-1. constructor post-assignments (for example `label.Location = ...`) are replayed
-   by the canonicalizer after scalar symbols such as left/right/y/rowSpacing were
-   already resolved; and
-2. scalar locals can themselves depend on the currently-active reused control,
-   for example `x += button.Size.Width + 5` before `button` is assigned again.
+1. the flat parser can carry a later assignment back onto an earlier occurrence
+   of the same local name, so an occurrence must recover geometry from its own
+   exact lexical object initializer;
+2. constructor post-assignments (for example `label.Location = ...`) must be
+   replayed after scalar symbols such as left/right/y/rowSpacing are resolved;
+3. scalar locals can depend on the currently-active reused control, for example
+   `x += button.Size.Width + 5` before `button` is assigned again.
 
 This pass runs immediately after augment_reused_local_control_identity.py. It
 uses exact constructor offsets plus the existing deterministic scalar resolver
@@ -31,14 +33,27 @@ from augment_ui_symbols import (  # noqa: E402
     statement_spans,
     update_local_symbols,
 )
-from build_ui_source_spec import constructor_body, strip_leading_comments  # noqa: E402
+from build_ui_source_spec import (  # noqa: E402
+    constructor_body,
+    match_brace,
+    split_top_level,
+    strip_leading_comments,
+)
 
+NAMED_DX_RE = re.compile(
+    r"(?:(?:[A-Za-z_][A-Za-z0-9_<>]*\s+)?(?P<name>[A-Za-z_][A-Za-z0-9_]*)\s*=\s*)"
+    r"new\s+(?P<type>DX[A-Za-z_][A-Za-z0-9_]*)\s*\{"
+)
+INITIALIZER_GEOMETRY_RE = re.compile(
+    r"^\s*(Location|Size|GridSize)\s*=\s*(.+?)\s*$",
+    re.S,
+)
 POST_GEOMETRY_RE = re.compile(
     r"^([A-Za-z_][A-Za-z0-9_]*)\.(Location|Size|GridSize)\s*=\s*(.+)$",
     re.S,
 )
 PREPROCESSOR_RE = re.compile(r"(?m)^\s*#(?:region|endregion)\b[^\n]*\n?")
-PREFIX = "reused-local-geometry-v2"
+PREFIX = "reused-local-geometry-v3"
 
 
 def normalise(expression: str) -> str:
@@ -93,6 +108,54 @@ def rebind_expression(expression: str, position: int, groups: dict[str, list[dic
     return normalise(value), changes
 
 
+def initializer_geometry(body: str) -> dict[int, dict[str, str]]:
+    """Return exact Location/Size/GridSize expressions keyed by lexical offset."""
+    result: dict[int, dict[str, str]] = {}
+    for match in NAMED_DX_RE.finditer(body):
+        opening = body.find("{", match.start())
+        try:
+            closing = match_brace(body, opening)
+        except ValueError:
+            continue
+        chunk = body[opening + 1:closing]
+        properties: dict[str, str] = {}
+        for entry in split_top_level(chunk, ','):
+            property_match = INITIALIZER_GEOMETRY_RE.match(entry)
+            if not property_match:
+                continue
+            property_name, expression = property_match.groups()
+            properties[property_name] = normalise(expression)
+        if properties:
+            result[match.start()] = properties
+    return result
+
+
+def symbol_snapshots_for_offsets(
+    source: str,
+    body: str,
+    offsets: list[int],
+    groups: dict[str, list[dict]],
+) -> tuple[dict[int, dict[str, str]], int]:
+    """Replay constructor scalar state up to each exact initializer offset."""
+    statements = statement_spans(body)
+    statement_index = 0
+    symbols = parse_class_symbols(source)
+    snapshots: dict[int, dict[str, str]] = {}
+    rebindings = 0
+    for offset in sorted(set(offsets)):
+        while statement_index < len(statements) and statements[statement_index][0] < offset:
+            position, raw_statement = statements[statement_index]
+            statement_index += 1
+            statement = clean_statement(raw_statement)
+            if not statement:
+                continue
+            canonical_statement, count = rebind_expression(statement, position, groups)
+            rebindings += count
+            update_local_symbols(canonical_statement, symbols)
+        snapshots[offset] = dict(symbols)
+    return snapshots, rebindings
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--spec", type=Path, required=True)
@@ -103,6 +166,8 @@ def main() -> None:
     controls_before = sum(len(item.get("controls") or []) for item in [*(spec.get("windows") or []), *(spec.get("nestedWindows") or [])])
     expression_rebindings = 0
     scalar_statement_rebindings = 0
+    initializer_geometry_restored = 0
+    initializer_locations_restored = 0
     post_geometry_assignments = 0
     post_geometry_resolved = 0
     windows_changed = 0
@@ -128,11 +193,58 @@ def main() -> None:
             continue
 
         changed_here = 0
+        exact_initializers = initializer_geometry(body)
+        repeated_controls = [control for rows in groups.values() for control in rows]
+        offsets = [
+            int(control.get("sourceInitializerOffset"))
+            for control in repeated_controls
+            if isinstance(control.get("sourceInitializerOffset"), int)
+        ]
+        snapshots, snapshot_rebindings = symbol_snapshots_for_offsets(source, body, offsets, groups)
+        scalar_statement_rebindings += snapshot_rebindings
+        expression_rebindings += snapshot_rebindings
 
-        # Rebind render-facing expressions at the exact initializer position.
-        # This catches ordinary references to a previously-created reused local;
-        # the scalar replay below additionally fixes references embedded inside
-        # locals such as CharacterDialog's `x += button.Size.Width + 5`.
+        # First restore geometry from each repeated local's *own* lexical object
+        # initializer. This prevents a later assignment to the same C# variable
+        # from contaminating an earlier flattened occurrence. A later explicit
+        # post-assignment is replayed below and still wins, exactly as in C#.
+        for control in repeated_controls:
+            offset = control.get("sourceInitializerOffset")
+            if not isinstance(offset, int):
+                continue
+            exact = exact_initializers.get(offset) or {}
+            symbols = snapshots.get(offset) or parse_class_symbols(source)
+            properties = control.setdefault("properties", {})
+            for property_name in ("Location", "Size", "GridSize"):
+                original = exact.get(property_name)
+                if original is None:
+                    continue
+                canonical_source, source_rebindings = rebind_expression(original, offset, groups)
+                resolved = resolve_inline_geometry_side_effects(canonical_source, dict(symbols))
+                resolved, resolved_rebindings = rebind_expression(resolved, offset, groups)
+                expression_rebindings += source_rebindings + resolved_rebindings
+                final_value = resolved if resolved else canonical_source
+                properties[property_name] = final_value
+                control[f"sourceInitializer{property_name}Expression"] = original
+                control.setdefault("resolvedInitializerGeometry", {})[property_name] = {
+                    "source": original,
+                    "canonicalSource": canonical_source,
+                    "resolved": final_value,
+                    "sourcePosition": offset,
+                    "pass": PREFIX,
+                }
+                if property_name == "Location":
+                    # This is the exact provenance expected by the geometry QA
+                    # report when a control had previously inherited a later
+                    # assignment from the reused local variable.
+                    control["sourceLocationExpression"] = original
+                    initializer_locations_restored += 1
+                initializer_geometry_restored += 1
+                changed_here += 1
+
+        # Rebind all remaining render-facing expressions at their exact lexical
+        # initializer position. The exact initializer restoration above owns its
+        # geometry keys; this loop mainly fixes Parent/Tag/other references.
         for control in item.get("controls") or []:
             offset = control.get("sourceInitializerOffset")
             if not isinstance(offset, int):
@@ -147,9 +259,8 @@ def main() -> None:
                 changed_here += count
 
         # Replay deterministic constructor scalar state in exact source order.
-        # Crucially, rebind the *statement before* adding it to the symbol table.
-        # Otherwise `x += button.Size.Width` stores the obsolete plain identifier
-        # and leaks it back into a later Location when `x` is substituted.
+        # Rebind the statement before adding it to the symbol table so an update
+        # such as `x += button.Size.Width + 5` records the active canonical button.
         symbols = parse_class_symbols(source)
         for position, raw_statement in statement_spans(body):
             statement = clean_statement(raw_statement)
@@ -166,9 +277,6 @@ def main() -> None:
                 if target is not None:
                     original = normalise(expression)
                     canonical_source, source_rebindings = rebind_expression(original, position, groups)
-                    # Resolve from the canonical source expression so any scalar
-                    # substitution that expands a prior control reference remains
-                    # resolvable by the browser layout engine.
                     resolved = resolve_inline_geometry_side_effects(canonical_source, dict(symbols))
                     resolved, resolved_rebindings = rebind_expression(resolved, position, groups)
                     post_geometry_assignments += 1
@@ -222,14 +330,17 @@ def main() -> None:
 
     report = {
         "passed": not failures,
-        "version": 2,
+        "version": 3,
         "windowsChanged": windows_changed,
         "expressionRebindings": expression_rebindings,
         "scalarStatementRebindings": scalar_statement_rebindings,
+        "initializerGeometryRestored": initializer_geometry_restored,
+        "initializerLocationsRestored": initializer_locations_restored,
         "postGeometryAssignments": post_geometry_assignments,
         "postGeometryResolved": post_geometry_resolved,
         "sourceExpressionsPreserved": True,
         "exactConstructorOffsetsUsed": True,
+        "exactInitializerGeometryReplayed": True,
         "preprocessorRegionDirectivesIgnored": True,
         "controlsAdded": 0,
         "controlsRemoved": 0,
@@ -243,8 +354,9 @@ def main() -> None:
     if failures:
         raise SystemExit("Reused-local geometry pass failed:\n- " + "\n- ".join(failures))
     print(
-        "Reused-local geometry v2: PASS -> "
-        f"windows={windows_changed}, rebindings={expression_rebindings}, scalar={scalar_statement_rebindings}, "
+        "Reused-local geometry v3: PASS -> "
+        f"windows={windows_changed}, initializer geometry={initializer_geometry_restored}, "
+        f"initializer locations={initializer_locations_restored}, rebindings={expression_rebindings}, "
         f"post geometry={post_geometry_assignments}, resolved={post_geometry_resolved}; controls +0"
     )
 
