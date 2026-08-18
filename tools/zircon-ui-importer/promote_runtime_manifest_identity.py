@@ -110,12 +110,16 @@ def main() -> None:
             "--spec", str(args.spec),
             "--zircon-root", str(zircon_root),
         ], check=True)
-    subprocess.run([
-        sys.executable,
-        str(here / "audit_complex_action_contracts.py"),
-        "--spec", str(args.spec),
-        "--zircon-root", str(zircon_root),
-    ], check=True)
+    for helper in (
+        "audit_complex_action_contracts.py",
+        "audit_config_source_contracts.py",
+    ):
+        subprocess.run([
+            sys.executable,
+            str(here / helper),
+            "--spec", str(args.spec),
+            "--zircon-root", str(zircon_root),
+        ], check=True)
     subprocess.run([
         sys.executable,
         str(here / "audit_custom_draw_contracts.py"),
