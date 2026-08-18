@@ -32,7 +32,7 @@ def balanced_selected_expression(body,name):
 
 def main():
     p=argparse.ArgumentParser();p.add_argument('--spec',type=Path,required=True);p.add_argument('--zircon-root',type=Path,required=True);a=p.parse_args()
-    spec=json.loads(a.spec.read_text(encoding='utf-8'));added=0;changed=0
+    spec=json.loads(a.spec.read_text(encoding='utf-8'));added=0;changed=0;reconciled=0
     for owner in [*(spec.get('windows') or []),*(spec.get('nestedWindows') or [])]:
         combos={c.get('name'):c for c in owner.get('controls',[]) if c.get('type')=='DXComboBox'}
         path=a.zircon_root/str(owner.get('sourcePath') or '')
@@ -54,15 +54,15 @@ def main():
         for name,entries in found.items():
             if not entries: continue
             control=combos[name];options=list(control.get('comboOptions') or []);before=len(options);merge_entries(options,entries)
-            delta=len(options)-before
-            if not delta: continue
-            control['comboOptions']=options;expr=balanced_selected_expression(body,name)
+            delta=len(options)-before;control['comboOptions']=options
+            expr=balanced_selected_expression(body,name)
             if expr:
                 control['comboSelectedExpression']=expr
                 selected=resolve_selected_index(body,expr,options)
                 if selected is not None: control['comboSelectedOptionIndex']=selected
-            added+=delta;changed+=1
-    pass_info=spec.setdefault('comboOptionPass',{});pass_info['staticEnumInterpolationOptionsAdded']=added;pass_info['staticEnumInterpolationCombosChanged']=changed;pass_info['runtimeOptionsInvented']=False
+                reconciled+=1
+            if delta: added+=delta;changed+=1
+    pass_info=spec.setdefault('comboOptionPass',{});pass_info['staticEnumInterpolationOptionsAdded']=added;pass_info['staticEnumInterpolationCombosChanged']=changed;pass_info['staticEnumSelectionsReconciled']=reconciled;pass_info['runtimeOptionsInvented']=False
     a.spec.write_text(json.dumps(spec,indent=2,ensure_ascii=False)+'\n',encoding='utf-8')
-    print(f'Static enum interpolation combo options added: {added} across {changed} controls')
+    print(f'Static enum interpolation combo options added: {added} across {changed} controls; selections reconciled={reconciled}')
 if __name__=='__main__':main()
