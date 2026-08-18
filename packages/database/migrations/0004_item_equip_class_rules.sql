@@ -34,7 +34,7 @@ CREATE TABLE content.item_equip_slots (
     PRIMARY KEY (item_definition_id, slot_code),
     CHECK (slot_code IN (
         'weapon','armour','helmet','torch','necklace','bracelet_left','bracelet_right',
-        'ring_left','ring_right','shoes','poison','amulet','flower','horse_armour',
+        'ring_left','ring_right','shoes','belt','poison','amulet','flower','horse_armour',
         'emblem','shield','costume','hook','float','bait','finder','reel'
     ))
 );
