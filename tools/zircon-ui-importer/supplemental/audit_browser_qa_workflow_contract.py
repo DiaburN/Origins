@@ -31,7 +31,7 @@ def main() -> None:
         "browser-qa-runtime.js",
         "browser-qa-window-runtime.js",
         "browser-qa-chat-options-runtime.js",
-        'id=\\"browser-qa-result\\"',
+        "browser-qa-result",
         "report.get('testedWindows') != 80",
         "browserValidatedGameScene",
         "browserValidatedNested",
