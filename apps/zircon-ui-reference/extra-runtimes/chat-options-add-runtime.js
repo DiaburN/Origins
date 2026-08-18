@@ -80,8 +80,14 @@ function renderChatOptionsState(root){
 function addLocalTab(root){
   if(!template?.localStateOnly)return;const id=state.nextId++,name=`Window ${state.tabs.length}`,checked={};for(const key of template.checkedTrue||[])checked[key]=true;for(const key of template.checkedFalse||[])checked[key]=false;const tab={id,name,checked,floating:null};state.tabs.push(tab);state.selectedId=id;renderFloatingTab(tab);renderChatOptionsState(root);
 }
+function isSourceAddButton(control){
+  if(control?.type!=='DXButton')return false;
+  if(control.resolvedLanguageKey==='ChatOptionsDialogButtonAdd')return true;
+  if(control.sourceTextExpression?.includes('CEnvir.Language.ChatOptionsDialogButtonAdd'))return true;
+  return control.resolvedText==='Add'&&String(control.properties?.Label||'').trim()==='"Add"';
+}
 function attach(root){
-  if(!spec||!chatItem||!template||root.dataset.chatOptionsLocalAddAttached==='true')return;const addIndex=sourceControlIndex(control=>String(control.properties?.Label||'').includes('ChatOptionsDialogButtonAdd')),add=elementFor(root,addIndex);if(!add)return;root.dataset.chatOptionsLocalAddAttached='true';root.dataset.constructorPrecreatedLocalTabs=String(state.tabs.length);add.dataset.sourceLocalAction='AddNewTab(null)';add.addEventListener('click',event=>{event.preventDefault();event.stopPropagation();addLocalTab(root)});renderChatOptionsState(root);
+  if(!spec||!chatItem||!template||root.dataset.chatOptionsLocalAddAttached==='true')return;const addIndex=sourceControlIndex(isSourceAddButton),add=elementFor(root,addIndex);if(!add)return;root.dataset.chatOptionsLocalAddAttached='true';root.dataset.constructorPrecreatedLocalTabs=String(state.tabs.length);add.dataset.sourceLocalAction='AddNewTab(null)';add.addEventListener('click',event=>{event.preventDefault();event.stopPropagation();addLocalTab(root)});renderChatOptionsState(root);
 }
 function scan(node){if(!(node instanceof Element))return;if(node.id==='w-chat-options')queueMicrotask(()=>attach(node));node.querySelectorAll?.('#w-chat-options').forEach(root=>queueMicrotask(()=>attach(root)))}
 new MutationObserver(records=>records.forEach(record=>record.addedNodes.forEach(scan))).observe(stage,{childList:true,subtree:true});
