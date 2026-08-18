@@ -22,8 +22,7 @@ def parse_defaults(text: str) -> dict[str, object]:
     for match in pattern.finditer(text):
         type_name, name, expression = match.groups()
         expression = expression.strip() if expression else None
-        if type_name == "bool":
-            values[name] = expression == "true" if expression is not None else False
+        if type_name == "bool": values[name] = expression == "true" if expression is not None else False
         elif type_name == "int":
             if expression and re.fullmatch(r"-?\d+", expression): values[name] = int(expression)
         elif type_name == "string":
@@ -38,6 +37,26 @@ def parse_defaults(text: str) -> dict[str, object]:
             if literal: values[name] = [int(literal.group(1)), int(literal.group(2))]
             elif expression == "IntroSceneSize" and intro_size: values[name] = intro_size
     return values
+
+
+def resolve_default_option(control: dict, default: object) -> int | None:
+    options = control.get("comboOptions") or []
+    if default is None or not options: return None
+    if isinstance(default, list) and len(default) == 2:
+        expected_label = f"{default[0]} x {default[1]}"
+        for index, option in enumerate(options):
+            if option.get("label") == expected_label: return index
+        return None
+    expected = str(default)
+    for index, option in enumerate(options):
+        value = str(option.get("valueExpression") or "").strip()
+        quoted = re.fullmatch(r'"((?:\\.|[^"\\])*)"', value)
+        if quoted:
+            try: decoded = json.loads(value)
+            except json.JSONDecodeError: decoded = quoted.group(1)
+            if decoded == default: return index
+        if option.get("label") == expected: return index
+    return None
 
 
 def main() -> None:
@@ -62,6 +81,7 @@ def main() -> None:
     by_name = {control.get("name"): control for control in config_window.get("controls", [])}
 
     bindings: list[dict] = []
+    resolved_combo_defaults = 0
     patterns = (
         ("checked", re.compile(r"\b([A-Za-z_][A-Za-z0-9_]*)\.Checked\s*=\s*Config\.([A-Za-z_][A-Za-z0-9_]*)\s*;")),
         ("value", re.compile(r"\b([A-Za-z_][A-Za-z0-9_]*)\.Value\s*=\s*Config\.([A-Za-z_][A-Za-z0-9_]*)\s*;")),
@@ -76,9 +96,16 @@ def main() -> None:
             seen.add(key)
             control = by_name.get(control_name)
             if not control: continue
-            entry = {"control": control_name, "configProperty": prop, "kind": kind, "default": defaults.get(prop)}
+            default = defaults.get(prop)
+            entry = {"control": control_name, "configProperty": prop, "kind": kind, "default": default}
             bindings.append(entry)
             control.setdefault("sourceConfigBindings", []).append(entry)
+            if kind == "selected":
+                selected = resolve_default_option(control, default)
+                if selected is not None:
+                    control["comboSelectedOptionIndex"] = selected
+                    control["comboSelectedSource"] = f"Config.{prop} checked-in default"
+                    resolved_combo_defaults += 1
 
     enabled_in_game = ["FullScreenCheckBox", "BorderlessCheckbox", "GameSizeComboBox", "DefaultMonitorComboBox", "RenderingPipelineComboBox"]
     for name in enabled_in_game:
@@ -89,62 +116,31 @@ def main() -> None:
         control["sourceEnabledInGameScene"] = True
 
     if "NetworkTab = { Enabled = false, TabButton = { Visible = false } }" not in game_text.replace("\r", ""):
-        # Formatting may include newlines; use component assertions below.
         if not ("NetworkTab = { Enabled = false" in game_text and "UITab = { TabButton = { Visible = true } }" in game_text):
             raise SystemExit("GameScene Config Network/UI tab override changed")
-    config_window["gameSceneConfigOverrides"] = {
-        "NetworkTabEnabled": False,
-        "NetworkTabButtonVisible": False,
-        "UITabButtonVisible": True,
-        "activeScene": "GameScene",
-    }
+    config_window["gameSceneConfigOverrides"] = {"NetworkTabEnabled": False,"NetworkTabButtonVisible": False,"UITabButtonVisible": True,"activeScene": "GameScene"}
 
     required_defaults = {
-        "FullScreen": True,
-        "VSync": False,
-        "LimitFPS": False,
-        "GameSize": [1024, 768],
-        "ClipMouse": False,
-        "DebugLabel": False,
-        "Language": "English",
-        "Borderless": False,
-        "SmoothMove": False,
-        "SoundInBackground": True,
-        "SystemVolume": 25,
-        "MusicVolume": 25,
-        "PlayerVolume": 25,
-        "MonsterVolume": 25,
-        "MagicVolume": 25,
-        "DrawEffects": True,
-        "DrawParticles": False,
-        "DrawWeather": True,
-        "ShowTargetOutline": True,
-        "ShowItemNames": True,
-        "ShowMonsterNames": True,
-        "ShowPlayerNames": True,
-        "ShowUserHealth": True,
-        "ShowMonsterHealth": True,
-        "ShowDamageNumbers": True,
-        "ShiftOpenChat": True,
-        "RightClickDeTarget": True,
-        "HideChatBar": True,
-        "MonsterBoxVisible": True,
-        "LogChat": True,
+        "FullScreen": True,"VSync": False,"LimitFPS": False,"GameSize": [1024, 768],"ClipMouse": False,"DebugLabel": False,"Language": "English","Borderless": False,"SmoothMove": False,
+        "SoundInBackground": True,"SystemVolume": 25,"MusicVolume": 25,"PlayerVolume": 25,"MonsterVolume": 25,"MagicVolume": 25,
+        "DrawEffects": True,"DrawParticles": False,"DrawWeather": True,"ShowTargetOutline": True,"ShowItemNames": True,"ShowMonsterNames": True,"ShowPlayerNames": True,"ShowUserHealth": True,"ShowMonsterHealth": True,"ShowDamageNumbers": True,
+        "ShiftOpenChat": True,"RightClickDeTarget": True,"HideChatBar": True,"MonsterBoxVisible": True,"LogChat": True,
     }
     drift = {key: defaults.get(key) for key, value in required_defaults.items() if defaults.get(key) != value}
-    if drift:
-        raise SystemExit(f"Checked-in Config defaults changed; review reference state: {drift}")
+    if drift: raise SystemExit(f"Checked-in Config defaults changed; review reference state: {drift}")
+
+    language = by_name.get("LanguageComboBox")
+    if not language or [option.get("label") for option in language.get("comboOptions", [])] != ["English", "Chinese"]:
+        raise SystemExit(f"Config LanguageComboBox source options missing before default binding: {language}")
+    if language.get("comboSelectedOptionIndex") != 0:
+        raise SystemExit(f"Config.Language=English did not resolve to LanguageComboBox index 0: {language}")
 
     config_window["sourceConfigDefaults"] = {key: defaults.get(key) for key in sorted({entry["configProperty"] for entry in bindings})}
     config_window["sourceConfigPass"] = {
-        "bindingCount": len(bindings),
-        "gameSceneDynamicEnabledControls": enabled_in_game,
-        "checkedInDefaultsOnly": True,
-        "zirconIniInvented": False,
-        "runtimeRenderingEnvironmentInvented": False,
+        "bindingCount": len(bindings),"resolvedComboDefaults": resolved_combo_defaults,"gameSceneDynamicEnabledControls": enabled_in_game,"checkedInDefaultsOnly": True,"zirconIniInvented": False,"runtimeRenderingEnvironmentInvented": False,
     }
     args.spec.write_text(json.dumps(spec, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
-    print(f"Config source defaults promoted: {len(bindings)} OnVisible bindings; GameScene dynamic enabled={len(enabled_in_game)}")
+    print(f"Config source defaults promoted: {len(bindings)} OnVisible bindings; combo defaults={resolved_combo_defaults}; GameScene dynamic enabled={len(enabled_in_game)}")
 
 
 if __name__ == "__main__": main()
