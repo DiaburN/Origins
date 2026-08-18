@@ -19,7 +19,7 @@ function childSpec(raw,defaultIndex){
 function applyChildImage(image,spec){
   if(!image)return;
   const disabled=spec.index<0||spec.library==='None';
-  if(disabled){image.removeAttribute('src');image.style.display='none';image.dataset.sourceArtworkDisabled='true';return}
+  if(disabled){image.remove();return}
   image.src=asset(spec.library,spec.index);image.style.display='';delete image.dataset.sourceArtworkDisabled;
 }
 function applyScrollbar(element,control){
