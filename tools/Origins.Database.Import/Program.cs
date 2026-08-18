@@ -55,7 +55,7 @@ try
         .SelectMany(x => x.GetTypes())
         .Where(x => x.IsSubclassOf(typeof(DBObject)))
         .Where(x => !x.IsAbstract)
-        .ToDictionary(TypeKey, StringComparer.Ordinal);
+        .ToDictionary(TypeKeyFromType, StringComparer.Ordinal);
 
     var session = ZirconDatabaseRuntime.OpenSystemWriter(outputRoot, backupRoot);
     var objectMap = new Dictionary<ObjectKey, DBObject>();
@@ -65,7 +65,7 @@ try
     // are assigned yet, so creation order between collections does not matter.
     foreach (var entry in manifest.Collections)
     {
-        var typeKey = TypeKey(entry.AssemblyName, entry.TypeName);
+        var typeKey = BuildTypeKey(entry.AssemblyName, entry.TypeName);
         if (!typeMap.TryGetValue(typeKey, out var type))
             throw new InvalidOperationException($"Snapshot type is not present in pinned Zircon assemblies: {typeKey}");
 
@@ -112,7 +112,7 @@ try
         var currentIndex = (int)(indexProperty.GetValue(collection) ?? 0);
         indexProperty.SetValue(collection, Math.Max(currentIndex, entry.CollectionIndex));
 
-        loadedCollections.Add(new LoadedCollection(entry, type, collection, rows, expectedIndices));
+        loadedCollections.Add(new LoadedCollection(entry, type, rows, expectedIndices));
     }
 
     // Pass 2: apply scalar values and DBObject references. Zircon's own
@@ -271,8 +271,8 @@ bool IsBindingList(Type type)
     return type.IsGenericType && type.GetGenericTypeDefinition() == typeof(DBBindingList<>);
 }
 
-string TypeKey(Type type) => TypeKey(type.Assembly.GetName().Name ?? string.Empty, type.FullName ?? type.Name);
-string TypeKey(string assemblyName, string typeName) => $"{assemblyName}|{typeName}";
+string TypeKeyFromType(Type type) => BuildTypeKey(type.Assembly.GetName().Name ?? string.Empty, type.FullName ?? type.Name);
+string BuildTypeKey(string assemblyName, string typeName) => $"{assemblyName}|{typeName}";
 
 readonly record struct ObjectKey(string AssemblyName, string TypeName, int Index)
 {
@@ -283,20 +283,17 @@ sealed class LoadedCollection
 {
     public SystemSnapshotCollection Entry { get; }
     public Type Type { get; }
-    public object Collection { get; }
     public List<Dictionary<string, JsonElement>> Rows { get; }
     public List<int> ExpectedIndices { get; }
 
     public LoadedCollection(
         SystemSnapshotCollection entry,
         Type type,
-        object collection,
         List<Dictionary<string, JsonElement>> rows,
         List<int> expectedIndices)
     {
         Entry = entry;
         Type = type;
-        Collection = collection;
         Rows = rows;
         ExpectedIndices = expectedIndices;
     }
