@@ -54,7 +54,7 @@ jobs:
           by={w['field']:w for w in spec['windows']}
           game_controls=sum(len(w.get('controls',[])) for w in spec['windows'])
           nested_controls=sum(len(w.get('controls',[])) for w in spec.get('nestedWindows',[]))
-          assert game_controls >= 2464, game_controls
+          assert game_controls >= 2466, game_controls
           assert nested_controls >= 143, nested_controls
           assert by['RankingBox']['rankingSourceAudit']['passed'] is True
           assert by['RankingBox']['rankingSourceState']['sourceIndex'] == 210
@@ -113,6 +113,17 @@ jobs:
           assert group_lfg['rows'] == 5
           assert group_lfg['deterministicControls'] == 20
           assert group_lfg['runtimeLfgInvented'] is False
+          currency=spec['currencyTreeAudit']
+          assert currency['passed'] is True
+          assert currency['deterministicControls'] == 2
+          assert currency['runtimeHeadersInvented'] is False
+          assert currency['runtimeCurrencyItemsInvented'] is False
+          assert currency['runtimeCurrencyDataInvented'] is False
+          direct=spec['directCustomCompositeInventory']
+          assert direct['passed'] is True
+          assert direct['allDirectCustomTypesMaterialized'] is True
+          assert direct['eventCallbackBodiesExcluded'] is True
+          assert direct['runtimePayloadsInvented'] is False
           helpers=spec['uiCreationHelperInventory']
           assert helpers['passed'] is True
           assert helpers['version'] == 2
