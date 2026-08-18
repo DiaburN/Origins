@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Strict audit for lexical identities of reused local DX controls."""
+"""Strict audit for lexical identities of true reused local DX controls."""
 from __future__ import annotations
 
 import argparse
@@ -16,6 +16,7 @@ NAMED_DX_RE = re.compile(
     r"(?:(?:[A-Za-z_][A-Za-z0-9_<>]*\s+)?(?P<name>[A-Za-z_][A-Za-z0-9_]*)\s*=\s*)"
     r"new\s+(?P<type>DX[A-Za-z_][A-Za-z0-9_]*)\s*\{"
 )
+DISCARD_NAME = "_"
 
 
 def props(control):
@@ -25,8 +26,15 @@ def props(control):
 def source_repeats(body: str) -> dict[str, list[tuple[int, str]]]:
     grouped: dict[str, list[tuple[int, str]]] = defaultdict(list)
     for match in NAMED_DX_RE.finditer(body):
-        grouped[match.group("name")].append((match.start(), match.group("type")))
+        name = match.group("name")
+        if name == DISCARD_NAME:
+            continue
+        grouped[name].append((match.start(), match.group("type")))
     return {name: rows for name, rows in grouped.items() if len(rows) > 1}
+
+
+def source_discard_count(body: str) -> int:
+    return sum(1 for match in NAMED_DX_RE.finditer(body) if match.group("name") == DISCARD_NAME)
 
 
 def require(failures, condition, message):
@@ -48,20 +56,26 @@ def main() -> None:
     require(failures, pass_report.get("controlsAdded") == 0 and pass_report.get("controlsRemoved") == 0, f"identity pass changed control count: {pass_report}")
     require(failures, pass_report.get("runtimePayloadsInvented") is False, f"identity pass invented runtime payloads: {pass_report}")
     require(failures, pass_report.get("duplicateIdentityWindows") == {}, f"identity pass left duplicate names: {pass_report}")
+    require(failures, pass_report.get("discardAssignmentsExcluded") is True, f"C# discard exclusion missing: {pass_report}")
+    require(failures, int(pass_report.get("discardInitializersExcluded") or 0) > 0, f"C# discard inventory unexpectedly empty: {pass_report}")
+    require(failures, pass_report.get("singleUseIdentifiersStrictlyCanonicalized") is False, f"single-use identifiers became strict canonicalization targets: {pass_report}")
+    require(failures, pass_report.get("strictScope") == "repeated named local variables only", f"identity pass strict scope drifted: {pass_report}")
 
     audited_windows = 0
     audited_identifiers = 0
     audited_controls = 0
+    source_discards = 0
 
     for item in [*(spec.get("windows") or []), *(spec.get("nestedWindows") or [])]:
         source_path = item.get("sourcePath")
-        class_name = item.get("class") or item.get("sourceClass")
+        class_name = item.get("sourceClass") or item.get("class")
         if not source_path or not class_name:
             continue
         path = args.zircon_root / source_path
         if not path.exists():
             continue
         body = constructor_body(path.read_text(encoding="utf-8-sig"), str(class_name))
+        source_discards += source_discard_count(body)
         repeats = source_repeats(body)
         if not repeats:
             continue
@@ -87,6 +101,12 @@ def main() -> None:
                 require(failures, control.get("sourceRepeatedOrdinal") == ordinal, f"{item.get('field')}: {expected_name} ordinal drifted")
                 require(failures, control.get("sourceRepeatedCount") == len(source_rows), f"{item.get('field')}: {expected_name} repeated count drifted")
 
+    require(
+        failures,
+        int(pass_report.get("discardInitializersExcluded") or 0) == source_discards,
+        f"discard exclusion count {pass_report.get('discardInitializersExcluded')} != source count {source_discards}",
+    )
+
     duplicate_windows = {}
     for item in [*(spec.get("windows") or []), *(spec.get("nestedWindows") or [])]:
         names = [str(c.get("name") or "") for c in item.get("controls", []) if c.get("name")]
@@ -95,7 +115,7 @@ def main() -> None:
             duplicate_windows[str(item.get("field") or item.get("id"))] = dups
     require(failures, duplicate_windows == {}, f"duplicate manifest identities remain: {duplicate_windows}")
 
-    # Canonical smoke for the source pattern that exposed the bug.
+    # Canonical smoke for the source pattern that exposed the original identity bug.
     monster = next((w for w in spec.get("windows", []) if w.get("field") == "MonsterBox"), None)
     require(failures, monster is not None, "MonsterBox missing")
     if monster is not None:
@@ -117,14 +137,29 @@ def main() -> None:
         for name, expected in expected_locations.items():
             require(failures, props(by_name.get(name)).get("Location") == expected, f"Monster {name} post Location drifted: {props(by_name.get(name))}")
 
+    # GroupLFG uses `_ = new DXListBoxItem` source declarations. `_` is a C#
+    # discard and must never be given `__srcNN` local-variable identities.
+    lfg = next((w for w in spec.get("nestedWindows", []) if w.get("sourceClass") == "GroupLFGInputWindow"), None)
+    require(failures, lfg is not None, "GroupLFGInputWindow missing")
+    if lfg is not None:
+        discard_canonicalized = [
+            c for c in lfg.get("controls") or []
+            if c.get("sourceName") == DISCARD_NAME and c.get("sourceRepeatedLocal") is True
+        ]
+        require(failures, not discard_canonicalized, f"GroupLFG C# discard was canonicalized as reused local: {discard_canonicalized}")
+
     report = {
         "passed": not failures,
         "version": 1,
         "windowsWithReusedLocals": audited_windows,
         "repeatedIdentifiers": audited_identifiers,
         "reusedControls": audited_controls,
+        "discardAssignmentsExcluded": True,
+        "discardInitializersAudited": source_discards,
+        "singleUseIdentifiersStrictlyCanonicalized": False,
         "allManifestIdentitiesUnique": duplicate_windows == {},
         "monsterLexicalSmokePassed": not any("Monster" in failure for failure in failures),
+        "groupLFGDiscardSmokePassed": not any("GroupLFG C# discard" in failure for failure in failures),
         "controlsFabricatedByAudit": False,
         "runtimePayloadsInvented": False,
         "failures": failures,
@@ -135,7 +170,8 @@ def main() -> None:
         raise SystemExit("Reused local control identity audit failed:\n- " + "\n- ".join(failures))
     print(
         "Reused local control identity audit: PASS -> "
-        f"{audited_windows} windows, {audited_identifiers} reused identifiers, {audited_controls} controls; Monster lexical smoke PASS"
+        f"{audited_windows} windows, {audited_identifiers} true reused identifiers, {audited_controls} controls; "
+        f"Monster lexical smoke PASS; C# discards excluded={source_discards}"
     )
 
 
