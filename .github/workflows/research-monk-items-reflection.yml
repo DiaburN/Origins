@@ -23,14 +23,14 @@ jobs:
           Invoke-WebRequest -Uri 'https://github.com/JevLOMCN/Crystal-Monk/releases/download/Server/Server.rar' -OutFile 'research_out/Server.rar'
           7z x -y 'research_out/Server.rar' '-oresearch_out/release' | Out-Null
 
-      - name: Load exact managed Server.Library and exact release database
+      - name: Load exact netstandard Server.Library and exact release database
         shell: pwsh
         run: |
           $ErrorActionPreference = 'Stop'
           $outDir = Join-Path $env:GITHUB_WORKSPACE 'research_out'
           $serverDir = (Resolve-Path 'research_out/release/Server').Path
           Set-Location $serverDir
-          $assemblyPath = Join-Path $serverDir 'Server.Library.dll'
+          $assemblyPath = Join-Path $serverDir 'netstandard2.0/Server.Library.dll'
           $asm = [System.Reflection.Assembly]::LoadFrom($assemblyPath)
           $asm.FullName | Tee-Object -FilePath (Join-Path $outDir 'assembly.txt') | Write-Host
           $types = $asm.GetTypes() | Sort-Object FullName
@@ -41,7 +41,7 @@ jobs:
           if (-not $envirType) {
             $envirType = $types | Where-Object { $_.Name -eq 'Envir' -and $_.GetField('ItemInfoList') } | Select-Object -First 1
           }
-          if (-not $envirType) { throw 'Envir type with ItemInfoList not found in Server.Library.dll' }
+          if (-not $envirType) { throw 'Envir type with ItemInfoList not found in netstandard Server.Library.dll' }
           Write-Host "Envir type: $($envirType.FullName)"
           $envir = [Activator]::CreateInstance($envirType)
           $load = $envirType.GetMethod('LoadDB', [System.Reflection.BindingFlags]'Instance,Public,NonPublic')
@@ -107,5 +107,8 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: crystal-monk-exact-items
-          path: research_out/*.txt
+          path: |
+            research_out/*.txt
+            research_out/*.json
+            research_out/*.csv
           if-no-files-found: warn
