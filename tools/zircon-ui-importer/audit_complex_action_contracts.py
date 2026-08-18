@@ -108,17 +108,51 @@ def main() -> None:
     require(globals_source, "GroupLimit = 15,", "GroupLimit constant")
     require(globals_source, "LookingForGroupMinutes = 60,", "LFG duration constant")
 
+    auto_potion = read(args.zircon_root, "Client/Scenes/Views/AutoPotionDialog.cs")
+    require(globals_source, "MaxAutoPotionCount = 8,", "AutoPotion row count constant")
+    for needle, label in (
+        ("Links = new ClientAutoPotionLink[Globals.MaxAutoPotionCount];", "AutoPotion link count"),
+        ("Rows = new AutoPotionRow[Globals.MaxAutoPotionCount];", "AutoPotion row count"),
+        ("MaxValue = Rows.Length * 50 - 2", "AutoPotion scroll range"),
+        ("Size = new Size(260, 46);", "AutoPotion row size"),
+        ("UpButton.Enabled = Index > 0;", "AutoPotion first-row up guard"),
+        ("DownButton.Enabled = Index < 7;", "AutoPotion last-row down guard"),
+        ("MaxValue = 50000,", "AutoPotion HP/MP upper bound"),
+        ("MinValue = 0,", "AutoPotion HP/MP lower bound"),
+        ("GridType = GridType.AutoPotion,", "AutoPotion item-cell grid type"),
+        ("new C.AutoPotionLinkChanged", "AutoPotion update packet"),
+    ): require(auto_potion, needle, label)
+    if auto_potion.count("GameScene.Game.AutoPotionBox.Updating = true;") < 2 or auto_potion.count("GameScene.Game.AutoPotionBox.Updating = false;") < 2:
+        raise SystemExit("Complex action contract changed: AutoPotion swap update guard")
+
     combo = read(args.zircon_root, "Client/Controls/DXComboBox.cs")
-    require(combo, "public const int DefaultNormalHeight = 16;", "DXComboBox default normal height")
-    require(combo, "DropDownHeight = 123;", "DXComboBox dropdown height")
-    require(combo, "Index = 795,", "DXComboBox down-arrow artwork")
-    require(combo, "Parent = ActiveScene,", "DXComboBox listbox ActiveScene parent")
-    require(combo, "Showing = !Showing;", "DXComboBox arrow toggle")
-    require(combo, "SelectedLabel.Text = ListBox.SelectedItem?.Label.Text ?? string.Empty;", "DXComboBox selected label")
-    require(combo, "Showing = false;", "DXComboBox closes after selection")
+    list_box = read(args.zircon_root, "Client/Controls/DXListBox.cs")
+    v_scroll = read(args.zircon_root, "Client/Controls/DXVScrollBar.cs")
+    for needle, label in (
+        ("public const int DefaultNormalHeight = 16;", "DXComboBox default normal height"),
+        ("DropDownHeight = 123;", "DXComboBox dropdown height"),
+        ("Index = 795,", "DXComboBox down-arrow artwork"),
+        ("Parent = ActiveScene,", "DXComboBox listbox ActiveScene parent"),
+        ("ScrollBar = { Change = 15 }", "DXComboBox listbox scroll change"),
+        ("Showing = !Showing;", "DXComboBox arrow toggle"),
+        ("SelectedLabel.Text = ListBox.SelectedItem?.Label.Text ?? string.Empty;", "DXComboBox selected label"),
+        ("Showing = false;", "DXComboBox closes after selection"),
+    ): require(combo, needle, label)
+    for needle, label in (
+        ("ScrollBar.Size = new Size(14, Size.Height);", "DXListBox scrollbar width"),
+        ("Label.ForeColour = Color.White;", "DXListBox selected text colour"),
+        ("BackColour = Color.FromArgb(128, 64, 64);", "DXListBox selected background"),
+        ("BackColour = Color.FromArgb(64, 32, 32);", "DXListBox hover background"),
+    ): require(list_box, needle, label)
+    for needle, label in (
+        ("Index = 44,", "DXVScrollBar up artwork"),
+        ("Index = 46,", "DXVScrollBar down artwork"),
+        ("Index = 45,", "DXVScrollBar thumb artwork"),
+        ("private int ScrollHeight => Size.Height - 50;", "DXVScrollBar track formula"),
+    ): require(v_scroll, needle, label)
 
     spec["complexActionAudit"] = {
-        "contractCount": 8,
+        "contractCount": 9,
         "contracts": {
             "TradeDialog": "confirm disables then C.TradeConfirm; gold modal requires runtime user gold; close packet only while trading",
             "ExitDialog": "modal; 10-second combat gate; logout/application-close actions remain runtime gated",
@@ -127,13 +161,14 @@ def main() -> None:
             "CommunicationDialog": "Friend/Received/Send/Block backgrounds and button visibility; Send resets draft; ReadMail runtime-only",
             "StorageDialog": "opening forces Inventory visible; filters clear to All/empty; sorting is confirmed then server-enqueued",
             "GroupLFGInputWindow": "modal no-existing-LFG state: PvE, Count=4, 2..15, valid name 2..16, 60-minute source duration",
-            "DXComboBox": "16px normal, 123px dropdown, GameInter 795 arrow, ActiveScene listbox, selection closes",
+            "AutoPotionDialog": "8 local rows, 260x46, swap guards, HP/MP 0..50000; linked items/server updates runtime-only",
+            "DXComboBox": "16/123 sizing, ActiveScene DXListBox, 14px Interface 44/46/45 scrollbar, Change=15 and source selection colours",
         },
         "runtimeServerDataInvented": False,
         "source": "current Suprcode/Zircon C# source",
     }
     args.spec.write_text(json.dumps(spec, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
-    print("Complex source action contracts: 8/8 PASS")
+    print("Complex source action contracts: 9/9 PASS")
 
 
 if __name__ == "__main__": main()
