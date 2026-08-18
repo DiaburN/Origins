@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - research/monk-items-source
+  pull_request:
+    branches:
+      - origins-game-v1
   workflow_dispatch:
 
 jobs:
@@ -78,7 +81,7 @@ jobs:
 
       - name: Show Monk string contexts
         run: |
-          echo '===== JE V DB ====='
+          echo '===== JEV DB ====='
           cat research_out/jev/monk_context.txt || true
           echo '===== CRYSTAL-MONK RELEASE ====='
           cat research_out/release/monk_context.txt || true
