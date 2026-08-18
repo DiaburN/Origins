@@ -27,13 +27,17 @@ POLICIES = {
     "BigMapDialog": ("RUNTIME_MAP_DRAW", "selected map texture, NPC/monster markers and current-map title depend on runtime"),
     "CharacterDialog": ("MIXED_PLAYER_PREVIEW", "ProgUse base/anchor deterministic; hair/equipment/player layers runtime"),
     "InspectDialog": ("MIXED_PLAYER_PREVIEW", "inspection body base deterministic; inspected equipment/player layers runtime"),
+    "EditCharacterDialog": ("MIXED_PLAYER_PREVIEW", "ProgUse base and local hair/gender state are source-backed; armour image is read from the current GameScene CharacterBox equipment grid"),
+    "NewCharacterDialog": ("LOCAL_CHARACTER_CREATION_PREVIEW", "preview is driven only by local class/gender/hair/colour controls with fixed source indices; no server/player payload is pre-created"),
     "GuildDialog": ("MIXED_GUILD_RUNTIME", "window chrome deterministic; guild crest/style/member data runtime"),
     "RankingDialog": ("RUNTIME_RANKING_DRAW", "ranking rows/inspect preview and values depend on ranking runtime data"),
     "InventoryDialog": ("RUNTIME_INVENTORY_FILL", "bag grid chrome deterministic; weight bar fill/currency/item data runtime"),
+    "MonsterDialog": ("RUNTIME_MONSTER_HEALTH_DRAW", "manual health fill depends on Monster ObjectID, companion state and GameScene DataDictionary health values"),
     "GroupDialog": ("RUNTIME_GROUP_DRAW", "group rows/health/runtime group membership drive manual child drawing"),
     "GroupHealthDialog": ("RUNTIME_GROUP_HEALTH", "health rows and member state are created/updated from current group runtime"),
     "SelectDialog": ("RUNTIME_CHARACTER_SELECT_PREVIEW", "selected character body/equipment preview comes from select-scene runtime data"),
     "NPCDialog": ("DETERMINISTIC_CUSTOM_FRAME", "GameInter 380/381/382 custom frame reconstructed; page rows runtime"),
+    "NPCAdoptCompanionDialog": ("RUNTIME_COMPANION_MODEL_DRAW", "OnAfterDraw renders CompanionDisplay shadow/body only when a runtime MonsterObject companion display exists"),
     "NPCCompanionStorageDialog": ("RUNTIME_NPC_COMPANION_BARS", "selected companion experience/hunger fills and values depend on runtime companion data"),
     "NPCWeddingRingDialog": ("DETERMINISTIC_EMPTY_CELL_HINT", "empty linked ring cell draws Interface #31 at 20% opacity; linked item runtime"),
     "NPCAccessoryResetDialog": ("DETERMINISTIC_EMPTY_CELL_HINT", "empty linked accessory cell draws Interface #31 at 20% opacity; linked item runtime"),
@@ -41,6 +45,7 @@ POLICIES = {
     "NPCSocketDialog": ("RUNTIME_LINKED_ITEM_DRAW", "target inventory item and socket state runtime; animations source-indexed"),
     "FishingDialog": ("RUNTIME_FISHING_DRAW", "cast/fish state and line/catch runtime"),
     "FishingCatchDialog": ("RUNTIME_FISHING_DRAW", "pointer visibility/position and fish state runtime; neutral hidden contract"),
+    "DXColourPicker": ("DETERMINISTIC_LOCAL_PALETTE", "AfterDraw presents the client-generated colour palette texture; selection is local UI state and carries no server/runtime payload"),
 }
 
 
