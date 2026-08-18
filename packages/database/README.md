@@ -16,7 +16,9 @@ Canonical game definitions shared by every player:
 - classes
 - maps
 - magic definitions
-- item definitions + stats
+- item definitions + base stats
+- per-class item requirements/stat overlays
+- upstream item source links/provenance
 - monster definitions + stats + drops + respawns
 - buffs
 - quests
@@ -48,11 +50,27 @@ Images/sprites are not stored as blobs in PostgreSQL. Definitions store source/l
 
 ## Source authority
 
+### Magics
 Initial spell content is generated from pinned public sources:
 - base five classes: `Suprcode/Crystal`
 - Monk: `JevLOMCN/Crystal-Monk`
 
-The database keeps source repository/path/commit provenance for imported definitions.
+### Items
+ORIGINS uses one canonical item definition instead of cloning the same item once per upstream project.
+
+Default policy:
+- Warrior: Zircon catalogue + Zircon stats, Crystal fallback.
+- Wizard: Zircon catalogue + Zircon stats, Crystal fallback.
+- Taoist: Zircon catalogue + Zircon stats, Crystal fallback.
+- Assassin: Zircon canonical item, Crystal class-stat/restriction overlay when a matching Crystal item exists.
+- Archer: Crystal class-stat/restriction overlay; match to a Zircon canonical item when possible, otherwise create one ORIGINS canonical item.
+- Monk: Crystal-Monk/Jev class-stat/restriction overlay; match to Zircon where possible, otherwise create one ORIGINS canonical item.
+
+`content.item_source_links` records upstream identities. `content.item_class_profiles` stores class-specific requirements. `content.item_class_stats` stores class-specific stat overrides. `content.effective_item_stats` exposes the resolved runtime stats without duplicating inventory objects.
+
+This separation means item art can be selected/extracted later without changing balance data or player inventory IDs.
+
+The database keeps source repository/path/commit provenance for imported definitions and overlays.
 
 ## Local database
 
@@ -61,13 +79,14 @@ cd packages/database
 docker compose up -d
 ```
 
-The CI workflow `.github/workflows/validate-data-foundation.yml` performs the authoritative automated validation: it starts PostgreSQL 16, applies migrations, imports the six classes and all 114 selected Crystal/Crystal-Monk spells, and tests the Zircon-style learned/unlearned `UserMagic` lifecycle.
+The CI workflow `.github/workflows/validate-data-foundation.yml` performs the authoritative automated validation: it starts PostgreSQL 16, applies migrations, imports the six classes and all 114 selected Crystal/Crystal-Monk spells, verifies the hybrid Zircon/Crystal item authority contract, and tests the Zircon-style learned/unlearned `UserMagic` lifecycle.
 
 ## Migration order
 
 1. `migrations/0001_core.sql`
 2. `migrations/0002_zircon_crystal_extensions.sql`
 3. `seeds/0001_classes.sql`
-4. generated spell seed from `tools/data-foundation/`
+4. `migrations/0003_item_class_overlays.sql`
+5. generated spell seed from `tools/data-foundation/`
 
 Do not edit an already deployed migration to change production data. Add the next numbered migration instead.
