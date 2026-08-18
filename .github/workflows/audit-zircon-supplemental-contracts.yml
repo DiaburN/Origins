@@ -8,6 +8,7 @@ on:
       - ".github/workflows/audit-zircon-supplemental-contracts.yml"
       - "tools/zircon-ui-importer/supplemental/**"
       - "tools/zircon-ui-importer/run_supplemental_source_contracts.py"
+      - "tools/zircon-ui-importer/promote_runtime_manifest_identity.py"
       - "tools/zircon-ui-importer/augment_ranking_reference.py"
       - "tools/zircon-ui-importer/audit_ranking_source_contracts.py"
       - "apps/zircon-ui-reference/extra-runtimes/**"
@@ -29,7 +30,7 @@ jobs:
           git clone --depth 1 https://github.com/Suprcode/Zircon.git .source/Zircon
           mkdir -p .build/supplemental
           echo "Zircon source: $(git -C .source/Zircon rev-parse HEAD)"
-      - name: Build core source manifest
+      - name: Build and promote complete source manifest
         run: |
           set -euo pipefail
           python3 tools/zircon-ui-importer/build_ui_source_spec.py --zircon-root .source/Zircon --out .build/supplemental/ui-source-spec.json
@@ -43,10 +44,9 @@ jobs:
           cp apps/zircon-ui-reference/app-layout.js .build/supplemental/app-layout.js
           cp apps/zircon-ui-reference/animated-control-runtime.js .build/supplemental/animated-control-runtime.js
           python3 tools/zircon-ui-importer/promote_runtime_manifest_identity.py --spec .build/supplemental/ui-source-spec.json --registry apps/zircon-ui-reference/game-scene-windows.js
-      - name: Run auto-discovered supplemental contracts
+      - name: Assert promoted supplemental matrix
         run: |
           set -euo pipefail
-          python3 tools/zircon-ui-importer/run_supplemental_source_contracts.py --spec .build/supplemental/ui-source-spec.json --zircon-root .source/Zircon
           python3 - <<'PY'
           import json
           from pathlib import Path
@@ -56,6 +56,11 @@ jobs:
           assert by['RankingBox']['rankingSourceState']['sourceIndex'] == 210
           assert by['GroupBox']['groupSourceAudit']['passed'] is True
           assert by['GroupHealthBox']['groupHealthSourceAudit']['passed'] is True
+          assert spec['deterministicSourceRowAudit']['passed'] is True
+          assert spec['deterministicSourceRowAudit']['rankingRows'] == 12
+          assert spec['deterministicSourceRowAudit']['dungeonRows'] == 9
+          assert spec['deterministicSourceRowAudit']['fortuneRows'] == 9
+          assert spec['deterministicSourceRowAudit']['bigMapRows'] == 48
           print('Supplemental source matrix: PASS')
           PY
       - name: Check all fidelity runtime syntax
