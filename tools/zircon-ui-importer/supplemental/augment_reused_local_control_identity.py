@@ -92,7 +92,6 @@ def token_replace(expression: str, source_name: str, canonical: str) -> tuple[st
 def rewrite_expression(expression: str, position: int, repeated: dict[str, list[dict]]) -> tuple[str, int]:
     value = str(expression)
     changes = 0
-    # Longest first is defensive for identifiers with shared prefixes.
     for source_name in sorted(repeated, key=len, reverse=True):
         active = active_occurrence(repeated, source_name, position)
         if active is None:
@@ -103,12 +102,30 @@ def rewrite_expression(expression: str, position: int, repeated: dict[str, list[
 
 
 def manifest_candidates(item: dict, source_name: str) -> list[dict]:
-    return [
+    # First execution sees the flat-parser source name. A defensive second run
+    # sees the canonical sourceName metadata instead; keeping both paths makes
+    # this pass idempotent without accepting generated supplemental controls.
+    direct = [
         control for control in item.get("controls", [])
         if control.get("name") == source_name
         and control.get("sourceAnonymous") is not True
         and not control.get("sourceGenerated")
     ]
+    if direct:
+        return direct
+    canonical = [
+        control for control in item.get("controls", [])
+        if control.get("sourceName") == source_name
+        and control.get("sourceAnonymous") is not True
+        and not control.get("sourceGenerated")
+    ]
+    return sorted(
+        canonical,
+        key=lambda control: (
+            int(control.get("sourceRepeatedOrdinal") or 0),
+            int(control.get("sourceInitializerOffset") or -1),
+        ),
+    )
 
 
 def main() -> None:
@@ -146,7 +163,6 @@ def main() -> None:
             rows_by_name[row["sourceName"]].append(row)
         repeated = {name: rows for name, rows in rows_by_name.items() if len(rows) > 1}
 
-        # Map every named source occurrence to its original flat-parser control.
         mapped: dict[int, dict] = {}
         for source_name, rows in rows_by_name.items():
             candidates = manifest_candidates(item, source_name)
@@ -177,8 +193,6 @@ def main() -> None:
         if not repeated:
             continue
 
-        # Rebind initializer-derived expressions for every mapped control,
-        # including non-repeated children whose Parent/Tag references a reused local.
         for row in occurrences:
             control = mapped.get(id(row))
             if control is None:
@@ -190,8 +204,6 @@ def main() -> None:
                     properties[prop] = updated
                     expression_rebindings += changed
 
-        # Recover top-level constructor post-assignments lexically. The flat parser
-        # previously applied them to the last same-name control only.
         posts: dict[tuple[str, str], str] = {}
         for position, statement in statement_spans(body):
             match = POST_RE.match(statement)
@@ -207,8 +219,6 @@ def main() -> None:
             posts[(active["canonicalName"], prop)] = value
             expression_rebindings += changed
 
-        # Remove post-assignment leakage from the old last-occurrence dictionary,
-        # then apply the assignment to the occurrence that was active in source.
         for source_name, rows in repeated.items():
             for row in rows:
                 control = mapped.get(id(row))
@@ -237,8 +247,6 @@ def main() -> None:
             },
         })
 
-    # This pass must leave every manifest identity unique; the later duplicate
-    # emitter audit independently enforces the same invariant.
     duplicate_windows: dict[str, list[str]] = {}
     for item in [*(spec.get("windows") or []), *(spec.get("nestedWindows") or [])]:
         names = [str(c.get("name") or "") for c in item.get("controls", []) if c.get("name")]
