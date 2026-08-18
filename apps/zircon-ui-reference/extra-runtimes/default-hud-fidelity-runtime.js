@@ -25,13 +25,49 @@ function clickSourceWindow(id){
 function px(element,name){return Number.parseFloat(element?.style?.[name]||'0')||0}
 function placeDefaults(){
   const main=root('main-panel');
-  if(main){main.style.left=`${Math.round((1024-main.offsetWidth)/2)}px`;main.style.top=`${Math.round(768-main.offsetHeight)}px`;main.dataset.sourceDefaultLocation='((Game.Width-Main.Width)/2, Game.Height-Main.Height)'}
+  if(main){
+    main.style.left=`${Math.round((1024-main.offsetWidth)/2)}px`;
+    main.style.top=`${Math.round(768-main.offsetHeight)}px`;
+    main.dataset.sourceDefaultLocation='((Game.Width-Main.Width)/2, Game.Height-Main.Height)';
+  }
+
   const belt=root('belt');
-  if(main&&belt){belt.style.left=`${Math.round(px(main,'left')+main.offsetWidth-belt.offsetWidth)}px`;belt.style.top=`${Math.round(px(main,'top')-belt.offsetHeight)}px`;belt.dataset.sourceDefaultLocation='MainPanel.Right-Belt.Width, MainPanel.Top-Belt.Height'}
+  if(main&&belt){
+    belt.style.left=`${Math.round(px(main,'left')+main.offsetWidth-belt.offsetWidth)}px`;
+    belt.style.top=`${Math.round(px(main,'top')-belt.offsetHeight)}px`;
+    belt.dataset.sourceDefaultLocation='MainPanel.Right-Belt.Width, MainPanel.Top-Belt.Height';
+  }
+
   const mini=root('minimap');
-  if(mini){mini.style.left=`${Math.round(1024-mini.offsetWidth)}px`;mini.style.top='0px';mini.dataset.sourceDefaultLocation='Game.Width-MiniMap.Width,0'}
+  if(mini){
+    mini.style.left=`${Math.round(1024-mini.offsetWidth)}px`;
+    mini.style.top='0px';
+    mini.dataset.sourceDefaultLocation='Game.Width-MiniMap.Width,0';
+  }
+
   const buffs=root('buffs');
-  if(mini&&buffs){buffs.style.left=`${Math.round(1024-mini.offsetWidth-buffs.offsetWidth-5)}px`;buffs.style.top='0px';buffs.dataset.sourceDefaultLocation='Game.Width-MiniMap.Width-Buff.Width-5,0'}
+  if(mini&&buffs){
+    buffs.style.left=`${Math.round(1024-mini.offsetWidth-buffs.offsetWidth-5)}px`;
+    buffs.style.top='0px';
+    buffs.dataset.sourceDefaultLocation='Game.Width-MiniMap.Width-Buff.Width-5,0';
+  }
+
+  // GroupHealthBox is intentionally absent from SetDefaultLocations(). DXControl
+  // therefore keeps its constructor/default Point.Empty location.
+  const groupHealth=root('group-health');
+  if(groupHealth){
+    groupHealth.style.left='0px';groupHealth.style.top='0px';
+    groupHealth.dataset.sourceDefaultLocation='Point.Empty (no SetDefaultLocations override)';
+  }
+
+  // GameScene.SetDefaultLocations(): TimerBox.Location =
+  // new Point(MainPanel.DisplayArea.Right - 115, Size.Height - 170).
+  const timer=root('timer');
+  if(main&&timer){
+    timer.style.left=`${Math.round(px(main,'left')+main.offsetWidth-115)}px`;
+    timer.style.top='598px';
+    timer.dataset.sourceDefaultLocation='MainPanel.DisplayArea.Right-115, Game.Height-170';
+  }
 }
 function initialize(){
   if(initialized)return;
