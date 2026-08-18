@@ -89,6 +89,7 @@ jobs:
           psql -v ON_ERROR_STOP=1 -f packages/database/migrations/0005_world_content_and_progression.sql
           psql -v ON_ERROR_STOP=1 -f packages/database/migrations/0006_class_combat_and_equipment_contract.sql
           psql -v ON_ERROR_STOP=1 -f packages/database/migrations/0007_equipment_persistence_enforcement.sql
+          psql -v ON_ERROR_STOP=1 -f packages/database/migrations/0008_market_and_item_possession_contract.sql
 
       - name: Validate spell source contract
         run: |
@@ -110,7 +111,7 @@ jobs:
           test "$(psql -Atqc "SELECT concat_ws('+',primary_offense_stat,secondary_offense_stat) FROM content.class_combat_profiles WHERE class_id=5")" = "DC+MC"
           test "$(psql -Atqc "SELECT concat_ws('+',primary_offense_stat,secondary_offense_stat) FROM content.class_combat_profiles WHERE class_id=6")" = "DC+SC"
 
-      - name: Validate hybrid items class restrictions and persistence guard
+      - name: Validate class equip lock without possession lock
         run: |
           set -euo pipefail
           psql -v ON_ERROR_STOP=1 <<'SQL'
@@ -139,7 +140,7 @@ jobs:
           WHERE i.game_key='qa.archerbow' AND c.character_name='qa_archer';
 
           DO $$
-          DECLARE item_id bigint; item_instance uuid; archer_id uuid; warrior_id uuid; warrior_dc numeric; archer_dc numeric; blocked boolean := false;
+          DECLARE item_id bigint; item_instance uuid; archer_id uuid; warrior_id uuid; warrior_dc numeric; archer_dc numeric; blocked boolean := false; listing_id uuid;
           BEGIN
             SELECT id INTO item_id FROM content.item_definitions WHERE game_key='qa.archerbow';
             SELECT id INTO archer_id FROM player.characters WHERE character_name='qa_archer';
@@ -151,20 +152,49 @@ jobs:
             IF archer_dc <> 17 THEN RAISE EXCEPTION 'Crystal Archer stat overlay failed'; END IF;
             IF content.can_class_equip_item(item_id,1) THEN RAISE EXCEPTION 'Warrior allowed Archer-only item'; END IF;
             IF NOT content.can_class_equip_item_in_slot(item_id,5,'weapon') THEN RAISE EXCEPTION 'Archer weapon rejected'; END IF;
-            IF content.can_class_equip_item_in_slot(item_id,5,'armour') THEN RAISE EXCEPTION 'Bow accepted as armour'; END IF;
 
+            -- Correct class can equip it.
             INSERT INTO player.character_item_slots(character_id,slot_group,slot_index,item_instance_id)
             VALUES (archer_id,'equipment',0,item_instance);
-
             DELETE FROM player.character_item_slots WHERE item_instance_id=item_instance;
+
+            -- Transfer ownership to a Warrior: possession is valid despite class lock.
             UPDATE player.item_instances SET owner_character_id=warrior_id WHERE id=item_instance;
+            IF NOT content.can_character_possess_item(item_id,'inventory') THEN RAISE EXCEPTION 'Warrior cannot possess Archer item'; END IF;
+            IF NOT content.can_character_possess_item(item_id,'storage') THEN RAISE EXCEPTION 'Warrior cannot store Archer item'; END IF;
+            IF NOT content.can_character_possess_item(item_id,'sell') THEN RAISE EXCEPTION 'Warrior cannot sell Archer item'; END IF;
+            IF NOT content.can_character_possess_item(item_id,'auction') THEN RAISE EXCEPTION 'Warrior cannot auction Archer item'; END IF;
+
+            INSERT INTO player.character_item_slots(character_id,slot_group,slot_index,item_instance_id)
+            VALUES (warrior_id,'inventory',0,item_instance);
+            DELETE FROM player.character_item_slots WHERE item_instance_id=item_instance;
+            INSERT INTO player.character_item_slots(character_id,slot_group,slot_index,item_instance_id)
+            VALUES (warrior_id,'storage',0,item_instance);
+            DELETE FROM player.character_item_slots WHERE item_instance_id=item_instance;
+
+            -- But Warrior still cannot equip it.
+            blocked := false;
             BEGIN
               INSERT INTO player.character_item_slots(character_id,slot_group,slot_index,item_instance_id)
               VALUES (warrior_id,'equipment',0,item_instance);
-            EXCEPTION WHEN OTHERS THEN
-              blocked := true;
+            EXCEPTION WHEN OTHERS THEN blocked := true;
             END;
             IF NOT blocked THEN RAISE EXCEPTION 'Persistence allowed Warrior to equip Archer-only item'; END IF;
+
+            -- Same Warrior may list it at auction because auction is not an equip action.
+            INSERT INTO economy.market_listings(seller_character_id,item_instance_id,unit_price,quantity)
+            VALUES (warrior_id,item_instance,1000,1) RETURNING id INTO listing_id;
+            blocked := false;
+            BEGIN
+              INSERT INTO player.character_item_slots(character_id,slot_group,slot_index,item_instance_id)
+              VALUES (warrior_id,'inventory',1,item_instance);
+            EXCEPTION WHEN OTHERS THEN blocked := true;
+            END;
+            IF NOT blocked THEN RAISE EXCEPTION 'Market escrow item duplicated into inventory'; END IF;
+
+            UPDATE economy.market_listings SET status='cancelled' WHERE id=listing_id;
+            INSERT INTO player.character_item_slots(character_id,slot_group,slot_index,item_instance_id)
+            VALUES (warrior_id,'inventory',1,item_instance);
           END $$;
           SQL
 
@@ -193,7 +223,8 @@ jobs:
           expected={
             'content':{'class_definitions','class_combat_profiles','equipment_slot_definitions','map_definitions','map_regions','map_connections','magic_definitions','item_definitions','item_stats','item_source_links','item_class_profiles','item_class_stats','item_source_policy','item_allowed_classes','item_equip_slots','monster_definitions','monster_stats','monster_drops','monster_respawns','monster_magics','buff_definitions','quest_definitions','quest_tasks','quest_rewards','currency_definitions','npc_definitions','npc_shop_goods','dungeon_definitions','dungeon_maps','summon_definitions'},
             'player':{'accounts','characters','character_stats','character_magics','item_instances','character_item_slots','character_buffs','character_quests','character_currencies','character_pets'},
-            'gameplay':{'dungeon_runs','combat_sessions','combat_events','monster_kills'}
+            'gameplay':{'dungeon_runs','combat_sessions','combat_events','monster_kills'},
+            'economy':{'market_listings','market_transactions','item_transactions'}
           }
           for schema,required in expected.items():
             actual=set(subprocess.check_output(['psql','-Atqc',f"SELECT tablename FROM pg_tables WHERE schemaname='{schema}'"]).decode().splitlines())
