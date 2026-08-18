@@ -52,6 +52,10 @@ jobs:
           from pathlib import Path
           spec=json.loads(Path('.build/supplemental/ui-source-spec.json').read_text())
           by={w['field']:w for w in spec['windows']}
+          game_controls=sum(len(w.get('controls',[])) for w in spec['windows'])
+          nested_controls=sum(len(w.get('controls',[])) for w in spec.get('nestedWindows',[]))
+          assert game_controls >= 2053, game_controls
+          assert nested_controls >= 143, nested_controls
           assert by['RankingBox']['rankingSourceAudit']['passed'] is True
           assert by['RankingBox']['rankingSourceState']['sourceIndex'] == 210
           assert by['GroupBox']['groupSourceAudit']['passed'] is True
@@ -61,7 +65,25 @@ jobs:
           assert spec['deterministicSourceRowAudit']['dungeonRows'] == 9
           assert spec['deterministicSourceRowAudit']['fortuneRows'] == 9
           assert spec['deterministicSourceRowAudit']['bigMapRows'] == 48
-          print('Supplemental source matrix: PASS')
+          guild_rows=spec['guildMemberRowAudit']
+          assert guild_rows['passed'] is True
+          assert guild_rows['headerRows'] == 1
+          assert guild_rows['memberRows'] == 17
+          assert guild_rows['sourceControls'] == 108
+          assert guild_rows['netControlsAdded'] == 107
+          helpers=spec['uiCreationHelperInventory']
+          assert helpers['passed'] is True
+          assert helpers['knownBigMapHelpersMaterialized'] is True
+          assert helpers['chatOptionsAddNewTabDeferredLocal'] is True
+          assert helpers['helpPagesRemainRuntimeBound'] is True
+          assert helpers['magicTabsRemainRuntimeBound'] is True
+          assert helpers['controlsFabricatedByAudit'] is False
+          assert helpers['runtimePayloadsInvented'] is False
+          literals=spec['supplementalLiteralAssetRefPass']
+          assert literals['passed'] is True
+          assert literals['requiredDeterministicRowRefsPresent'] is True
+          assert literals['symbolicRuntimeRefsInvented'] is False
+          print(f'Supplemental source matrix: PASS ({game_controls}+{nested_controls} controls)')
           PY
       - name: Check all fidelity runtime syntax
         run: |
