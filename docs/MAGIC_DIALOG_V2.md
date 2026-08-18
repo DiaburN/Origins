@@ -18,7 +18,7 @@ El build no depende de assets inventados ni de un ZIP manual del usuario.
 
 `apps/origins-magic-dialog-reference/` renderiza:
 
-1. Shell `DXWindow` de Zircon.
+1. Shell `DXWindow` de Zircon con sus piezas reales (`#0/#1/#2/#3/#4/#5/#8/#9/#11/#12/#15`).
 2. `MagicDialog` 419×511.
 3. Cuerpo `Interface #164` en `(0,66)`.
 4. Selector de seis clases usando piezas reales de tabs genéricas Zircon:
@@ -53,7 +53,7 @@ Crystal usa `MagIcon2.Lib` para el botón de skill:
 
 `extract_magicon2.py` abre el formato `.Lib` real de Crystal, descomprime los frames GZip BGRA y genera PNG RGBA sin redibujar nada.
 
-El QA exige que cada magia implementada tenga los dos frames físicos extraídos.
+El alcance actual contiene 113 magias con `MagicInfo` implementado en source. Esas 113 magias resuelven a **204 frames físicos únicos** normal/pressed porque algunas skills comparten `Icon` oficialmente. El QA exige que todos esos frames físicos existan y se puedan decodificar.
 
 ## Headers de clase
 
@@ -76,7 +76,9 @@ El catálogo estático prohíbe estos campos:
 - cooldown
 - estado de desbloqueo del jugador
 
-La geometría reserva sitio para ellos, pero solo podrán aparecer cuando ORIGINS proporcione estado real del jugador.
+Zircon sitúa `LevelLabel`, `ExperienceLabel`, `KeyLabel` y el dibujo de `ExperienceBar` dentro de la lógica runtime. V2 deja esas zonas realmente vacías hasta que ORIGINS disponga de estado real del jugador; no dibuja una barra CSS sustitutiva ni inventa `Not Learned`, porcentajes o teclas.
+
+La celda puede mostrar `Required Level` porque es un dato estático del `MagicInfo`. Los niveles/requisitos adicionales permanecen en el tooltip/source data y no se confunden con progreso actual.
 
 ## FastMove — resolución definitiva del hallazgo
 
@@ -85,7 +87,7 @@ La geometría reserva sitio para ellos, pero solo podrán aparecer cuando ORIGIN
 Sin embargo:
 
 - el `FillMagicInfoList()` de `Suprcode/Crystal` deja su línea comentada con `Icon = ?`, niveles `?`, costes `?`;
-- un fork histórico de Crystal (`cjlaaa/mir2`) conserva exactamente la misma línea incompleta;
+- forks históricos/indexados revisados mantienen la misma entrada incompleta en vez de aportar un mapping verificable;
 - no se ha encontrado un `MagicInfo` oficial verificable que permita asignar icono/niveles sin inventar.
 
 Por ello **FastMove se integra en la lista**, pero se marca `sourceImplemented=false` y no recibe icono prestado. Esto es una carencia upstream demostrable, no un placeholder ORIGINS.
@@ -109,12 +111,36 @@ Workflow: `.github/workflows/build-origins-magic-dialog.yml`
 2. Descarga `MagIcon2.Lib` real de Crystal.
 3. Descarga source fijado de Crystal, Crystal-Monk y MagicDialog Zircon.
 4. Genera catálogo de 114 magias desde source.
-5. Valida conteos e IDs.
+5. Valida conteos, IDs y que el `Spell` del initializer coincida con el guard.
 6. Extrae los assets Zircon requeridos.
 7. Extrae todos los frames Crystal requeridos.
 8. Valida que no falta ningún icono source-backed.
 9. Monta la referencia navegable.
-10. Publica artifact `origins-magic-dialog-reference`.
+10. Abre la referencia en Chrome headless y prueba las seis clases.
+11. Valida 114 celdas, carga de iconos, geometría 419×511 / 369×54 y scroll por botón y rueda.
+12. Guarda captura + `browser-report.json`.
+13. Publica artifact `origins-magic-dialog-reference`.
+
+## Browser QA validado
+
+Última validación visual/técnica de esta V2 antes de revisión humana:
+
+- workflow run: `32186863390`
+- artifact: `origins-magic-dialog-reference`
+- artifact digest: `sha256:e97ec9b650392a22a841c7966695061c17e95d0d62266d5fc432863760a179c5`
+- 6/6 clases
+- 114/114 celdas
+- Warrior: 17 iconos reales
+- Wizard: 24 iconos reales + FastMove source-incomplete
+- Taoist: 25 iconos reales
+- Assassin: 17 iconos reales
+- Archer: 21 iconos reales
+- Monk: 9 iconos reales
+- geometría: PASS
+- scroll botón: PASS
+- scroll rueda: PASS
+- assets rotos: 0
+- errores JS navegador: 0
 
 ## Archivos V2
 
@@ -124,6 +150,7 @@ Workflow: `.github/workflows/build-origins-magic-dialog.yml`
 - `apps/origins-magic-dialog-reference/index.html`
 - `apps/origins-magic-dialog-reference/magic-dialog.css`
 - `apps/origins-magic-dialog-reference/magic-dialog.js`
+- `apps/origins-magic-dialog-reference/browser-qa.js`
 - `.github/workflows/build-origins-magic-dialog.yml`
 - `docs/MAGIC_DIALOG_V2.md`
 
@@ -137,4 +164,7 @@ V2 solo pasa si:
 - los dos frames de cada icono existen físicamente tras extracción;
 - `Wizard.FastMove` es la única entrada source-incomplete;
 - no existe runtime falso en el catálogo;
-- shell, cuerpo, celda, tabs y scroll usan índices reales de Zircon.
+- shell, cuerpo, celda, tabs y scroll usan índices reales de Zircon;
+- Browser QA termina sin errores.
+
+La fusión a `origins-game-v1` queda separada de la validación técnica para permitir primero la revisión visual humana de la captura/artifact aprobado.
