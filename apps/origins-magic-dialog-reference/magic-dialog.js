@@ -150,16 +150,23 @@ function buildCell(spell) {
     empty.className='magic-icon-empty'; empty.textContent='SOURCE\nN/A'; cell.append(empty);
   }
 
-  const name=document.createElement('div'); name.className='magic-name'; name.textContent=spell.spell; cell.append(name);
-  const required=document.createElement('div'); required.className='magic-required';
-  required.textContent=spell.sourceImplemented ? `Required Lv ${spell.requiredLevels[0]}` : 'Source MagicInfo not implemented'; cell.append(required);
-  const more=document.createElement('div'); more.className='magic-more';
-  more.textContent=spell.sourceImplemented ? `Magic Lv2 ${spell.requiredLevels[1]} · Lv3 ${spell.requiredLevels[2]}` : `Spell ID ${spell.spellId}`; cell.append(more);
+  const name=document.createElement('div');
+  name.className='magic-name'; name.textContent=spell.spell; cell.append(name);
+
+  const required=document.createElement('div');
+  required.className='magic-required';
+  required.textContent=spell.sourceImplemented ? `Required Level: ${spell.requiredLevels[0]}` : `Spell ID: ${spell.spellId}`;
+  cell.append(required);
+
   if (!spell.sourceImplemented) {
-    const issue=document.createElement('div'); issue.className='magic-source-issue'; issue.textContent='No official icon/levels found — intentionally not fabricated'; cell.append(issue);
-  } else {
-    const reserved=document.createElement('div'); reserved.className='runtime-reserved'; reserved.title='Reserved for real runtime EXP/keybind data'; cell.append(reserved);
+    const issue=document.createElement('div');
+    issue.className='magic-source-issue';
+    issue.textContent='MagicInfo not implemented upstream — icon/levels intentionally empty';
+    cell.append(issue);
   }
+
+  // Zircon's LevelLabel, ExperienceLabel, KeyLabel and ExperienceBar are runtime-bound.
+  // They remain genuinely empty here until ORIGINS has real player magic state.
   return cell;
 }
 
