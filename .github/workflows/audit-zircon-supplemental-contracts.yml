@@ -54,14 +54,18 @@ jobs:
           by={w['field']:w for w in spec['windows']}
           game_controls=sum(len(w.get('controls',[])) for w in spec['windows'])
           nested_controls=sum(len(w.get('controls',[])) for w in spec.get('nestedWindows',[]))
-          assert game_controls >= 2507, game_controls
+          assert game_controls >= 2511, game_controls
           assert nested_controls >= 143, nested_controls
           final=spec['finalSupplementalSourceMatrix']
           assert final['passed'] is True
-          assert final['minimumGameSceneControls'] == 2507
+          assert final['minimumGameSceneControls'] == 2511
           assert final['minimumNestedControls'] == 143
           assert final['gameSceneControls'] == game_controls
           assert final['nestedControls'] == nested_controls
+          floor=spec['currentSourceControlFloor']
+          assert floor['passed'] is True
+          assert floor['gameScene'] == 2511
+          assert floor['nested'] == 143
           assert by['RankingBox']['rankingSourceAudit']['passed'] is True
           assert by['RankingBox']['rankingSourceState']['sourceIndex'] == 210
           assert by['GroupBox']['groupSourceAudit']['passed'] is True
@@ -72,6 +76,14 @@ jobs:
           assert rows['dungeonRows'] == 9
           assert rows['fortuneRows'] == 9
           assert rows['bigMapRows'] == 48
+          bigmap=spec['bigMapSidePanelAudit']
+          assert bigmap['passed'] is True
+          assert bigmap['deterministicControls'] == 4
+          assert bigmap['initialSelectedTab'] == 'NPCTab'
+          assert bigmap['runtimeGeometryInvented'] is False
+          assert bigmap['runtimeMapInfoInvented'] is False
+          assert bigmap['runtimeNPCsInvented'] is False
+          assert bigmap['runtimeMonstersInvented'] is False
           guild_rows=spec['guildMemberRowAudit']
           assert guild_rows['passed'] is True
           assert guild_rows['headerRows'] == 1
