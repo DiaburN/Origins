@@ -92,6 +92,22 @@ def main() -> None:
         ("Visible = false,\n                BackColour = Color.Empty", "Storage PartsTab starts hidden"),
     ): require(storage, needle, label)
 
+    group = read(args.zircon_root, "Client/Scenes/Views/GroupDialog.cs")
+    globals_source = read(args.zircon_root, "LibraryCore/Globals.cs")
+    for needle, label in (
+        ("GroupLFGInputWindow window = new GroupLFGInputWindow()", "Group opens LFG input window"),
+        ("EnableButton = { Enabled = false },", "Group LFG caller disables Enable initially"),
+        ("Modal = true", "Group LFG caller modal"),
+        ("public int CountValue = 4;", "Group LFG initial count"),
+        ('public string TypeValue = "PvE";', "Group LFG initial type"),
+        ("length >= 2 && length <= 16", "Group LFG name validation"),
+        ("MinValue = 2,", "Group LFG minimum count"),
+        ("MaxValue = Globals.GroupLimit,", "Group LFG maximum count"),
+        ("new C.GroupLFGUpdate", "Group LFG network update"),
+    ): require(group, needle, label)
+    require(globals_source, "GroupLimit = 15,", "GroupLimit constant")
+    require(globals_source, "LookingForGroupMinutes = 60,", "LFG duration constant")
+
     combo = read(args.zircon_root, "Client/Controls/DXComboBox.cs")
     require(combo, "public const int DefaultNormalHeight = 16;", "DXComboBox default normal height")
     require(combo, "DropDownHeight = 123;", "DXComboBox dropdown height")
@@ -102,7 +118,7 @@ def main() -> None:
     require(combo, "Showing = false;", "DXComboBox closes after selection")
 
     spec["complexActionAudit"] = {
-        "contractCount": 7,
+        "contractCount": 8,
         "contracts": {
             "TradeDialog": "confirm disables then C.TradeConfirm; gold modal requires runtime user gold; close packet only while trading",
             "ExitDialog": "modal; 10-second combat gate; logout/application-close actions remain runtime gated",
@@ -110,13 +126,14 @@ def main() -> None:
             "GameStoreDialog": "Alphabetical default sort; Hunt/Game Gold toggle rebuilds local store state",
             "CommunicationDialog": "Friend/Received/Send/Block backgrounds and button visibility; Send resets draft; ReadMail runtime-only",
             "StorageDialog": "opening forces Inventory visible; filters clear to All/empty; sorting is confirmed then server-enqueued",
+            "GroupLFGInputWindow": "modal no-existing-LFG state: PvE, Count=4, 2..15, valid name 2..16, 60-minute source duration",
             "DXComboBox": "16px normal, 123px dropdown, GameInter 795 arrow, ActiveScene listbox, selection closes",
         },
         "runtimeServerDataInvented": False,
         "source": "current Suprcode/Zircon C# source",
     }
     args.spec.write_text(json.dumps(spec, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
-    print("Complex source action contracts: 7/7 PASS")
+    print("Complex source action contracts: 8/8 PASS")
 
 
 if __name__ == "__main__": main()
