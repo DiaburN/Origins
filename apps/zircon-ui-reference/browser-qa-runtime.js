@@ -76,12 +76,24 @@ if (params.get('qa') === '1') {
     }
 
     let qaSpec = null;
+    let gameControlCount = 0;
+    let nestedControlCount = 0;
     try {
       const response = await fetch('ui-source-spec.json', { cache: 'no-store' });
       if (!response.ok) throw new Error(`ui-source-spec.json ${response.status}`);
       qaSpec = await response.json();
       if ((qaSpec.windows || []).length !== 65 || (qaSpec.nestedWindows || []).length !== 15) {
         failures.push({ id: 'manifest', issue: `Manifest inventory mismatch: ${(qaSpec.windows || []).length}+${(qaSpec.nestedWindows || []).length}` });
+      }
+      gameControlCount = (qaSpec.windows || []).reduce((sum, item) => sum + (item.controls || []).length, 0);
+      nestedControlCount = (qaSpec.nestedWindows || []).reduce((sum, item) => sum + (item.controls || []).length, 0);
+      if (gameControlCount < 1946) failures.push({ id: 'manifest', issue: `Expanded GameScene control coverage regressed: ${gameControlCount} < 1946` });
+      if (nestedControlCount < 143) failures.push({ id: 'manifest', issue: `Nested control coverage regressed: ${nestedControlCount} < 143` });
+      if (qaSpec.deterministicSourceRowAudit?.passed !== true) failures.push({ id: 'manifest', issue: 'Deterministic source row audit missing/not PASS in built artifact' });
+      if (qaSpec.sourceSearchFlowAudit?.passed !== true) failures.push({ id: 'manifest', issue: 'Source search flow audit missing/not PASS in built artifact' });
+      const rowAudit = qaSpec.deterministicSourceRowAudit || {};
+      if (rowAudit.rankingRows !== 12 || rowAudit.dungeonRows !== 9 || rowAudit.fortuneRows !== 9 || rowAudit.bigMapRows !== 48) {
+        failures.push({ id: 'manifest', issue: `Deterministic row matrix mismatch: ${JSON.stringify(rowAudit)}` });
       }
     } catch (error) {
       failures.push({ id: 'manifest', issue: String(error?.stack || error) });
@@ -172,6 +184,8 @@ if (params.get('qa') === '1') {
       expectedWindows: 80,
       testedWindows: buttons?.length || 0,
       sourceStatus: sourceStatus || null,
+      gameControlCount,
+      nestedControlCount,
       failures,
       warnings,
       browserErrors,
@@ -182,11 +196,11 @@ if (params.get('qa') === '1') {
     resultNode.dataset.testedWindows = String(report.testedWindows);
     resultNode.hidden = false;
     document.documentElement.dataset.browserQa = report.status;
-    console.info(`ORIGINS browser QA ${report.status.toUpperCase()}: ${report.testedWindows}/80 windows; failures=${failures.length}; browserErrors=${browserErrors.length}`);
+    console.info(`ORIGINS browser QA ${report.status.toUpperCase()}: ${report.testedWindows}/80 windows; controls=${gameControlCount}+${nestedControlCount}; failures=${failures.length}; browserErrors=${browserErrors.length}`);
   };
 
   run().catch(error => {
-    const report = { status: 'fail', expectedWindows: 80, testedWindows: 0, sourceStatus: null, failures: [{ id: 'runner', issue: String(error?.stack || error) }], warnings, browserErrors };
+    const report = { status: 'fail', expectedWindows: 80, testedWindows: 0, sourceStatus: null, gameControlCount: 0, nestedControlCount: 0, failures: [{ id: 'runner', issue: String(error?.stack || error) }], warnings, browserErrors };
     resultNode.textContent = JSON.stringify(report, null, 2);
     resultNode.dataset.status = 'fail';
     resultNode.hidden = false;
