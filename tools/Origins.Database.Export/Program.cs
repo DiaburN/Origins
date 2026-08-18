@@ -16,6 +16,7 @@ var databaseRoot = Path.GetFullPath(args[0]);
 var outputRoot = Path.GetFullPath(args[1]);
 var backupRoot = args.Length > 2 ? Path.GetFullPath(args[2]) : Path.Combine(databaseRoot, "Backup");
 var systemDbPath = Path.Combine(databaseRoot, "System.db");
+var jsonOptions = new JsonSerializerOptions { WriteIndented = true };
 
 if (!File.Exists(systemDbPath))
 {
@@ -79,7 +80,7 @@ try
 
     File.WriteAllText(
         Path.Combine(outputRoot, "manifest.json"),
-        JsonSerializer.Serialize(manifest, JsonOptions));
+        JsonSerializer.Serialize(manifest, jsonOptions));
 
     Console.WriteLine($"ORIGINS SYSTEM.DB EXPORT: PASS ({files.Count} collections)");
     foreach (var pair in files)
@@ -94,7 +95,7 @@ catch (Exception ex)
     return 1;
 }
 
-static void Export<T>(DBCollection<T> collection, string outputRoot, string fileName, IDictionary<string, int> files)
+void Export<T>(DBCollection<T> collection, string targetRoot, string fileName, IDictionary<string, int> files)
     where T : DBObject, new()
 {
     var rows = collection.Binding
@@ -103,13 +104,13 @@ static void Export<T>(DBCollection<T> collection, string outputRoot, string file
         .ToList();
 
     File.WriteAllText(
-        Path.Combine(outputRoot, fileName),
-        JsonSerializer.Serialize(rows, JsonOptions));
+        Path.Combine(targetRoot, fileName),
+        JsonSerializer.Serialize(rows, jsonOptions));
 
     files[fileName] = rows.Count;
 }
 
-static Dictionary<string, object?> Flatten<T>(T value) where T : DBObject
+Dictionary<string, object?> Flatten<T>(T value) where T : DBObject
 {
     var result = new SortedDictionary<string, object?>(StringComparer.Ordinal)
     {
@@ -170,7 +171,7 @@ static Dictionary<string, object?> Flatten<T>(T value) where T : DBObject
 
         try
         {
-            result[property.Name] = JsonSerializer.SerializeToElement(propertyValue, propertyType, JsonOptions);
+            result[property.Name] = JsonSerializer.SerializeToElement(propertyValue, propertyType, jsonOptions);
         }
         catch
         {
@@ -181,14 +182,9 @@ static Dictionary<string, object?> Flatten<T>(T value) where T : DBObject
     return new Dictionary<string, object?>(result);
 }
 
-static string Sha256(string path)
+string Sha256(string path)
 {
     using var stream = File.OpenRead(path);
     using var sha = SHA256.Create();
     return Convert.ToHexString(sha.ComputeHash(stream));
 }
-
-static readonly JsonSerializerOptions JsonOptions = new()
-{
-    WriteIndented = true
-};
