@@ -11,6 +11,7 @@ on:
       - 'tools/Origins.Database.Export/**'
       - 'tools/Origins.Database.Import/**'
       - 'tools/Origins.Database.ApplyOverlay/**'
+      - 'tools/Origins.Database.Audit/**'
       - 'database/**'
       - 'scripts/bootstrap-zircon.*'
       - 'scripts/fetch-zircon-system-db.*'
@@ -24,6 +25,7 @@ on:
       - 'tools/Origins.Database.Export/**'
       - 'tools/Origins.Database.Import/**'
       - 'tools/Origins.Database.ApplyOverlay/**'
+      - 'tools/Origins.Database.Audit/**'
       - 'database/**'
       - 'scripts/bootstrap-zircon.*'
       - 'scripts/fetch-zircon-system-db.*'
@@ -40,74 +42,60 @@ jobs:
     steps:
       - name: Checkout ORIGINS
         uses: actions/checkout@v4
-
       - name: Install .NET 10
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '10.0.x'
-
       - name: Pin official Zircon source
         run: bash scripts/bootstrap-zircon.sh
-
       - name: Build ORIGINS database foundation
         run: dotnet build src/Origins.Database/Origins.Database.csproj --configuration Release
-
       - name: Build database verifier
         run: dotnet build tools/Origins.Database.Verify/Origins.Database.Verify.csproj --configuration Release
-
       - name: Build database upgrader
         run: dotnet build tools/Origins.Database.Upgrade/Origins.Database.Upgrade.csproj --configuration Release
-
       - name: Build database exporter
         run: dotnet build tools/Origins.Database.Export/Origins.Database.Export.csproj --configuration Release
-
       - name: Build database importer
         run: dotnet build tools/Origins.Database.Import/Origins.Database.Import.csproj --configuration Release
-
       - name: Build overlay tool
         run: dotnet build tools/Origins.Database.ApplyOverlay/Origins.Database.ApplyOverlay.csproj --configuration Release
+      - name: Build database auditor
+        run: dotnet build tools/Origins.Database.Audit/Origins.Database.Audit.csproj --configuration Release
 
   migrate-and-roundtrip-system-db:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout ORIGINS
         uses: actions/checkout@v4
-
       - name: Install .NET 10
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '10.0.x'
-
       - name: Install 7-Zip
         run: sudo apt-get update && sudo apt-get install -y p7zip-full
-
       - name: Pin official Zircon source
         run: bash scripts/bootstrap-zircon.sh
-
       - name: Fetch published Zircon System.db
         run: bash scripts/fetch-zircon-system-db.sh
-
       - name: Verify source database
         run: dotnet run --project tools/Origins.Database.Verify/Origins.Database.Verify.csproj --configuration Release -- ./Database ./Backup
-
       - name: Upgrade copied System.db using current Zircon mappings
         run: dotnet run --project tools/Origins.Database.Upgrade/Origins.Database.Upgrade.csproj --configuration Release -- ./Database/System.db ./Database2026 ./Backup2026
-
       - name: Verify upgraded database
         run: dotnet run --project tools/Origins.Database.Verify/Origins.Database.Verify.csproj --configuration Release -- ./Database2026 ./Backup2026
-
+      - name: Audit upgraded Zircon database
+        run: dotnet run --project tools/Origins.Database.Audit/Origins.Database.Audit.csproj --configuration Release -- ./Database2026 ./Database2026/audit.json ./Backup2026
       - name: Export every Zircon system collection to JSON
         run: dotnet run --project tools/Origins.Database.Export/Origins.Database.Export.csproj --configuration Release -- ./Database2026 ./SnapshotBase ./Backup2026
-
       - name: Apply ORIGINS overlays
         run: dotnet run --project tools/Origins.Database.ApplyOverlay/Origins.Database.ApplyOverlay.csproj --configuration Release -- ./SnapshotBase ./database/overlays ./SnapshotOrigins
-
       - name: Rebuild ORIGINS System.db from overlayed JSON snapshot
         run: dotnet run --project tools/Origins.Database.Import/Origins.Database.Import.csproj --configuration Release -- ./SnapshotOrigins ./DatabaseOrigins ./BackupOrigins
-
       - name: Verify ORIGINS reconstructed database
         run: dotnet run --project tools/Origins.Database.Verify/Origins.Database.Verify.csproj --configuration Release -- ./DatabaseOrigins ./BackupOrigins
-
+      - name: Audit ORIGINS reconstructed database
+        run: dotnet run --project tools/Origins.Database.Audit/Origins.Database.Audit.csproj --configuration Release -- ./DatabaseOrigins ./DatabaseOrigins/audit.json ./BackupOrigins
       - name: Publish reports
         if: always()
         uses: actions/upload-artifact@v4
@@ -115,10 +103,11 @@ jobs:
           name: zircon-system-db-reports
           path: |
             Database2026/migration-report.json
+            Database2026/audit.json
             SnapshotOrigins/overlay-report.json
             DatabaseOrigins/import-report.json
+            DatabaseOrigins/audit.json
           if-no-files-found: warn
-
       - name: Publish editable snapshots
         if: success()
         uses: actions/upload-artifact@v4
@@ -128,7 +117,6 @@ jobs:
             SnapshotBase/
             SnapshotOrigins/
           if-no-files-found: error
-
       - name: Publish upgraded and ORIGINS System.db files
         if: success()
         uses: actions/upload-artifact@v4
@@ -138,7 +126,6 @@ jobs:
             Database2026/System.db
             DatabaseOrigins/System.db
           if-no-files-found: error
-
       - name: Publish validated base snapshot to generated branch
         if: success() && github.event_name != 'pull_request'
         shell: bash
@@ -148,6 +135,7 @@ jobs:
           mkdir -p database/generated/zircon-system
           cp -a SnapshotBase/. database/generated/zircon-system/
           cp Database2026/migration-report.json database/generated/zircon-system/migration-report.json
+          cp Database2026/audit.json database/generated/zircon-system/audit.json
           cp DatabaseOrigins/import-report.json database/generated/zircon-system/import-report.json
           cp SnapshotOrigins/overlay-report.json database/generated/zircon-system/overlay-report.json
 
