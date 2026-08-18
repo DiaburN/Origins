@@ -1,0 +1,137 @@
+name: Browser QA Zircon UI reference
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [origins-game-v1]
+    paths:
+      - "apps/zircon-ui-reference/**"
+      - "tools/zircon-ui-importer/**"
+
+permissions:
+  actions: read
+  contents: read
+
+jobs:
+  browser-qa:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - name: Checkout exact ORIGINS revision
+        uses: actions/checkout@v4
+
+      - name: Wait for complete Zircon UI build for this SHA
+        id: build
+        shell: bash
+        run: |
+          set -euo pipefail
+          run_id=""
+          for attempt in $(seq 1 90); do
+            payload="$(gh api "repos/${GITHUB_REPOSITORY}/actions/workflows/build-zircon-ui-reference.yml/runs?head_sha=${GITHUB_SHA}&branch=origins-game-v1&per_page=20")"
+            run_id="$(python3 -c 'import json,sys; d=json.load(sys.stdin); runs=d.get("workflow_runs",[]); print(runs[0]["id"] if runs else "")' <<<"$payload")"
+            status="$(python3 -c 'import json,sys; d=json.load(sys.stdin); runs=d.get("workflow_runs",[]); print(runs[0].get("status","") if runs else "")' <<<"$payload")"
+            conclusion="$(python3 -c 'import json,sys; d=json.load(sys.stdin); runs=d.get("workflow_runs",[]); print(runs[0].get("conclusion","") or "" if runs else "")' <<<"$payload")"
+            if [[ -n "$run_id" && "$status" == "completed" ]]; then
+              if [[ "$conclusion" != "success" ]]; then
+                echo "Source build run $run_id completed with conclusion=$conclusion"
+                exit 1
+              fi
+              echo "Using source build run $run_id"
+              echo "run_id=$run_id" >> "$GITHUB_OUTPUT"
+              exit 0
+            fi
+            echo "Waiting for source build for ${GITHUB_SHA} (attempt ${attempt}/90; run=${run_id:-none}; status=${status:-none})"
+            sleep 20
+          done
+          echo "Timed out waiting for complete Zircon UI build for ${GITHUB_SHA}"
+          exit 1
+
+      - name: Download exact built viewer artifact
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p .qa/viewer
+          artifacts="$(gh api "repos/${GITHUB_REPOSITORY}/actions/runs/${{ steps.build.outputs.run_id }}/artifacts")"
+          artifact_id="$(python3 -c 'import json,sys; d=json.load(sys.stdin); xs=[a for a in d.get("artifacts",[]) if a.get("name")=="zircon-ui-reference-complete" and not a.get("expired")]; print(xs[0]["id"] if xs else "")' <<<"$artifacts")"
+          if [[ -z "$artifact_id" ]]; then
+            echo "zircon-ui-reference-complete artifact not found"
+            exit 1
+          fi
+          gh api "repos/${GITHUB_REPOSITORY}/actions/artifacts/${artifact_id}/zip" > .qa/viewer.zip
+          unzip -q .qa/viewer.zip -d .qa/viewer
+          test -f .qa/viewer/index.html
+          test -f .qa/viewer/ui-source-spec.json
+          echo "Downloaded artifact ${artifact_id} from run ${{ steps.build.outputs.run_id }}"
+
+      - name: Inject browser QA runtime into exact artifact
+        shell: bash
+        run: |
+          set -euo pipefail
+          cp apps/zircon-ui-reference/browser-qa-runtime.js .qa/viewer/browser-qa-runtime.js
+          python3 - <<'PY'
+          from pathlib import Path
+          path=Path('.qa/viewer/index.html')
+          text=path.read_text(encoding='utf-8')
+          marker='<script type="module" src="browser-qa-runtime.js"></script>'
+          if marker not in text:
+              if '</body>' not in text:
+                  raise SystemExit('Built viewer has no </body> marker')
+              text=text.replace('</body>', f'  {marker}\n</body>', 1)
+              path.write_text(text, encoding='utf-8')
+          PY
+
+      - name: Run Chrome against all 80 reconstructed windows
+        shell: bash
+        run: |
+          set -euo pipefail
+          chrome="$(command -v google-chrome || command -v google-chrome-stable || command -v chromium || true)"
+          if [[ -z "$chrome" ]]; then
+            echo "No Chrome/Chromium executable available on ubuntu-latest"
+            exit 1
+          fi
+          "$chrome" --version
+          python3 -m http.server 8765 --bind 127.0.0.1 --directory .qa/viewer > .qa/http-server.log 2>&1 &
+          server_pid=$!
+          trap 'kill "$server_pid" 2>/dev/null || true' EXIT
+          sleep 1
+          "$chrome" \
+            --headless=new \
+            --no-sandbox \
+            --disable-gpu \
+            --hide-scrollbars \
+            --window-size=1600,1000 \
+            --virtual-time-budget=60000 \
+            --dump-dom \
+            "http://127.0.0.1:8765/index.html?qa=1" > .qa/browser-qa-dom.html
+          python3 - <<'PY'
+          import html, json, re
+          from pathlib import Path
+          dom=Path('.qa/browser-qa-dom.html').read_text(encoding='utf-8')
+          match=re.search(r'<pre[^>]*id="browser-qa-result"[^>]*>(.*?)</pre>', dom, re.S)
+          if not match:
+              raise SystemExit('Browser QA result node missing from rendered DOM')
+          raw=html.unescape(re.sub(r'<[^>]+>', '', match.group(1))).strip()
+          report=json.loads(raw)
+          Path('.qa/browser-qa-report.json').write_text(json.dumps(report, indent=2)+'\n', encoding='utf-8')
+          print(json.dumps(report, indent=2))
+          if report.get('status') != 'pass':
+              raise SystemExit('Browser QA reported failures')
+          if report.get('testedWindows') != 80:
+              raise SystemExit(f"Browser QA covered {report.get('testedWindows')} windows, expected 80")
+          if report.get('browserErrors'):
+              raise SystemExit(f"Browser JS errors: {report['browserErrors']}")
+          PY
+
+      - name: Upload browser QA evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: zircon-ui-browser-qa-${{ github.sha }}
+          path: |
+            .qa/browser-qa-report.json
+            .qa/browser-qa-dom.html
+            .qa/http-server.log
+          if-no-files-found: warn
+          retention-days: 14
