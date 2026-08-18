@@ -25,6 +25,10 @@ def main():
   '--screenshot=',
   'Expected 80 screenshots',
   'Build offline review index',
+  'Upload 80-window visual review evidence',
+  'if: always()',
+  '.visual/doms/',
+  'if-no-files-found: warn',
   'zircon-ui-visual-review-${{ steps.revision.outputs.sha }}',
  )
  for needle in required:
@@ -32,5 +36,5 @@ def main():
  forbidden=('Zuma Temple','Wizard','ClientUserItem','MapObject.User','GameScene.Game.User')
  for needle in forbidden:
   if needle in text:raise SystemExit(f'visual review workflow must not inject sample/runtime game data: {needle}')
- spec['visualReviewWorkflowAudit']={'passed':True,'exactShaBuildRequired':True,'exactShaBrowserQaRequired':True,'expectedWindows':80,'expectedScreenshots':80,'domTargetValidation':True,'offlineIndex':True,'concurrencyCancelsStaleRuns':True,'sourceFloor':2511,'nestedFloor':143,'runtimePayloadsInvented':False,'gameWindowContentInvented':False};a.spec.write_text(json.dumps(spec,indent=2,ensure_ascii=False)+'\n',encoding='utf-8');print('Visual review workflow audit: PASS -> exact SHA QA/build, 80 validated screenshots, offline index')
+ spec['visualReviewWorkflowAudit']={'passed':True,'exactShaBuildRequired':True,'exactShaBrowserQaRequired':True,'expectedWindows':80,'expectedScreenshots':80,'domTargetValidation':True,'offlineIndex':True,'concurrencyCancelsStaleRuns':True,'failureEvidenceUploaded':True,'sourceFloor':2511,'nestedFloor':143,'runtimePayloadsInvented':False,'gameWindowContentInvented':False};a.spec.write_text(json.dumps(spec,indent=2,ensure_ascii=False)+'\n',encoding='utf-8');print('Visual review workflow audit: PASS -> exact SHA QA/build, 80 validated screenshots, offline index, failure evidence retained')
 if __name__=='__main__':main()
