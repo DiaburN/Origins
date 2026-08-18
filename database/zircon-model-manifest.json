@@ -1,0 +1,59 @@
+{
+  "schemaVersion": 1,
+  "source": {
+    "repository": "mir-ethernity/mir3-zircon",
+    "branch": "master",
+    "commit": "820bf6d4a11d89cac7f87b81446567095f2e38b8"
+  },
+  "staticModels": {
+    "basePath": "MirDB/SystemModels",
+    "models": [
+      {"name":"DropInfo","file":"DropInfo.cs","sha":"8fae5987658ddf97d498b6d9f3af728139513a89"},
+      {"name":"GuardInfo","file":"GuardInfo.cs","sha":"d9408907e2f1f361d3d42f792d7bbe9c4c12f870"},
+      {"name":"ItemInfo","file":"ItemInfo.cs","sha":"2f613823d35097d6e67d00563cf194ffbb19cc2a"},
+      {"name":"ItemInfoStat","file":"ItemInfoStat.cs","sha":"4601364ec246ee35604e73a571d2301d4ea6c9fb"},
+      {"name":"MagicInfo","file":"MagicInfo.cs","sha":"01986c27a276d369e87d9cf3ba2f21bb12676f6d"},
+      {"name":"MapInfo","file":"MapInfo.cs","sha":"a45782094af502eb487cddcad03ad5d893ef4d78"},
+      {"name":"MonsterInfo","file":"MonsterInfo.cs","sha":"8091cbdbc43d07cecb709217124dd94a3e9cd7d0"},
+      {"name":"MonsterInfoStat","file":"MonsterInfoStat.cs","sha":"252a4fc1bbf9300563454db5dc809d2477ff3dc9"},
+      {"name":"MovementInfo","file":"MovementInfo.cs","sha":"bb52d02b7c7aeb25e7a17ea7e94b75b840bd088f"},
+      {"name":"NPCInfo","file":"NPCInfo.cs","sha":"e2ed234ca5fad3a9e42a707d071083343885cdf4"},
+      {"name":"RespawnInfo","file":"RespawnInfo.cs","sha":"f6575bfb2ab7ccb2e4f53de8d91c0b8767618a8f"},
+      {"name":"SafeZoneInfo","file":"SafeZoneInfo.cs","sha":"e88964f1725a00cab2cf6eaf01fcc1498020ee74"},
+      {"name":"SetInfo","file":"SetInfo.cs","sha":"6bd4a31872f7c0c1392665c77ae9771491766263"},
+      {"name":"SetInfoStat","file":"SetInfoStat.cs","sha":"388fe6834ab6e2b01f9b06b41909a6ea6628a0c4"}
+    ]
+  },
+  "persistentModels": {
+    "basePath": "ServerLibrary/DBModels",
+    "models": [
+      {"name":"AccountInfo","file":"AccountInfo.cs","sha":"31b56013c5ec63532dd2c086cb6d1e31c1d70dd9"},
+      {"name":"AuctionHistoryInfo","file":"AuctionHistoryInfo.cs","sha":"95fc0132aa16917493a2ed3bf6fe12bc5dfb403d"},
+      {"name":"AuctionInfo","file":"AuctionInfo.cs","sha":"ceb030f449b7168b9d972aeec9b2c01b75f66d47"},
+      {"name":"AutoPotionLink","file":"AutoPotionLink.cs","sha":"c68261c9f6c77a3b538c2fc5263ee213379f1699"},
+      {"name":"BlockInfo","file":"BlockInfo.cs","sha":"2cdf113835120bad16151c7a992fe6afe9b04ca3"},
+      {"name":"BuffInfo","file":"BuffInfo.cs","sha":"4a844117b4f7fa82521ac31d6267c297389db549"},
+      {"name":"CharacterBeltLink","file":"CharacterBeltLink.cs","sha":"55507b1b0f7b70c9d8874979679025b0776efdf9"},
+      {"name":"CharacterInfo","file":"CharacterInfo.cs","sha":"d8131ba1ab30a1f6adca5be8248cfdc8e3e04489"},
+      {"name":"CompanionFilters","file":"CompanionFilters.cs","sha":"35b3d3dc2dff6e254052034bb80bb147e4f33d40"},
+      {"name":"GameGoldPayment","file":"GameGoldPayment.cs","sha":"747aba8873a60f3a5d663a398c2de2f4f81df6d5"},
+      {"name":"GameStoreSale","file":"GameStoreSale.cs","sha":"ff58f30d86162e47a041e993c5a497ed7f0f8e9f"},
+      {"name":"GuildInfo","file":"GuildInfo.cs","sha":"58a1246ae90805c508af377b805fcfe97f881719"},
+      {"name":"GuildMemberInfo","file":"GuildMemberInfo.cs","sha":"3aa021b47b5835921be229b0b331ee3e9325f1fb"},
+      {"name":"GuildWarInfo","file":"GuildWarInfo.cs","sha":"dcf20518b99d8439c06a1d1e33769668213f082c"},
+      {"name":"MailInfo","file":"MailInfo.cs","sha":"edae2325fd7dca6a0889ddc1302a584b3a62b68e"},
+      {"name":"RefineInfo","file":"RefineInfo.cs","sha":"d289e5f2729ab7db6e63db7d6bbc3ec99f31277f"},
+      {"name":"UserCompanion","file":"UserCompanion.cs","sha":"07fbf7d01c1feff908bf3d0811b4e74fd2660fcf"},
+      {"name":"UserCompanionUnlock","file":"UserCompanionUnlock.cs","sha":"73cd6889b93c353327dde6640872be18d03d7102"},
+      {"name":"UserConquest","file":"UserConquest.cs","sha":"026e8122caa7002aa20e3d454b89007e024e4a93"},
+      {"name":"UserConquestStats","file":"UserConquestStats.cs","sha":"e0f884595435c00a59d45cbd653fc4cd6907cda3"},
+      {"name":"UserCurrency","file":"UserCurrency.cs","sha":"9f4ce825d69565c1ff883e0e60475c0e3a2bfeeb"},
+      {"name":"UserDrop","file":"UserDrop.cs","sha":"3e8131d1c2b61d1d4d45903b7277daf000d2d3dc"},
+      {"name":"UserFortuneInfo","file":"UserFortuneInfo.cs","sha":"b5127a101364cbfcf1aa9ed377639518904f417f"},
+      {"name":"UserItem","file":"UserItem.cs","sha":"21b7e7f8aa21d65ab94eaf568e47dc21181041a8"},
+      {"name":"UserItemStat","file":"UserItemStat.cs","sha":"4b701576a267dbc8df9ff9548392026c419417dd"},
+      {"name":"UserMagic","file":"UserMagic.cs","sha":"f5e45d88c71735ec71a55f33ad7b9f9a910e90f2"},
+      {"name":"UserQuest","file":"UserQuest.cs","sha":"5600ce7d5bb599aa792c854dfcd6e39551e833f7"}
+    ]
+  }
+}

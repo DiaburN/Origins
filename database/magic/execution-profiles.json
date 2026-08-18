@@ -1,0 +1,5 @@
+{
+  "schemaVersion": 1,
+  "description": "Additive ORIGINS execution metadata for Crystal spells stored in Zircon MagicInfo. Empty until each Crystal call path is verified.",
+  "profiles": []
+}
