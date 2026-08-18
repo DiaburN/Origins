@@ -6,6 +6,7 @@ on:
     paths:
       - 'src/Origins.Database/**'
       - 'tools/Origins.Database.*/**'
+      - 'tools/Origins.UsersDb.Smoke/**'
       - 'tools/Origins.CrystalJevMagic.Export/**'
       - 'database/**'
       - 'scripts/**'
@@ -15,6 +16,7 @@ on:
     paths:
       - 'src/Origins.Database/**'
       - 'tools/Origins.Database.*/**'
+      - 'tools/Origins.UsersDb.Smoke/**'
       - 'tools/Origins.CrystalJevMagic.Export/**'
       - 'database/**'
       - 'scripts/**'
@@ -61,6 +63,8 @@ jobs:
         run: dotnet build tools/Origins.Database.ApplyOverlay/Origins.Database.ApplyOverlay.csproj --configuration Release
       - name: Build database auditor
         run: dotnet build tools/Origins.Database.Audit/Origins.Database.Audit.csproj --configuration Release
+      - name: Build Users.db smoke test
+        run: dotnet build tools/Origins.UsersDb.Smoke/Origins.UsersDb.Smoke.csproj --configuration Release
       - name: Build Crystal Jev magic reader
         run: dotnet build tools/Origins.CrystalJevMagic.Export/Origins.CrystalJevMagic.Export.csproj --configuration Release
 
@@ -95,6 +99,8 @@ jobs:
         run: dotnet run --project tools/Origins.Database.Verify/Origins.Database.Verify.csproj --configuration Release -- ./Database2026 ./Backup2026
       - name: Audit upgraded Zircon database
         run: dotnet run --project tools/Origins.Database.Audit/Origins.Database.Audit.csproj --configuration Release -- ./Database2026 ./Database2026/audit.json ./Backup2026
+      - name: Smoke-test Users.db persistence in temporary storage
+        run: dotnet run --project tools/Origins.UsersDb.Smoke/Origins.UsersDb.Smoke.csproj --configuration Release -- ./Database2026/System.db ./UserResearch/usersdb-smoke.json
       - name: Export every Zircon system collection to JSON
         run: dotnet run --project tools/Origins.Database.Export/Origins.Database.Export.csproj --configuration Release -- ./Database2026 ./SnapshotBase ./Backup2026
       - name: Generate Crystal source spell catalog
@@ -125,6 +131,7 @@ jobs:
             DatabaseOrigins/import-report.json
             DatabaseOrigins/audit.json
             MagicResearch/*.json
+            UserResearch/*.json
           if-no-files-found: warn
       - name: Publish editable snapshots
         if: success()
@@ -144,29 +151,30 @@ jobs:
             Database2026/System.db
             DatabaseOrigins/System.db
           if-no-files-found: error
-      - name: Publish validated snapshot and magic research to generated branch
+      - name: Publish validated snapshot and research to generated branch
         if: success() && github.event_name != 'pull_request'
         shell: bash
         run: |
           set -euo pipefail
-          rm -rf database/generated/zircon-system database/generated/magic-research
-          mkdir -p database/generated/zircon-system database/generated/magic-research
+          rm -rf database/generated/zircon-system database/generated/magic-research database/generated/usersdb-research
+          mkdir -p database/generated/zircon-system database/generated/magic-research database/generated/usersdb-research
           cp -a SnapshotBase/. database/generated/zircon-system/
           cp Database2026/migration-report.json database/generated/zircon-system/migration-report.json
           cp Database2026/audit.json database/generated/zircon-system/audit.json
           cp DatabaseOrigins/import-report.json database/generated/zircon-system/import-report.json
           cp SnapshotOrigins/overlay-report.json database/generated/zircon-system/overlay-report.json
           cp MagicResearch/*.json database/generated/magic-research/
+          cp UserResearch/*.json database/generated/usersdb-research/
 
           git config user.name "ORIGINS Database Bot"
           git config user.email "actions@users.noreply.github.com"
           git checkout -B generated/zircon-system-snapshot
-          git add database/generated/zircon-system database/generated/magic-research
+          git add database/generated/zircon-system database/generated/magic-research database/generated/usersdb-research
 
           if git diff --cached --quiet; then
             echo "Generated snapshot/research is unchanged."
             exit 0
           fi
 
-          git commit -m "generated(db): refresh Zircon snapshot and Crystal magic research"
+          git commit -m "generated(db): refresh Zircon snapshot and ORIGINS database research"
           git push --force origin HEAD:generated/zircon-system-snapshot
