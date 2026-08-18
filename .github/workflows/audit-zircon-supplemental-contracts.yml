@@ -54,7 +54,7 @@ jobs:
           by={w['field']:w for w in spec['windows']}
           game_controls=sum(len(w.get('controls',[])) for w in spec['windows'])
           nested_controls=sum(len(w.get('controls',[])) for w in spec.get('nestedWindows',[]))
-          assert game_controls >= 2069, game_controls
+          assert game_controls >= 2284, game_controls
           assert nested_controls >= 143, nested_controls
           assert by['RankingBox']['rankingSourceAudit']['passed'] is True
           assert by['RankingBox']['rankingSourceState']['sourceIndex'] == 210
@@ -78,6 +78,13 @@ jobs:
           assert guild_root['buttons'] == 10
           assert guild_root['runtimeCastlePanelsInvented'] is False
           assert guild_root['clickCreatedModalsInvented'] is False
+          game_store=spec['gameStoreCompositeAudit']
+          assert game_store['passed'] is True
+          assert game_store['deterministicControls'] == 215
+          assert game_store['itemRows'] == 10
+          assert game_store['topRows'] == 5
+          assert game_store['runtimeStoreInfoInvented'] is False
+          assert game_store['runtimeItemsInvented'] is False
           helpers=spec['uiCreationHelperInventory']
           assert helpers['passed'] is True
           assert helpers['version'] == 2
