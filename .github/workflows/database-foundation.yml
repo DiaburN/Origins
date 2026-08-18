@@ -5,6 +5,7 @@ on:
     paths:
       - 'src/Origins.Database/**'
       - 'tools/Origins.Database.Verify/**'
+      - 'tools/Origins.Database.Upgrade/**'
       - 'database/**'
       - 'scripts/bootstrap-zircon.*'
       - 'scripts/fetch-zircon-system-db.*'
@@ -14,6 +15,7 @@ on:
     paths:
       - 'src/Origins.Database/**'
       - 'tools/Origins.Database.Verify/**'
+      - 'tools/Origins.Database.Upgrade/**'
       - 'database/**'
       - 'scripts/bootstrap-zircon.*'
       - 'scripts/fetch-zircon-system-db.*'
@@ -45,7 +47,10 @@ jobs:
       - name: Build database verifier
         run: dotnet build tools/Origins.Database.Verify/Origins.Database.Verify.csproj --configuration Release
 
-  verify-published-system-db:
+      - name: Build database upgrader
+        run: dotnet build tools/Origins.Database.Upgrade/Origins.Database.Upgrade.csproj --configuration Release
+
+  migrate-published-system-db:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout ORIGINS
@@ -65,5 +70,27 @@ jobs:
       - name: Fetch published Zircon System.db
         run: bash scripts/fetch-zircon-system-db.sh
 
-      - name: Verify published System.db against pinned Zircon runtime
+      - name: Verify source database before migration
         run: dotnet run --project tools/Origins.Database.Verify/Origins.Database.Verify.csproj --configuration Release -- ./Database ./Backup
+
+      - name: Upgrade copied System.db using current Zircon mappings
+        run: dotnet run --project tools/Origins.Database.Upgrade/Origins.Database.Upgrade.csproj --configuration Release -- ./Database/System.db ./Database2026 ./Backup2026
+
+      - name: Verify upgraded database
+        run: dotnet run --project tools/Origins.Database.Verify/Origins.Database.Verify.csproj --configuration Release -- ./Database2026 ./Backup2026
+
+      - name: Publish migration report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: zircon-system-db-migration-report
+          path: Database2026/migration-report.json
+          if-no-files-found: warn
+
+      - name: Publish upgraded System.db
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: origins-zircon-system-db-2026
+          path: Database2026/System.db
+          if-no-files-found: error
