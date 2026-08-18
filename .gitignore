@@ -1,5 +1,7 @@
-# Local pinned Zircon source (installed by scripts/bootstrap-zircon.*)
+# Local pinned upstream sources (installed by bootstrap scripts)
 vendor/zircon/
+vendor/crystal/
+vendor/crystal-database/
 
 # Download/cache material
 .cache/
