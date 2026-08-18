@@ -3,28 +3,32 @@
 Authoritative branch: `origins-game-v1`
 Zircon source of truth: current `Suprcode/Zircon` C# + original `.Zl` artwork.
 
-## Browser-validated Zircon desktop checkpoint — 2026-08-18
+## Zircon desktop checkpoint — CLOSED 2026-08-18
 
-The desktop reconstruction has reached a real Chrome-validated control floor. This is not inferred from source counts: it is backed by an exact-SHA build artifact and an 80-window Browser QA run.
+The desktop reconstruction has completed its exact-SHA source, build, browser and visual validation cycle.
 
-- Browser-validation evidence SHA: `40d5140805bede9f1c7c5af8c2fb0cefc284856c`
-- Zircon source SHA used by that build: `cbf1aa919083bc13fc3f23f93772a8ab8370632d`
-- Exact build run: `32175607406`
-- Browser QA run: `32175607481`
-- Exact complete viewer artifact ID: `9338931478`
-- Browser QA evidence artifact ID: `9338953250`
+Validated baseline:
+
+- ORIGINS desktop baseline SHA: `a3eba357359f1ce95f97020ae68d27792174c8da`
+- Zircon source SHA: `cbf1aa919083bc13fc3f23f93772a8ab8370632d`
 - GameScene windows: **65/65**
 - Nested/transient windows: **15/15**
-- Total windows tested in Chrome: **80/80 PASS**
+- Total browser windows: **80/80 PASS**
 - Browser-validated GameScene control floor: **2674**
 - Browser-validated nested control floor: **149**
+- Browser QA run: `32179172068` — **PASS**
 - Browser failures: **0**
 - Browser JS errors: **0**
 - Chat Options local Add/Remove smoke: **PASS**
-- Chat Options constructor tabs: **0**; Add creates local source-backed state only; Remove returns to **0**
+- Visual Review run: `32179171965` — **PASS**
+- Visual Review artifact ID: `9340387728`
+- Visual evidence retained: **80 PNG screenshots + 80 DOM snapshots + offline index**
+- Manual review: **80/80 inspected; 0 source-backed visual corrections outstanding**
 - Runtime/server/player payloads fabricated for validation: **0**
 
-The control-floor contract is now `browserValidationPending=false` while the generated source inventory remains exactly `2674+149`. Any later source growth must automatically become pending again until another exact-SHA Chrome promotion.
+The control-floor contract is `browserValidationPending=false` while generated source inventory remains exactly `2674+149`. Any later source growth must automatically become pending again until another exact-SHA Chrome promotion.
+
+The visually unusual Lime Ranking panel is source-correct: current Zircon explicitly sets `RankPanelList.BackColour = Color.Lime`. It is retained intentionally.
 
 ## Current source-faithful reconstruction
 
@@ -54,9 +58,9 @@ The control-floor contract is now `browserValidationPending=false` while the gen
 
 The reference must never fabricate player, item, quest, guild, ranking, mail, dungeon, NPC, monster, map, currency, store or server-response data. Runtime-bound structures remain empty/neutral until real runtime data exists.
 
-Important current runtime-only cases include CurrencyTreeHeader/CurrencyItem, user-created Chat Options tabs, Help pages/items, Magic tabs/cells, Guild CastleInfo, HorseTame MonsterObject, MiniMap/BigMap AutoPathRouteControl, Timer server values and all player/item/map/NPC/monster payloads.
+Important runtime-only cases include CurrencyTreeHeader/CurrencyItem, user-created Chat Options tabs, Help pages/items, Magic tabs/cells, Guild CastleInfo, HorseTame MonsterObject, MiniMap/BigMap AutoPathRouteControl, Timer server values and all player/item/map/NPC/monster payloads.
 
-## Recent fidelity fixes included in the browser-validated artifact
+## Fidelity fixes in the validated baseline
 
 - Reused-local geometry is replayed from exact lexical initializer offsets and post-assignments.
 - Empty auto-size `DXLabel` controls follow Zircon `DXLabel.GetSize`: empty text => `Size.Empty`.
@@ -77,7 +81,7 @@ The official build and audits must remain source-faithful; gates are not relaxed
 - `.github/workflows/publish-zircon-browser-qa-status.yml`
 - `.github/workflows/visual-review-zircon-ui-reference.yml`
 
-Commit status context: `origins/zircon-browser-qa`. Empty/unavailable status is never PASS; only exact-SHA Browser QA success is accepted.
+Exact-SHA status contexts used for closure include `origins/zircon-browser-qa` and `origins/zircon-visual-review`. Empty/unavailable status is never PASS.
 
 ## Phase status
 
@@ -85,10 +89,10 @@ Commit status context: `origins/zircon-browser-qa`. Empty/unavailable status is 
 - [x] Complete exact artifact builds successfully.
 - [x] Chrome Browser QA covers **80/80** windows.
 - [x] Chat Options local Add/Remove passes in Chrome.
-- [x] Browser-validated control floor promoted to **2674+149** from exact evidence.
-- [ ] Run the promoted HEAD through Browser QA again with `browserValidationPending=false` encoded in the artifact.
-- [ ] Capture and retain **80/80 visual-review PNGs** from that same promoted SHA.
-- [ ] Inspect the 80 captures as QA and correct only source-verified discrepancies.
-- [ ] Close the desktop Zircon reconstruction phase.
+- [x] Browser-validated control floor promoted to **2674+149**.
+- [x] Promoted HEAD revalidated through exact-SHA Browser QA.
+- [x] **80/80 visual-review PNGs** captured from the same exact SHA.
+- [x] All 80 captures inspected; only source-verified differences are retained.
+- [x] Desktop Zircon reconstruction phase closed.
 
-Do not begin the ORIGINS mobile/Archero adaptation until the visual-review step above is complete. Screenshots are QA evidence only; Zircon source + `.Zl` remain authoritative.
+The desktop reference is now a locked baseline. ORIGINS mobile/Archero adaptation may proceed as a separate product layer without modifying the source-faithful desktop reference.

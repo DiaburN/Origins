@@ -3,25 +3,32 @@
 Branch: `origins-game-v1`
 Source of truth: current `Suprcode/Zircon` C# + original Zircon `.Zl` artwork.
 
-This checkpoint records the desktop source-faithful floor. It does not authorize mobile/Archero redesign until the 80-window visual review is complete.
+## Desktop reconstruction status: CLOSED
 
-## Browser-validated floor
+The source-faithful Zircon desktop reference is complete for the current source snapshot and is now the immutable visual/reference baseline for later ORIGINS product adaptation.
 
-Exact Chrome evidence exists for:
+Exact closure evidence:
 
-- ORIGINS SHA: `40d5140805bede9f1c7c5af8c2fb0cefc284856c`
+- Validated ORIGINS baseline SHA: `a3eba357359f1ce95f97020ae68d27792174c8da`
 - Zircon source SHA: `cbf1aa919083bc13fc3f23f93772a8ab8370632d`
-- Build run: `32175607406`
-- Browser QA run: `32175607481`
-- Complete build artifact: `9338931478`
-- Browser evidence artifact: `9338953250`
-- 65 GameScene + 15 nested/transient = **80/80 Chrome PASS**
-- **2674 GameScene + 149 nested controls**
-- Browser failures: `0`
-- Browser JS errors: `0`
-- Chat Options Add/Remove smoke: `PASS`
+- GameScene windows: **65/65**
+- Nested/transient windows: **15/15**
+- Total windows: **80/80**
+- Browser-validated GameScene controls: **2674**
+- Browser-validated nested controls: **149**
+- Browser QA run: `32179172068` — **PASS**
+- Browser failures: **0**
+- Browser JS errors: **0**
+- Chat Options Add/Remove smoke: **PASS**
+- Visual Review run: `32179171965` — **PASS**
+- Visual Review artifact ID: `9340387728`
+- Visual evidence: **80 PNG screenshots + 80 DOM snapshots + offline index**
+- All 80 captures manually inspected against the Zircon source-backed reference.
+- Source-backed visual discrepancies requiring correction: **0**
 
-Therefore **2674+149 is browser-validated**, not merely source-audited. The promoted manifest must encode `browserValidationPending=false` while its actual source count stays exactly at that floor. If source growth occurs later, pending must become true again automatically.
+The bright green Ranking list panel is intentional and verified against exact Zircon source: `RankingDialog.cs` assigns `RankPanelList.BackColour = Color.Lime`. It must not be normalized away merely because it looks unusual.
+
+Therefore **2674+149 is browser-validated**, not merely source-audited. The promoted manifest encodes `browserValidationPending=false` while generated source inventory remains exactly at that floor. Any later source growth must automatically become pending again until another exact-SHA Chrome promotion.
 
 ## Current deterministic/source-backed trees
 
@@ -58,12 +65,12 @@ Therefore **2674+149 is browser-validated**, not merely source-audited. The prom
 
 Never precreate/fabricate CurrencyTreeHeader/CurrencyItem, Chat Options user tabs, Help pages/items, Magic data-driven tabs/cells, Guild CastleInfo, HorseTame MonsterObject, AutoPathRouteControl, Timer server data, or any player/item/map/NPC/monster/store/quest/rank/fortune/dungeon payload.
 
-## Next gate before desktop phase closure
+## Locked handoff to the next phase
 
-1. Rebuild the promoted HEAD with the validated 2674+149 floor encoded.
-2. Obtain exact-SHA Browser QA 80/80 PASS again.
-3. Capture 80/80 screenshots through the visual-review workflow from that same SHA.
-4. Inspect all captures as QA; verify any suspected discrepancy against Zircon source/`.Zl` before changing code.
-5. Close desktop reconstruction only after visual evidence is complete.
+The desktop Zircon reconstruction is closed. Mobile/Archero adaptation may now begin from this baseline, but it must remain a separate product layer:
 
-Desktop fidelity remains first. Mobile/Archero adaptation is explicitly later.
+1. Do not overwrite or simplify the desktop reference to make mobile implementation easier.
+2. Product `KEEP / REMOVE / MERGE / MOBILE_REDESIGN / DEFER` decisions belong to the ORIGINS layer, not the source-faithful Zircon reference.
+3. Continue to use original source assets and source-backed behavior where retained.
+4. Runtime/server/player data remains runtime-bound; do not fabricate it for previews.
+5. If the desktop source snapshot changes later, reopen validation only for the changed source floor and require new exact-SHA build, Browser QA and Visual Review evidence.
