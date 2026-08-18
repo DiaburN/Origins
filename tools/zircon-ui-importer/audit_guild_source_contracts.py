@@ -12,7 +12,7 @@ def main():
     spec=json.loads(a.spec.read_text(encoding='utf-8'))
     src=(a.zircon_root/'Client/Scenes/Views/GuildDialog.cs').read_text(encoding='utf-8-sig');globals_src=(a.zircon_root/'LibraryCore/Globals.cs').read_text(encoding='utf-8-sig')
     for needle,label in (
-        ('GuildTabs = new DXTabControl','guild tabs'),('CreateGuildTab();','Create tab creation'),('CreateHomeTab();','Home tab creation'),('CreateMemberTab();','Member tab creation'),('CreateStorageTab();','Storage tab creation'),('CreateWarTab();','War tab creation'),('CreateStyleTab();','Style tab creation'),('CreateCastleTab();','Castle tab creation'),
+        ('GuildTabs = new DXTabControl','guild tabs'),('CreateCreateTab();','Create tab creation'),('CreateHomeTab();','Home tab creation'),('CreateMemberTab();','Member tab creation'),('CreateStorageTab();','Storage tab creation'),('CreateWarTab();','War tab creation'),('CreateStyleTab();','Style tab creation'),('CreateCastleTab();','Castle tab creation'),
         ('ClearGuild();','constructor clear'),('CreateTab.TabButton.InvokeMouseClick();','no-guild Create tab selection'),('BackgroundImage.Index = 266;','Create tab background'),
         ('GoldCheckBox = new DXCheckBox','gold checkbox'),('Checked = true,','gold initially selected'),('HornCheckBox = new DXCheckBox','horn checkbox'),('Checked = false,','horn initially unselected'),
         ('MemberLimit = 0;','no-guild member limit'),('StorageSize = 0;','no-guild storage size'),('CreateButton.Enabled = CanCreate;','dynamic create gate'),('public bool CanCreate => !CreateAttempted && GuildNameValid && GameScene.Game != null && TotalCost <= GameScene.Game.User.Gold.Amount;','create source gate'),
