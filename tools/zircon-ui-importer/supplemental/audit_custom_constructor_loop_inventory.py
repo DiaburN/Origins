@@ -5,10 +5,15 @@ import argparse,json,re
 from collections import Counter
 from pathlib import Path
 CLASS_RE=re.compile(r'\bclass\s+([A-Za-z_][A-Za-z0-9_]*)\s*:\s*([A-Za-z_][A-Za-z0-9_]*)')
+
+def store_window_contract(spec):
+ w=next((x for x in spec.get('windows',[]) if x.get('field')=='GameStoreBox'),None)
+ return (w or {}).get('deterministicGameStoreComposites') or {}
+
 PROTECTED={
  'GameStoreItemListControl':lambda spec:(spec.get('gameStoreCompositeAudit') or {}).get('itemRows')==10,
  'GameStoreTopItemsControl':lambda spec:(spec.get('gameStoreCompositeAudit') or {}).get('topRows')==5,
- 'GameStoreItem':lambda spec:(spec.get('gameStoreCompositeAudit') or {}).get('quantityOptionsPerRow')==10,
+ 'GameStoreItem':lambda spec:store_window_contract(spec).get('quantityOptionsPerRow')==10,
 }
 def match_brace(text,o):
  depth=0;quote=None;esc=False;i=o
