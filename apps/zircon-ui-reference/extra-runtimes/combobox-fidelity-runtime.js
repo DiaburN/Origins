@@ -21,6 +21,16 @@ function dropdownPosition(element,dropdown,normalHeight){
   dropdown.style.top=`${Math.round(box.top-stageRect.top+normalHeight+2)}px`;
   dropdown.style.width=`${Math.round(box.width)}px`;
 }
+function applyInitialSelection(element,control){
+  const options=Array.isArray(control.comboOptions)?control.comboOptions:[];
+  const index=Number(control.comboSelectedOptionIndex);
+  if(!Number.isInteger(index)||index<0||index>=options.length)return;
+  const option=options[index],selected=element.querySelector(':scope > span');
+  if(selected)selected.textContent=String(option.label??'');
+  element.dataset.sourceSelectedIndex=String(index);
+  element.dataset.sourceSelectedValue=String(option.valueExpression??option.value??'');
+  element.dataset.sourceInitialSelection='constructor SelectItem(...)';
+}
 function showDropdown(element,resolved){
   closeDropdown(element);
   const p=resolved.control.properties||{};
@@ -67,6 +77,7 @@ function install(element){
   const p=resolved.control.properties||{},normalHeight=intFrom(p.NormalHeight,16),dropDownHeight=Math.max(normalHeight,intFrom(p.DropDownHeight,123));
   element.dataset.sourceNormalHeight=String(normalHeight);element.dataset.sourceDropDownHeight=String(dropDownHeight);element.dataset.sourceComboShowing='false';
   element.style.height=`${normalHeight}px`;
+  applyInitialSelection(element,resolved.control);
   const arrow=[...element.querySelectorAll('img')].find(image=>/GameInter\/00795\.png$/.test(image.src))||element.querySelector('img:last-of-type');
   if(arrow){
     arrow.dataset.sourceComboDownArrow='GameInter#795';arrow.style.pointerEvents='auto';
@@ -85,4 +96,4 @@ function scan(root){
 new MutationObserver(records=>records.forEach(record=>record.addedNodes.forEach(scan))).observe(stage,{childList:true,subtree:true});
 window.addEventListener('resize',()=>stage.querySelectorAll('.dx-combobox[data-source-combo-showing="true"]').forEach(element=>{const id=element.dataset.sourceComboDropdownId,dropdown=id&&document.getElementById(id);if(dropdown)dropdownPosition(element,dropdown,intFrom(element.dataset.sourceNormalHeight,16))}));
 stage.addEventListener('pointerdown',event=>{for(const element of stage.querySelectorAll('.dx-combobox[data-source-combo-showing="true"]')){const id=element.dataset.sourceComboDropdownId,dropdown=id&&document.getElementById(id);if(element.contains(event.target)||dropdown?.contains(event.target))continue;closeDropdown(element)}},true);
-fetch('ui-source-spec.json',{cache:'no-store'}).then(r=>{if(!r.ok)throw new Error(`ui-source-spec.json ${r.status}`);return r.json()}).then(value=>{spec=value;stage.querySelectorAll('.dx-combobox[data-control-index]').forEach(install);console.info('ORIGINS DXComboBox source showing runtime active; uncaptured options remain neutral')}).catch(error=>console.error('Unable to load DXComboBox manifest',error));
+fetch('ui-source-spec.json',{cache:'no-store'}).then(r=>{if(!r.ok)throw new Error(`ui-source-spec.json ${r.status}`);return r.json()}).then(value=>{spec=value;stage.querySelectorAll('.dx-combobox[data-control-index]').forEach(install);console.info('ORIGINS DXComboBox source showing runtime active; static options/initial selections source-backed, runtime options neutral')}).catch(error=>console.error('Unable to load DXComboBox manifest',error));
