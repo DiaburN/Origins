@@ -14,7 +14,7 @@ def main():
     for needle,label in (
         ('GuildTabs = new DXTabControl','guild tabs'),('CreateCreateTab();','Create tab creation'),('CreateHomeTab();','Home tab creation'),('CreateMemberTab();','Member tab creation'),('CreateStorageTab();','Storage tab creation'),('CreateWarTab();','War tab creation'),('CreateStyleTab();','Style tab creation'),('CreateCastleTab();','Castle tab creation'),
         ('ClearGuild();','constructor clear'),('CreateTab.TabButton.InvokeMouseClick();','no-guild Create tab selection'),('BackgroundImage.Index = 266;','Create tab background'),
-        ('GoldCheckBox = new DXCheckBox','gold checkbox'),('Checked = true,','gold initially selected'),('HornCheckBox = new DXCheckBox','horn checkbox'),('Checked = false,','horn initially unselected'),
+        ('GoldCheckBox = new DXCheckBox','gold checkbox'),('Checked = true,','gold initially selected'),('HornCheckBox = new DXCheckBox','horn checkbox'),('HornCheckBox.MouseClick += (o, e) => HornCheckBox.Checked = true;','horn runtime selection'),
         ('MemberLimit = 0;','no-guild member limit'),('StorageSize = 0;','no-guild storage size'),('CreateButton.Enabled = CanCreate;','dynamic create gate'),('public bool CanCreate => !CreateAttempted && GuildNameValid && GameScene.Game != null && TotalCost <= GameScene.Game.User.Gold.Amount;','create source gate'),
         ('CEnvir.Enqueue(new C.GuildCreate','guild create packet'),('CEnvir.Enqueue(new C.JoinStarterGuild','starter guild packet'),('Globals.GuildNameRegex.IsMatch','guild name validation'),
     ): req(src,needle,label)
@@ -25,7 +25,7 @@ def main():
     if len(tabs)!=7: raise SystemExit(f'Guild tab count drifted: {len(tabs)}')
     visible=[c.get('name') for c in tabs if c.get('tabButtonVisible')]
     if visible!=['CreateTab']: raise SystemExit(f'Guild neutral visible tabs drifted: {visible}')
-    w['guildSourceAudit']={'passed':True,'neutralGuildInfo':None,'initialTab':'CreateTab','initialBackground':266,'creationCost':7500000,'runtimeGuildDataInvented':False,'serverActionsExecutedByReference':False}
+    w['guildSourceAudit']={'passed':True,'neutralGuildInfo':None,'initialTab':'CreateTab','initialBackground':266,'creationCost':7500000,'hornInitialChecked':False,'hornInitialCheckedSource':'implicit C# bool default','runtimeGuildDataInvented':False,'serverActionsExecutedByReference':False}
     a.spec.write_text(json.dumps(spec,indent=2,ensure_ascii=False)+'\n',encoding='utf-8')
-    print('Guild source contract: PASS (7 tabs, no-guild CreateTab/#266, 7.5m Gold base cost)')
+    print('Guild source contract: PASS (7 tabs, no-guild CreateTab/#266, Horn=false by implicit C# default, 7.5m Gold base cost)')
 if __name__=='__main__': main()
