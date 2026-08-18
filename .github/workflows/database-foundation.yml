@@ -1,0 +1,38 @@
+name: Database Foundation
+
+on:
+  push:
+    paths:
+      - 'src/Origins.Database/**'
+      - 'database/**'
+      - 'scripts/bootstrap-zircon.*'
+      - 'vendor/README.md'
+      - '.github/workflows/database-foundation.yml'
+  pull_request:
+    paths:
+      - 'src/Origins.Database/**'
+      - 'database/**'
+      - 'scripts/bootstrap-zircon.*'
+      - 'vendor/README.md'
+      - '.github/workflows/database-foundation.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout ORIGINS
+        uses: actions/checkout@v4
+
+      - name: Install .NET 10
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Pin official Zircon source
+        run: bash scripts/bootstrap-zircon.sh
+
+      - name: Build ORIGINS database foundation
+        run: dotnet build src/Origins.Database/Origins.Database.csproj --configuration Release
