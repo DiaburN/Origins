@@ -4,7 +4,31 @@ from __future__ import annotations
 import argparse,json,re,sys
 from pathlib import Path
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
-from augment_combo_options import class_body,list_item_initializers,merge_entries,parse_enum,selected_expression,resolve_selected_index
+from augment_combo_options import class_body,list_item_initializers,merge_entries,parse_enum,resolve_selected_index
+
+def balanced_selected_expression(body,name):
+    marker=f'{name}.ListBox.SelectItem('
+    starts=[];offset=0
+    while True:
+        pos=body.find(marker,offset)
+        if pos<0: break
+        starts.append(pos);offset=pos+len(marker)
+    if not starts:return None
+    pos=starts[-1]+len(marker);start=pos;depth=1;in_string=False;escaped=False
+    while pos<len(body):
+        c=body[pos]
+        if in_string:
+            if escaped: escaped=False
+            elif c=='\\': escaped=True
+            elif c=='"': in_string=False
+        else:
+            if c=='"': in_string=True
+            elif c=='(': depth+=1
+            elif c==')':
+                depth-=1
+                if depth==0:return ' '.join(body[start:pos].split())
+        pos+=1
+    return None
 
 def main():
     p=argparse.ArgumentParser();p.add_argument('--spec',type=Path,required=True);p.add_argument('--zircon-root',type=Path,required=True);a=p.parse_args()
@@ -32,7 +56,7 @@ def main():
             control=combos[name];options=list(control.get('comboOptions') or []);before=len(options);merge_entries(options,entries)
             delta=len(options)-before
             if not delta: continue
-            control['comboOptions']=options;expr=selected_expression(body,name)
+            control['comboOptions']=options;expr=balanced_selected_expression(body,name)
             if expr:
                 control['comboSelectedExpression']=expr
                 selected=resolve_selected_index(body,expr,options)
