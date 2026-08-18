@@ -85,6 +85,7 @@ jobs:
           psql -v ON_ERROR_STOP=1 -f packages/database/migrations/0001_core.sql
           psql -v ON_ERROR_STOP=1 -f packages/database/migrations/0002_zircon_crystal_extensions.sql
           psql -v ON_ERROR_STOP=1 -f packages/database/seeds/0001_classes.sql
+          psql -v ON_ERROR_STOP=1 -f packages/database/migrations/0003_item_class_overlays.sql
           psql -v ON_ERROR_STOP=1 -f .build/data-foundation/0003_magics.sql
 
       - name: Validate source-derived content contract
@@ -103,6 +104,46 @@ jobs:
           test "$healing" = "82,39,41,43"
           test "$stonetrap" = "97,40,43,46,141"
           echo "Content contract: PASS"
+
+      - name: Validate hybrid item authority contract
+        run: |
+          set -euo pipefail
+          test "$(psql -Atqc "SELECT count(*) FROM content.item_source_policy")" = "6"
+          test "$(psql -Atqc "SELECT stats_source FROM content.item_source_policy WHERE class_id=1")" = "zircon"
+          test "$(psql -Atqc "SELECT stats_source FROM content.item_source_policy WHERE class_id=2")" = "zircon"
+          test "$(psql -Atqc "SELECT stats_source FROM content.item_source_policy WHERE class_id=3")" = "zircon"
+          test "$(psql -Atqc "SELECT stats_source FROM content.item_source_policy WHERE class_id=4")" = "crystal"
+          test "$(psql -Atqc "SELECT stats_source FROM content.item_source_policy WHERE class_id=5")" = "crystal"
+          test "$(psql -Atqc "SELECT stats_source FROM content.item_source_policy WHERE class_id=6")" = "crystal-monk"
+
+          psql -v ON_ERROR_STOP=1 <<'SQL'
+          INSERT INTO content.item_definitions
+            (game_key,item_name,item_type,source_system,source_repo,source_path)
+          VALUES
+            ('qa.testblade','QA Test Blade','Weapon','zircon','Suprcode/Zircon','QA');
+
+          INSERT INTO content.item_stats (item_definition_id,stat_code,amount)
+          SELECT id,'DC',10 FROM content.item_definitions WHERE game_key='qa.testblade';
+
+          INSERT INTO content.item_class_stats
+            (item_definition_id,class_id,stat_code,amount,mode,source_system,source_repo,source_path)
+          SELECT id,5,'DC',17,'replace','crystal','Suprcode/Crystal.Database','Jev/Server.MirDB'
+          FROM content.item_definitions WHERE game_key='qa.testblade';
+
+          DO $$
+          DECLARE
+            warrior_dc numeric;
+            archer_dc numeric;
+          BEGIN
+            SELECT amount INTO warrior_dc FROM content.effective_item_stats
+             WHERE class_code='warrior' AND stat_code='DC' AND item_definition_id=(SELECT id FROM content.item_definitions WHERE game_key='qa.testblade');
+            SELECT amount INTO archer_dc FROM content.effective_item_stats
+             WHERE class_code='archer' AND stat_code='DC' AND item_definition_id=(SELECT id FROM content.item_definitions WHERE game_key='qa.testblade');
+            IF warrior_dc <> 10 THEN RAISE EXCEPTION 'Zircon base stat inheritance failed'; END IF;
+            IF archer_dc <> 17 THEN RAISE EXCEPTION 'Crystal class overlay failed'; END IF;
+          END $$;
+          SQL
+          echo "Hybrid item authority: PASS"
 
       - name: Validate Zircon-style player magic lifecycle
         run: |
@@ -146,7 +187,7 @@ jobs:
           python3 - <<'PY'
           import subprocess
           expected = {
-              'content': {'class_definitions','map_definitions','magic_definitions','item_definitions','item_stats','monster_definitions','monster_stats','monster_drops','monster_respawns','buff_definitions','quest_definitions'},
+              'content': {'class_definitions','map_definitions','magic_definitions','item_definitions','item_stats','item_source_links','item_class_profiles','item_class_stats','item_source_policy','monster_definitions','monster_stats','monster_drops','monster_respawns','buff_definitions','quest_definitions'},
               'player': {'accounts','characters','character_stats','character_magics','item_instances','character_item_slots','character_buffs','character_quests'},
               'gameplay': {'dungeon_runs','combat_sessions','combat_events','monster_kills'},
           }
