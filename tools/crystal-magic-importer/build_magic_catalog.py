@@ -45,7 +45,6 @@ def parse_enum(source: str) -> dict[str, int]:
 
 
 def parse_seed_blocks(source: str) -> dict[str, str]:
-    # Each Crystal seed is one MagicExists guard followed by one MagicInfo initializer.
     pattern = re.compile(
         r"if\s*\(\s*!MagicExists\(Spell\.(?P<spell>[A-Za-z0-9_]+)\)\s*\)\s*"
         r"MagicInfoList\.Add\(new\s+MagicInfo\s*\{(?P<body>.*?)\}\s*\)\s*;",
@@ -74,29 +73,49 @@ def seed_name(body: str | None):
     return match.group(1) if match else None
 
 
+def initializer_spell(body: str | None):
+    if not body:
+        return None
+    match = re.search(r"\bSpell\s*=\s*Spell\.([A-Za-z0-9_]+)", body)
+    return match.group(1) if match else None
+
+
 def build_entry(spell: str, spell_id: int, body: str | None, repo: str, source_path: str):
     icon = number(body, "Icon")
     levels = [number(body, f"Level{i}") for i in (1,2,3)]
     needs = [number(body, f"Need{i}") for i in (1,2,3)]
-    implemented = body is not None and icon is not None and levels[0] is not None
+    assigned = initializer_spell(body)
+    initializer_matches = assigned == spell if assigned is not None else False
+    implemented = body is not None and initializer_matches and icon is not None and levels[0] is not None
     entry = {
         "spell": spell,
         "spellId": spell_id,
         "displayKey": spell,
         "sourceSeedName": seed_name(body),
+        "sourceInitializerSpell": assigned,
+        "sourceInitializerMatches": initializer_matches,
         "sourceImplemented": implemented,
-        "iconId": int(icon) if icon is not None else None,
-        "iconFrameNormal": int(icon) * 2 if icon is not None else None,
-        "iconFramePressed": int(icon) * 2 + 1 if icon is not None else None,
-        "requiredLevels": levels,
-        "experienceNeeds": needs,
-        "baseCost": number(body, "BaseCost"),
-        "levelCost": number(body, "LevelCost"),
-        "range": number(body, "Range"),
+        "iconId": int(icon) if icon is not None and implemented else None,
+        "iconFrameNormal": int(icon) * 2 if icon is not None and implemented else None,
+        "iconFramePressed": int(icon) * 2 + 1 if icon is not None and implemented else None,
+        "requiredLevels": levels if implemented else [None,None,None],
+        "experienceNeeds": needs if implemented else [None,None,None],
+        "baseCost": number(body, "BaseCost") if implemented else None,
+        "levelCost": number(body, "LevelCost") if implemented else None,
+        "range": number(body, "Range") if implemented else None,
         "source": {"repo": repo, "path": source_path},
     }
     if not implemented:
-        entry["sourceIssue"] = "Spell exists in the canonical enum but no complete MagicInfo seed is implemented in the audited source. No icon, level or runtime value is invented."
+        reasons = []
+        if body is None:
+            reasons.append("MagicInfo seed is absent")
+        if assigned is not None and assigned != spell:
+            reasons.append(f"initializer assigns Spell.{assigned} instead of Spell.{spell}")
+        if icon is None:
+            reasons.append("Icon is not defined")
+        if levels[0] is None:
+            reasons.append("required levels are not defined")
+        entry["sourceIssue"] = "; ".join(reasons) + ". No icon, level or runtime value is invented."
     return entry
 
 
