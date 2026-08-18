@@ -2,10 +2,12 @@
 """Expand MagicBarDialog's deterministic constructor loop in the final manifest.
 
 The generic C# initializer parser cannot materialize dictionary entries created
-inside `for (int i = 0; i < 24; i++)`.  With Zircon's checked-in default
-`Config.ShowMagicBarFrames = true`, all geometry for the empty/source-neutral
-bar is deterministic. Magic assignments, school border indices and cooldowns
-remain runtime player data and are intentionally not fabricated.
+inside `for (int i = 0; i < 24; i++)`. With Zircon's checked-in default
+`Config.ShowMagicBarFrames = true`, the empty/source-neutral slot geometry is
+deterministic. The two generic DXImageControl parser templates from that loop
+are removed once the exact 24 border + 24 icon instances are materialised, so
+they cannot render as duplicate controls. Magic assignments and school border
+indices remain runtime player data and are intentionally not fabricated.
 """
 from __future__ import annotations
 
@@ -21,6 +23,27 @@ def control(name: str, type_name: str, properties: dict[str, str], *, generated:
         "properties": properties,
         "sourceGenerated": generated,
     }
+
+
+def is_loop_image_template(item: dict) -> bool:
+    if item.get("type") != "DXImageControl":
+        return False
+    props = item.get("properties") or {}
+    location = " ".join(str(props.get("Location") or "").split())
+    size = " ".join(str(props.get("Size") or "").split())
+    parent = " ".join(str(props.get("Parent") or "").split())
+    border_template = (
+        "xOffset" in location
+        and "yOffset" in location
+        and "Config.ShowMagicBarFrames" in size
+        and parent == "this"
+    )
+    icon_template = (
+        "Config.ShowMagicBarFrames" in location
+        and size == "new Size(36, 36)"
+        and ("IconBorders" in parent or parent == "IconBorders[key]")
+    )
+    return border_template or icon_template
 
 
 def main() -> None:
@@ -40,10 +63,14 @@ def main() -> None:
     root["SourceConfigAssumption"] = "Config.ShowMagicBarFrames=true (checked-in Config.cs default)"
 
     existing = []
-    removed_loop_stub = 0
+    removed_loop_label_stub = 0
+    removed_loop_image_templates = 0
     for item in window.get("controls", []):
         if item.get("name") == "label" and item.get("properties", {}).get("Parent") == "pair.Value":
-            removed_loop_stub += 1
+            removed_loop_label_stub += 1
+            continue
+        if is_loop_image_template(item):
+            removed_loop_image_templates += 1
             continue
         if str(item.get("name", "")).startswith("MagicBarSlot"):
             continue
@@ -112,16 +139,21 @@ def main() -> None:
         "spellSetInitial": 1,
         "spellSetRange": [1, 4],
         "runtimeMagicDataInvented": False,
-        "removedGenericLoopLabelStub": removed_loop_stub,
+        "removedGenericLoopLabelStub": removed_loop_label_stub,
+        "removedGenericLoopImageTemplates": removed_loop_image_templates,
+        "duplicateLoopTemplatesRetained": False,
     }
 
-    if len(generated) != 48 or removed_loop_stub != 1:
-        raise SystemExit(f"MagicBar deterministic loop expansion drifted: generated={len(generated)} stub={removed_loop_stub}")
+    if len(generated) != 48 or removed_loop_label_stub != 1 or removed_loop_image_templates != 2:
+        raise SystemExit(
+            "MagicBar deterministic loop expansion drifted: "
+            f"generated={len(generated)} labelStub={removed_loop_label_stub} imageTemplates={removed_loop_image_templates}"
+        )
     if root.get("Size") != "new Size(646, 65)":
         raise SystemExit(f"MagicBar source-default size lost: {root}")
 
     args.spec.write_text(json.dumps(spec, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
-    print("MagicBar source loop expanded: 24 borders/icons; default root 646x65; runtime magic data neutral")
+    print("MagicBar source loop expanded: 24 borders/icons; 2 flattened image templates removed; default root 646x65; runtime magic data neutral")
 
 
 if __name__ == "__main__":
