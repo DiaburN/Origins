@@ -54,7 +54,7 @@ jobs:
           by={w['field']:w for w in spec['windows']}
           game_controls=sum(len(w.get('controls',[])) for w in spec['windows'])
           nested_controls=sum(len(w.get('controls',[])) for w in spec.get('nestedWindows',[]))
-          assert game_controls >= 2450, game_controls
+          assert game_controls >= 2464, game_controls
           assert nested_controls >= 143, nested_controls
           assert by['RankingBox']['rankingSourceAudit']['passed'] is True
           assert by['RankingBox']['rankingSourceState']['sourceIndex'] == 210
@@ -92,12 +92,22 @@ jobs:
           assert communication['runtimeMailInvented'] is False
           consignment=spec['consignmentCompositeAudit']
           assert consignment['passed'] is True
-          assert consignment['deterministicControls'] == 121
-          assert consignment['itemTypeButtons'] == 34
+          assert consignment['contractVersion'] == 2
+          assert consignment['deterministicControls'] == 135
+          assert consignment['headerLabels'] == 10
+          assert consignment['itemTypeButtons'] == 38
           assert consignment['searchRows'] == 6
           assert consignment['consignRows'] == 6
           assert consignment['runtimeMarketInfoInvented'] is False
           assert consignment['runtimeItemsInvented'] is False
+          consignment_strict=spec['consignmentDeterministicAudit']
+          assert consignment_strict['passed'] is True
+          assert consignment_strict['deterministicControls'] == 135
+          assert consignment_strict['headerLabels'] == 10
+          assert consignment_strict['itemTypeButtons'] == 38
+          assert consignment_strict['searchRows'] == 6
+          assert consignment_strict['consignRows'] == 6
+          assert consignment_strict['runtimeMarketInfoInvented'] is False
           group_lfg=by['GroupBox']['groupLFGRowAudit']
           assert group_lfg['passed'] is True
           assert group_lfg['rows'] == 5
