@@ -99,6 +99,7 @@ def main() -> None:
     ):
         subprocess.run([sys.executable, str(here / helper), "--spec", str(args.spec)], check=True)
     for helper in (
+        "augment_filter_drop_reference.py",
         "augment_combo_options.py",
         "augment_combo_enum_values.py",
         "augment_combo_static_lists.py",
