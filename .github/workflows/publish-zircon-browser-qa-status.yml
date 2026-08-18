@@ -1,0 +1,40 @@
+name: Publish Zircon Browser QA status
+
+on:
+  workflow_run:
+    workflows: ["Browser QA Zircon UI reference"]
+    types: [completed]
+
+permissions:
+  actions: read
+  contents: read
+  statuses: write
+
+jobs:
+  publish-status:
+    if: ${{ github.event.workflow_run.head_branch == 'origins-game-v1' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Publish exact SHA Browser QA result
+        env:
+          GH_TOKEN: ${{ github.token }}
+          QA_SHA: ${{ github.event.workflow_run.head_sha }}
+          QA_CONCLUSION: ${{ github.event.workflow_run.conclusion }}
+          QA_URL: ${{ github.event.workflow_run.html_url }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          [[ "$QA_SHA" =~ ^[0-9a-f]{40}$ ]] || { echo "Invalid Browser QA SHA: $QA_SHA"; exit 1; }
+          if [[ "$QA_CONCLUSION" == "success" ]]; then
+            state="success"
+            description="Zircon Browser QA PASS for exact SHA"
+          else
+            state="failure"
+            description="Zircon Browser QA ${QA_CONCLUSION:-unknown} for exact SHA"
+          fi
+          gh api --method POST "repos/${GITHUB_REPOSITORY}/statuses/${QA_SHA}" \
+            -f state="$state" \
+            -f context="origins/zircon-browser-qa" \
+            -f description="$description" \
+            -f target_url="$QA_URL"
+          echo "Published origins/zircon-browser-qa=${state} for ${QA_SHA}"
