@@ -6,6 +6,11 @@ pass deliberately evaluates *creation-time* code with event lambda bodies
 masked, so a deterministic panel is not labelled runtime merely because its
 MouseClick callback later sends a packet. Static Globals constants also do not
 make structural UI runtime data. Data-backed `.Binding` loops still do.
+
+Known custom composites may be flattened into their exact DX base-control tree
+by an earlier source-backed materializer. Those helpers are counted as
+materialized only when the complete, named flattened tree still matches the
+strict source contract.
 """
 from __future__ import annotations
 
@@ -43,9 +48,74 @@ RUNTIME_PATTERNS = (
     r"\bClientObjectData\b",
 )
 
+BIGMAP_FLATTENED_SOURCE = (
+    "deterministic-rows:BigMapDialog CreateRows/CreateScrollBar + "
+    "BigMapListRow constructor"
+)
+
 
 def external_runtime_bound(structural_chunk: str) -> bool:
     return any(re.search(pattern, structural_chunk) for pattern in RUNTIME_PATTERNS)
+
+
+def flattened_bigmap_names(window: dict, helper: str) -> set[str]:
+    """Recognize only the exact source-backed BigMap helper trees.
+
+    BigMapListRow is a custom DXControl, so the neutral manifest deliberately
+    flattens each instance to a DXControl + NameLabel pair. Local C# names
+    (`rows`/`row`) therefore cannot match manifest names directly. Keep this
+    recognition narrow and fail closed if the source-derived contract changes.
+    """
+    if window.get("field") != "BigMapBox" or helper not in {"CreateRows", "CreateScrollBar"}:
+        return set()
+
+    contract = window.get("deterministicBigMapRows") or {}
+    if (
+        contract.get("npcRows") != 24
+        or contract.get("monsterRows") != 24
+        or contract.get("neutralVisible") is not False
+        or any(
+            contract.get(key) is not False
+            for key in ("runtimeMapInfoInvented", "runtimeNPCsInvented", "runtimeMonstersInvented")
+        )
+    ):
+        return set()
+
+    controls = {str(control.get("name") or ""): control for control in window.get("controls") or []}
+
+    if helper == "CreateRows":
+        expected: list[str] = []
+        for prefix in ("BigMapNPCRowSource", "BigMapMonsterRowSource"):
+            for index in range(1, 25):
+                row_name = f"{prefix}{index:02d}"
+                label_name = f"{row_name}NameLabel"
+                row = controls.get(row_name)
+                label = controls.get(label_name)
+                if row is None or label is None:
+                    return set()
+                if row.get("type") != "DXControl" or label.get("type") != "DXLabel":
+                    return set()
+                if str(row.get("sourceGenerated") or "") != BIGMAP_FLATTENED_SOURCE:
+                    return set()
+                if str(label.get("sourceGenerated") or "") != BIGMAP_FLATTENED_SOURCE:
+                    return set()
+                if str((row.get("properties") or {}).get("Visible") or "") != "false":
+                    return set()
+                if label.get("resolvedText") not in ("", None):
+                    return set()
+                expected.extend((row_name, label_name))
+        return set(expected) if len(expected) == 96 else set()
+
+    expected = {"NPCScrollBar", "MonsterScrollBar"}
+    for name in expected:
+        control = controls.get(name)
+        if control is None or control.get("type") != "DXVScrollBar":
+            return set()
+        if str(control.get("sourceGenerated") or "") != BIGMAP_FLATTENED_SOURCE:
+            return set()
+        if str((control.get("properties") or {}).get("Change") or "") != "1":
+            return set()
+    return expected
 
 
 def materialized_names(window: dict, helper: str, named: list[str]) -> list[str]:
@@ -68,6 +138,8 @@ def materialized_names(window: dict, helper: str, named: list[str]) -> list[str]
             found.add(name)
         if str(control.get("compositeOwner") or "") in owned_tabs:
             found.add(name)
+
+    found.update(flattened_bigmap_names(window, helper))
     return sorted(value for value in found if value)
 
 
@@ -148,17 +220,26 @@ def main() -> None:
         return {row["helper"]: row for row in rows if row["sourceClass"] == source_class}
 
     # BigMap fixed helper construction: source rows/scrollbars are deterministic,
-    # final layout/data waits for SelectedInfo.
+    # final layout/data waits for SelectedInfo. BigMapListRow is flattened into
+    # its exact DXControl + NameLabel tree, so require the independent strict row
+    # audit before accepting that helper as materialized.
     bigmap = rows_for("BigMapDialog")
     required_bigmap = {"CreateSidePanel", "CreateRows", "CreateScrollBar"}
     if not required_bigmap.issubset(bigmap):
         raise SystemExit(f"BigMap helper inventory incomplete: {sorted(required_bigmap - set(bigmap))}")
+    bigmap_row_audit = spec.get("deterministicSourceRowAudit") or {}
+    if bigmap_row_audit.get("passed") is not True or bigmap_row_audit.get("bigMapRows") != 48:
+        raise SystemExit(f"BigMap flattened row audit missing/not exact: {bigmap_row_audit}")
     for helper in required_bigmap:
         if not bigmap[helper]["constructorReachable"]:
             raise SystemExit(f"BigMap {helper} lost constructor reachability")
     for helper in ("CreateRows", "CreateScrollBar"):
         if bigmap[helper]["classification"] != "deterministic-source" or bigmap[helper]["status"] != "materialized":
             raise SystemExit(f"BigMap {helper} materialization drifted: {bigmap[helper]}")
+    if len(bigmap["CreateRows"]["materializedControlNames"]) != 96:
+        raise SystemExit(f"BigMap CreateRows flattened tree incomplete: {bigmap['CreateRows']}")
+    if set(bigmap["CreateScrollBar"]["materializedControlNames"]) != {"NPCScrollBar", "MonsterScrollBar"}:
+        raise SystemExit(f"BigMap CreateScrollBar flattened tree incomplete: {bigmap['CreateScrollBar']}")
 
     # Chat Options: callback-created local user tab, never initial constructor UI.
     chat = rows_for("ChatOptionsDialog")
