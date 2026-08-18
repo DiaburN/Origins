@@ -27,7 +27,7 @@ if(params.get('qaChatOptions')==='1'){
     const created=await waitFor(()=>{const c=counts();return c.listItems===1&&c.panels===1&&c.tabControls===1&&c.chatTabs===1?c:null},5000);
     if(!created){failures.push(`Add did not create exactly one local source tree: ${JSON.stringify(counts())}`);finish({before,afterAdd:counts()});return}
     const listItem=document.querySelector('.chat-options-local-list-item');const panel=document.querySelector('.chat-options-local-panel');const tabControl=document.querySelector('.chat-options-local-tab-control');const chatTab=document.querySelector('.chat-options-local-chat-tab');
-    if(listItem?.textContent?.trim()!=='Window 0')failures.push(`first local list item is ${listItem?.textContent?.trim()!r}, expected Window 0`);
+    if(listItem?.textContent?.trim()!=='Window 0')failures.push(`first local list item is ${JSON.stringify(listItem?.textContent?.trim())}, expected Window 0`);
     if(tabControl?.dataset.sourceType!=='DXTabControl'||tabControl?.dataset.localStateOnly!=='true')failures.push('local DXTabControl source/local markers missing');
     if(chatTab?.dataset.sourceType!=='ChatTab'||chatTab?.dataset.sourceOpacity!=='0.5'||chatTab?.dataset.allowResize!=='true')failures.push('local ChatTab source state drifted');
     const checks=[...panel.querySelectorAll('.chat-options-local-checkbox')];if(checks.length!==16)failures.push(`local ChatOptionsPanel has ${checks.length} checkboxes, expected 16`);
@@ -37,7 +37,7 @@ if(params.get('qaChatOptions')==='1'){
     if(!textPanel||textPanel.dataset.runtimeMessages!=='none'||textPanel.childElementCount!==0)failures.push('local ChatTab TextPanel must exist and contain zero messages');
     if(!scroll||scroll.dataset.sourceType!=='DXVScrollBar'||scroll.dataset.neutralRuntime!=='true')failures.push('local ChatTab neutral DXVScrollBar missing');
     if(!alert||getComputedStyle(alert).display!=='none'||!String(alert.getAttribute('src')||'').endsWith('/00240.png'))failures.push('local ChatTab hidden GameInter 240 AlertIcon missing');
-    const nameInput=panel?.querySelector('.chat-options-local-name input');if(nameInput?.value!=='Window 0')failures.push(`local name textbox value ${nameInput?.value!r}, expected Window 0`);
+    const nameInput=panel?.querySelector('.chat-options-local-name input');if(nameInput?.value!=='Window 0')failures.push(`local name textbox value ${JSON.stringify(nameInput?.value)}, expected Window 0`);
     const remove=panel?.querySelector('[data-source-action="RemoveButton.MouseClick"]');if(!remove)failures.push('source RemoveButton local action missing');else remove.click();
     await waitFor(()=>Object.values(counts()).every(value=>value===0),3000);
     const afterRemove=counts();if(Object.values(afterRemove).some(value=>value!==0))failures.push(`Remove did not clear local tab tree: ${JSON.stringify(afterRemove)}`);
