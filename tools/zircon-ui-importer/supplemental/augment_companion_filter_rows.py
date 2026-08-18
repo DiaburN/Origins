@@ -28,12 +28,13 @@ SOURCE_EVIDENCE = (
     "DrawRarityFilter();",
     "DrawItemTypeFilter();",
     "Array classes = Enum.GetValues(typeof(MirClass));",
-    "Array rarityList = Enum.GetValues(typeof(Rarity));",
+    "Array rarities = Enum.GetValues(typeof(Rarity));",
     "Array itemTypes = Enum.GetValues(typeof(ItemType));",
-    'itemType.ToString().Contains("Companion")',
+    'item.Contains("Companion")',
     "new Point(10 + (110 * index), 30 + (18 * row))",
     "new Point(10 + (110 * index), 90 + (18 * row))",
     "new Point(10 + (110 * index), 150 + (18 * row))",
+    "Text = char.ToUpper(item[0]) + item.Substring(1)",
 )
 
 
@@ -69,11 +70,9 @@ def enum_members(text: str, enum_name: str) -> list[str]:
 
 
 def display_name(member: str) -> str:
-    # Zircon's InsertSpace().ToUpperByWord(): split PascalCase/acronym edges,
-    # then title each word. Current enum members contain no punctuation.
-    spaced = re.sub(r"(?<=[a-z0-9])(?=[A-Z])", " ", member)
-    spaced = re.sub(r"(?<=[A-Z])(?=[A-Z][a-z])", " ", spaced)
-    return " ".join(word[:1].upper() + word[1:].lower() for word in spaced.split())
+    # Exact source expression is char.ToUpper(value[0]) + value.Substring(1):
+    # PascalCase remains PascalCase (LootBox, SocketGem, etc.).
+    return member[:1].upper() + member[1:]
 
 
 def make_pair(helper: str, group: str, member: str, ordinal: int, base_y: int, fore: str) -> list[dict]:
@@ -164,10 +163,8 @@ def main() -> None:
     )
     for helper, group, members, base_y in groups:
         for ordinal, member in enumerate(members):
-            fore = "Color.White"
-            if group == "Class":
-                fore = "Color.AntiqueWhite"
-            elif group == "Rarity":
+            fore = "Color.AntiqueWhite"
+            if group == "Rarity":
                 fore = {
                     "Common": "Color.AntiqueWhite",
                     "Elite": "Color.MediumPurple",
