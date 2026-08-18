@@ -65,21 +65,28 @@ jobs:
           test -f .qa/viewer/ui-source-spec.json
           echo "Downloaded artifact ${artifact_id} from run ${{ steps.build.outputs.run_id }}"
 
-      - name: Inject browser QA runtime into exact artifact
+      - name: Inject browser QA runtimes into exact artifact
         shell: bash
         run: |
           set -euo pipefail
           cp apps/zircon-ui-reference/browser-qa-runtime.js .qa/viewer/browser-qa-runtime.js
+          cp apps/zircon-ui-reference/browser-qa-window-runtime.js .qa/viewer/browser-qa-window-runtime.js
+          node --check .qa/viewer/browser-qa-runtime.js
+          node --check .qa/viewer/browser-qa-window-runtime.js
           python3 - <<'PY'
           from pathlib import Path
           path=Path('.qa/viewer/index.html')
           text=path.read_text(encoding='utf-8')
-          marker='<script type="module" src="browser-qa-runtime.js"></script>'
-          if marker not in text:
-              if '</body>' not in text:
-                  raise SystemExit('Built viewer has no </body> marker')
-              text=text.replace('</body>', f'  {marker}\n</body>', 1)
-              path.write_text(text, encoding='utf-8')
+          markers=[
+              '<script type="module" src="browser-qa-runtime.js"></script>',
+              '<script type="module" src="browser-qa-window-runtime.js"></script>',
+          ]
+          if '</body>' not in text:
+              raise SystemExit('Built viewer has no </body> marker')
+          for marker in markers:
+              if marker not in text:
+                  text=text.replace('</body>', f'  {marker}\n</body>', 1)
+          path.write_text(text, encoding='utf-8')
           PY
 
       - name: Run Chrome against all 80 reconstructed windows
@@ -91,6 +98,7 @@ jobs:
             echo "No Chrome/Chromium executable available on ubuntu-latest"
             exit 1
           fi
+          echo "$chrome" > .qa/chrome-path
           "$chrome" --version
           python3 -m http.server 8765 --bind 127.0.0.1 --directory .qa/viewer > .qa/http-server.log 2>&1 &
           server_pid=$!
@@ -111,17 +119,64 @@ jobs:
           dom=Path('.qa/browser-qa-dom.html').read_text(encoding='utf-8')
           match=re.search(r'<pre[^>]*id="browser-qa-result"[^>]*>(.*?)</pre>', dom, re.S)
           if not match:
-              raise SystemExit('Browser QA result node missing from rendered DOM')
+              Path('.qa/browser-qa-report.json').write_text(json.dumps({'status':'fail','failures':[{'id':'runner','issue':'Browser QA result node missing from rendered DOM'}]},indent=2)+'\n')
+              raise SystemExit(0)
           raw=html.unescape(re.sub(r'<[^>]+>', '', match.group(1))).strip()
           report=json.loads(raw)
           Path('.qa/browser-qa-report.json').write_text(json.dumps(report, indent=2)+'\n', encoding='utf-8')
+          ids=[]
+          for failure in report.get('failures',[]):
+              value=str(failure.get('id') or '').strip()
+              if value and value not in {'catalog','manifest','source-status','runner'} and value not in ids:
+                  ids.append(value)
+          Path('.qa/failed-window-ids.txt').write_text('\n'.join(ids[:12]) + ('\n' if ids[:12] else ''), encoding='utf-8')
           print(json.dumps(report, indent=2))
-          if report.get('status') != 'pass':
-              raise SystemExit('Browser QA reported failures')
-          if report.get('testedWindows') != 80:
-              raise SystemExit(f"Browser QA covered {report.get('testedWindows')} windows, expected 80")
-          if report.get('browserErrors'):
-              raise SystemExit(f"Browser JS errors: {report['browserErrors']}")
+          PY
+
+      - name: Capture screenshots for failing windows
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ ! -s .qa/failed-window-ids.txt || ! -f .qa/chrome-path ]]; then
+            echo "No per-window screenshots required"
+            exit 0
+          fi
+          chrome="$(cat .qa/chrome-path)"
+          mkdir -p .qa/screenshots
+          python3 -m http.server 8765 --bind 127.0.0.1 --directory .qa/viewer > .qa/screenshot-http-server.log 2>&1 &
+          server_pid=$!
+          trap 'kill "$server_pid" 2>/dev/null || true' EXIT
+          sleep 1
+          while IFS= read -r id; do
+            [[ -n "$id" ]] || continue
+            safe="$(printf '%s' "$id" | tr -c 'A-Za-z0-9._-' '_')"
+            "$chrome" \
+              --headless=new \
+              --no-sandbox \
+              --disable-gpu \
+              --hide-scrollbars \
+              --window-size=1600,1000 \
+              --virtual-time-budget=8000 \
+              --screenshot=".qa/screenshots/${safe}.png" \
+              "http://127.0.0.1:8765/index.html?qaWindow=${id}" >/dev/null 2>&1 || true
+          done < .qa/failed-window-ids.txt
+
+      - name: Assert browser QA result
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          path=Path('.qa/browser-qa-report.json')
+          if not path.exists(): raise SystemExit('Browser QA report missing')
+          report=json.loads(path.read_text(encoding='utf-8'))
+          if report.get('status') != 'pass': raise SystemExit('Browser QA reported failures; see uploaded report/screenshots')
+          if report.get('testedWindows') != 80: raise SystemExit(f"Browser QA covered {report.get('testedWindows')} windows, expected 80")
+          if report.get('browserErrors'): raise SystemExit(f"Browser JS errors: {report['browserErrors']}")
+          print('Browser QA: PASS (80/80 windows)')
           PY
 
       - name: Upload browser QA evidence
@@ -133,5 +188,8 @@ jobs:
             .qa/browser-qa-report.json
             .qa/browser-qa-dom.html
             .qa/http-server.log
+            .qa/failed-window-ids.txt
+            .qa/screenshots/
+            .qa/screenshot-http-server.log
           if-no-files-found: warn
           retention-days: 14
