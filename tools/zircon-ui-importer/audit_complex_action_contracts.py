@@ -65,6 +65,22 @@ def main() -> None:
     require(store, "BuildFolderTree();", "GameStore currency folder rebuild")
     require(store, "RefreshItems();", "GameStore item refresh")
 
+    communication = read(args.zircon_root, "Client/Scenes/Views/CommunicationDialog.cs")
+    for index in (201, 202, 203, 204):
+        require(communication, f"BackgroundImage.Index = {index};", f"Communication tab background {index}")
+    for needle, label in (
+        ("FriendAddButton.Visible = true;", "Communication friends controls"),
+        ("ReceivedCollectAllButton.Visible = true;", "Communication received controls"),
+        ("SendButton.Visible = true;", "Communication send controls"),
+        ("BlockAddButton.Visible = true;", "Communication block controls"),
+        ("ReadMail = null;", "Communication tab read-state reset"),
+        ("SendRecipientBox.TextBox.Text = string.Empty;", "Communication Send clears recipient"),
+        ("SendMessageBox.TextBox.Text = string.Empty;", "Communication Send clears message"),
+        ("SendSubjectBox.TextBox.Text = string.Empty;", "Communication Send clears subject"),
+        ("SendGoldBox.Value = 0;", "Communication Send clears gold"),
+        ("ReadTab.Visible = ReadMail != null;", "Communication read-mail runtime visibility"),
+    ): require(communication, needle, label)
+
     combo = read(args.zircon_root, "Client/Controls/DXComboBox.cs")
     require(combo, "public const int DefaultNormalHeight = 16;", "DXComboBox default normal height")
     require(combo, "DropDownHeight = 123;", "DXComboBox dropdown height")
@@ -75,19 +91,20 @@ def main() -> None:
     require(combo, "Showing = false;", "DXComboBox closes after selection")
 
     spec["complexActionAudit"] = {
-        "contractCount": 5,
+        "contractCount": 6,
         "contracts": {
             "TradeDialog": "confirm disables then C.TradeConfirm; gold modal requires runtime user gold; close packet only while trading",
             "ExitDialog": "modal; 10-second combat gate; logout/application-close actions remain runtime gated",
             "ConsignmentDialog": "Search/Consign tab artwork and dependent visibility set by SetActiveTab",
             "GameStoreDialog": "Alphabetical default sort; Hunt/Game Gold toggle rebuilds local store state",
+            "CommunicationDialog": "Friend/Received/Send/Block backgrounds and button visibility; Send resets draft; ReadMail runtime-only",
             "DXComboBox": "16px normal, 123px dropdown, GameInter 795 arrow, ActiveScene listbox, selection closes",
         },
         "runtimeServerDataInvented": False,
         "source": "current Suprcode/Zircon C# source",
     }
     args.spec.write_text(json.dumps(spec, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
-    print("Complex source action contracts: 5/5 PASS")
+    print("Complex source action contracts: 6/6 PASS")
 
 
 if __name__ == "__main__": main()
