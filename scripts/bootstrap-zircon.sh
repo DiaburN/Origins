@@ -5,8 +5,6 @@ REPO="https://github.com/Suprcode/Zircon.git"
 COMMIT="cbf1aa919083bc13fc3f23f93772a8ab8370632d"
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 DEST="$ROOT/vendor/zircon"
-OVERRIDES="$ROOT/overrides/zircon"
-PATCHES="$ROOT/patches/zircon"
 
 mkdir -p "$ROOT/vendor"
 
@@ -18,7 +16,7 @@ fi
 git -C "$DEST" remote set-url origin "$REPO"
 git -C "$DEST" fetch --depth=1 origin "$COMMIT"
 git -C "$DEST" checkout --detach --force "$COMMIT"
-git -C "$DEST" clean -fd
+git -C "$DEST" clean -fdx
 
 ACTUAL="$(git -C "$DEST" rev-parse HEAD)"
 if [ "$ACTUAL" != "$COMMIT" ]; then
@@ -26,23 +24,15 @@ if [ "$ACTUAL" != "$COMMIT" ]; then
   exit 1
 fi
 
-if [ -d "$OVERRIDES" ]; then
-  while IFS= read -r -d '' source; do
-    relative="${source#"$OVERRIDES/"}"
-    target="$DEST/$relative"
-    mkdir -p "$(dirname "$target")"
-    cp "$source" "$target"
-    echo "Applied ORIGINS Zircon override: $relative"
-  done < <(find "$OVERRIDES" -type f ! -name 'README.md' -print0 | sort -z)
+if ! git -C "$DEST" diff --quiet || ! git -C "$DEST" diff --cached --quiet; then
+  echo "ERROR: Zircon checkout is not source-pure after bootstrap." >&2
+  exit 1
 fi
 
-if [ -d "$PATCHES" ]; then
-  while IFS= read -r -d '' patch; do
-    relative="${patch#"$ROOT/"}"
-    git -C "$DEST" apply --check "$patch"
-    git -C "$DEST" apply --whitespace=nowarn "$patch"
-    echo "Applied ORIGINS Zircon patch: $relative"
-  done < <(find "$PATCHES" -type f -name '*.patch' -print0 | sort -z)
+if [ -n "$(git -C "$DEST" status --porcelain)" ]; then
+  echo "ERROR: Zircon checkout contains local modifications after bootstrap." >&2
+  git -C "$DEST" status --short >&2
+  exit 1
 fi
 
-echo "Official Suprcode/Zircon pinned at $ACTUAL with ORIGINS overrides/patches applied"
+echo "Official Suprcode/Zircon pinned source-pure at $ACTUAL"
