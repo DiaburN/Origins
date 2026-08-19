@@ -14,8 +14,9 @@ diff --git a/LibraryCore/Enum.cs b/LibraryCore/Enum.cs
 +        CrystalDelayedExplosion = 626,
 +        CrystalDelayedExplosion2 = 627,
 @@
-         CrystalHealingCircle2,
-+        CrystalExplosiveTrap,
+-        CrystalHealingCircle2
++        CrystalHealingCircle2,
++        CrystalExplosiveTrap
      }
 diff --git a/LibraryCore/Stat.cs b/LibraryCore/Stat.cs
 --- a/LibraryCore/Stat.cs
