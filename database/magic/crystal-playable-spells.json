@@ -1,12 +1,15 @@
 {
-  "schemaVersion": 2,
+  "schemaVersion": 3,
   "source": {
     "base": "Suprcode/Crystal",
     "baseCommit": "0e315fe327192afe52c3d7357ddd1f5b7e26c5b8",
-    "monk": "Crystal-Monk source/database (to be resolved and pinned explicitly)"
+    "monk": "JevLOMCN/Crystal-Monk",
+    "monkCommit": "381e589e3d7ee736cdf0583c8315c0d144ab058f"
   },
   "scope": {
     "basePlayableClassSpellCount": 105,
+    "monkSpellCount": 9,
+    "requiredPlayableSpellCount": 114,
     "includeMonk": true,
     "includeCustom": false,
     "excludeMapEvents": true
@@ -27,6 +30,8 @@
     "Archer": [
       {"id":121,"name":"Focus"},{"id":122,"name":"StraightShot"},{"id":123,"name":"DoubleShot"},{"id":124,"name":"ExplosiveTrap"},{"id":125,"name":"DelayedExplosion"},{"id":126,"name":"Meditation"},{"id":127,"name":"BackStep"},{"id":128,"name":"ElementalShot"},{"id":129,"name":"Concentration"},{"id":130,"name":"Stonetrap"},{"id":131,"name":"ElementalBarrier"},{"id":132,"name":"SummonVampire"},{"id":133,"name":"VampireShot"},{"id":134,"name":"SummonToad"},{"id":135,"name":"PoisonShot"},{"id":136,"name":"CrippleShot"},{"id":137,"name":"SummonSnakes"},{"id":138,"name":"NapalmShot"},{"id":139,"name":"OneWithNature"},{"id":140,"name":"BindingShot"},{"id":141,"name":"MentalState"}
     ],
-    "Monk": []
+    "Monk": [
+      {"id":161,"name":"JiBenGunFa"},{"id":162,"name":"LuoHanGunFa"},{"id":163,"name":"JinGangGunFa"},{"id":164,"name":"DaMoGunFa"},{"id":165,"name":"XiangLongGunFa"},{"id":166,"name":"Taunt"},{"id":167,"name":"TianLeiZhen"},{"id":168,"name":"LuoHanZhen"},{"id":169,"name":"ShiBuYiSha"}
+    ]
   }
 }
