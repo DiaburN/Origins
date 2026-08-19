@@ -1,7 +1,6 @@
 using Library;
 using Server.DBModels;
 using Server.Envir;
-using System.Collections.Generic;
 using System.Drawing;
 
 namespace Server.Models.Magics
@@ -36,9 +35,15 @@ namespace Server.Models.Magics
             int power = (int)data[2];
             if (target?.Node == null || !Player.CanAttackTarget(target)) return;
 
-            Player.MagicAttack(new List<MagicType> { Type }, target, true, null, power);
-        }
+            int damage = power - target.GetAC();
+            if (damage <= 0)
+            {
+                target.Blocked();
+                return;
+            }
 
-        public override int ModifyPowerAdditionner(bool primary, int power, MapObject ob, Stats stats = null, int extra = 0) => extra;
+            if (target.Attacked(Player, damage, Element.None, true, false, false, true) > 0)
+                Player.LevelMagic(Magic);
+        }
     }
 }
