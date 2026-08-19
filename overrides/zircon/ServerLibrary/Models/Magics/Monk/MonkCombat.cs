@@ -33,8 +33,6 @@ namespace Server.Models.Magics
 
         public override int ModifyPowerAdditionner(bool primary, int power, MapObject ob, Stats stats = null, int extra = 0)
         {
-            // JiBenGunFa is a mastery/passive. It levels through attacks but
-            // does not add a separate damage packet in the Jev source.
             return power;
         }
     }
@@ -69,8 +67,6 @@ namespace Server.Models.Magics
 
         public override void SecondaryAttackLocation(List<MagicType> magics)
         {
-            // Source geometry is intentionally odd: target starts at Front;
-            // +1 produces distance 2, then +2 from there produces distance 4.
             Point distance2 = Functions.Move(Player.CurrentLocation, Player.Direction, 2);
             Point distance4 = Functions.Move(Player.CurrentLocation, Player.Direction, 4);
 
@@ -84,7 +80,7 @@ namespace Server.Models.Magics
     {
         protected override Element Element => Element.None;
         public override bool AttackSkill => true;
-        public override bool IgnoreAccuracy => true; // Crystal resolves prepared hit against AC, not AC+Agility.
+        public override bool IgnoreAccuracy => true;
 
         private bool _armed;
         private DateTime _nextArmTime;
@@ -107,7 +103,7 @@ namespace Server.Models.Magics
             }
 
             if (_armed || SEnvir.Now < _nextArmTime) return;
-            if (Magic.Cost >= Player.CurrentMP) return; // Source uses >=, not >.
+            if (Magic.Cost >= Player.CurrentMP) return;
 
             Player.ChangeMP(-Magic.Cost);
             _armed = true;
@@ -187,25 +183,29 @@ namespace Server.Models.Magics
                     {
                         if (ob?.Node == null || ob.Dead || !Player.CanAttackTarget(ob)) continue;
 
-                        int damage;
+                        int damage = 0;
                         if (direction == original)
                         {
-                            // Crystal DefenceType.None: no MAC and no agility check.
+                            // Crystal DefenceType.None: full skill power reaches Attacked.
                             damage = ob.Attacked(Player, power, Element.None, true, false, false, true);
                         }
                         else
                         {
-                            // Crystal MACAgility: preserve the agility layer before
-                            // Zircon's native magic-resistance damage calculation.
+                            // Crystal DefenceType.MACAgility: first perform the agility
+                            // gate, then subtract a Zircon MR roll before Attacked.
                             int accuracy = Math.Max(1, Player.Stats[Stat.Accuracy]);
                             int agility = Math.Max(0, ob.Stats[Stat.Agility]);
                             if (SEnvir.Random.Next(accuracy + agility + 1) < agility)
+                                break;
+
+                            int resolved = power - ob.GetMR();
+                            if (resolved <= 0)
                             {
-                                direction = Functions.ShiftDirection(direction, 1);
-                                continue;
+                                ob.Blocked();
+                                break;
                             }
 
-                            damage = Player.MagicAttack(new List<MagicType> { Type }, ob, true, null, power);
+                            damage = ob.Attacked(Player, resolved, Element.None, true, false, false, true);
                         }
 
                         if (damage > 0) train = true;
@@ -217,11 +217,6 @@ namespace Server.Models.Magics
             }
 
             if (train) Player.LevelMagic(Magic);
-        }
-
-        public override int ModifyPowerAdditionner(bool primary, int power, MapObject ob, Stats stats = null, int extra = 0)
-        {
-            return extra;
         }
     }
 
@@ -239,8 +234,6 @@ namespace Server.Models.Magics
             Map map = CurrentMap;
             Point origin = CurrentLocation;
 
-            // The delayed line hit uses the original location even if the
-            // teleport below succeeds immediately.
             ActionList.Add(new DelayedAction(
                 SEnvir.Now.AddMilliseconds(500),
                 ActionType.DelayMagic,
@@ -288,8 +281,15 @@ namespace Server.Models.Magics
             {
                 if (ob?.Node == null || ob.Dead || !Player.CanAttackTarget(ob)) continue;
 
-                // Source uses DefenceType.AC for the one-cell line hit.
-                int damage = ob.Attacked(Player, power, Element.None, true, false, false, true);
+                // Crystal DefenceType.AC: subtract AC but do not apply agility.
+                int resolved = power - ob.GetAC();
+                if (resolved <= 0)
+                {
+                    ob.Blocked();
+                    break;
+                }
+
+                int damage = ob.Attacked(Player, resolved, Element.None, true, false, false, true);
                 if (damage > 0) train = true;
                 break;
             }
