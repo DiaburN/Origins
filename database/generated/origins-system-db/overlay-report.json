@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "baseSystemDbSha256": "AD9D1DFD74BBFBAACEC7DEE7C7E4A484CF03D2AD3DD395614B49A82620917453",
+  "baseSystemVersion": "2026.08.19.1",
+  "indexPolicy": "/home/runner/work/Origins/Origins/database/index-policy.json",
+  "overlays": [
+    "10-currencies-items.json",
+    "20-base-stats-movement.json",
+    "30-maps-dungeons.json",
+    "40-monsters-drops.json",
+    "50-npcs-stores-quests.json",
+    "70-magics-crystal.json",
+    "80-sets-equipment.json"
+  ],
+  "operationCount": 5,
+  "createdCount": 0,
+  "updatedCount": 5,
+  "deletedCount": 0,
+  "completedUtc": "2026-08-19T08:06:42.9719404Z"
+}

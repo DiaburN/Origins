@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 1,
+  "zirconCommit": "cbf1aa919083bc13fc3f23f93772a8ab8370632d",
+  "crystalCommit": "0e315fe327192afe52c3d7357ddd1f5b7e26c5b8",
+  "crystalDatabaseJevCommit": "a19f6dca8f5e238d4ed79801820777abbf0a9ca4",
+  "systemDbSha256": "6b2eea0a38fce9412787b75b228e1e6af01af758044afe54bef93422aeb3046d",
+  "crystalJoinKey": "normalized spell name",
+  "numericSpellIdUsedAsJevJoinKey": false,
+  "runtime": "Zircon MagicObject with explicit ORIGINS overrides/patches"
+}
