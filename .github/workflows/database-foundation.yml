@@ -10,6 +10,7 @@ on:
       - 'tools/Origins.CrystalJevMagic.Export/**'
       - 'database/**'
       - 'scripts/**'
+      - 'overrides/zircon/**'
       - 'vendor/README.md'
       - '.github/workflows/database-foundation.yml'
   pull_request:
@@ -20,6 +21,7 @@ on:
       - 'tools/Origins.CrystalJevMagic.Export/**'
       - 'database/**'
       - 'scripts/**'
+      - 'overrides/zircon/**'
       - 'vendor/README.md'
       - '.github/workflows/database-foundation.yml'
   workflow_dispatch:
@@ -41,14 +43,16 @@ jobs:
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '8.0.x'
-      - name: Pin official Zircon source
+      - name: Pin official Zircon source and apply ORIGINS overrides
         run: bash scripts/bootstrap-zircon.sh
       - name: Pin official Crystal source
         run: bash scripts/bootstrap-crystal.sh
       - name: Pin Crystal.Database Jev source
         run: bash scripts/bootstrap-crystal-database.sh
       - name: Validate magic research scripts
-        run: python3 -m py_compile scripts/generate-crystal-magic-catalog.py scripts/compare-crystal-zircon-magics.py scripts/compare-crystal-defaults-jev.py scripts/generate-magic-implementation-index.py
+        run: python3 -m py_compile scripts/generate-crystal-magic-catalog.py scripts/compare-crystal-zircon-magics.py scripts/compare-crystal-defaults-jev.py scripts/generate-magic-implementation-index.py scripts/project-crystal-magic-numerics.py scripts/build-magic-review-queue.py
+      - name: Build overridden Zircon ServerLibrary
+        run: dotnet build vendor/zircon/ServerLibrary/ServerLibrary.csproj --configuration Release
       - name: Build ORIGINS database foundation
         run: dotnet build src/Origins.Database/Origins.Database.csproj --configuration Release
       - name: Build database verifier
@@ -83,7 +87,7 @@ jobs:
           dotnet-version: '8.0.x'
       - name: Install 7-Zip
         run: sudo apt-get update && sudo apt-get install -y p7zip-full
-      - name: Pin official Zircon source
+      - name: Pin official Zircon source and apply ORIGINS overrides
         run: bash scripts/bootstrap-zircon.sh
       - name: Pin official Crystal source
         run: bash scripts/bootstrap-crystal.sh
@@ -99,7 +103,7 @@ jobs:
         run: dotnet run --project tools/Origins.Database.Verify/Origins.Database.Verify.csproj --configuration Release -- ./Database2026 ./Backup2026
       - name: Audit upgraded Zircon database
         run: dotnet run --project tools/Origins.Database.Audit/Origins.Database.Audit.csproj --configuration Release -- ./Database2026 ./Database2026/audit.json ./Backup2026
-      - name: Smoke-test Users.db persistence in temporary storage
+      - name: Smoke-test Users.db account character and UserMagic persistence
         run: dotnet run --project tools/Origins.UsersDb.Smoke/Origins.UsersDb.Smoke.csproj --configuration Release -- ./Database2026/System.db ./UserResearch/usersdb-smoke.json
       - name: Export every Zircon system collection to JSON
         run: dotnet run --project tools/Origins.Database.Export/Origins.Database.Export.csproj --configuration Release -- ./Database2026 ./SnapshotBase ./Backup2026
@@ -113,6 +117,10 @@ jobs:
         run: python3 scripts/compare-crystal-defaults-jev.py ./MagicResearch/crystal-source-catalog.json ./MagicResearch/crystal-jev-effective-magics.json ./MagicResearch/crystal-jev-differences.json
       - name: Compare Crystal catalog against Zircon MagicInfo
         run: python3 scripts/compare-crystal-zircon-magics.py ./MagicResearch/crystal-source-catalog.json ./SnapshotBase/LibraryCore__Library_SystemModels_MagicInfo.json ./MagicResearch/crystal-zircon-comparison.json
+      - name: Project Crystal numerics into Zircon MagicInfo schema
+        run: python3 scripts/project-crystal-magic-numerics.py ./MagicResearch/crystal-source-catalog.json ./MagicResearch/crystal-jev-effective-magics.json ./MagicResearch/crystal-zircon-numeric-projection.json
+      - name: Build unified Crystal to Zircon magic review queue
+        run: python3 scripts/build-magic-review-queue.py ./MagicResearch/crystal-source-catalog.json ./MagicResearch/crystal-jev-effective-magics.json ./MagicResearch/crystal-jev-differences.json ./MagicResearch/crystal-zircon-comparison.json ./MagicResearch/magic-implementation-index.json ./MagicResearch/magic-review-queue.json
       - name: Apply ORIGINS overlays
         run: dotnet run --project tools/Origins.Database.ApplyOverlay/Origins.Database.ApplyOverlay.csproj --configuration Release -- ./SnapshotBase ./database/overlays ./SnapshotOrigins ./database/index-policy.json
       - name: Rebuild ORIGINS System.db from overlayed JSON snapshot
