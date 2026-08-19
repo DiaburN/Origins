@@ -7,8 +7,10 @@ GameScene window constructor. Zircon also uses:
 - helper methods that build plain DXTab instances (GuildDialog),
 - runtime/data-driven custom tabs (MagicTab).
 
-This pass adds only deterministic static tab instances to `controls` and records
-Magic's data-driven schools as templates. It does not invent active player data.
+This pass adds only deterministic static tab instances to `controls`, records
+Magic's data-driven schools as templates, and projects the canonical Zircon
+MagicInfo rows required by MagicDialog into the generated viewer manifest.
+The canonical database snapshot remains the source of truth.
 """
 from __future__ import annotations
 
@@ -24,6 +26,14 @@ GENERIC_INIT_RE = re.compile(
     r"(?:(?:[A-Za-z_][A-Za-z0-9_<>]*\s+)?([A-Za-z_][A-Za-z0-9_]*)\s*=\s*)"
     r"new\s+([A-Za-z_][A-Za-z0-9_]*)\s*\{"
 )
+
+MAGIC_INFO_DEFAULT = Path("database/generated/zircon-system/LibraryCore__Library_SystemModels_MagicInfo.json")
+MAGIC_INFO_FIELDS = (
+    "Index", "Magic", "Class", "School", "Icon", "Name", "Description",
+    "NeedLevel1", "NeedLevel2", "NeedLevel3",
+    "Experience1", "Experience2", "Experience3",
+)
+ACTIVE_MAGIC_CLASSES = (0, 1, 2, 3)  # Warrior, Wizard, Taoist, Assassin
 
 
 def normalise(value: str) -> str:
@@ -83,8 +93,6 @@ def as_tab_control(instance: dict, source_kind: str) -> dict:
     props = dict(instance["properties"])
     hidden = tab_button_explicitly_hidden(props)
     if hidden:
-        # Runtime reference equivalent: a hidden tab button cannot be selected
-        # by DXTabControl.TabsChanged(), so its content begins hidden as well.
         props["Visible"] = "false"
     return {
         "name": instance["name"],
@@ -106,10 +114,6 @@ def add_quest_tabs(window: dict, source: str, custom_tab_types: set[str]) -> int
     existing = {control["name"] for control in window.get("controls", [])}
     controls = [as_tab_control(instance, "window-constructor-custom-tab") for instance in instances if instance["name"] not in existing]
 
-    # DXTabControl completely removes non-user-visible tab buttons from its
-    # horizontal layout. The base reference resolver is a flat source geometry
-    # pass, so append currently visible tabs first to reproduce the same visible
-    # ordering without allocating a fake gap for Completed/Mission.
     controls.sort(key=lambda control: 0 if control["tabButtonVisible"] else 1)
     window["controls"].extend(controls)
 
@@ -125,8 +129,6 @@ def add_quest_tabs(window: dict, source: str, custom_tab_types: set[str]) -> int
 
 
 def guild_default_visibility(name: str) -> tuple[bool, str]:
-    # GuildDialog constructor calls ClearGuild() before GuildInfo is assigned.
-    # GuildInfo is therefore null in the initial source state.
     if name == "CreateTab":
         return True, "GuildInfo == null"
     if name == "CastleTab":
@@ -173,8 +175,6 @@ def add_guild_tabs(window: dict, source: str) -> int:
 
 
 def add_magic_templates(window: dict, source: str) -> int:
-    # Magic tabs are created only after runtime MagicInfo + player class filtering.
-    # Record the exact source artwork per school without claiming any are active.
     if not re.search(r"\bclass\s+MagicTab\s*:\s*DXTab\b", source):
         return 0
     ctor = constructor_body(source, "MagicTab")
@@ -208,10 +208,42 @@ def add_magic_templates(window: dict, source: str) -> int:
     return len(templates)
 
 
+def load_magic_info_projection(path: Path) -> dict:
+    if not path.exists():
+        raise SystemExit(f"Canonical Zircon MagicInfo snapshot missing: {path}")
+    raw = json.loads(path.read_text(encoding="utf-8"))
+    if not isinstance(raw, list):
+        raise SystemExit(f"Canonical Zircon MagicInfo snapshot is not an array: {path}")
+
+    rows = []
+    for source in raw:
+        if not isinstance(source, dict):
+            continue
+        class_id = int(source.get("Class", -1))
+        if class_id not in ACTIVE_MAGIC_CLASSES:
+            continue
+        rows.append({field: source.get(field) for field in MAGIC_INFO_FIELDS})
+
+    rows.sort(key=lambda row: (
+        int(row.get("Class") or 0),
+        int(row.get("NeedLevel1") or 0),
+        int(row.get("Index") or 0),
+    ))
+    return {
+        "sourceBacked": True,
+        "source": path.as_posix(),
+        "activeClasses": list(ACTIVE_MAGIC_CLASSES),
+        "rowCount": len(rows),
+        "fields": list(MAGIC_INFO_FIELDS),
+        "rows": rows,
+    }
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--spec", type=Path, required=True)
     parser.add_argument("--zircon-root", type=Path, required=True)
+    parser.add_argument("--magic-info", type=Path, default=MAGIC_INFO_DEFAULT)
     args = parser.parse_args()
 
     spec = json.loads(args.spec.read_text(encoding="utf-8"))
@@ -234,6 +266,8 @@ def main() -> None:
         elif window.get("field") == "MagicBox":
             magic_templates += add_magic_templates(window, source)
 
+    magic_projection = load_magic_info_projection(args.magic_info)
+    spec["zirconMagicInfo"] = magic_projection
     spec["customTabPass"] = {
         "sourceBacked": True,
         "questStaticTabsAdded": quest_added,
@@ -241,12 +275,14 @@ def main() -> None:
         "magicDynamicTemplates": magic_templates,
         "customDXTabSubclassCount": len(custom_tab_types),
         "dynamicMagicVisibilityInvented": False,
+        "magicInfoRowsProjected": magic_projection["rowCount"],
     }
     args.spec.write_text(json.dumps(spec, indent=2, ensure_ascii=False), encoding="utf-8")
 
     print("Quest custom tabs added:", quest_added)
     print("Guild helper-built tabs added:", guild_added)
     print("Magic dynamic tab templates:", magic_templates)
+    print("MagicInfo rows projected:", magic_projection["rowCount"])
     print("Custom DXTab subclasses discovered:", len(custom_tab_types))
 
 
