@@ -1,0 +1,313 @@
+{
+  "schemaVersion": 1,
+  "source": {
+    "crystalCommit": "0e315fe327192afe52c3d7357ddd1f5b7e26c5b8",
+    "crystalMonkCommit": "381e589e3d7ee736cdf0583c8315c0d144ab058f",
+    "zirconCommit": "cbf1aa919083bc13fc3f23f93772a8ab8370632d"
+  },
+  "policy": {
+    "runtime": "Zircon MagicObject",
+    "crystalDatabaseEngineImported": false,
+    "runtimeReadyRequiresCompile": true,
+    "overlayReadyRequiresClientBinding": true
+  },
+  "decisions": [
+    {
+      "crystalSpell": "Healing",
+      "crystalSourceSpellId": 61,
+      "zirconMagicType": "Heal",
+      "verified": true,
+      "executionKind": "CrystalAdapted",
+      "runtimeReady": false,
+      "overlayReady": false,
+      "portedBehavior": ["friendly target with self fallback", "500 ms completion", "SCx2 plus level healing pool", "600 ms progressive Crystal healing ticks"],
+      "zirconSources": ["overrides/zircon/ServerLibrary/Models/Magics/Taoist/Heal.cs", "patches/zircon/015-crystal-taoist-core-runtime.patch"]
+    },
+    {
+      "crystalSpell": "SpiritSword",
+      "crystalSourceSpellId": 62,
+      "zirconMagicType": "SpiritSword",
+      "verified": true,
+      "executionKind": "CrystalAdapted",
+      "runtimeReady": false,
+      "overlayReady": false,
+      "portedBehavior": ["passive Accuracy table 0/3/5/8", "skill trains through normal attacks"],
+      "zirconSources": ["overrides/zircon/ServerLibrary/Models/Magics/Taoist/SpiritSword.cs"]
+    },
+    {
+      "crystalSpell": "Poisoning",
+      "crystalSourceSpellId": 63,
+      "zirconMagicType": "PoisonDust",
+      "verified": true,
+      "executionKind": "CrystalAdapted",
+      "runtimeReady": false,
+      "overlayReady": false,
+      "portedBehavior": ["one equipped poison charge", "500 ms delayed single target", "Green and Red poison preserve Crystal duration and two-second cadence", "Green damage uses SC power plus PoisonAttack roll"],
+      "zirconSources": ["overrides/zircon/ServerLibrary/Models/Magics/Taoist/PoisonDust.cs"]
+    },
+    {
+      "crystalSpell": "SoulFireBall",
+      "crystalSourceSpellId": 64,
+      "zirconMagicType": "ExplosiveTalisman",
+      "verified": true,
+      "executionKind": "CrystalAdapted",
+      "runtimeReady": false,
+      "overlayReady": false,
+      "portedBehavior": ["one amulet", "single hostile target with line-of-flight validation", "SC power snapshot", "500 ms plus 50 ms per cell projectile timing", "Zircon splash/augment behavior removed"],
+      "zirconSources": ["overrides/zircon/ServerLibrary/Models/Magics/Taoist/ExplosiveTalisman.cs"]
+    },
+    {
+      "crystalSpell": "SummonSkeleton",
+      "crystalSourceSpellId": 65,
+      "zirconMagicType": "SummonSkeleton",
+      "verified": true,
+      "executionKind": "CrystalAdapted",
+      "runtimeReady": false,
+      "overlayReady": false,
+      "portedBehavior": ["existing living Skeleton is recalled without another amulet", "new summon consumes one amulet", "maximum two living monster pets", "500 ms spawn in front with Zircon pet compatibility mapping"],
+      "zirconSources": ["overrides/zircon/ServerLibrary/Models/Magics/Taoist/SummonSkeleton.cs"]
+    },
+    {
+      "crystalSpell": "Hiding",
+      "crystalSourceSpellId": 67,
+      "zirconMagicType": "Invisibility",
+      "verified": true,
+      "executionKind": "CrystalAdapted",
+      "runtimeReady": false,
+      "overlayReady": false,
+      "portedBehavior": ["one amulet", "500 ms completion", "duration SC roll plus five seconds per magic level plus five"],
+      "zirconSources": ["overrides/zircon/ServerLibrary/Models/Magics/Taoist/Invisibility.cs"]
+    },
+    {
+      "crystalSpell": "MassHiding",
+      "crystalSourceSpellId": 68,
+      "zirconMagicType": "MassInvisibility",
+      "verified": true,
+      "executionKind": "CrystalAdapted",
+      "runtimeReady": false,
+      "overlayReady": false,
+      "portedBehavior": ["target-location 3x3 friendly invisibility", "amulet requirement", "distance-based 500 ms plus 50 ms per cell timing", "Crystal SC-based duration"],
+      "zirconSources": ["overrides/zircon/ServerLibrary/Models/Magics/Taoist/MassInvisibility.cs"]
+    },
+    {
+      "crystalSpell": "SoulShield",
+      "crystalSourceSpellId": 69,
+      "zirconMagicType": "MagicResistance",
+      "verified": true,
+      "executionKind": "CrystalAdapted",
+      "runtimeReady": false,
+      "overlayReady": false,
+      "portedBehavior": ["one amulet", "7x7 friendly area", "MaxMAC bonus target level divided by seven plus four", "Crystal SC-derived duration and distance delay"],
+      "zirconSources": ["overrides/zircon/ServerLibrary/Models/Magics/Taoist/MagicResistance.cs"]
+    },
+    {
+      "crystalSpell": "Revelation",
+      "crystalSourceSpellId": 70,
+      "zirconMagicType": "Revelation",
+      "verified": true,
+      "executionKind": "CrystalAdapted",
+      "runtimeReady": false,
+      "overlayReady": false,
+      "portedBehavior": ["player or monster target", "500 ms completion", "Random.Next(4) level gate", "SC plus magic power reveal window"],
+      "zirconSources": ["overrides/zircon/ServerLibrary/Models/Magics/Taoist/Revelation.cs", "patches/zircon/015-crystal-taoist-core-runtime.patch"]
+    },
+    {
+      "crystalSpell": "BlessedArmour",
+      "crystalSourceSpellId": 71,
+      "zirconMagicType": "Resilience",
+      "verified": true,
+      "executionKind": "CrystalAdapted",
+      "runtimeReady": false,
+      "overlayReady": false,
+      "portedBehavior": ["one amulet", "7x7 friendly area", "MaxAC bonus target level divided by seven plus four", "Crystal SC-derived duration and distance delay"],
+      "zirconSources": ["overrides/zircon/ServerLibrary/Models/Magics/Taoist/Resilience.cs"]
+    },
+    {
+      "crystalSpell": "EnergyRepulsor",
+      "crystalSourceSpellId": 72,
+      "zirconMagicType": "EnergyRepulsor",
+      "verified": true,
+      "executionKind": "ZirconAdapted",
+      "runtimeReady": false,
+      "overlayReady": false,
+      "portedBehavior": ["Crystal routes EnergyRepulsor through Repulsion behavior", "ORIGINS global rule keeps player-versus-player push disabled", "Crystal monster push roll/distance retained"],
+      "zirconSources": ["overrides/zircon/ServerLibrary/Models/Magics/Taoist/EnergyRepulsor.cs", "overrides/zircon/ServerLibrary/Models/Magics/Wizard/Repulsion.cs"]
+    },
+    {
+      "crystalSpell": "TrapHexagon",
+      "crystalSourceSpellId": 73,
+      "zirconMagicType": "TrapHexagon",
+      "verified": true,
+      "executionKind": "CrystalAdapted",
+      "runtimeReady": false,
+      "overlayReady": false,
+      "portedBehavior": ["validates hostile monsters in the 3x3 target zone", "target level may not exceed caster level plus two", "one amulet and 500 ms delay", "ShockTime duration 10/15/20/25 seconds", "six-piece visual geometry deferred to client overlay"],
+      "zirconSources": ["overrides/zircon/ServerLibrary/Models/Magics/Taoist/TrapHexagon.cs"]
+    },
+    {
+      "crystalSpell": "Purification",
+      "crystalSourceSpellId": 74,
+      "zirconMagicType": "Purification",
+      "verified": true,
+      "executionKind": "CrystalAdapted",
+      "runtimeReady": false,
+      "overlayReady": false,
+      "portedBehavior": ["friendly target with self fallback", "no amulet", "500 ms delay", "Random.Next(4) level gate", "clears Crystal poison list and registered negative buffs"],
+      "zirconSources": ["overrides/zircon/ServerLibrary/Models/Magics/Taoist/Purification.cs", "patches/zircon/016-crystal-taoist-advanced-runtime.patch"]
+    },
+    {
+      "crystalSpell": "MassHealing",
+      "crystalSourceSpellId": 75,
+      "zirconMagicType": "MassHeal",
+      "verified": true,
+      "executionKind": "CrystalAdapted",
+      "runtimeReady": false,
+      "overlayReady": false,
+      "portedBehavior": ["500 ms target-location 3x3", "SC power becomes Crystal progressive healing pool", "existing healing pool accumulates", "skill levels once per successful area cast"],
+      "zirconSources": ["overrides/zircon/ServerLibrary/Models/Magics/Taoist/MassHeal.cs", "patches/zircon/015-crystal-taoist-core-runtime.patch"]
+    },
+    {
+      "crystalSpell": "Hallucination",
+      "crystalSourceSpellId": 76,
+      "zirconMagicType": "Hallucination",
+      "verified": true,
+      "executionKind": "CrystalAdapted",
+      "runtimeReady": false,
+      "overlayReady": false,
+      "portedBehavior": ["hostile monster only within seven cells", "Crystal level-versus-target roll", "amulet consumed only after successful roll", "clears target and blocks reacquisition for random 10-29 seconds"],
+      "zirconSources": ["overrides/zircon/ServerLibrary/Models/Magics/Taoist/Hallucination.cs", "patches/zircon/015-crystal-taoist-core-runtime.patch"]
+    },
+    {
+      "crystalSpell": "UltimateEnhancer",
+      "crystalSourceSpellId": 77,
+      "zirconMagicType": "UltimateEnhancer",
+      "verified": true,
+      "executionKind": "CrystalAdapted",
+      "runtimeReady": false,
+      "overlayReady": false,
+      "portedBehavior": ["friendly target and one amulet", "duration SC roll times four plus fifty times level plus one", "bonus 1-8 derived from MaxSC", "DC for monsters/Warrior/Assassin, MC for Wizard/Archer, SC for Taoist"],
+      "zirconSources": ["overrides/zircon/ServerLibrary/Models/Magics/Taoist/UltimateEnhancer.cs", "patches/zircon/015-crystal-taoist-core-runtime.patch"]
+    },
+    {
+      "crystalSpell": "SummonShinsu",
+      "crystalSourceSpellId": 78,
+      "zirconMagicType": "SummonShinsu",
+      "verified": true,
+      "executionKind": "CrystalAdapted",
+      "runtimeReady": false,
+      "overlayReady": false,
+      "portedBehavior": ["existing living Shinsu recalls without repeated material cost", "new summon consumes five amulets", "maximum two living monster pets", "500 ms spawn with Zircon pet compatibility mapping"],
+      "zirconSources": ["overrides/zircon/ServerLibrary/Models/Magics/Taoist/SummonShinsu.cs"]
+    },
+    {
+      "crystalSpell": "Reincarnation",
+      "crystalSourceSpellId": 79,
+      "zirconMagicType": "Reincarnation",
+      "verified": true,
+      "executionKind": "CrystalAdapted",
+      "runtimeReady": false,
+      "overlayReady": false,
+      "portedBehavior": ["dead player target and Revival Amulet shape 3", "channel duration 8/7/6/5 seconds", "Crystal Random.Next(30) success gate", "five-second accept/cancel window after channel", "accepted target revives in place at 50 percent HP"],
+      "zirconSources": ["overrides/zircon/ServerLibrary/Models/Magics/Taoist/Reincarnation.cs", "patches/zircon/017-crystal-reincarnation-network.patch"]
+    },
+    {
+      "crystalSpell": "SummonHolyDeva",
+      "crystalSourceSpellId": 80,
+      "zirconMagicType": "SummonHolyDeva",
+      "verified": true,
+      "executionKind": "CrystalAdapted",
+      "runtimeReady": false,
+      "overlayReady": false,
+      "portedBehavior": ["HolyDeva monster identity", "living pet recall without repeat material cost", "new summon consumes two amulets", "1500 ms new-spawn delay", "maximum two living monster pets"],
+      "zirconSources": ["overrides/zircon/ServerLibrary/Models/Magics/Taoist/SummonHolyDeva.cs"]
+    },
+    {
+      "crystalSpell": "Curse",
+      "crystalSourceSpellId": 81,
+      "zirconMagicType": "Curse",
+      "verified": true,
+      "executionKind": "CrystalAdapted",
+      "runtimeReady": false,
+      "overlayReady": false,
+      "portedBehavior": ["one amulet and Crystal cast-level success gate", "7x7 hostile area with independent 40 percent per-target roll", "Slow plus DC/MC/SC percentage reduction", "players also lose the equivalent AttackSpeed percentage", "duration and delay use Crystal SC snapshot"],
+      "zirconSources": ["overrides/zircon/ServerLibrary/Models/Magics/Taoist/Curse.cs", "patches/zircon/016-crystal-taoist-advanced-runtime.patch"]
+    },
+    {
+      "crystalSpell": "Plague",
+      "crystalSourceSpellId": 82,
+      "zirconMagicType": "Plague",
+      "verified": true,
+      "executionKind": "CrystalAdapted",
+      "runtimeReady": false,
+      "overlayReady": false,
+      "portedBehavior": ["one amulet plus optional equipped poison", "3x3 hostile area", "per-target roll selects Slow, Frozen, equipped poison or no poison", "player MP drain follows selected effect value", "SCx2 direct damage retained"],
+      "zirconSources": ["overrides/zircon/ServerLibrary/Models/Magics/Taoist/Plague.cs", "patches/zircon/010-crystal-wizard-batch5-runtime.patch"]
+    },
+    {
+      "crystalSpell": "PoisonCloud",
+      "crystalSourceSpellId": 83,
+      "zirconMagicType": "PoisonCloud",
+      "verified": true,
+      "executionKind": "CrystalAdapted",
+      "runtimeReady": false,
+      "overlayReady": false,
+      "portedBehavior": ["five amulets plus five green poison charges", "3x3 persistent field", "six one-second field ticks", "cast-time SC damage snapshot", "Green poison uses average SC plus PoisonAttack bonus", "same-type cloud cells are not replaced"],
+      "zirconSources": ["overrides/zircon/ServerLibrary/Models/Magics/Taoist/PoisonCloud.cs", "patches/zircon/016-crystal-taoist-advanced-runtime.patch"]
+    },
+    {
+      "crystalSpell": "EnergyShield",
+      "crystalSourceSpellId": 84,
+      "zirconMagicType": "EnergyShield",
+      "verified": true,
+      "executionKind": "CrystalAdapted",
+      "runtimeReady": false,
+      "overlayReady": false,
+      "portedBehavior": ["friendly player target with self fallback", "duration 30 plus 50 seconds per magic level", "proc chance derived from Luck and magic level with minimum divisor two", "successful incoming-hit proc restores cast-time SC-derived HP before damage"],
+      "zirconSources": ["overrides/zircon/ServerLibrary/Models/Magics/Taoist/EnergyShield.cs", "patches/zircon/016-crystal-taoist-advanced-runtime.patch"]
+    },
+    {
+      "crystalSpell": "PetEnhancer",
+      "crystalSourceSpellId": 85,
+      "zirconMagicType": "PetEnhancer",
+      "verified": true,
+      "executionKind": "CrystalAdapted",
+      "runtimeReady": false,
+      "overlayReady": false,
+      "portedBehavior": ["friendly monster target only", "500 ms completion", "duration SC plus magic power", "DC bonus two plus twice target level", "AC bonus four plus target level"],
+      "zirconSources": ["overrides/zircon/ServerLibrary/Models/Magics/Taoist/PetEnhancer.cs", "patches/zircon/016-crystal-taoist-advanced-runtime.patch"]
+    },
+    {
+      "crystalSpell": "HealingCircle",
+      "crystalSourceSpellId": 86,
+      "zirconMagicType": "HealingCircle",
+      "verified": true,
+      "executionKind": "CrystalAdapted",
+      "runtimeReady": false,
+      "overlayReady": false,
+      "portedBehavior": ["3x3 persistent target-location field", "field activation follows Crystal delayed creation", "duration 10/15/20/25 seconds with 400 ms cadence", "friendly group targets receive progressive healing", "hostiles receive SC damage and Slow"],
+      "zirconSources": ["overrides/zircon/ServerLibrary/Models/Magics/Taoist/HealingCircle.cs", "patches/zircon/016-crystal-taoist-advanced-runtime.patch"]
+    },
+    {
+      "crystalSpell": "HealingCircle2",
+      "crystalSourceSpellId": 87,
+      "zirconMagicType": "HealingCircle2",
+      "verified": true,
+      "executionKind": "CrystalMonkAdapted",
+      "runtimeReady": false,
+      "overlayReady": false,
+      "portedBehavior": ["Crystal-Monk secret version consumes ten amulets", "5x5 persistent field", "value is SC power plus 40 times level plus one", "field ticks immediately then every three seconds for 5/10/15/20 seconds", "caster is excluded from field ticks", "caster receives 20/30/40/50 percent incoming-damage reduction for field lifetime"],
+      "zirconSources": ["overrides/zircon/ServerLibrary/Models/Magics/Taoist/HealingCircle2.cs", "patches/zircon/018-crystal-taoist-secret-runtime.patch"]
+    },
+    {
+      "crystalSpell": "Healing2",
+      "crystalSourceSpellId": 88,
+      "zirconMagicType": "Healing2",
+      "verified": true,
+      "executionKind": "CrystalMonkAdapted",
+      "runtimeReady": false,
+      "overlayReady": false,
+      "portedBehavior": ["Crystal-Monk secret version is a temporary MaxHP buff rather than direct healing", "applies immediately from the magic call", "HP bonus uses SC power plus caster level", "duration uses SC roll plus 25 plus 25 seconds per magic level"],
+      "zirconSources": ["overrides/zircon/ServerLibrary/Models/Magics/Taoist/Healing2.cs", "patches/zircon/018-crystal-taoist-secret-runtime.patch"]
+    }
+  ]
+}
