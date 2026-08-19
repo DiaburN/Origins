@@ -1,25 +1,46 @@
-# ORIGINS
+# ORIGINS DxR
 
-Official repository of ORIGINS.
+Active development line for ORIGINS MOBILE.
 
-ORIGINS is a web-first action RPG/MMORPG project rebuilt around vertical room-based dungeons inspired by the visual language and content structure of classic Mir games.
+## Foundation
 
-## Current phase
+ORIGINS-DxR is rebuilt on the pinned official `Suprcode/Zircon` codebase.
 
-**MAP ENGINE V1 — caves/dungeons only.**
+- Zircon commit: `cbf1aa919083bc13fc3f23f93772a8ab8370632d`
+- Runtime/server/combat: Zircon
+- Database/MirDB: Zircon
+- Player magic engine: Zircon
+- Initial classes: Warrior, Wizard, Taoist, Assassin
+- Archer: disabled for current scope
+- Monk: disabled for current scope
 
-No player, combat, UI, monsters or spells are part of this first milestone. The first goal is to build coherent cave rooms from one visual theme at a time.
+The previous experimental Crystal migration is not part of this branch. It remains recoverable in dedicated archive branches.
 
-## Locked map rule
+## Interface
 
-Each dungeon theme is a closed visual set. Floors, walls, corners, doors, obstacles, decorations and KingRoom pieces must all belong to the same cave/theme.
+The approved ORIGINS GameInter remains the visual/client shell and must be integrated without redesigning or repositioning approved UI pieces.
 
-Standard progression:
+Consolidated interface source package:
 
-`BOTTOM ENTRY -> LONG CENTRAL PLAY AREA -> TOP DOOR -> NEXT FLOOR -> ... -> KINGROOM`
+`Origins_GameInter_Navegable_v1.0_MINIMAP_CONTROLES_BAJADOS.zip`
 
-The final floor is a **KingRoom**, where special pieces such as an altar, throne, portal or boss decoration may be used, but only if they belong to the same dungeon theme.
+The interface is presentation; Zircon remains authoritative for gameplay, database, combat and spell behavior.
 
-Different floors can be visually differentiated with floor decorations and gameplay obstacles while preserving the same cave identity.
+## Database
 
-See `docs/MAP_ENGINE_V1.md` for the design specification.
+Canonical Zircon `System.db` is fetched through:
+
+```text
+scripts/fetch-zircon-system-db.sh
+scripts/fetch-zircon-system-db.ps1
+```
+
+Four-class magic source catalog:
+
+`database/magic/zircon-four-class-magic-types.json`
+
+## Architecture
+
+See `docs/ORIGINS_DXR_ARCHITECTURE.md`.
+
+Map/dungeon work remains documented independently in `docs/MAP_ENGINE_V1.md`.
