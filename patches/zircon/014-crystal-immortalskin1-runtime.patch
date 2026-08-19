@@ -14,7 +14,7 @@ diff --git a/LibraryCore/Stat.cs b/LibraryCore/Stat.cs
 diff --git a/ServerLibrary/Models/PlayerObject.cs b/ServerLibrary/Models/PlayerObject.cs
 --- a/ServerLibrary/Models/PlayerObject.cs
 +++ b/ServerLibrary/Models/PlayerObject.cs
-@@ -2750,6 +2750,13 @@ namespace Server.Models
+@@ -2750,4 +2750,10 @@ namespace Server.Models
              LastHitter = attacker;
 +
 +            // Crystal-Monk ImmortalSkin1 applies DamageReduceRate after the
