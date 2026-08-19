@@ -1,26 +1,22 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
+  "branch": "Origins-DxR",
   "zirconSource": {
     "repository": "Suprcode/Zircon",
     "branch": "master",
     "commit": "cbf1aa919083bc13fc3f23f93772a8ab8370632d",
     "commitDate": "2026-08-12",
-    "role": "Authoritative ORIGINS database/server schema and runtime"
+    "role": "Sole authoritative ORIGINS-DxR database, server, combat and magic runtime"
   },
   "systemDatabaseCandidate": {
     "url": "https://files.lomcn.co.uk/resources/mir3/zircon/Database.7z",
-    "listedLastModified": "2024-02-24T13:17:00",
-    "listedSizeKb": 733,
-    "role": "Published Zircon content base only; must be migrated and verified against the pinned 2026 runtime before use"
-  },
-  "clientPatchIndex": {
-    "url": "https://files.lomcn.co.uk/resources/mir3/zircon/patch/",
-    "observedLatestAssets": "2026-07-03",
-    "note": "Client asset freshness does not imply System.db freshness. Examples include current Equip/Ground/Inventory assets and Magic assets updated in 2025."
+    "role": "Canonical published Zircon content base; verified against the pinned runtime before use"
   },
   "policy": {
-    "crystalDatabase": false,
-    "crystalMagicContentOnly": true,
-    "monkDeferred": true
+    "zirconOnly": true,
+    "activeClasses": ["Warrior", "Wizard", "Taoist", "Assassin"],
+    "externalMagicRuntime": false,
+    "archerEnabled": false,
+    "monkEnabled": false
   }
 }
