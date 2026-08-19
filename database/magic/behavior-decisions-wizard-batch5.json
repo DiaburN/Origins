@@ -2,6 +2,7 @@
   "schemaVersion": 1,
   "source": {
     "crystalCommit": "0e315fe327192afe52c3d7357ddd1f5b7e26c5b8",
+    "crystalMonkCommit": "381e589e3d7ee736cdf0583c8315c0d144ab058f",
     "zirconCommit": "cbf1aa919083bc13fc3f23f93772a8ab8370632d"
   },
   "decisions": [
@@ -17,21 +18,24 @@
         "Server/MirObjects/HumanObject.cs::Magic",
         "Server/MirObjects/HumanObject.cs::Blizzard",
         "Server/MirEnvir/Map.cs::CompleteMagic",
-        "Server/MirObjects/SpellObject.cs::ProcessSpell"
+        "Server/MirObjects/SpellObject.cs::ProcessSpell",
+        "Crystal-Monk Server/MirObjects/PlayerObject.cs::Blizzard"
       ],
       "portedBehavior": [
         "5x5 field centered on the selected location",
-        "field creation begins after 500 ms",
-        "Crystal delayed field start and 440 ms tick cadence are represented by five delayed area pulses beginning at 1300 ms",
+        "field creation begins after 500 ms and damage begins 800 ms after field creation",
+        "three one-second damage pulses model the three-second Blizzard SpellObject lifetime",
         "cast-time MC/power snapshot is reused across all pulses",
         "full MAC damage to hostile players and monsters on every pulse",
-        "successful hits have Crystal 1-in-8 Slow chance",
+        "successful hits have Crystal 1-in-8 Slow chance with two-second Slow tick frequency",
         "Slow duration follows 5 plus caster Freezing roll",
+        "Crystal-Monk channel requirement is cancelled when Bisul is active; movement/map/death breaks the ORIGINS channel approximation otherwise",
         "skill levels when the field is created rather than once per pulse or target"
       ],
       "zirconSources": [
         "overrides/zircon/ServerLibrary/Models/Magics/Wizard/Blizzard.cs",
-        "patches/zircon/010-crystal-wizard-batch5-runtime.patch"
+        "patches/zircon/010-crystal-wizard-batch5-runtime.patch",
+        "patches/zircon/011-crystal-wizard-monk-variants.patch"
       ]
     },
     {
@@ -46,20 +50,24 @@
         "Server/MirObjects/HumanObject.cs::Magic",
         "Server/MirObjects/HumanObject.cs::MeteorStrike",
         "Server/MirEnvir/Map.cs::CompleteMagic",
-        "Server/MirObjects/SpellObject.cs::ProcessSpell"
+        "Server/MirObjects/SpellObject.cs::ProcessSpell",
+        "Crystal-Monk Server/MirObjects/PlayerObject.cs::MeteorStrike"
       ],
       "portedBehavior": [
         "5x5 field centered on the selected location",
-        "field creation begins after 500 ms",
-        "Crystal delayed field start and 440 ms tick cadence are represented by five delayed area pulses beginning at 1300 ms",
+        "field creation begins after 500 ms and damage begins 800 ms after field creation",
+        "one-second pulse cadence follows the original SpellObject",
+        "normal Crystal-Monk channel permits four pulses before its five-second guide ends; Bisul bypasses channeling and permits the fifth pulse through the full five-second field lifetime",
         "cast-time MC/power snapshot is reused across all pulses",
         "full Fire MAC damage to hostile players and monsters on every pulse",
         "unlike Blizzard no Slow status is applied",
+        "movement/map/death breaks the ORIGINS channel approximation when Bisul is not active",
         "skill levels when the field is created rather than once per pulse or target"
       ],
       "zirconSources": [
         "overrides/zircon/ServerLibrary/Models/Magics/Wizard/MeteorStrike.cs",
-        "patches/zircon/010-crystal-wizard-batch5-runtime.patch"
+        "patches/zircon/010-crystal-wizard-batch5-runtime.patch",
+        "patches/zircon/011-crystal-wizard-monk-variants.patch"
       ]
     },
     {
@@ -101,7 +109,8 @@
         "Server/MirObjects/HumanObject.cs::Magic",
         "Server/MirObjects/HumanObject.cs::ThunderStorm",
         "Server/MirObjects/HumanObject.cs::CompleteMagic",
-        "Server/MirEnvir/Map.cs::CompleteMagic"
+        "Server/MirEnvir/Map.cs::CompleteMagic",
+        "Crystal-Monk Server/MirObjects/PlayerObject.cs::StormEscape"
       ],
       "portedBehavior": [
         "500 ms delayed 5x5 full-damage lightning area centered on the caster",
@@ -110,7 +119,7 @@
         "NoTeleport maps reject the teleport phase",
         "teleport success roll is Random.Next(4) below magic level plus one",
         "successful teleport applies TemporalFlux for 30 seconds",
-        "TemporalFlux adds 30 percent mana cost to Teleportation and StormEscape while the general MagicBooster mana penalty remains independently stackable",
+        "TemporalFlux adds 30 percent of maximum MP to Teleportation and StormEscape mana cost while the general MagicBooster penalty remains independently stackable",
         "damage success and teleport success retain Crystal's separate skill-level opportunities"
       ],
       "zirconSources": [
@@ -129,13 +138,14 @@
       "crystalSources": [
         "Server/MirObjects/HumanObject.cs::Magic",
         "Server/MirObjects/HumanObject.cs::FlameDisruptor",
-        "Server/MirObjects/HumanObject.cs::CompleteMagic"
+        "Server/MirObjects/HumanObject.cs::CompleteMagic",
+        "Crystal-Monk Server/MirObjects/PlayerObject.cs::FlameDisruptor"
       ],
       "portedBehavior": [
         "single hostile player or monster target",
         "500 ms delayed MAC impact",
         "cast-time target location and MC/power snapshot",
-        "non-undead targets receive Crystal's 1.5x damage multiplier",
+        "living non-undead monsters receive Crystal's 1.5x damage multiplier; players and undead monsters remain at normal power",
         "impact is rejected after despawn, map change or target movement beyond two cells from its cast-time location",
         "skill levels through the successful single-target MagicAttack path"
       ],
