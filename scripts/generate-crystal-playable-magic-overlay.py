@@ -38,6 +38,8 @@ EXPECTED_DEFERRED_MONK = 9
 PENDING_MAGIC_TYPE_BASE = 3000
 PENDING_INDEX_BASE = 3000
 SOURCE_STUB_STATUS = "stub_no_magicinfo_no_server_handler"
+OVERLAY_SCHEMA_VERSION = 1  # tools/Origins.Database.ApplyOverlay supports schema v1
+GENERATOR_SCHEMA_VERSION = 8
 
 
 def load(path: pathlib.Path):
@@ -323,10 +325,11 @@ def main() -> int:
         raise RuntimeError(f"Expected exactly one active source stub (FastMove), found {source_stub_count}")
 
     payload = {
-        "SchemaVersion": 8,
+        "SchemaVersion": OVERLAY_SCHEMA_VERSION,
         "Name": "Complete active Crystal / Crystal-Monk spell catalogue for ORIGINS",
         "Operations": operations,
         "$audit": {
+            "generatorSchemaVersion": GENERATOR_SCHEMA_VERSION,
             "scope": "five active classes; Monk source retained but deferred",
             "playableClassCount": len(CLASS_IDS),
             "playableSpellCount": len(operations),
