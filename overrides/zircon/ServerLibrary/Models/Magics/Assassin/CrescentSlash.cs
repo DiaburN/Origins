@@ -64,7 +64,14 @@ namespace Server.Models.Magics
                     MapObject ob = cell.Objects[o];
                     if (ob?.Node == null || !Player.CanAttackTarget(ob)) continue;
 
-                    if (ob.Attacked(Player, power, Element.None, true, false, false, true) > 0)
+                    int damage = power - ob.GetAC();
+                    if (damage <= 0)
+                    {
+                        ob.Blocked();
+                        continue;
+                    }
+
+                    if (ob.Attacked(Player, damage, Element.None, true, false, false, true) > 0)
                         trained = true;
                 }
             }
