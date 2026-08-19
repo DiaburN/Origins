@@ -32,6 +32,7 @@ MAGIC_SCHOOL_PASSIVE = 1
 MAGIC_SCHOOL_ACTIVE = 2
 MAGIC_PROPERTY_ACTIVE = 1
 MAGIC_PROPERTY_PASSIVE = 2
+DEFAULT_ZIRCON_MAGIC_SNAPSHOT = pathlib.Path("SnapshotBase/LibraryCore__Library_SystemModels_MagicInfo.json")
 
 
 def norm(value: str) -> str:
@@ -137,8 +138,13 @@ def main() -> int:
     parser.add_argument("input_overlay", type=pathlib.Path)
     parser.add_argument("behavior_decisions", type=pathlib.Path)
     parser.add_argument("zircon_enum", type=pathlib.Path)
-    parser.add_argument("zircon_magic_snapshot", type=pathlib.Path)
     parser.add_argument("output_overlay", type=pathlib.Path)
+    parser.add_argument(
+        "--zircon-magic-snapshot",
+        type=pathlib.Path,
+        default=DEFAULT_ZIRCON_MAGIC_SNAPSHOT,
+        help="Exported pinned Zircon MagicInfo JSON used to reuse native MagicType rows",
+    )
     args = parser.parse_args()
 
     overlay = load_json(args.input_overlay)
