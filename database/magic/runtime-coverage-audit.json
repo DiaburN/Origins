@@ -1,5 +1,5 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "branch": "work/monk-crystal-batch1",
   "sources": {
     "crystal": "Suprcode/Crystal@0e315fe327192afe52c3d7357ddd1f5b7e26c5b8",
@@ -58,14 +58,17 @@
     "11010": "PoisonAttack"
   },
   "patchAudit": {
-    "highestPatch": 27,
+    "highestPatch": 29,
     "intentionalMissing": [
       {"patch": 9, "reason": "deleted earlier as redundant"},
       {"patch": 24, "reason": "absorbed into patch 023 during Archer consolidation"},
       {"patch": 25, "reason": "absorbed into patch 023 during Archer consolidation"}
     ],
     "knownDuplicatePatchHunksRemoved": true,
-    "customStatCollisionFoundAndFixed": true
+    "customStatCollisionFoundAndFixed": true,
+    "classEnumOwnership": "patch 007 is the single owner of Archer/Monk MirClass and RequiredClass additions; duplicate hunks were removed from 022/027",
+    "monkTeleportPolicy": "patch 029 adapts Crystal MapInfo.NoTeleport to pinned Zircon MapInfo.SkillDelay > 0",
+    "monkPhysicalDefenseRouting": "patch 028 preserves LuoHanGunFa secondary Agility-only behavior"
   },
   "policies": {
     "runtimeArchitecture": "Zircon",
@@ -74,5 +77,5 @@
     "noPlayerPush": true,
     "visualBindingSeparatePhase": true
   },
-  "nextGate": "apply patches to pinned Zircon source and perform real compile/runtime validation; keep new runtimeReady/overlayReady flags false until that succeeds"
+  "nextGate": "run Magic Candidate Validation: bootstrap pinned Zircon, git-apply-check every consolidated patch, verify handlers, compile ServerLibrary, then fix compile/runtime integration errors before promoting runtimeReady flags"
 }
