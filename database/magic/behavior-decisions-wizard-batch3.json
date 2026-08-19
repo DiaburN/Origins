@@ -1,0 +1,144 @@
+{
+  "schemaVersion": 1,
+  "source": {
+    "crystalCommit": "0e315fe327192afe52c3d7357ddd1f5b7e26c5b8",
+    "zirconCommit": "cbf1aa919083bc13fc3f23f93772a8ab8370632d"
+  },
+  "decisions": [
+    {
+      "crystalSpell": "Teleport",
+      "crystalSourceSpellId": 37,
+      "zirconMagicType": "Teleportation",
+      "verified": true,
+      "executionKind": "ZirconAdapted",
+      "runtimeReady": true,
+      "overlayReady": false,
+      "mapExistingMagicInfo": {
+        "Magic": 207,
+        "RenameToCrystalName": true
+      },
+      "portedBehavior": [
+        "Crystal 200 ms delayed completion",
+        "Crystal NoTeleport map restriction",
+        "returns through the persisted character bind using Zircon BindPoint/BindRegion",
+        "instance reconnect region takes priority while inside an instance",
+        "skill levels only after a successful teleport"
+      ],
+      "zirconSources": [
+        "overrides/zircon/ServerLibrary/Models/Magics/Wizard/Teleportation.cs",
+        "patches/zircon/005-crystal-pet-map-policy.patch"
+      ]
+    },
+    {
+      "crystalSpell": "Lightning",
+      "crystalSourceSpellId": 40,
+      "zirconMagicType": "Lightning",
+      "verified": true,
+      "executionKind": "CrystalAdapted",
+      "runtimeReady": true,
+      "overlayReady": false,
+      "createMagicInfo": {
+        "Index": 1003,
+        "Magic": 1203,
+        "Class": 1,
+        "School": 6,
+        "Property": 1,
+        "Description": ""
+      },
+      "portedBehavior": [
+        "500 ms delayed line attack",
+        "six cells forward from the caster",
+        "one valid hostile player/monster target per occupied cell",
+        "cast-time MC/power snapshot",
+        "MAC/magic-defense resolution through Zircon MagicAttack",
+        "skill levels once after the complete line cast damages a target"
+      ],
+      "zirconSources": [
+        "overrides/zircon/ServerLibrary/Models/Magics/Wizard/Lightning.cs",
+        "patches/zircon/006-crystal-wizard-magic-types.patch"
+      ]
+    },
+    {
+      "crystalSpell": "FrostCrunch",
+      "crystalSourceSpellId": 41,
+      "zirconMagicType": "FrostCrunch",
+      "verified": true,
+      "executionKind": "ZirconAdapted",
+      "runtimeReady": true,
+      "overlayReady": false,
+      "createMagicInfo": {
+        "Index": 1004,
+        "Magic": 1204,
+        "Class": 1,
+        "School": 5,
+        "Property": 1,
+        "Description": ""
+      },
+      "portedBehavior": [
+        "Crystal FrostCrunch uses the same projectile helper as FireBall/GreatFireBall",
+        "inherits validated Crystal projectile path and target-location lock",
+        "cast-time power snapshot",
+        "Ice element"
+      ],
+      "zirconSources": [
+        "overrides/zircon/ServerLibrary/Models/Magics/Wizard/FrostCrunch.cs",
+        "overrides/zircon/ServerLibrary/Models/Magics/Wizard/FireBall.cs",
+        "patches/zircon/006-crystal-wizard-magic-types.patch"
+      ]
+    },
+    {
+      "crystalSpell": "ThunderStorm",
+      "crystalSourceSpellId": 42,
+      "zirconMagicType": "ThunderStorm",
+      "verified": true,
+      "executionKind": "CrystalAdapted",
+      "runtimeReady": true,
+      "overlayReady": false,
+      "createMagicInfo": {
+        "Index": 1005,
+        "Magic": 1205,
+        "Class": 1,
+        "School": 6,
+        "Property": 1,
+        "Description": ""
+      },
+      "portedBehavior": [
+        "500 ms delayed 5x5 area centered on the caster",
+        "cast-time MC/power snapshot",
+        "full damage against undead monsters",
+        "10 percent power against non-undead targets including players",
+        "MAC/magic-defense resolution through Zircon MagicAttack",
+        "skill levels once per area cast"
+      ],
+      "zirconSources": [
+        "overrides/zircon/ServerLibrary/Models/Magics/Wizard/ThunderStorm.cs",
+        "patches/zircon/006-crystal-wizard-magic-types.patch"
+      ]
+    },
+    {
+      "crystalSpell": "TurnUndead",
+      "crystalSourceSpellId": 44,
+      "zirconMagicType": "ExpelUndead",
+      "verified": true,
+      "executionKind": "ZirconAdapted",
+      "runtimeReady": true,
+      "overlayReady": false,
+      "mapExistingMagicInfo": {
+        "Magic": 217,
+        "RenameToCrystalName": true
+      },
+      "portedBehavior": [
+        "undead monster targets only",
+        "Crystal caster-level versus monster-level gate",
+        "Crystal skill-level success threshold",
+        "failed attempts aggro a valid target",
+        "500 ms delayed successful execution",
+        "removes Zircon-only boss and level-70 hard bans",
+        "skill levels after successful undead execution"
+      ],
+      "zirconSources": [
+        "overrides/zircon/ServerLibrary/Models/Magics/Wizard/ExpelUndead.cs"
+      ]
+    }
+  ]
+}
