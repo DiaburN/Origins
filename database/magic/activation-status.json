@@ -1,6 +1,7 @@
 {
-  "schemaVersion": 3,
+  "schemaVersion": 4,
   "branch": "work/spells-final-audit",
+  "validatedHead": "a4e599c3b925c833ffdcd25f68988d23f6dfa6f9",
   "runtime": "pinned Zircon MagicObject with ORIGINS overrides/patches",
   "catalog": {
     "activePlayableClasses": 5,
@@ -13,58 +14,87 @@
     {
       "class": "Warrior",
       "catalogCount": 21,
-      "sourcePortedUncompiled": 21,
-      "compiledRuntimeReady": 0,
+      "compiledRuntimeReady": 21,
+      "sourcePortedUncompiled": 0,
       "sourceStubs": 0
     },
     {
       "class": "Wizard",
       "catalogCount": 28,
-      "sourcePortedUncompiled": 12,
-      "compiledRuntimeReady": 15,
+      "compiledRuntimeReady": 27,
+      "sourcePortedUncompiled": 0,
       "sourceStubs": 1,
-      "stubSpells": ["FastMove"],
-      "overlayBound": 5
+      "stubSpells": ["FastMove"]
     },
     {
       "class": "Taoist",
       "catalogCount": 27,
-      "sourcePortedUncompiled": 27,
-      "compiledRuntimeReady": 0,
+      "compiledRuntimeReady": 27,
+      "sourcePortedUncompiled": 0,
       "sourceStubs": 0
     },
     {
       "class": "Assassin",
       "catalogCount": 19,
-      "sourcePortedUncompiled": 19,
-      "compiledRuntimeReady": 0,
+      "compiledRuntimeReady": 19,
+      "sourcePortedUncompiled": 0,
       "sourceStubs": 0
     },
     {
       "class": "Archer",
       "catalogCount": 24,
-      "sourcePortedUncompiled": 24,
-      "compiledRuntimeReady": 0,
+      "compiledRuntimeReady": 24,
+      "sourcePortedUncompiled": 0,
       "sourceStubs": 0
     }
   ],
   "totals": {
-    "compiledRuntimeReady": 15,
-    "sourcePortedUncompiled": 103,
+    "compiledRuntimeReady": 118,
+    "sourcePortedUncompiled": 0,
     "sourceStub": 1,
-    "catalogued": 119
+    "catalogued": 119,
+    "pendingRuntime": 0
+  },
+  "compileValidation": {
+    "complete": true,
+    "zirconCommit": "cbf1aa919083bc13fc3f23f93772a8ab8370632d",
+    "handlerRegistration": "118/118 routed active spells",
+    "libraryCoreAndServerLibrary": "pass",
+    "workflow": "Spell Runtime Compile",
+    "note": "Compilation and handler registration are complete for all routed active spells. Full in-game behavioral smoke testing remains a separate gate."
   },
   "databaseProjection": {
-    "full119SystemDbProjectionComplete": false,
-    "authoringOverlay": "database/overlays/70-magics-crystal.json",
-    "authoringOverlayOperationCount": 0,
-    "earlyGeneratedBranch": "generated/origins-system-db",
-    "earlyGeneratedMagicUpdates": 5,
-    "earlyGeneratedSpells": ["FireBall", "ThunderBolt", "FireWall", "MagicShield", "IceStorm"],
-    "explicitActivationRoundTripsRecorded": 3,
-    "roundTripSpellsRecorded": ["FireBall", "ThunderBolt", "IceStorm"],
-    "usersDbLearnedMagicSmokeRecorded": ["FireBall"],
-    "note": "The generated branch is an early DB proof and contains stale catalogue metadata in its activation-status file. It is not the authoritative 119-spell scope."
+    "full119SystemDbProjectionComplete": true,
+    "activeMagicInfoOperations": 119,
+    "runtimeActivatedRoutes": 118,
+    "sourceStubRows": 1,
+    "pendingPlaceholderRows": 0,
+    "nativeMagicInfoRoutesReused": 27,
+    "originsMagicInfoRoutesUsed": 91,
+    "overlayCreatedRows": 90,
+    "overlayUpdatedRows": 29,
+    "overlayDeletedRows": 0,
+    "systemDbPreflightReady": true,
+    "systemDbSha256": "7df0446b804b6d95b1b192ae3d32570bb9f9ecbb3d5cb3827ca288cbee11cdbb",
+    "systemVersion": "2026.08.19.1",
+    "workflow": "ORIGINS System DB",
+    "workflowRunId": 32308650321,
+    "artifact": "origins-system-db"
+  },
+  "usersDbSmoke": {
+    "complete": true,
+    "accountRoundTrip": true,
+    "characterRoundTrip": true,
+    "userMagicRoundTrip": true,
+    "smokeClass": "Wizard",
+    "smokeSpell": "FireBall",
+    "allClassesLearnedMagicRoundTripComplete": false,
+    "note": "The final System.db passed the existing Users.db smoke with FireBall. Learned-magic round-trip coverage across every active class remains a later test-hardening task."
+  },
+  "remainingValidation": {
+    "fullGameplaySmokeComplete": false,
+    "clientVisualBindingComplete": false,
+    "archerSummonDatabaseDependenciesComplete": false
   },
   "deferred": {
     "Monk": {
