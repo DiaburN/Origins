@@ -1,0 +1,805 @@
+[
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCType",
+    "Index": 1,
+    "ItemType": 1,
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 2
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCType",
+    "Index": 3,
+    "ItemType": 12,
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 4
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCType",
+    "Index": 4,
+    "ItemType": 2,
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 7
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCType",
+    "Index": 5,
+    "ItemType": 2,
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 6
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCType",
+    "Index": 6,
+    "ItemType": 8,
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 9
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCType",
+    "Index": 7,
+    "ItemType": 7,
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 9
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCType",
+    "Index": 8,
+    "ItemType": 6,
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 9
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCType",
+    "Index": 9,
+    "ItemType": 8,
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 10
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCType",
+    "Index": 10,
+    "ItemType": 7,
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 10
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCType",
+    "Index": 11,
+    "ItemType": 6,
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 10
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCType",
+    "Index": 12,
+    "ItemType": 8,
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 11
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCType",
+    "Index": 13,
+    "ItemType": 7,
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 11
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCType",
+    "Index": 14,
+    "ItemType": 6,
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 11
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCType",
+    "Index": 15,
+    "ItemType": 8,
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 12
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCType",
+    "Index": 16,
+    "ItemType": 7,
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 12
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCType",
+    "Index": 17,
+    "ItemType": 6,
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 12
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCType",
+    "Index": 18,
+    "ItemType": 14,
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 14
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCType",
+    "Index": 19,
+    "ItemType": 14,
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 16
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCType",
+    "Index": 20,
+    "ItemType": 14,
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 15
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCType",
+    "Index": 21,
+    "ItemType": 14,
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 17
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCType",
+    "Index": 30,
+    "ItemType": 5,
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 24
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCType",
+    "Index": 31,
+    "ItemType": 3,
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 24
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCType",
+    "Index": 32,
+    "ItemType": 9,
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 24
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCType",
+    "Index": 33,
+    "ItemType": 3,
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 22
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCType",
+    "Index": 34,
+    "ItemType": 5,
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 22
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCType",
+    "Index": 35,
+    "ItemType": 9,
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 22
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCType",
+    "Index": 36,
+    "ItemType": 3,
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 23
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCType",
+    "Index": 37,
+    "ItemType": 5,
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 23
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCType",
+    "Index": 38,
+    "ItemType": 9,
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 23
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCType",
+    "Index": 40,
+    "ItemType": 15,
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 21
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCType",
+    "Index": 41,
+    "ItemType": 11,
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 21
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCType",
+    "Index": 42,
+    "ItemType": 10,
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 21
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCType",
+    "Index": 43,
+    "ItemType": 0,
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 20
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCType",
+    "Index": 59,
+    "ItemType": 15,
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 69
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCType",
+    "Index": 60,
+    "ItemType": 11,
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 69
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCType",
+    "Index": 61,
+    "ItemType": 10,
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 69
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCType",
+    "Index": 62,
+    "ItemType": 4,
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 69
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCType",
+    "Index": 63,
+    "ItemType": 16,
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 69
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCType",
+    "Index": 64,
+    "ItemType": 4,
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 21
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCType",
+    "Index": 65,
+    "ItemType": 16,
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 21
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCType",
+    "Index": 66,
+    "ItemType": 15,
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 68
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCType",
+    "Index": 67,
+    "ItemType": 11,
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 68
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCType",
+    "Index": 68,
+    "ItemType": 10,
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 68
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCType",
+    "Index": 69,
+    "ItemType": 4,
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 68
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCType",
+    "Index": 70,
+    "ItemType": 16,
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 68
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCType",
+    "Index": 71,
+    "ItemType": 13,
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 6
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCType",
+    "Index": 72,
+    "ItemType": 15,
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 99
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCType",
+    "Index": 73,
+    "ItemType": 11,
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 99
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCType",
+    "Index": 74,
+    "ItemType": 10,
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 99
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCType",
+    "Index": 75,
+    "ItemType": 4,
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 99
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCType",
+    "Index": 76,
+    "ItemType": 16,
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 99
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCType",
+    "Index": 77,
+    "ItemType": 15,
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 100
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCType",
+    "Index": 78,
+    "ItemType": 11,
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 100
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCType",
+    "Index": 79,
+    "ItemType": 10,
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 100
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCType",
+    "Index": 80,
+    "ItemType": 4,
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 100
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCType",
+    "Index": 81,
+    "ItemType": 16,
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 100
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCType",
+    "Index": 82,
+    "ItemType": 15,
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 101
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCType",
+    "Index": 83,
+    "ItemType": 11,
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 101
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCType",
+    "Index": 84,
+    "ItemType": 10,
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 101
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCType",
+    "Index": 85,
+    "ItemType": 4,
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 101
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCType",
+    "Index": 86,
+    "ItemType": 16,
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 101
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCType",
+    "Index": 87,
+    "ItemType": 1,
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 103
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCType",
+    "Index": 88,
+    "ItemType": 2,
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 112
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCType",
+    "Index": 89,
+    "ItemType": 3,
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 112
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCType",
+    "Index": 90,
+    "ItemType": 5,
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 112
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCType",
+    "Index": 91,
+    "ItemType": 9,
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 112
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCType",
+    "Index": 92,
+    "ItemType": 8,
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 112
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCType",
+    "Index": 93,
+    "ItemType": 7,
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 112
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCType",
+    "Index": 94,
+    "ItemType": 6,
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 112
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCType",
+    "Index": 95,
+    "ItemType": 19,
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 289
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCType",
+    "Index": 96,
+    "ItemType": 27,
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 7
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCType",
+    "Index": 97,
+    "ItemType": 27,
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 23
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCType",
+    "Index": 98,
+    "ItemType": 27,
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 112
+    }
+  }
+]

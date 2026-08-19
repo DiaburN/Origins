@@ -1,0 +1,9 @@
+[
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.SystemDatabaseInfo",
+    "Index": 1,
+    "Name": "System",
+    "Version": "2026.08.19.1"
+  }
+]

@@ -1,0 +1,36 @@
+{
+  "SourcePath": "/home/runner/work/Origins/Origins/Database/System.db",
+  "TargetPath": "/home/runner/work/Origins/Origins/Database2026/System.db",
+  "SourceSha256": "C43ED64125DBD651A955B62409B7BB80594D9EDA46BB800E1BCA4423D9CCC4D0",
+  "TargetSha256": "2E465FE3018A8E25588452C9525487CDB617DC189E1FD31EF17ADC47C30C331F",
+  "StartedUtc": "2026-08-19T14:03:47.8883686Z",
+  "CompletedUtc": "2026-08-19T14:03:50.7625864Z",
+  "Success": true,
+  "Error": null,
+  "Before": {
+    "Ready": true,
+    "SystemVersion": "2026.08.19.1",
+    "Counts": {
+      "Items": 1078,
+      "Maps": 244,
+      "Monsters": 309,
+      "Magics": 174,
+      "BaseStats": 360,
+      "Currencies": 5
+    },
+    "Errors": []
+  },
+  "After": {
+    "Ready": true,
+    "SystemVersion": "2026.08.19.1",
+    "Counts": {
+      "Items": 1078,
+      "Maps": 244,
+      "Monsters": 309,
+      "Magics": 174,
+      "BaseStats": 360,
+      "Currencies": 5
+    },
+    "Errors": []
+  }
+}

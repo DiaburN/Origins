@@ -1,0 +1,92 @@
+[
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.FameInfo",
+    "Cost": 1000,
+    "Description": "You are just starting your journey and are relatively unknown in the world.",
+    "Index": 1,
+    "Name": "Unknown Novice",
+    "Order": 0,
+    "Shape": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.FameInfo",
+    "Cost": 500,
+    "Description": "You have gained some recognition within the local village.",
+    "Index": 2,
+    "Name": "Village Explorer",
+    "Order": 1,
+    "Shape": 2
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.FameInfo",
+    "Cost": 2000,
+    "Description": "Your skills and deeds are becoming known across a broader region.",
+    "Index": 3,
+    "Name": "Regional Apprentice",
+    "Order": 2,
+    "Shape": 3
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.FameInfo",
+    "Cost": 1000,
+    "Description": "You are gaining popularity within an entire province, drawing attention from various communities.",
+    "Index": 4,
+    "Name": "Province Seeker",
+    "Order": 3,
+    "Shape": 4
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.FameInfo",
+    "Cost": 2000,
+    "Description": "Your exploits are becoming well-known and associated with specific landmarks and regions.",
+    "Index": 5,
+    "Name": "Landmarked Warrior",
+    "Order": 4,
+    "Shape": 5
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.FameInfo",
+    "Cost": 4000,
+    "Description": "Your fame reaches beyond earthly realms, capturing the attention of celestial beings and powerful entities.",
+    "Index": 6,
+    "Name": "Celestial Guardian",
+    "Order": 5,
+    "Shape": 6
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.FameInfo",
+    "Cost": 8000,
+    "Description": "You have earned recognition from the imperial court and a central governing authority.",
+    "Index": 7,
+    "Name": "Imperial Champion",
+    "Order": 6,
+    "Shape": 7
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.FameInfo",
+    "Cost": 12000,
+    "Description": "Your deeds have become the stuff of legends, known far and wide across the entire realm.",
+    "Index": 8,
+    "Name": "Epic Legend",
+    "Order": 7,
+    "Shape": 8
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.FameInfo",
+    "Cost": 20000,
+    "Description": "You have reached the pinnacle of fame, becoming a mythical figure with tales of your adventures passed down through generations.",
+    "Index": 9,
+    "Name": "Mythical Sensei",
+    "Order": 8,
+    "Shape": 9
+  }
+]

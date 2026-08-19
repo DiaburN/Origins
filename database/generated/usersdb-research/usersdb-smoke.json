@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "success": true,
+  "systemDb": {
+    "source": "/home/runner/work/Origins/Origins/Database2026/System.db",
+    "systemVersion": "2026.08.19.1",
+    "currencyCount": 5,
+    "fireBallMagicInfoIndex": 23
+  },
+  "usersDb": {
+    "sha256": "1E450EB56D77FCFD7C72CD7AC46C4B8A58BAEF14479F6BD568246E0B4F3BD797",
+    "accountCount": 1,
+    "userCurrencyCount": 5,
+    "buffCount": 1,
+    "characterCount": 1,
+    "userItemCount": 0,
+    "userMagicCount": 1,
+    "userQuestCount": 0,
+    "guildCount": 0
+  },
+  "checks": {
+    "accountRoundTrip": true,
+    "defaultCurrencies": 5,
+    "huntGoldBuff": 1,
+    "characterRoundTrip": true,
+    "characterClass": "Wizard",
+    "userMagicRoundTrip": true,
+    "userMagic": "Fire Ball"
+  },
+  "completedUtc": "2026-08-19T14:04:02.9683628Z"
+}

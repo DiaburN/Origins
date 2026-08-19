@@ -1,0 +1,2627 @@
+[
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCInfo",
+    "Category": 0,
+    "EntryPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 70
+    },
+    "FaceImage": 0,
+    "GoodsIndex": 0,
+    "Image": 56,
+    "Index": 12,
+    "MapIcon": 0,
+    "NPCName": "Hexa Holy Stone",
+    "Region": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapRegion",
+      "Index": 302
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCInfo",
+    "Category": 0,
+    "EntryPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 5
+    },
+    "FaceImage": 0,
+    "GoodsIndex": 0,
+    "Image": 0,
+    "Index": 13,
+    "MapIcon": 0,
+    "NPCName": "Mr. Kang",
+    "Region": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapRegion",
+      "Index": 24
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCInfo",
+    "Category": 0,
+    "EntryPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 13
+    },
+    "FaceImage": 0,
+    "GoodsIndex": 0,
+    "Image": 2,
+    "Index": 14,
+    "MapIcon": 0,
+    "NPCName": "Isaac",
+    "Region": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapRegion",
+      "Index": 25
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCInfo",
+    "Category": 0,
+    "EntryPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 1
+    },
+    "FaceImage": 0,
+    "GoodsIndex": 0,
+    "Image": 1,
+    "Index": 15,
+    "MapIcon": 0,
+    "NPCName": "David",
+    "Region": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapRegion",
+      "Index": 28
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCInfo",
+    "Category": 0,
+    "EntryPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 18
+    },
+    "FaceImage": 0,
+    "GoodsIndex": 0,
+    "Image": 3,
+    "Index": 16,
+    "MapIcon": 0,
+    "NPCName": "Lennard",
+    "Region": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapRegion",
+      "Index": 23
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCInfo",
+    "Category": 0,
+    "EntryPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 8
+    },
+    "FaceImage": 0,
+    "GoodsIndex": 0,
+    "Image": 5,
+    "Index": 17,
+    "MapIcon": 0,
+    "NPCName": "Amy",
+    "Region": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapRegion",
+      "Index": 22
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCInfo",
+    "Category": 0,
+    "EntryPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 20
+    },
+    "FaceImage": 0,
+    "GoodsIndex": 0,
+    "Image": 34,
+    "Index": 18,
+    "MapIcon": 0,
+    "NPCName": "Loy",
+    "Region": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapRegion",
+      "Index": 30
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCInfo",
+    "Category": 0,
+    "EntryPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 19
+    },
+    "FaceImage": 0,
+    "GoodsIndex": 0,
+    "Image": 7,
+    "Index": 19,
+    "MapIcon": 0,
+    "NPCName": "Linda",
+    "Region": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapRegion",
+      "Index": 26
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCInfo",
+    "Category": 0,
+    "EntryPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 3
+    },
+    "FaceImage": 0,
+    "GoodsIndex": 0,
+    "Image": 11,
+    "Index": 20,
+    "MapIcon": 0,
+    "NPCName": "Murphy",
+    "Region": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapRegion",
+      "Index": 29
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCInfo",
+    "Category": 0,
+    "EntryPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 5
+    },
+    "FaceImage": 0,
+    "GoodsIndex": 0,
+    "Image": 0,
+    "Index": 21,
+    "MapIcon": 0,
+    "NPCName": "Hardy",
+    "Region": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapRegion",
+      "Index": 71
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCInfo",
+    "Category": 0,
+    "EntryPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 13
+    },
+    "FaceImage": 0,
+    "GoodsIndex": 0,
+    "Image": 2,
+    "Index": 22,
+    "MapIcon": 0,
+    "NPCName": "Gresham",
+    "Region": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapRegion",
+      "Index": 70
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCInfo",
+    "Category": 0,
+    "EntryPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 1
+    },
+    "FaceImage": 0,
+    "GoodsIndex": 0,
+    "Image": 4,
+    "Index": 23,
+    "MapIcon": 0,
+    "NPCName": "Haylee",
+    "Region": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapRegion",
+      "Index": 64
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCInfo",
+    "Category": 0,
+    "EntryPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 18
+    },
+    "FaceImage": 0,
+    "GoodsIndex": 0,
+    "Image": 3,
+    "Index": 24,
+    "MapIcon": 0,
+    "NPCName": "Cory",
+    "Region": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapRegion",
+      "Index": 67
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCInfo",
+    "Category": 0,
+    "EntryPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 8
+    },
+    "FaceImage": 0,
+    "GoodsIndex": 0,
+    "Image": 67,
+    "Index": 25,
+    "MapIcon": 0,
+    "NPCName": "Flora",
+    "Region": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapRegion",
+      "Index": 68
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCInfo",
+    "Category": 0,
+    "EntryPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 20
+    },
+    "FaceImage": 0,
+    "GoodsIndex": 0,
+    "Image": 34,
+    "Index": 26,
+    "MapIcon": 0,
+    "NPCName": "Max",
+    "Region": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapRegion",
+      "Index": 65
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCInfo",
+    "Category": 0,
+    "EntryPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 19
+    },
+    "FaceImage": 0,
+    "GoodsIndex": 0,
+    "Image": 7,
+    "Index": 27,
+    "MapIcon": 0,
+    "NPCName": "Melisa",
+    "Region": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapRegion",
+      "Index": 69
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCInfo",
+    "Category": 0,
+    "EntryPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 3
+    },
+    "FaceImage": 0,
+    "GoodsIndex": 0,
+    "Image": 11,
+    "Index": 28,
+    "MapIcon": 0,
+    "NPCName": "Rainier",
+    "Region": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapRegion",
+      "Index": 66
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCInfo",
+    "Category": 0,
+    "EntryPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 5
+    },
+    "FaceImage": 0,
+    "GoodsIndex": 0,
+    "Image": 0,
+    "Index": 30,
+    "MapIcon": 0,
+    "NPCName": "Mr. Kim",
+    "Region": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapRegion",
+      "Index": 109
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCInfo",
+    "Category": 0,
+    "EntryPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 13
+    },
+    "FaceImage": 0,
+    "GoodsIndex": 0,
+    "Image": 2,
+    "Index": 31,
+    "MapIcon": 0,
+    "NPCName": "Henry",
+    "Region": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapRegion",
+      "Index": 115
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCInfo",
+    "Category": 0,
+    "EntryPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 1
+    },
+    "FaceImage": 0,
+    "GoodsIndex": 0,
+    "Image": 1,
+    "Index": 32,
+    "MapIcon": 0,
+    "NPCName": "Kacy",
+    "Region": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapRegion",
+      "Index": 113
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCInfo",
+    "Category": 0,
+    "EntryPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 18
+    },
+    "FaceImage": 0,
+    "GoodsIndex": 0,
+    "Image": 3,
+    "Index": 33,
+    "MapIcon": 0,
+    "NPCName": "Seven",
+    "Region": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapRegion",
+      "Index": 116
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCInfo",
+    "Category": 0,
+    "EntryPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 8
+    },
+    "FaceImage": 0,
+    "GoodsIndex": 0,
+    "Image": 12,
+    "Index": 34,
+    "MapIcon": 0,
+    "NPCName": "Dakota",
+    "Region": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapRegion",
+      "Index": 112
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCInfo",
+    "Category": 0,
+    "EntryPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 20
+    },
+    "FaceImage": 0,
+    "GoodsIndex": 0,
+    "Image": 34,
+    "Index": 35,
+    "MapIcon": 0,
+    "NPCName": "Murray",
+    "Region": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapRegion",
+      "Index": 111
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCInfo",
+    "Category": 0,
+    "EntryPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 19
+    },
+    "FaceImage": 0,
+    "GoodsIndex": 0,
+    "Image": 7,
+    "Index": 36,
+    "MapIcon": 0,
+    "NPCName": "Sara",
+    "Region": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapRegion",
+      "Index": 110
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCInfo",
+    "Category": 0,
+    "EntryPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 3
+    },
+    "FaceImage": 0,
+    "GoodsIndex": 0,
+    "Image": 11,
+    "Index": 37,
+    "MapIcon": 0,
+    "NPCName": "Parker",
+    "Region": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapRegion",
+      "Index": 114
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCInfo",
+    "Category": 0,
+    "EntryPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 25
+    },
+    "FaceImage": 0,
+    "GoodsIndex": 0,
+    "Image": 93,
+    "Index": 38,
+    "MapIcon": 0,
+    "NPCName": "",
+    "Region": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapRegion",
+      "Index": 62
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCInfo",
+    "Category": 0,
+    "EntryPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 38
+    },
+    "FaceImage": 0,
+    "GoodsIndex": 0,
+    "Image": 56,
+    "Index": 39,
+    "MapIcon": 0,
+    "NPCName": "Hexa Holy Stone",
+    "Region": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapRegion",
+      "Index": 27
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCInfo",
+    "Category": 0,
+    "EntryPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 41
+    },
+    "FaceImage": 0,
+    "GoodsIndex": 0,
+    "Image": 56,
+    "Index": 40,
+    "MapIcon": 0,
+    "NPCName": "Hexa Holy Stone",
+    "Region": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapRegion",
+      "Index": 153
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCInfo",
+    "Category": 0,
+    "EntryPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 39
+    },
+    "FaceImage": 0,
+    "GoodsIndex": 0,
+    "Image": 56,
+    "Index": 41,
+    "MapIcon": 0,
+    "NPCName": "Hexa Holy Stone",
+    "Region": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapRegion",
+      "Index": 107
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCInfo",
+    "Category": 0,
+    "EntryPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 40
+    },
+    "FaceImage": 0,
+    "GoodsIndex": 0,
+    "Image": 56,
+    "Index": 42,
+    "MapIcon": 0,
+    "NPCName": "Hexa Holy Stone",
+    "Region": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapRegion",
+      "Index": 63
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCInfo",
+    "Category": 0,
+    "EntryPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 42
+    },
+    "FaceImage": 0,
+    "GoodsIndex": 0,
+    "Image": 56,
+    "Index": 43,
+    "MapIcon": 0,
+    "NPCName": "Hexa Holy Stone",
+    "Region": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapRegion",
+      "Index": 191
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCInfo",
+    "Category": 0,
+    "EntryPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 43
+    },
+    "FaceImage": 0,
+    "GoodsIndex": 0,
+    "Image": 56,
+    "Index": 44,
+    "MapIcon": 0,
+    "NPCName": "Hexa Holy Stone",
+    "Region": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapRegion",
+      "Index": 164
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCInfo",
+    "Category": 0,
+    "EntryPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 49
+    },
+    "FaceImage": 0,
+    "GoodsIndex": 0,
+    "Image": 56,
+    "Index": 45,
+    "MapIcon": 0,
+    "NPCName": "Hexa Holy Stone",
+    "Region": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapRegion",
+      "Index": 1116
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCInfo",
+    "Category": 0,
+    "EntryPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 71
+    },
+    "FaceImage": 0,
+    "GoodsIndex": 0,
+    "Image": 27,
+    "Index": 47,
+    "MapIcon": 0,
+    "NPCName": "Maddox",
+    "Region": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapRegion",
+      "Index": 160
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCInfo",
+    "Category": 0,
+    "EntryPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 71
+    },
+    "FaceImage": 0,
+    "GoodsIndex": 0,
+    "Image": 27,
+    "Index": 48,
+    "MapIcon": 0,
+    "NPCName": "Jack",
+    "Region": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapRegion",
+      "Index": 194
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCInfo",
+    "Category": 0,
+    "EntryPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 102
+    },
+    "FaceImage": 0,
+    "GoodsIndex": 0,
+    "Image": 1,
+    "Index": 49,
+    "MapIcon": 0,
+    "NPCName": "Perry",
+    "Region": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapRegion",
+      "Index": 155
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCInfo",
+    "Category": 0,
+    "EntryPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 102
+    },
+    "FaceImage": 0,
+    "GoodsIndex": 0,
+    "Image": 1,
+    "Index": 50,
+    "MapIcon": 0,
+    "NPCName": "Tasha",
+    "Region": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapRegion",
+      "Index": 198
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCInfo",
+    "Category": 0,
+    "EntryPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 98
+    },
+    "FaceImage": 0,
+    "GoodsIndex": 0,
+    "Image": 3,
+    "Index": 51,
+    "MapIcon": 0,
+    "NPCName": "Kellen",
+    "Region": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapRegion",
+      "Index": 158
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCInfo",
+    "Category": 0,
+    "EntryPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 98
+    },
+    "FaceImage": 0,
+    "GoodsIndex": 0,
+    "Image": 3,
+    "Index": 52,
+    "MapIcon": 0,
+    "NPCName": "Clinton",
+    "Region": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapRegion",
+      "Index": 195
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCInfo",
+    "Category": 0,
+    "EntryPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 110
+    },
+    "FaceImage": 0,
+    "GoodsIndex": 0,
+    "Image": 3,
+    "Index": 53,
+    "MapIcon": 0,
+    "NPCName": "Lavar",
+    "Region": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapRegion",
+      "Index": 216
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCInfo",
+    "Category": 0,
+    "EntryPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 104
+    },
+    "FaceImage": 0,
+    "GoodsIndex": 0,
+    "Image": 56,
+    "Index": 54,
+    "MapIcon": 0,
+    "NPCName": "Hexa Holy Stone",
+    "Region": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapRegion",
+      "Index": 212
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCInfo",
+    "Category": 0,
+    "EntryPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 113
+    },
+    "FaceImage": 0,
+    "GoodsIndex": 0,
+    "Image": 56,
+    "Index": 55,
+    "MapIcon": 0,
+    "NPCName": "Hexa Holy Stone",
+    "Region": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapRegion",
+      "Index": 139
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCInfo",
+    "Category": 0,
+    "EntryPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 114
+    },
+    "FaceImage": 0,
+    "GoodsIndex": 0,
+    "Image": 56,
+    "Index": 56,
+    "MapIcon": 0,
+    "NPCName": "Hexa Holy Stone",
+    "Region": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapRegion",
+      "Index": 189
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCInfo",
+    "Category": 0,
+    "EntryPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 8
+    },
+    "FaceImage": 0,
+    "GoodsIndex": 0,
+    "Image": 12,
+    "Index": 57,
+    "MapIcon": 0,
+    "NPCName": "Denise",
+    "Region": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapRegion",
+      "Index": 157
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCInfo",
+    "Category": 0,
+    "EntryPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 20
+    },
+    "FaceImage": 0,
+    "GoodsIndex": 0,
+    "Image": 34,
+    "Index": 58,
+    "MapIcon": 0,
+    "NPCName": "Mark",
+    "Region": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapRegion",
+      "Index": 161
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCInfo",
+    "Category": 0,
+    "EntryPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 19
+    },
+    "FaceImage": 0,
+    "GoodsIndex": 0,
+    "Image": 7,
+    "Index": 59,
+    "MapIcon": 0,
+    "NPCName": "Kimberly",
+    "Region": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapRegion",
+      "Index": 156
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCInfo",
+    "Category": 0,
+    "EntryPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 5
+    },
+    "FaceImage": 0,
+    "GoodsIndex": 0,
+    "Image": 0,
+    "Index": 60,
+    "MapIcon": 0,
+    "NPCName": "Glenn",
+    "Region": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapRegion",
+      "Index": 193
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCInfo",
+    "Category": 0,
+    "EntryPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 8
+    },
+    "FaceImage": 0,
+    "GoodsIndex": 0,
+    "Image": 4,
+    "Index": 61,
+    "MapIcon": 0,
+    "NPCName": "Grace",
+    "Region": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapRegion",
+      "Index": 197
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCInfo",
+    "Category": 0,
+    "EntryPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 20
+    },
+    "FaceImage": 0,
+    "GoodsIndex": 0,
+    "Image": 34,
+    "Index": 62,
+    "MapIcon": 0,
+    "NPCName": "Marshal",
+    "Region": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapRegion",
+      "Index": 196
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCInfo",
+    "Category": 0,
+    "EntryPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 19
+    },
+    "FaceImage": 0,
+    "GoodsIndex": 0,
+    "Image": 35,
+    "Index": 63,
+    "MapIcon": 0,
+    "NPCName": "Mandie",
+    "Region": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapRegion",
+      "Index": 199
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCInfo",
+    "Category": 0,
+    "EntryPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 5
+    },
+    "FaceImage": 0,
+    "GoodsIndex": 0,
+    "Image": 0,
+    "Index": 64,
+    "MapIcon": 0,
+    "NPCName": "Jarvis",
+    "Region": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapRegion",
+      "Index": 159
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCInfo",
+    "Category": 0,
+    "EntryPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 5
+    },
+    "FaceImage": 0,
+    "GoodsIndex": 0,
+    "Image": 77,
+    "Index": 65,
+    "MapIcon": 0,
+    "NPCName": "Tumur",
+    "Region": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapRegion",
+      "Index": 168
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCInfo",
+    "Category": 0,
+    "EntryPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 102
+    },
+    "FaceImage": 0,
+    "GoodsIndex": 0,
+    "Image": 80,
+    "Index": 66,
+    "MapIcon": 0,
+    "NPCName": "Imari",
+    "Region": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapRegion",
+      "Index": 166
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCInfo",
+    "Category": 0,
+    "EntryPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 18
+    },
+    "FaceImage": 0,
+    "GoodsIndex": 0,
+    "Image": 81,
+    "Index": 67,
+    "MapIcon": 0,
+    "NPCName": "Solonga",
+    "Region": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapRegion",
+      "Index": 170
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCInfo",
+    "Category": 0,
+    "EntryPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 8
+    },
+    "FaceImage": 0,
+    "GoodsIndex": 0,
+    "Image": 78,
+    "Index": 68,
+    "MapIcon": 0,
+    "NPCName": "Wooshas",
+    "Region": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapRegion",
+      "Index": 169
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCInfo",
+    "Category": 0,
+    "EntryPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 20
+    },
+    "FaceImage": 0,
+    "GoodsIndex": 0,
+    "Image": 81,
+    "Index": 69,
+    "MapIcon": 0,
+    "NPCName": "Wooroy",
+    "Region": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapRegion",
+      "Index": 167
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCInfo",
+    "Category": 0,
+    "EntryPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 19
+    },
+    "FaceImage": 0,
+    "GoodsIndex": 0,
+    "Image": 78,
+    "Index": 70,
+    "MapIcon": 0,
+    "NPCName": "Pat",
+    "Region": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapRegion",
+      "Index": 171
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCInfo",
+    "Category": 0,
+    "EntryPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 5
+    },
+    "FaceImage": 0,
+    "GoodsIndex": 0,
+    "Image": 99,
+    "Index": 71,
+    "MapIcon": 0,
+    "NPCName": "Abbott",
+    "Region": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapRegion",
+      "Index": 825
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCInfo",
+    "Category": 0,
+    "EntryPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 102
+    },
+    "FaceImage": 0,
+    "GoodsIndex": 0,
+    "Image": 74,
+    "Index": 72,
+    "MapIcon": 0,
+    "NPCName": "Malcom",
+    "Region": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapRegion",
+      "Index": 822
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCInfo",
+    "Category": 0,
+    "EntryPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 98
+    },
+    "FaceImage": 0,
+    "GoodsIndex": 0,
+    "Image": 3,
+    "Index": 73,
+    "MapIcon": 0,
+    "NPCName": "Lars",
+    "Region": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapRegion",
+      "Index": 824
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCInfo",
+    "Category": 0,
+    "EntryPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 8
+    },
+    "FaceImage": 0,
+    "GoodsIndex": 0,
+    "Image": 96,
+    "Index": 74,
+    "MapIcon": 0,
+    "NPCName": "Jess",
+    "Region": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapRegion",
+      "Index": 827
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCInfo",
+    "Category": 0,
+    "EntryPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 19
+    },
+    "FaceImage": 0,
+    "GoodsIndex": 0,
+    "Image": 96,
+    "Index": 75,
+    "MapIcon": 0,
+    "NPCName": "Olivia",
+    "Region": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapRegion",
+      "Index": 826
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCInfo",
+    "Category": 0,
+    "EntryPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 5
+    },
+    "FaceImage": 0,
+    "GoodsIndex": 0,
+    "Image": 98,
+    "Index": 76,
+    "MapIcon": 0,
+    "NPCName": "Mr. Matt",
+    "Region": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapRegion",
+      "Index": 1109
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCInfo",
+    "Category": 0,
+    "EntryPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 102
+    },
+    "FaceImage": 0,
+    "GoodsIndex": 0,
+    "Image": 1,
+    "Index": 77,
+    "MapIcon": 0,
+    "NPCName": "Dr. Park",
+    "Region": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapRegion",
+      "Index": 1110
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCInfo",
+    "Category": 0,
+    "EntryPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 98
+    },
+    "FaceImage": 0,
+    "GoodsIndex": 0,
+    "Image": 3,
+    "Index": 78,
+    "MapIcon": 0,
+    "NPCName": "Lafayette",
+    "Region": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapRegion",
+      "Index": 1111
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCInfo",
+    "Category": 0,
+    "EntryPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 8
+    },
+    "FaceImage": 0,
+    "GoodsIndex": 0,
+    "Image": 96,
+    "Index": 79,
+    "MapIcon": 0,
+    "NPCName": "Cherrill",
+    "Region": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapRegion",
+      "Index": 1112
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCInfo",
+    "Category": 0,
+    "EntryPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 19
+    },
+    "FaceImage": 0,
+    "GoodsIndex": 0,
+    "Image": 96,
+    "Index": 80,
+    "MapIcon": 0,
+    "NPCName": "Mindy",
+    "Region": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapRegion",
+      "Index": 1113
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCInfo",
+    "Category": 0,
+    "EntryPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 5
+    },
+    "FaceImage": 0,
+    "GoodsIndex": 0,
+    "Image": 27,
+    "Index": 81,
+    "MapIcon": 0,
+    "NPCName": "Warren",
+    "Region": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapRegion",
+      "Index": 1119
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCInfo",
+    "Category": 0,
+    "EntryPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 102
+    },
+    "FaceImage": 0,
+    "GoodsIndex": 0,
+    "Image": 1,
+    "Index": 82,
+    "MapIcon": 0,
+    "NPCName": "Norman",
+    "Region": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapRegion",
+      "Index": 1120
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCInfo",
+    "Category": 0,
+    "EntryPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 98
+    },
+    "FaceImage": 0,
+    "GoodsIndex": 0,
+    "Image": 3,
+    "Index": 83,
+    "MapIcon": 0,
+    "NPCName": "Lawrence",
+    "Region": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapRegion",
+      "Index": 1121
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCInfo",
+    "Category": 0,
+    "EntryPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 8
+    },
+    "FaceImage": 0,
+    "GoodsIndex": 0,
+    "Image": 12,
+    "Index": 84,
+    "MapIcon": 0,
+    "NPCName": "Nancy",
+    "Region": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapRegion",
+      "Index": 1122
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCInfo",
+    "Category": 0,
+    "EntryPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 20
+    },
+    "FaceImage": 0,
+    "GoodsIndex": 0,
+    "Image": 34,
+    "Index": 85,
+    "MapIcon": 0,
+    "NPCName": "Livingston",
+    "Region": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapRegion",
+      "Index": 1123
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCInfo",
+    "Category": 0,
+    "EntryPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 19
+    },
+    "FaceImage": 0,
+    "GoodsIndex": 0,
+    "Image": 35,
+    "Index": 86,
+    "MapIcon": 0,
+    "NPCName": "Calla",
+    "Region": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapRegion",
+      "Index": 1124
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCInfo",
+    "Category": 0,
+    "EntryPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 119
+    },
+    "FaceImage": 0,
+    "GoodsIndex": 0,
+    "Image": 26,
+    "Index": 88,
+    "MapIcon": 0,
+    "NPCName": "Russ",
+    "Region": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapRegion",
+      "Index": 61
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCInfo",
+    "Category": 0,
+    "EntryPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 70
+    },
+    "FaceImage": 0,
+    "GoodsIndex": 0,
+    "Image": 56,
+    "Index": 89,
+    "MapIcon": 0,
+    "NPCName": "Hexa Holy Stone",
+    "Region": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapRegion",
+      "Index": 1281
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCInfo",
+    "Category": 0,
+    "EntryPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 147
+    },
+    "FaceImage": 0,
+    "GoodsIndex": 0,
+    "Image": 51,
+    "Index": 90,
+    "MapIcon": 0,
+    "NPCName": "Notice Board",
+    "Region": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapRegion",
+      "Index": 1282
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCInfo",
+    "Category": 0,
+    "EntryPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 147
+    },
+    "FaceImage": 0,
+    "GoodsIndex": 0,
+    "Image": 51,
+    "Index": 91,
+    "MapIcon": 0,
+    "NPCName": "Notice Board",
+    "Region": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapRegion",
+      "Index": 1283
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCInfo",
+    "Category": 0,
+    "EntryPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 147
+    },
+    "FaceImage": 0,
+    "GoodsIndex": 0,
+    "Image": 51,
+    "Index": 92,
+    "MapIcon": 0,
+    "NPCName": "Notice Board",
+    "Region": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapRegion",
+      "Index": 1284
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCInfo",
+    "Category": 0,
+    "EntryPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 147
+    },
+    "FaceImage": 0,
+    "GoodsIndex": 0,
+    "Image": 51,
+    "Index": 93,
+    "MapIcon": 0,
+    "NPCName": "Notice Board",
+    "Region": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapRegion",
+      "Index": 1285
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCInfo",
+    "Category": 0,
+    "EntryPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 147
+    },
+    "FaceImage": 0,
+    "GoodsIndex": 0,
+    "Image": 51,
+    "Index": 94,
+    "MapIcon": 0,
+    "NPCName": "Notice Board",
+    "Region": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapRegion",
+      "Index": 1286
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCInfo",
+    "Category": 0,
+    "EntryPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 147
+    },
+    "FaceImage": 0,
+    "GoodsIndex": 0,
+    "Image": 46,
+    "Index": 95,
+    "MapIcon": 0,
+    "NPCName": "Warrior Trainer",
+    "Region": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapRegion",
+      "Index": 1287
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCInfo",
+    "Category": 0,
+    "EntryPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 147
+    },
+    "FaceImage": 0,
+    "GoodsIndex": 0,
+    "Image": 89,
+    "Index": 96,
+    "MapIcon": 0,
+    "NPCName": "Taoist Mentor",
+    "Region": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapRegion",
+      "Index": 1288
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCInfo",
+    "Category": 0,
+    "EntryPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 147
+    },
+    "FaceImage": 0,
+    "GoodsIndex": 0,
+    "Image": 88,
+    "Index": 97,
+    "MapIcon": 0,
+    "NPCName": "Wizard Teacher",
+    "Region": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapRegion",
+      "Index": 1289
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCInfo",
+    "Category": 0,
+    "EntryPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 147
+    },
+    "FaceImage": 0,
+    "GoodsIndex": 0,
+    "Image": 31,
+    "Index": 98,
+    "MapIcon": 0,
+    "NPCName": "Village Elder",
+    "Region": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapRegion",
+      "Index": 1290
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCInfo",
+    "Category": 0,
+    "EntryPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 147
+    },
+    "FaceImage": 0,
+    "GoodsIndex": 0,
+    "Image": 61,
+    "Index": 99,
+    "MapIcon": 0,
+    "NPCName": "Dock Manager",
+    "Region": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapRegion",
+      "Index": 1291
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCInfo",
+    "Category": 0,
+    "EntryPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 148
+    },
+    "FaceImage": 0,
+    "GoodsIndex": 0,
+    "Image": 41,
+    "Index": 100,
+    "MapIcon": 0,
+    "NPCName": "Companion Manager",
+    "Region": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapRegion",
+      "Index": 1292
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCInfo",
+    "Category": 0,
+    "EntryPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 148
+    },
+    "FaceImage": 0,
+    "GoodsIndex": 0,
+    "Image": 41,
+    "Index": 101,
+    "MapIcon": 0,
+    "NPCName": "Companion Manager",
+    "Region": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapRegion",
+      "Index": 1293
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCInfo",
+    "Category": 0,
+    "EntryPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 148
+    },
+    "FaceImage": 0,
+    "GoodsIndex": 0,
+    "Image": 41,
+    "Index": 102,
+    "MapIcon": 0,
+    "NPCName": "Companion Manager",
+    "Region": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapRegion",
+      "Index": 1294
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCInfo",
+    "Category": 0,
+    "EntryPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 148
+    },
+    "FaceImage": 0,
+    "GoodsIndex": 0,
+    "Image": 41,
+    "Index": 103,
+    "MapIcon": 0,
+    "NPCName": "Companion Manager",
+    "Region": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapRegion",
+      "Index": 1295
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCInfo",
+    "Category": 0,
+    "EntryPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 148
+    },
+    "FaceImage": 0,
+    "GoodsIndex": 0,
+    "Image": 41,
+    "Index": 104,
+    "MapIcon": 0,
+    "NPCName": "Companion Manager",
+    "Region": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapRegion",
+      "Index": 1296
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCInfo",
+    "Category": 0,
+    "EntryPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 151
+    },
+    "FaceImage": 0,
+    "GoodsIndex": 0,
+    "Image": 8,
+    "Index": 105,
+    "MapIcon": 0,
+    "NPCName": "Administrator",
+    "Region": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapRegion",
+      "Index": 1297
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCInfo",
+    "Category": 0,
+    "EntryPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 170
+    },
+    "FaceImage": 0,
+    "GoodsIndex": 0,
+    "Image": 27,
+    "Index": 106,
+    "MapIcon": 0,
+    "NPCName": "Jack",
+    "Region": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapRegion",
+      "Index": 1448
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCInfo",
+    "Category": 0,
+    "EntryPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 8
+    },
+    "FaceImage": 0,
+    "GoodsIndex": 0,
+    "Image": 5,
+    "Index": 107,
+    "MapIcon": 0,
+    "NPCName": "Meade",
+    "Region": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapRegion",
+      "Index": 1457
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCInfo",
+    "Category": 0,
+    "EntryPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 98
+    },
+    "FaceImage": 0,
+    "GoodsIndex": 0,
+    "Image": 3,
+    "Index": 108,
+    "MapIcon": 0,
+    "NPCName": "Harper",
+    "Region": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapRegion",
+      "Index": 1458
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCInfo",
+    "Category": 0,
+    "EntryPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 5
+    },
+    "FaceImage": 0,
+    "GoodsIndex": 0,
+    "Image": 0,
+    "Index": 109,
+    "MapIcon": 0,
+    "NPCName": "Carol",
+    "Region": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapRegion",
+      "Index": 1459
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCInfo",
+    "Category": 0,
+    "EntryPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 13
+    },
+    "FaceImage": 0,
+    "GoodsIndex": 0,
+    "Image": 2,
+    "Index": 110,
+    "MapIcon": 0,
+    "NPCName": "Lindasy",
+    "Region": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapRegion",
+      "Index": 1460
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCInfo",
+    "Category": 0,
+    "EntryPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 19
+    },
+    "FaceImage": 0,
+    "GoodsIndex": 0,
+    "Image": 7,
+    "Index": 111,
+    "MapIcon": 0,
+    "NPCName": "Nat",
+    "Region": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapRegion",
+      "Index": 1461
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCInfo",
+    "Category": 0,
+    "EntryPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 182
+    },
+    "FaceImage": 0,
+    "GoodsIndex": 0,
+    "Image": 56,
+    "Index": 112,
+    "MapIcon": 0,
+    "NPCName": "Hexa Holy Stone",
+    "Region": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapRegion",
+      "Index": 1462
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCInfo",
+    "Category": 0,
+    "EntryPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 102
+    },
+    "FaceImage": 0,
+    "GoodsIndex": 0,
+    "Image": 4,
+    "Index": 113,
+    "MapIcon": 0,
+    "NPCName": "Jody",
+    "Region": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapRegion",
+      "Index": 1463
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCInfo",
+    "Category": 0,
+    "EntryPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 3
+    },
+    "FaceImage": 0,
+    "GoodsIndex": 0,
+    "Image": 11,
+    "Index": 114,
+    "MapIcon": 0,
+    "NPCName": "Arlie",
+    "Region": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapRegion",
+      "Index": 1464
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCInfo",
+    "Category": 0,
+    "EntryPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 20
+    },
+    "FaceImage": 0,
+    "GoodsIndex": 0,
+    "Image": 34,
+    "Index": 115,
+    "MapIcon": 0,
+    "NPCName": "Ronnine",
+    "Region": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapRegion",
+      "Index": 1465
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCInfo",
+    "Category": 0,
+    "EntryPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 147
+    },
+    "FaceImage": 0,
+    "GoodsIndex": 0,
+    "Image": 51,
+    "Index": 116,
+    "MapIcon": 0,
+    "NPCName": "Notice Board",
+    "Region": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapRegion",
+      "Index": 1467
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCInfo",
+    "Category": 0,
+    "EntryPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 148
+    },
+    "FaceImage": 0,
+    "GoodsIndex": 0,
+    "Image": 41,
+    "Index": 117,
+    "MapIcon": 0,
+    "NPCName": "Companion Manager",
+    "Region": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapRegion",
+      "Index": 1468
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCInfo",
+    "Category": 0,
+    "EntryPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 190
+    },
+    "FaceImage": 0,
+    "GoodsIndex": 0,
+    "Image": 156,
+    "Index": 118,
+    "MapIcon": 0,
+    "NPCName": "Hexa Holy Stone",
+    "Region": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapRegion",
+      "Index": 1511
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCInfo",
+    "Category": 0,
+    "EntryPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 8
+    },
+    "FaceImage": 0,
+    "GoodsIndex": 0,
+    "Image": 5,
+    "Index": 119,
+    "MapIcon": 0,
+    "NPCName": "Ethwild",
+    "Region": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapRegion",
+      "Index": 1497
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCInfo",
+    "Category": 0,
+    "EntryPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 18
+    },
+    "FaceImage": 0,
+    "GoodsIndex": 0,
+    "Image": 3,
+    "Index": 120,
+    "MapIcon": 0,
+    "NPCName": "Aered",
+    "Region": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapRegion",
+      "Index": 1498
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCInfo",
+    "Category": 0,
+    "EntryPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 5
+    },
+    "FaceImage": 0,
+    "GoodsIndex": 0,
+    "Image": 0,
+    "Index": 121,
+    "MapIcon": 0,
+    "NPCName": "Baldwy",
+    "Region": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapRegion",
+      "Index": 1499
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCInfo",
+    "Category": 0,
+    "EntryPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 13
+    },
+    "FaceImage": 0,
+    "GoodsIndex": 0,
+    "Image": 2,
+    "Index": 122,
+    "MapIcon": 0,
+    "NPCName": "Helmund",
+    "Region": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapRegion",
+      "Index": 1500
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCInfo",
+    "Category": 0,
+    "EntryPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 19
+    },
+    "FaceImage": 0,
+    "GoodsIndex": 0,
+    "Image": 7,
+    "Index": 123,
+    "MapIcon": 0,
+    "NPCName": "Gytha",
+    "Region": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapRegion",
+      "Index": 1501
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCInfo",
+    "Category": 0,
+    "EntryPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 191
+    },
+    "FaceImage": 0,
+    "GoodsIndex": 0,
+    "Image": 56,
+    "Index": 124,
+    "MapIcon": 0,
+    "NPCName": "Hexa Holy Stone",
+    "Region": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapRegion",
+      "Index": 1502
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCInfo",
+    "Category": 0,
+    "EntryPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 102
+    },
+    "FaceImage": 0,
+    "GoodsIndex": 0,
+    "Image": 4,
+    "Index": 125,
+    "MapIcon": 0,
+    "NPCName": "Burga",
+    "Region": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapRegion",
+      "Index": 1503
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCInfo",
+    "Category": 0,
+    "EntryPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 3
+    },
+    "FaceImage": 0,
+    "GoodsIndex": 0,
+    "Image": 11,
+    "Index": 126,
+    "MapIcon": 0,
+    "NPCName": "Gisla",
+    "Region": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapRegion",
+      "Index": 1504
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCInfo",
+    "Category": 0,
+    "EntryPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 20
+    },
+    "FaceImage": 0,
+    "GoodsIndex": 0,
+    "Image": 34,
+    "Index": 127,
+    "MapIcon": 0,
+    "NPCName": "Amel",
+    "Region": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapRegion",
+      "Index": 1505
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCInfo",
+    "Category": 0,
+    "EntryPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 147
+    },
+    "FaceImage": 0,
+    "GoodsIndex": 0,
+    "Image": 51,
+    "Index": 128,
+    "MapIcon": 0,
+    "NPCName": "Notice Board",
+    "Region": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapRegion",
+      "Index": 1506
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCInfo",
+    "Category": 0,
+    "EntryPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 148
+    },
+    "FaceImage": 0,
+    "GoodsIndex": 0,
+    "Image": 41,
+    "Index": 129,
+    "MapIcon": 0,
+    "NPCName": "Companion Manager",
+    "Region": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapRegion",
+      "Index": 1507
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCInfo",
+    "Category": 0,
+    "EntryPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 119
+    },
+    "FaceImage": 0,
+    "GoodsIndex": 0,
+    "Image": 26,
+    "Index": 130,
+    "MapIcon": 0,
+    "NPCName": "Stomes",
+    "Region": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapRegion",
+      "Index": 1508
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCInfo",
+    "Category": 0,
+    "EntryPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 71
+    },
+    "FaceImage": 0,
+    "GoodsIndex": 0,
+    "Image": 27,
+    "Index": 131,
+    "MapIcon": 0,
+    "NPCName": "Piersym",
+    "Region": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapRegion",
+      "Index": 1509
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCInfo",
+    "Category": 0,
+    "EntryPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 170
+    },
+    "FaceImage": 0,
+    "GoodsIndex": 0,
+    "Image": 27,
+    "Index": 132,
+    "MapIcon": 0,
+    "NPCName": "Willex",
+    "Region": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapRegion",
+      "Index": 1510
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCInfo",
+    "Category": 0,
+    "EntryPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 194
+    },
+    "FaceImage": 0,
+    "GoodsIndex": 0,
+    "Image": 27,
+    "Index": 134,
+    "MapIcon": 0,
+    "NPCName": "Fido",
+    "Region": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapRegion",
+      "Index": 1535
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCInfo",
+    "Category": 0,
+    "EntryPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 194
+    },
+    "FaceImage": 0,
+    "GoodsIndex": 0,
+    "Image": 27,
+    "Index": 135,
+    "MapIcon": 0,
+    "NPCName": "Mike",
+    "Region": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapRegion",
+      "Index": 1536
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCInfo",
+    "Category": 0,
+    "EntryPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 198
+    },
+    "FaceImage": 0,
+    "GoodsIndex": 0,
+    "Image": 27,
+    "Index": 136,
+    "MapIcon": 0,
+    "NPCName": "Payton",
+    "Region": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapRegion",
+      "Index": 1540
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCInfo",
+    "Category": 0,
+    "EntryPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 267
+    },
+    "FaceImage": 0,
+    "GoodsIndex": 0,
+    "Image": 27,
+    "Index": 137,
+    "MapIcon": 0,
+    "NPCName": "Weapon Smith",
+    "Region": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapRegion",
+      "Index": 1711
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCInfo",
+    "Category": 0,
+    "EntryPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 286
+    },
+    "FaceImage": 0,
+    "GoodsIndex": 0,
+    "Image": 26,
+    "Index": 138,
+    "MapIcon": 0,
+    "NPCName": "Sailor",
+    "Region": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapRegion",
+      "Index": 1712
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCInfo",
+    "Category": 0,
+    "EntryPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 289
+    },
+    "FaceImage": 0,
+    "GoodsIndex": 0,
+    "Image": 2,
+    "Index": 139,
+    "MapIcon": 0,
+    "NPCName": "Jake",
+    "Region": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapRegion",
+      "Index": 1718
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCInfo",
+    "Category": 0,
+    "EntryPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 334
+    },
+    "FaceImage": 0,
+    "GoodsIndex": 0,
+    "Image": 74,
+    "Index": 140,
+    "MapIcon": 0,
+    "NPCName": "Chief Yonghyeon",
+    "Region": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapRegion",
+      "Index": 1743
+    }
+  }
+]

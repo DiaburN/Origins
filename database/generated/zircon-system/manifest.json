@@ -1,0 +1,547 @@
+{
+  "SchemaVersion": 1,
+  "SourceSystemDbSha256": "2E465FE3018A8E25588452C9525487CDB617DC189E1FD31EF17ADC47C30C331F",
+  "SourceSystemVersion": "2026.08.19.1",
+  "ExportedUtc": "2026-08-19T14:04:07.4933229Z",
+  "Collections": [
+    {
+      "AssemblyName": "LibraryCore",
+      "TypeName": "Library.SystemModels.BaseEventAction",
+      "FileName": "LibraryCore__Library_SystemModels_BaseEventAction.json",
+      "Count": 0,
+      "CollectionIndex": 0
+    },
+    {
+      "AssemblyName": "LibraryCore",
+      "TypeName": "Library.SystemModels.BaseStat",
+      "FileName": "LibraryCore__Library_SystemModels_BaseStat.json",
+      "Count": 360,
+      "CollectionIndex": 360
+    },
+    {
+      "AssemblyName": "LibraryCore",
+      "TypeName": "Library.SystemModels.BundleInfo",
+      "FileName": "LibraryCore__Library_SystemModels_BundleInfo.json",
+      "Count": 0,
+      "CollectionIndex": 0
+    },
+    {
+      "AssemblyName": "LibraryCore",
+      "TypeName": "Library.SystemModels.BundleItemInfo",
+      "FileName": "LibraryCore__Library_SystemModels_BundleItemInfo.json",
+      "Count": 0,
+      "CollectionIndex": 0
+    },
+    {
+      "AssemblyName": "LibraryCore",
+      "TypeName": "Library.SystemModels.CastleFlagInfo",
+      "FileName": "LibraryCore__Library_SystemModels_CastleFlagInfo.json",
+      "Count": 0,
+      "CollectionIndex": 0
+    },
+    {
+      "AssemblyName": "LibraryCore",
+      "TypeName": "Library.SystemModels.CastleGateInfo",
+      "FileName": "LibraryCore__Library_SystemModels_CastleGateInfo.json",
+      "Count": 0,
+      "CollectionIndex": 0
+    },
+    {
+      "AssemblyName": "LibraryCore",
+      "TypeName": "Library.SystemModels.CastleGuardInfo",
+      "FileName": "LibraryCore__Library_SystemModels_CastleGuardInfo.json",
+      "Count": 0,
+      "CollectionIndex": 0
+    },
+    {
+      "AssemblyName": "LibraryCore",
+      "TypeName": "Library.SystemModels.CastleInfo",
+      "FileName": "LibraryCore__Library_SystemModels_CastleInfo.json",
+      "Count": 1,
+      "CollectionIndex": 1
+    },
+    {
+      "AssemblyName": "LibraryCore",
+      "TypeName": "Library.SystemModels.CompanionInfo",
+      "FileName": "LibraryCore__Library_SystemModels_CompanionInfo.json",
+      "Count": 10,
+      "CollectionIndex": 10
+    },
+    {
+      "AssemblyName": "LibraryCore",
+      "TypeName": "Library.SystemModels.CompanionLevelInfo",
+      "FileName": "LibraryCore__Library_SystemModels_CompanionLevelInfo.json",
+      "Count": 15,
+      "CollectionIndex": 15
+    },
+    {
+      "AssemblyName": "LibraryCore",
+      "TypeName": "Library.SystemModels.CompanionSkillInfo",
+      "FileName": "LibraryCore__Library_SystemModels_CompanionSkillInfo.json",
+      "Count": 48,
+      "CollectionIndex": 48
+    },
+    {
+      "AssemblyName": "LibraryCore",
+      "TypeName": "Library.SystemModels.CompanionSpeech",
+      "FileName": "LibraryCore__Library_SystemModels_CompanionSpeech.json",
+      "Count": 0,
+      "CollectionIndex": 0
+    },
+    {
+      "AssemblyName": "LibraryCore",
+      "TypeName": "Library.SystemModels.CurrencyInfo",
+      "FileName": "LibraryCore__Library_SystemModels_CurrencyInfo.json",
+      "Count": 5,
+      "CollectionIndex": 5
+    },
+    {
+      "AssemblyName": "LibraryCore",
+      "TypeName": "Library.SystemModels.CurrencyInfoImage",
+      "FileName": "LibraryCore__Library_SystemModels_CurrencyInfoImage.json",
+      "Count": 8,
+      "CollectionIndex": 8
+    },
+    {
+      "AssemblyName": "LibraryCore",
+      "TypeName": "Library.SystemModels.DisciplineInfo",
+      "FileName": "LibraryCore__Library_SystemModels_DisciplineInfo.json",
+      "Count": 4,
+      "CollectionIndex": 4
+    },
+    {
+      "AssemblyName": "LibraryCore",
+      "TypeName": "Library.SystemModels.DropInfo",
+      "FileName": "LibraryCore__Library_SystemModels_DropInfo.json",
+      "Count": 10382,
+      "CollectionIndex": 16281
+    },
+    {
+      "AssemblyName": "LibraryCore",
+      "TypeName": "Library.SystemModels.DungeonInfo",
+      "FileName": "LibraryCore__Library_SystemModels_DungeonInfo.json",
+      "Count": 0,
+      "CollectionIndex": 0
+    },
+    {
+      "AssemblyName": "LibraryCore",
+      "TypeName": "Library.SystemModels.DungeonMapInfo",
+      "FileName": "LibraryCore__Library_SystemModels_DungeonMapInfo.json",
+      "Count": 0,
+      "CollectionIndex": 0
+    },
+    {
+      "AssemblyName": "LibraryCore",
+      "TypeName": "Library.SystemModels.FameInfo",
+      "FileName": "LibraryCore__Library_SystemModels_FameInfo.json",
+      "Count": 9,
+      "CollectionIndex": 9
+    },
+    {
+      "AssemblyName": "LibraryCore",
+      "TypeName": "Library.SystemModels.FameInfoReward",
+      "FileName": "LibraryCore__Library_SystemModels_FameInfoReward.json",
+      "Count": 7,
+      "CollectionIndex": 7
+    },
+    {
+      "AssemblyName": "LibraryCore",
+      "TypeName": "Library.SystemModels.FameInfoStat",
+      "FileName": "LibraryCore__Library_SystemModels_FameInfoStat.json",
+      "Count": 44,
+      "CollectionIndex": 44
+    },
+    {
+      "AssemblyName": "LibraryCore",
+      "TypeName": "Library.SystemModels.FishingDropInfo",
+      "FileName": "LibraryCore__Library_SystemModels_FishingDropInfo.json",
+      "Count": 0,
+      "CollectionIndex": 0
+    },
+    {
+      "AssemblyName": "LibraryCore",
+      "TypeName": "Library.SystemModels.FishingInfo",
+      "FileName": "LibraryCore__Library_SystemModels_FishingInfo.json",
+      "Count": 0,
+      "CollectionIndex": 0
+    },
+    {
+      "AssemblyName": "LibraryCore",
+      "TypeName": "Library.SystemModels.GuardInfo",
+      "FileName": "LibraryCore__Library_SystemModels_GuardInfo.json",
+      "Count": 68,
+      "CollectionIndex": 86
+    },
+    {
+      "AssemblyName": "LibraryCore",
+      "TypeName": "Library.SystemModels.HelpInfo",
+      "FileName": "LibraryCore__Library_SystemModels_HelpInfo.json",
+      "Count": 0,
+      "CollectionIndex": 0
+    },
+    {
+      "AssemblyName": "LibraryCore",
+      "TypeName": "Library.SystemModels.HelpItemInfo",
+      "FileName": "LibraryCore__Library_SystemModels_HelpItemInfo.json",
+      "Count": 0,
+      "CollectionIndex": 0
+    },
+    {
+      "AssemblyName": "LibraryCore",
+      "TypeName": "Library.SystemModels.HelpPageInfo",
+      "FileName": "LibraryCore__Library_SystemModels_HelpPageInfo.json",
+      "Count": 0,
+      "CollectionIndex": 0
+    },
+    {
+      "AssemblyName": "LibraryCore",
+      "TypeName": "Library.SystemModels.InstanceInfo",
+      "FileName": "LibraryCore__Library_SystemModels_InstanceInfo.json",
+      "Count": 0,
+      "CollectionIndex": 0
+    },
+    {
+      "AssemblyName": "LibraryCore",
+      "TypeName": "Library.SystemModels.InstanceInfoStat",
+      "FileName": "LibraryCore__Library_SystemModels_InstanceInfoStat.json",
+      "Count": 0,
+      "CollectionIndex": 0
+    },
+    {
+      "AssemblyName": "LibraryCore",
+      "TypeName": "Library.SystemModels.InstanceMapInfo",
+      "FileName": "LibraryCore__Library_SystemModels_InstanceMapInfo.json",
+      "Count": 0,
+      "CollectionIndex": 0
+    },
+    {
+      "AssemblyName": "LibraryCore",
+      "TypeName": "Library.SystemModels.ItemInfo",
+      "FileName": "LibraryCore__Library_SystemModels_ItemInfo.json",
+      "Count": 1078,
+      "CollectionIndex": 1167
+    },
+    {
+      "AssemblyName": "LibraryCore",
+      "TypeName": "Library.SystemModels.ItemInfoStat",
+      "FileName": "LibraryCore__Library_SystemModels_ItemInfoStat.json",
+      "Count": 3196,
+      "CollectionIndex": 3594
+    },
+    {
+      "AssemblyName": "LibraryCore",
+      "TypeName": "Library.SystemModels.LootBoxInfo",
+      "FileName": "LibraryCore__Library_SystemModels_LootBoxInfo.json",
+      "Count": 0,
+      "CollectionIndex": 0
+    },
+    {
+      "AssemblyName": "LibraryCore",
+      "TypeName": "Library.SystemModels.LootBoxItemInfo",
+      "FileName": "LibraryCore__Library_SystemModels_LootBoxItemInfo.json",
+      "Count": 0,
+      "CollectionIndex": 0
+    },
+    {
+      "AssemblyName": "LibraryCore",
+      "TypeName": "Library.SystemModels.MagicInfo",
+      "FileName": "LibraryCore__Library_SystemModels_MagicInfo.json",
+      "Count": 174,
+      "CollectionIndex": 174
+    },
+    {
+      "AssemblyName": "LibraryCore",
+      "TypeName": "Library.SystemModels.MapInfo",
+      "FileName": "LibraryCore__Library_SystemModels_MapInfo.json",
+      "Count": 244,
+      "CollectionIndex": 609
+    },
+    {
+      "AssemblyName": "LibraryCore",
+      "TypeName": "Library.SystemModels.MapInfoStat",
+      "FileName": "LibraryCore__Library_SystemModels_MapInfoStat.json",
+      "Count": 0,
+      "CollectionIndex": 0
+    },
+    {
+      "AssemblyName": "LibraryCore",
+      "TypeName": "Library.SystemModels.MapRegion",
+      "FileName": "LibraryCore__Library_SystemModels_MapRegion.json",
+      "Count": 1666,
+      "CollectionIndex": 1743
+    },
+    {
+      "AssemblyName": "LibraryCore",
+      "TypeName": "Library.SystemModels.MilestoneInfo",
+      "FileName": "LibraryCore__Library_SystemModels_MilestoneInfo.json",
+      "Count": 0,
+      "CollectionIndex": 0
+    },
+    {
+      "AssemblyName": "LibraryCore",
+      "TypeName": "Library.SystemModels.MilestoneInfoTask",
+      "FileName": "LibraryCore__Library_SystemModels_MilestoneInfoTask.json",
+      "Count": 0,
+      "CollectionIndex": 0
+    },
+    {
+      "AssemblyName": "LibraryCore",
+      "TypeName": "Library.SystemModels.MineInfo",
+      "FileName": "LibraryCore__Library_SystemModels_MineInfo.json",
+      "Count": 20,
+      "CollectionIndex": 20
+    },
+    {
+      "AssemblyName": "LibraryCore",
+      "TypeName": "Library.SystemModels.MonsterEventAction",
+      "FileName": "LibraryCore__Library_SystemModels_MonsterEventAction.json",
+      "Count": 0,
+      "CollectionIndex": 0
+    },
+    {
+      "AssemblyName": "LibraryCore",
+      "TypeName": "Library.SystemModels.MonsterEventInfo",
+      "FileName": "LibraryCore__Library_SystemModels_MonsterEventInfo.json",
+      "Count": 0,
+      "CollectionIndex": 0
+    },
+    {
+      "AssemblyName": "LibraryCore",
+      "TypeName": "Library.SystemModels.MonsterEventInfoTriggerStat",
+      "FileName": "LibraryCore__Library_SystemModels_MonsterEventInfoTriggerStat.json",
+      "Count": 0,
+      "CollectionIndex": 0
+    },
+    {
+      "AssemblyName": "LibraryCore",
+      "TypeName": "Library.SystemModels.MonsterEventTrigger",
+      "FileName": "LibraryCore__Library_SystemModels_MonsterEventTrigger.json",
+      "Count": 0,
+      "CollectionIndex": 0
+    },
+    {
+      "AssemblyName": "LibraryCore",
+      "TypeName": "Library.SystemModels.MonsterInfo",
+      "FileName": "LibraryCore__Library_SystemModels_MonsterInfo.json",
+      "Count": 309,
+      "CollectionIndex": 359
+    },
+    {
+      "AssemblyName": "LibraryCore",
+      "TypeName": "Library.SystemModels.MonsterInfoStat",
+      "FileName": "LibraryCore__Library_SystemModels_MonsterInfoStat.json",
+      "Count": 4117,
+      "CollectionIndex": 4861
+    },
+    {
+      "AssemblyName": "LibraryCore",
+      "TypeName": "Library.SystemModels.MovementInfo",
+      "FileName": "LibraryCore__Library_SystemModels_MovementInfo.json",
+      "Count": 554,
+      "CollectionIndex": 3048
+    },
+    {
+      "AssemblyName": "LibraryCore",
+      "TypeName": "Library.SystemModels.NPCAction",
+      "FileName": "LibraryCore__Library_SystemModels_NPCAction.json",
+      "Count": 288,
+      "CollectionIndex": 306
+    },
+    {
+      "AssemblyName": "LibraryCore",
+      "TypeName": "Library.SystemModels.NPCButton",
+      "FileName": "LibraryCore__Library_SystemModels_NPCButton.json",
+      "Count": 338,
+      "CollectionIndex": 350
+    },
+    {
+      "AssemblyName": "LibraryCore",
+      "TypeName": "Library.SystemModels.NPCCheck",
+      "FileName": "LibraryCore__Library_SystemModels_NPCCheck.json",
+      "Count": 430,
+      "CollectionIndex": 451
+    },
+    {
+      "AssemblyName": "LibraryCore",
+      "TypeName": "Library.SystemModels.NPCGood",
+      "FileName": "LibraryCore__Library_SystemModels_NPCGood.json",
+      "Count": 332,
+      "CollectionIndex": 867
+    },
+    {
+      "AssemblyName": "LibraryCore",
+      "TypeName": "Library.SystemModels.NPCInfo",
+      "FileName": "LibraryCore__Library_SystemModels_NPCInfo.json",
+      "Count": 125,
+      "CollectionIndex": 140
+    },
+    {
+      "AssemblyName": "LibraryCore",
+      "TypeName": "Library.SystemModels.NPCPage",
+      "FileName": "LibraryCore__Library_SystemModels_NPCPage.json",
+      "Count": 302,
+      "CollectionIndex": 338
+    },
+    {
+      "AssemblyName": "LibraryCore",
+      "TypeName": "Library.SystemModels.NPCRequirement",
+      "FileName": "LibraryCore__Library_SystemModels_NPCRequirement.json",
+      "Count": 0,
+      "CollectionIndex": 0
+    },
+    {
+      "AssemblyName": "LibraryCore",
+      "TypeName": "Library.SystemModels.NPCType",
+      "FileName": "LibraryCore__Library_SystemModels_NPCType.json",
+      "Count": 73,
+      "CollectionIndex": 98
+    },
+    {
+      "AssemblyName": "LibraryCore",
+      "TypeName": "Library.SystemModels.NPCValue",
+      "FileName": "LibraryCore__Library_SystemModels_NPCValue.json",
+      "Count": 2,
+      "CollectionIndex": 2
+    },
+    {
+      "AssemblyName": "LibraryCore",
+      "TypeName": "Library.SystemModels.PlayerEventAction",
+      "FileName": "LibraryCore__Library_SystemModels_PlayerEventAction.json",
+      "Count": 0,
+      "CollectionIndex": 0
+    },
+    {
+      "AssemblyName": "LibraryCore",
+      "TypeName": "Library.SystemModels.PlayerEventInfo",
+      "FileName": "LibraryCore__Library_SystemModels_PlayerEventInfo.json",
+      "Count": 0,
+      "CollectionIndex": 0
+    },
+    {
+      "AssemblyName": "LibraryCore",
+      "TypeName": "Library.SystemModels.PlayerEventInfoTriggerStat",
+      "FileName": "LibraryCore__Library_SystemModels_PlayerEventInfoTriggerStat.json",
+      "Count": 0,
+      "CollectionIndex": 0
+    },
+    {
+      "AssemblyName": "LibraryCore",
+      "TypeName": "Library.SystemModels.PlayerEventTrigger",
+      "FileName": "LibraryCore__Library_SystemModels_PlayerEventTrigger.json",
+      "Count": 0,
+      "CollectionIndex": 0
+    },
+    {
+      "AssemblyName": "LibraryCore",
+      "TypeName": "Library.SystemModels.QuestInfo",
+      "FileName": "LibraryCore__Library_SystemModels_QuestInfo.json",
+      "Count": 34,
+      "CollectionIndex": 62
+    },
+    {
+      "AssemblyName": "LibraryCore",
+      "TypeName": "Library.SystemModels.QuestRequirement",
+      "FileName": "LibraryCore__Library_SystemModels_QuestRequirement.json",
+      "Count": 58,
+      "CollectionIndex": 143
+    },
+    {
+      "AssemblyName": "LibraryCore",
+      "TypeName": "Library.SystemModels.QuestReward",
+      "FileName": "LibraryCore__Library_SystemModels_QuestReward.json",
+      "Count": 34,
+      "CollectionIndex": 141
+    },
+    {
+      "AssemblyName": "LibraryCore",
+      "TypeName": "Library.SystemModels.QuestTask",
+      "FileName": "LibraryCore__Library_SystemModels_QuestTask.json",
+      "Count": 42,
+      "CollectionIndex": 74
+    },
+    {
+      "AssemblyName": "LibraryCore",
+      "TypeName": "Library.SystemModels.QuestTaskMonsterDetails",
+      "FileName": "LibraryCore__Library_SystemModels_QuestTaskMonsterDetails.json",
+      "Count": 54,
+      "CollectionIndex": 97
+    },
+    {
+      "AssemblyName": "LibraryCore",
+      "TypeName": "Library.SystemModels.RespawnInfo",
+      "FileName": "LibraryCore__Library_SystemModels_RespawnInfo.json",
+      "Count": 1471,
+      "CollectionIndex": 5749
+    },
+    {
+      "AssemblyName": "LibraryCore",
+      "TypeName": "Library.SystemModels.SafeZoneInfo",
+      "FileName": "LibraryCore__Library_SystemModels_SafeZoneInfo.json",
+      "Count": 13,
+      "CollectionIndex": 44
+    },
+    {
+      "AssemblyName": "LibraryCore",
+      "TypeName": "Library.SystemModels.SetInfo",
+      "FileName": "LibraryCore__Library_SystemModels_SetInfo.json",
+      "Count": 30,
+      "CollectionIndex": 30
+    },
+    {
+      "AssemblyName": "LibraryCore",
+      "TypeName": "Library.SystemModels.SetInfoStat",
+      "FileName": "LibraryCore__Library_SystemModels_SetInfoStat.json",
+      "Count": 200,
+      "CollectionIndex": 214
+    },
+    {
+      "AssemblyName": "LibraryCore",
+      "TypeName": "Library.SystemModels.StoreInfo",
+      "FileName": "LibraryCore__Library_SystemModels_StoreInfo.json",
+      "Count": 92,
+      "CollectionIndex": 136
+    },
+    {
+      "AssemblyName": "LibraryCore",
+      "TypeName": "Library.SystemModels.SystemDatabaseInfo",
+      "FileName": "LibraryCore__Library_SystemModels_SystemDatabaseInfo.json",
+      "Count": 1,
+      "CollectionIndex": 1
+    },
+    {
+      "AssemblyName": "LibraryCore",
+      "TypeName": "Library.SystemModels.WeaponCraftStatInfo",
+      "FileName": "LibraryCore__Library_SystemModels_WeaponCraftStatInfo.json",
+      "Count": 110,
+      "CollectionIndex": 142
+    },
+    {
+      "AssemblyName": "LibraryCore",
+      "TypeName": "Library.SystemModels.WorldEventAction",
+      "FileName": "LibraryCore__Library_SystemModels_WorldEventAction.json",
+      "Count": 0,
+      "CollectionIndex": 0
+    },
+    {
+      "AssemblyName": "LibraryCore",
+      "TypeName": "Library.SystemModels.WorldEventInfo",
+      "FileName": "LibraryCore__Library_SystemModels_WorldEventInfo.json",
+      "Count": 0,
+      "CollectionIndex": 0
+    },
+    {
+      "AssemblyName": "LibraryCore",
+      "TypeName": "Library.SystemModels.WorldEventInfoTriggerStat",
+      "FileName": "LibraryCore__Library_SystemModels_WorldEventInfoTriggerStat.json",
+      "Count": 0,
+      "CollectionIndex": 0
+    },
+    {
+      "AssemblyName": "LibraryCore",
+      "TypeName": "Library.SystemModels.WorldEventTrigger",
+      "FileName": "LibraryCore__Library_SystemModels_WorldEventTrigger.json",
+      "Count": 0,
+      "CollectionIndex": 0
+    }
+  ]
+}

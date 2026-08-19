@@ -1,0 +1,1736 @@
+{
+  "schemaVersion": 1,
+  "policy": {
+    "nameMatchIsVerification": false,
+    "automaticMagicInfoCreation": false,
+    "requiredBeforeVerified": [
+      "compare Crystal server call path",
+      "compare Zircon MagicObject behavior",
+      "decide native/adapted/Crystal-adapted",
+      "map Crystal numeric data into Zircon fields deliberately"
+    ]
+  },
+  "counts": {
+    "excluded_none": 1,
+    "needs_semantic_and_behavior_review": 68,
+    "name_match_needs_behavior_check": 21,
+    "deferred_unsupported_class": 21,
+    "excluded_map_event": 19
+  },
+  "entries": [
+    {
+      "crystal": {
+        "name": "None",
+        "spellId": 0,
+        "category": "Uncategorized",
+        "kind": "none",
+        "hasDefaultMagicInfo": false
+      },
+      "status": "excluded_none",
+      "verified": false,
+      "zirconNameMatches": []
+    },
+    {
+      "crystal": {
+        "name": "Fencing",
+        "spellId": 1,
+        "category": "Warrior",
+        "kind": "player",
+        "hasDefaultMagicInfo": true
+      },
+      "status": "needs_semantic_and_behavior_review",
+      "verified": false,
+      "zirconNameMatches": []
+    },
+    {
+      "crystal": {
+        "name": "Slaying",
+        "spellId": 2,
+        "category": "Warrior",
+        "kind": "player",
+        "hasDefaultMagicInfo": true
+      },
+      "status": "name_match_needs_behavior_check",
+      "verified": false,
+      "zirconNameMatches": [
+        {
+          "index": 3,
+          "name": "Slaying",
+          "magicTypeNumeric": 102,
+          "classNumeric": 0
+        }
+      ]
+    },
+    {
+      "crystal": {
+        "name": "Thrusting",
+        "spellId": 3,
+        "category": "Warrior",
+        "kind": "player",
+        "hasDefaultMagicInfo": true
+      },
+      "status": "name_match_needs_behavior_check",
+      "verified": false,
+      "zirconNameMatches": [
+        {
+          "index": 4,
+          "name": "Thrusting",
+          "magicTypeNumeric": 103,
+          "classNumeric": 0
+        }
+      ]
+    },
+    {
+      "crystal": {
+        "name": "HalfMoon",
+        "spellId": 4,
+        "category": "Warrior",
+        "kind": "player",
+        "hasDefaultMagicInfo": true
+      },
+      "status": "name_match_needs_behavior_check",
+      "verified": false,
+      "zirconNameMatches": [
+        {
+          "index": 5,
+          "name": "Half Moon",
+          "magicTypeNumeric": 104,
+          "classNumeric": 0
+        }
+      ]
+    },
+    {
+      "crystal": {
+        "name": "ShoulderDash",
+        "spellId": 5,
+        "category": "Warrior",
+        "kind": "player",
+        "hasDefaultMagicInfo": true
+      },
+      "status": "name_match_needs_behavior_check",
+      "verified": false,
+      "zirconNameMatches": [
+        {
+          "index": 6,
+          "name": "Shoulder Dash",
+          "magicTypeNumeric": 105,
+          "classNumeric": 0
+        }
+      ]
+    },
+    {
+      "crystal": {
+        "name": "TwinDrakeBlade",
+        "spellId": 6,
+        "category": "Warrior",
+        "kind": "player",
+        "hasDefaultMagicInfo": true
+      },
+      "status": "needs_semantic_and_behavior_review",
+      "verified": false,
+      "zirconNameMatches": []
+    },
+    {
+      "crystal": {
+        "name": "Entrapment",
+        "spellId": 7,
+        "category": "Warrior",
+        "kind": "player",
+        "hasDefaultMagicInfo": true
+      },
+      "status": "needs_semantic_and_behavior_review",
+      "verified": false,
+      "zirconNameMatches": []
+    },
+    {
+      "crystal": {
+        "name": "FlamingSword",
+        "spellId": 8,
+        "category": "Warrior",
+        "kind": "player",
+        "hasDefaultMagicInfo": true
+      },
+      "status": "name_match_needs_behavior_check",
+      "verified": false,
+      "zirconNameMatches": [
+        {
+          "index": 7,
+          "name": "Flaming Sword",
+          "magicTypeNumeric": 106,
+          "classNumeric": 0
+        }
+      ]
+    },
+    {
+      "crystal": {
+        "name": "LionRoar",
+        "spellId": 9,
+        "category": "Warrior",
+        "kind": "player",
+        "hasDefaultMagicInfo": true
+      },
+      "status": "needs_semantic_and_behavior_review",
+      "verified": false,
+      "zirconNameMatches": []
+    },
+    {
+      "crystal": {
+        "name": "CrossHalfMoon",
+        "spellId": 10,
+        "category": "Warrior",
+        "kind": "player",
+        "hasDefaultMagicInfo": true
+      },
+      "status": "needs_semantic_and_behavior_review",
+      "verified": false,
+      "zirconNameMatches": []
+    },
+    {
+      "crystal": {
+        "name": "BladeAvalanche",
+        "spellId": 11,
+        "category": "Warrior",
+        "kind": "player",
+        "hasDefaultMagicInfo": true
+      },
+      "status": "needs_semantic_and_behavior_review",
+      "verified": false,
+      "zirconNameMatches": []
+    },
+    {
+      "crystal": {
+        "name": "ProtectionField",
+        "spellId": 12,
+        "category": "Warrior",
+        "kind": "player",
+        "hasDefaultMagicInfo": true
+      },
+      "status": "needs_semantic_and_behavior_review",
+      "verified": false,
+      "zirconNameMatches": []
+    },
+    {
+      "crystal": {
+        "name": "Rage",
+        "spellId": 13,
+        "category": "Warrior",
+        "kind": "player",
+        "hasDefaultMagicInfo": true
+      },
+      "status": "needs_semantic_and_behavior_review",
+      "verified": false,
+      "zirconNameMatches": []
+    },
+    {
+      "crystal": {
+        "name": "CounterAttack",
+        "spellId": 14,
+        "category": "Warrior",
+        "kind": "player",
+        "hasDefaultMagicInfo": true
+      },
+      "status": "needs_semantic_and_behavior_review",
+      "verified": false,
+      "zirconNameMatches": []
+    },
+    {
+      "crystal": {
+        "name": "SlashingBurst",
+        "spellId": 15,
+        "category": "Warrior",
+        "kind": "player",
+        "hasDefaultMagicInfo": true
+      },
+      "status": "needs_semantic_and_behavior_review",
+      "verified": false,
+      "zirconNameMatches": []
+    },
+    {
+      "crystal": {
+        "name": "Fury",
+        "spellId": 16,
+        "category": "Warrior",
+        "kind": "player",
+        "hasDefaultMagicInfo": true
+      },
+      "status": "needs_semantic_and_behavior_review",
+      "verified": false,
+      "zirconNameMatches": []
+    },
+    {
+      "crystal": {
+        "name": "ImmortalSkin",
+        "spellId": 17,
+        "category": "Warrior",
+        "kind": "player",
+        "hasDefaultMagicInfo": true
+      },
+      "status": "needs_semantic_and_behavior_review",
+      "verified": false,
+      "zirconNameMatches": []
+    },
+    {
+      "crystal": {
+        "name": "FireBall",
+        "spellId": 31,
+        "category": "Wizard",
+        "kind": "player",
+        "hasDefaultMagicInfo": true
+      },
+      "status": "name_match_needs_behavior_check",
+      "verified": false,
+      "zirconNameMatches": [
+        {
+          "index": 23,
+          "name": "Fire Ball",
+          "magicTypeNumeric": 201,
+          "classNumeric": 1
+        }
+      ]
+    },
+    {
+      "crystal": {
+        "name": "Repulsion",
+        "spellId": 32,
+        "category": "Wizard",
+        "kind": "player",
+        "hasDefaultMagicInfo": true
+      },
+      "status": "name_match_needs_behavior_check",
+      "verified": false,
+      "zirconNameMatches": [
+        {
+          "index": 27,
+          "name": "Repulsion",
+          "magicTypeNumeric": 205,
+          "classNumeric": 1
+        }
+      ]
+    },
+    {
+      "crystal": {
+        "name": "ElectricShock",
+        "spellId": 33,
+        "category": "Wizard",
+        "kind": "player",
+        "hasDefaultMagicInfo": true
+      },
+      "status": "name_match_needs_behavior_check",
+      "verified": false,
+      "zirconNameMatches": [
+        {
+          "index": 28,
+          "name": "Electric Shock",
+          "magicTypeNumeric": 206,
+          "classNumeric": 1
+        }
+      ]
+    },
+    {
+      "crystal": {
+        "name": "GreatFireBall",
+        "spellId": 34,
+        "category": "Wizard",
+        "kind": "player",
+        "hasDefaultMagicInfo": true
+      },
+      "status": "needs_semantic_and_behavior_review",
+      "verified": false,
+      "zirconNameMatches": []
+    },
+    {
+      "crystal": {
+        "name": "HellFire",
+        "spellId": 35,
+        "category": "Wizard",
+        "kind": "player",
+        "hasDefaultMagicInfo": true
+      },
+      "status": "name_match_needs_behavior_check",
+      "verified": false,
+      "zirconNameMatches": [
+        {
+          "index": 97,
+          "name": "Hell Fire",
+          "magicTypeNumeric": 411,
+          "classNumeric": 3
+        }
+      ]
+    },
+    {
+      "crystal": {
+        "name": "ThunderBolt",
+        "spellId": 36,
+        "category": "Wizard",
+        "kind": "player",
+        "hasDefaultMagicInfo": true
+      },
+      "status": "name_match_needs_behavior_check",
+      "verified": false,
+      "zirconNameMatches": [
+        {
+          "index": 31,
+          "name": "Thunder Bolt",
+          "magicTypeNumeric": 209,
+          "classNumeric": 1
+        }
+      ]
+    },
+    {
+      "crystal": {
+        "name": "Teleport",
+        "spellId": 37,
+        "category": "Wizard",
+        "kind": "player",
+        "hasDefaultMagicInfo": true
+      },
+      "status": "needs_semantic_and_behavior_review",
+      "verified": false,
+      "zirconNameMatches": []
+    },
+    {
+      "crystal": {
+        "name": "FireBang",
+        "spellId": 38,
+        "category": "Wizard",
+        "kind": "player",
+        "hasDefaultMagicInfo": true
+      },
+      "status": "needs_semantic_and_behavior_review",
+      "verified": false,
+      "zirconNameMatches": []
+    },
+    {
+      "crystal": {
+        "name": "FireWall",
+        "spellId": 39,
+        "category": "Wizard",
+        "kind": "player",
+        "hasDefaultMagicInfo": true
+      },
+      "status": "name_match_needs_behavior_check",
+      "verified": false,
+      "zirconNameMatches": [
+        {
+          "index": 38,
+          "name": "Fire Wall",
+          "magicTypeNumeric": 216,
+          "classNumeric": 1
+        }
+      ]
+    },
+    {
+      "crystal": {
+        "name": "Lightning",
+        "spellId": 40,
+        "category": "Wizard",
+        "kind": "player",
+        "hasDefaultMagicInfo": true
+      },
+      "status": "needs_semantic_and_behavior_review",
+      "verified": false,
+      "zirconNameMatches": []
+    },
+    {
+      "crystal": {
+        "name": "FrostCrunch",
+        "spellId": 41,
+        "category": "Wizard",
+        "kind": "player",
+        "hasDefaultMagicInfo": true
+      },
+      "status": "needs_semantic_and_behavior_review",
+      "verified": false,
+      "zirconNameMatches": []
+    },
+    {
+      "crystal": {
+        "name": "ThunderStorm",
+        "spellId": 42,
+        "category": "Wizard",
+        "kind": "player",
+        "hasDefaultMagicInfo": true
+      },
+      "status": "name_match_needs_behavior_check",
+      "verified": false,
+      "zirconNameMatches": [
+        {
+          "index": 52,
+          "name": "Thunder Storm",
+          "magicTypeNumeric": 230,
+          "classNumeric": 1
+        }
+      ]
+    },
+    {
+      "crystal": {
+        "name": "MagicShield",
+        "spellId": 43,
+        "category": "Wizard",
+        "kind": "player",
+        "hasDefaultMagicInfo": true
+      },
+      "status": "name_match_needs_behavior_check",
+      "verified": false,
+      "zirconNameMatches": [
+        {
+          "index": 41,
+          "name": "Magic Shield",
+          "magicTypeNumeric": 219,
+          "classNumeric": 1
+        }
+      ]
+    },
+    {
+      "crystal": {
+        "name": "TurnUndead",
+        "spellId": 44,
+        "category": "Wizard",
+        "kind": "player",
+        "hasDefaultMagicInfo": true
+      },
+      "status": "needs_semantic_and_behavior_review",
+      "verified": false,
+      "zirconNameMatches": []
+    },
+    {
+      "crystal": {
+        "name": "Vampirism",
+        "spellId": 45,
+        "category": "Wizard",
+        "kind": "player",
+        "hasDefaultMagicInfo": true
+      },
+      "status": "needs_semantic_and_behavior_review",
+      "verified": false,
+      "zirconNameMatches": []
+    },
+    {
+      "crystal": {
+        "name": "IceStorm",
+        "spellId": 46,
+        "category": "Wizard",
+        "kind": "player",
+        "hasDefaultMagicInfo": true
+      },
+      "status": "name_match_needs_behavior_check",
+      "verified": false,
+      "zirconNameMatches": [
+        {
+          "index": 44,
+          "name": "Ice Storm",
+          "magicTypeNumeric": 222,
+          "classNumeric": 1
+        }
+      ]
+    },
+    {
+      "crystal": {
+        "name": "FlameDisruptor",
+        "spellId": 47,
+        "category": "Wizard",
+        "kind": "player",
+        "hasDefaultMagicInfo": true
+      },
+      "status": "needs_semantic_and_behavior_review",
+      "verified": false,
+      "zirconNameMatches": []
+    },
+    {
+      "crystal": {
+        "name": "Mirroring",
+        "spellId": 48,
+        "category": "Wizard",
+        "kind": "player",
+        "hasDefaultMagicInfo": true
+      },
+      "status": "needs_semantic_and_behavior_review",
+      "verified": false,
+      "zirconNameMatches": []
+    },
+    {
+      "crystal": {
+        "name": "FlameField",
+        "spellId": 49,
+        "category": "Wizard",
+        "kind": "player",
+        "hasDefaultMagicInfo": true
+      },
+      "status": "needs_semantic_and_behavior_review",
+      "verified": false,
+      "zirconNameMatches": []
+    },
+    {
+      "crystal": {
+        "name": "Blizzard",
+        "spellId": 50,
+        "category": "Wizard",
+        "kind": "player",
+        "hasDefaultMagicInfo": true
+      },
+      "status": "needs_semantic_and_behavior_review",
+      "verified": false,
+      "zirconNameMatches": []
+    },
+    {
+      "crystal": {
+        "name": "MagicBooster",
+        "spellId": 51,
+        "category": "Wizard",
+        "kind": "player",
+        "hasDefaultMagicInfo": true
+      },
+      "status": "needs_semantic_and_behavior_review",
+      "verified": false,
+      "zirconNameMatches": []
+    },
+    {
+      "crystal": {
+        "name": "MeteorStrike",
+        "spellId": 52,
+        "category": "Wizard",
+        "kind": "player",
+        "hasDefaultMagicInfo": true
+      },
+      "status": "needs_semantic_and_behavior_review",
+      "verified": false,
+      "zirconNameMatches": []
+    },
+    {
+      "crystal": {
+        "name": "IceThrust",
+        "spellId": 53,
+        "category": "Wizard",
+        "kind": "player",
+        "hasDefaultMagicInfo": true
+      },
+      "status": "needs_semantic_and_behavior_review",
+      "verified": false,
+      "zirconNameMatches": []
+    },
+    {
+      "crystal": {
+        "name": "FastMove",
+        "spellId": 54,
+        "category": "Wizard",
+        "kind": "player",
+        "hasDefaultMagicInfo": true
+      },
+      "status": "needs_semantic_and_behavior_review",
+      "verified": false,
+      "zirconNameMatches": []
+    },
+    {
+      "crystal": {
+        "name": "StormEscape",
+        "spellId": 55,
+        "category": "Wizard",
+        "kind": "player",
+        "hasDefaultMagicInfo": true
+      },
+      "status": "needs_semantic_and_behavior_review",
+      "verified": false,
+      "zirconNameMatches": []
+    },
+    {
+      "crystal": {
+        "name": "Healing",
+        "spellId": 61,
+        "category": "Taoist",
+        "kind": "player",
+        "hasDefaultMagicInfo": true
+      },
+      "status": "needs_semantic_and_behavior_review",
+      "verified": false,
+      "zirconNameMatches": []
+    },
+    {
+      "crystal": {
+        "name": "SpiritSword",
+        "spellId": 62,
+        "category": "Taoist",
+        "kind": "player",
+        "hasDefaultMagicInfo": true
+      },
+      "status": "name_match_needs_behavior_check",
+      "verified": false,
+      "zirconNameMatches": [
+        {
+          "index": 60,
+          "name": "Spirit Sword",
+          "magicTypeNumeric": 301,
+          "classNumeric": 2
+        }
+      ]
+    },
+    {
+      "crystal": {
+        "name": "Poisoning",
+        "spellId": 63,
+        "category": "Taoist",
+        "kind": "player",
+        "hasDefaultMagicInfo": true
+      },
+      "status": "needs_semantic_and_behavior_review",
+      "verified": false,
+      "zirconNameMatches": []
+    },
+    {
+      "crystal": {
+        "name": "SoulFireBall",
+        "spellId": 64,
+        "category": "Taoist",
+        "kind": "player",
+        "hasDefaultMagicInfo": true
+      },
+      "status": "needs_semantic_and_behavior_review",
+      "verified": false,
+      "zirconNameMatches": []
+    },
+    {
+      "crystal": {
+        "name": "SummonSkeleton",
+        "spellId": 65,
+        "category": "Taoist",
+        "kind": "player",
+        "hasDefaultMagicInfo": true
+      },
+      "status": "name_match_needs_behavior_check",
+      "verified": false,
+      "zirconNameMatches": [
+        {
+          "index": 130,
+          "name": "Summon Skeleton",
+          "magicTypeNumeric": 332,
+          "classNumeric": 2
+        }
+      ]
+    },
+    {
+      "crystal": {
+        "name": "Hiding",
+        "spellId": 67,
+        "category": "Taoist",
+        "kind": "player",
+        "hasDefaultMagicInfo": true
+      },
+      "status": "needs_semantic_and_behavior_review",
+      "verified": false,
+      "zirconNameMatches": []
+    },
+    {
+      "crystal": {
+        "name": "MassHiding",
+        "spellId": 68,
+        "category": "Taoist",
+        "kind": "player",
+        "hasDefaultMagicInfo": true
+      },
+      "status": "needs_semantic_and_behavior_review",
+      "verified": false,
+      "zirconNameMatches": []
+    },
+    {
+      "crystal": {
+        "name": "SoulShield",
+        "spellId": 69,
+        "category": "Taoist",
+        "kind": "player",
+        "hasDefaultMagicInfo": true
+      },
+      "status": "needs_semantic_and_behavior_review",
+      "verified": false,
+      "zirconNameMatches": []
+    },
+    {
+      "crystal": {
+        "name": "Revelation",
+        "spellId": 70,
+        "category": "Taoist",
+        "kind": "player",
+        "hasDefaultMagicInfo": true
+      },
+      "status": "needs_semantic_and_behavior_review",
+      "verified": false,
+      "zirconNameMatches": []
+    },
+    {
+      "crystal": {
+        "name": "BlessedArmour",
+        "spellId": 71,
+        "category": "Taoist",
+        "kind": "player",
+        "hasDefaultMagicInfo": true
+      },
+      "status": "needs_semantic_and_behavior_review",
+      "verified": false,
+      "zirconNameMatches": []
+    },
+    {
+      "crystal": {
+        "name": "EnergyRepulsor",
+        "spellId": 72,
+        "category": "Taoist",
+        "kind": "player",
+        "hasDefaultMagicInfo": true
+      },
+      "status": "needs_semantic_and_behavior_review",
+      "verified": false,
+      "zirconNameMatches": []
+    },
+    {
+      "crystal": {
+        "name": "TrapHexagon",
+        "spellId": 73,
+        "category": "Taoist",
+        "kind": "player",
+        "hasDefaultMagicInfo": true
+      },
+      "status": "needs_semantic_and_behavior_review",
+      "verified": false,
+      "zirconNameMatches": []
+    },
+    {
+      "crystal": {
+        "name": "Purification",
+        "spellId": 74,
+        "category": "Taoist",
+        "kind": "player",
+        "hasDefaultMagicInfo": true
+      },
+      "status": "name_match_needs_behavior_check",
+      "verified": false,
+      "zirconNameMatches": [
+        {
+          "index": 75,
+          "name": "Purification",
+          "magicTypeNumeric": 316,
+          "classNumeric": 2
+        }
+      ]
+    },
+    {
+      "crystal": {
+        "name": "MassHealing",
+        "spellId": 75,
+        "category": "Taoist",
+        "kind": "player",
+        "hasDefaultMagicInfo": true
+      },
+      "status": "needs_semantic_and_behavior_review",
+      "verified": false,
+      "zirconNameMatches": []
+    },
+    {
+      "crystal": {
+        "name": "Hallucination",
+        "spellId": 76,
+        "category": "Taoist",
+        "kind": "player",
+        "hasDefaultMagicInfo": true
+      },
+      "status": "needs_semantic_and_behavior_review",
+      "verified": false,
+      "zirconNameMatches": []
+    },
+    {
+      "crystal": {
+        "name": "UltimateEnhancer",
+        "spellId": 77,
+        "category": "Taoist",
+        "kind": "player",
+        "hasDefaultMagicInfo": true
+      },
+      "status": "needs_semantic_and_behavior_review",
+      "verified": false,
+      "zirconNameMatches": []
+    },
+    {
+      "crystal": {
+        "name": "SummonShinsu",
+        "spellId": 78,
+        "category": "Taoist",
+        "kind": "player",
+        "hasDefaultMagicInfo": true
+      },
+      "status": "name_match_needs_behavior_check",
+      "verified": false,
+      "zirconNameMatches": [
+        {
+          "index": 133,
+          "name": "Summon Shinsu",
+          "magicTypeNumeric": 333,
+          "classNumeric": 2
+        }
+      ]
+    },
+    {
+      "crystal": {
+        "name": "Reincarnation",
+        "spellId": 79,
+        "category": "Taoist",
+        "kind": "player",
+        "hasDefaultMagicInfo": true
+      },
+      "status": "needs_semantic_and_behavior_review",
+      "verified": false,
+      "zirconNameMatches": []
+    },
+    {
+      "crystal": {
+        "name": "SummonHolyDeva",
+        "spellId": 80,
+        "category": "Taoist",
+        "kind": "player",
+        "hasDefaultMagicInfo": true
+      },
+      "status": "needs_semantic_and_behavior_review",
+      "verified": false,
+      "zirconNameMatches": []
+    },
+    {
+      "crystal": {
+        "name": "Curse",
+        "spellId": 81,
+        "category": "Taoist",
+        "kind": "player",
+        "hasDefaultMagicInfo": true
+      },
+      "status": "needs_semantic_and_behavior_review",
+      "verified": false,
+      "zirconNameMatches": []
+    },
+    {
+      "crystal": {
+        "name": "Plague",
+        "spellId": 82,
+        "category": "Taoist",
+        "kind": "player",
+        "hasDefaultMagicInfo": true
+      },
+      "status": "needs_semantic_and_behavior_review",
+      "verified": false,
+      "zirconNameMatches": []
+    },
+    {
+      "crystal": {
+        "name": "PoisonCloud",
+        "spellId": 83,
+        "category": "Taoist",
+        "kind": "player",
+        "hasDefaultMagicInfo": true
+      },
+      "status": "needs_semantic_and_behavior_review",
+      "verified": false,
+      "zirconNameMatches": []
+    },
+    {
+      "crystal": {
+        "name": "EnergyShield",
+        "spellId": 84,
+        "category": "Taoist",
+        "kind": "player",
+        "hasDefaultMagicInfo": true
+      },
+      "status": "needs_semantic_and_behavior_review",
+      "verified": false,
+      "zirconNameMatches": []
+    },
+    {
+      "crystal": {
+        "name": "PetEnhancer",
+        "spellId": 85,
+        "category": "Taoist",
+        "kind": "player",
+        "hasDefaultMagicInfo": true
+      },
+      "status": "needs_semantic_and_behavior_review",
+      "verified": false,
+      "zirconNameMatches": []
+    },
+    {
+      "crystal": {
+        "name": "HealingCircle",
+        "spellId": 86,
+        "category": "Taoist",
+        "kind": "player",
+        "hasDefaultMagicInfo": true
+      },
+      "status": "needs_semantic_and_behavior_review",
+      "verified": false,
+      "zirconNameMatches": []
+    },
+    {
+      "crystal": {
+        "name": "FatalSword",
+        "spellId": 91,
+        "category": "Assassin",
+        "kind": "player",
+        "hasDefaultMagicInfo": true
+      },
+      "status": "needs_semantic_and_behavior_review",
+      "verified": false,
+      "zirconNameMatches": []
+    },
+    {
+      "crystal": {
+        "name": "DoubleSlash",
+        "spellId": 92,
+        "category": "Assassin",
+        "kind": "player",
+        "hasDefaultMagicInfo": true
+      },
+      "status": "needs_semantic_and_behavior_review",
+      "verified": false,
+      "zirconNameMatches": []
+    },
+    {
+      "crystal": {
+        "name": "Haste",
+        "spellId": 93,
+        "category": "Assassin",
+        "kind": "player",
+        "hasDefaultMagicInfo": true
+      },
+      "status": "needs_semantic_and_behavior_review",
+      "verified": false,
+      "zirconNameMatches": []
+    },
+    {
+      "crystal": {
+        "name": "FlashDash",
+        "spellId": 94,
+        "category": "Assassin",
+        "kind": "player",
+        "hasDefaultMagicInfo": true
+      },
+      "status": "needs_semantic_and_behavior_review",
+      "verified": false,
+      "zirconNameMatches": []
+    },
+    {
+      "crystal": {
+        "name": "LightBody",
+        "spellId": 95,
+        "category": "Assassin",
+        "kind": "player",
+        "hasDefaultMagicInfo": true
+      },
+      "status": "needs_semantic_and_behavior_review",
+      "verified": false,
+      "zirconNameMatches": []
+    },
+    {
+      "crystal": {
+        "name": "HeavenlySword",
+        "spellId": 96,
+        "category": "Assassin",
+        "kind": "player",
+        "hasDefaultMagicInfo": true
+      },
+      "status": "needs_semantic_and_behavior_review",
+      "verified": false,
+      "zirconNameMatches": []
+    },
+    {
+      "crystal": {
+        "name": "FireBurst",
+        "spellId": 97,
+        "category": "Assassin",
+        "kind": "player",
+        "hasDefaultMagicInfo": true
+      },
+      "status": "needs_semantic_and_behavior_review",
+      "verified": false,
+      "zirconNameMatches": []
+    },
+    {
+      "crystal": {
+        "name": "Trap",
+        "spellId": 98,
+        "category": "Assassin",
+        "kind": "player",
+        "hasDefaultMagicInfo": true
+      },
+      "status": "needs_semantic_and_behavior_review",
+      "verified": false,
+      "zirconNameMatches": []
+    },
+    {
+      "crystal": {
+        "name": "PoisonSword",
+        "spellId": 99,
+        "category": "Assassin",
+        "kind": "player",
+        "hasDefaultMagicInfo": true
+      },
+      "status": "needs_semantic_and_behavior_review",
+      "verified": false,
+      "zirconNameMatches": []
+    },
+    {
+      "crystal": {
+        "name": "MoonLight",
+        "spellId": 100,
+        "category": "Assassin",
+        "kind": "player",
+        "hasDefaultMagicInfo": true
+      },
+      "status": "needs_semantic_and_behavior_review",
+      "verified": false,
+      "zirconNameMatches": []
+    },
+    {
+      "crystal": {
+        "name": "MPEater",
+        "spellId": 101,
+        "category": "Assassin",
+        "kind": "player",
+        "hasDefaultMagicInfo": true
+      },
+      "status": "needs_semantic_and_behavior_review",
+      "verified": false,
+      "zirconNameMatches": []
+    },
+    {
+      "crystal": {
+        "name": "SwiftFeet",
+        "spellId": 102,
+        "category": "Assassin",
+        "kind": "player",
+        "hasDefaultMagicInfo": true
+      },
+      "status": "needs_semantic_and_behavior_review",
+      "verified": false,
+      "zirconNameMatches": []
+    },
+    {
+      "crystal": {
+        "name": "DarkBody",
+        "spellId": 103,
+        "category": "Assassin",
+        "kind": "player",
+        "hasDefaultMagicInfo": true
+      },
+      "status": "needs_semantic_and_behavior_review",
+      "verified": false,
+      "zirconNameMatches": []
+    },
+    {
+      "crystal": {
+        "name": "Hemorrhage",
+        "spellId": 104,
+        "category": "Assassin",
+        "kind": "player",
+        "hasDefaultMagicInfo": true
+      },
+      "status": "name_match_needs_behavior_check",
+      "verified": false,
+      "zirconNameMatches": [
+        {
+          "index": 172,
+          "name": "Hemorrhage",
+          "magicTypeNumeric": 451,
+          "classNumeric": 3
+        }
+      ]
+    },
+    {
+      "crystal": {
+        "name": "CrescentSlash",
+        "spellId": 105,
+        "category": "Assassin",
+        "kind": "player",
+        "hasDefaultMagicInfo": true
+      },
+      "status": "needs_semantic_and_behavior_review",
+      "verified": false,
+      "zirconNameMatches": []
+    },
+    {
+      "crystal": {
+        "name": "MoonMist",
+        "spellId": 106,
+        "category": "Assassin",
+        "kind": "player",
+        "hasDefaultMagicInfo": true
+      },
+      "status": "needs_semantic_and_behavior_review",
+      "verified": false,
+      "zirconNameMatches": []
+    },
+    {
+      "crystal": {
+        "name": "CatTongue",
+        "spellId": 107,
+        "category": "Assassin",
+        "kind": "player",
+        "hasDefaultMagicInfo": true
+      },
+      "status": "needs_semantic_and_behavior_review",
+      "verified": false,
+      "zirconNameMatches": []
+    },
+    {
+      "crystal": {
+        "name": "Focus",
+        "spellId": 121,
+        "category": "Archer",
+        "kind": "deferred_class",
+        "hasDefaultMagicInfo": true
+      },
+      "status": "deferred_unsupported_class",
+      "verified": false,
+      "zirconNameMatches": []
+    },
+    {
+      "crystal": {
+        "name": "StraightShot",
+        "spellId": 122,
+        "category": "Archer",
+        "kind": "deferred_class",
+        "hasDefaultMagicInfo": true
+      },
+      "status": "deferred_unsupported_class",
+      "verified": false,
+      "zirconNameMatches": []
+    },
+    {
+      "crystal": {
+        "name": "DoubleShot",
+        "spellId": 123,
+        "category": "Archer",
+        "kind": "deferred_class",
+        "hasDefaultMagicInfo": true
+      },
+      "status": "deferred_unsupported_class",
+      "verified": false,
+      "zirconNameMatches": []
+    },
+    {
+      "crystal": {
+        "name": "ExplosiveTrap",
+        "spellId": 124,
+        "category": "Archer",
+        "kind": "deferred_class",
+        "hasDefaultMagicInfo": true
+      },
+      "status": "deferred_unsupported_class",
+      "verified": false,
+      "zirconNameMatches": []
+    },
+    {
+      "crystal": {
+        "name": "DelayedExplosion",
+        "spellId": 125,
+        "category": "Archer",
+        "kind": "deferred_class",
+        "hasDefaultMagicInfo": true
+      },
+      "status": "deferred_unsupported_class",
+      "verified": false,
+      "zirconNameMatches": []
+    },
+    {
+      "crystal": {
+        "name": "Meditation",
+        "spellId": 126,
+        "category": "Archer",
+        "kind": "deferred_class",
+        "hasDefaultMagicInfo": true
+      },
+      "status": "deferred_unsupported_class",
+      "verified": false,
+      "zirconNameMatches": []
+    },
+    {
+      "crystal": {
+        "name": "BackStep",
+        "spellId": 127,
+        "category": "Archer",
+        "kind": "deferred_class",
+        "hasDefaultMagicInfo": true
+      },
+      "status": "deferred_unsupported_class",
+      "verified": false,
+      "zirconNameMatches": []
+    },
+    {
+      "crystal": {
+        "name": "ElementalShot",
+        "spellId": 128,
+        "category": "Archer",
+        "kind": "deferred_class",
+        "hasDefaultMagicInfo": true
+      },
+      "status": "deferred_unsupported_class",
+      "verified": false,
+      "zirconNameMatches": []
+    },
+    {
+      "crystal": {
+        "name": "Concentration",
+        "spellId": 129,
+        "category": "Archer",
+        "kind": "deferred_class",
+        "hasDefaultMagicInfo": true
+      },
+      "status": "deferred_unsupported_class",
+      "verified": false,
+      "zirconNameMatches": [
+        {
+          "index": 168,
+          "name": "Concentration",
+          "magicTypeNumeric": 447,
+          "classNumeric": 3
+        }
+      ]
+    },
+    {
+      "crystal": {
+        "name": "Stonetrap",
+        "spellId": 130,
+        "category": "Archer",
+        "kind": "deferred_class",
+        "hasDefaultMagicInfo": true
+      },
+      "status": "deferred_unsupported_class",
+      "verified": false,
+      "zirconNameMatches": []
+    },
+    {
+      "crystal": {
+        "name": "ElementalBarrier",
+        "spellId": 131,
+        "category": "Archer",
+        "kind": "deferred_class",
+        "hasDefaultMagicInfo": true
+      },
+      "status": "deferred_unsupported_class",
+      "verified": false,
+      "zirconNameMatches": []
+    },
+    {
+      "crystal": {
+        "name": "SummonVampire",
+        "spellId": 132,
+        "category": "Archer",
+        "kind": "deferred_class",
+        "hasDefaultMagicInfo": true
+      },
+      "status": "deferred_unsupported_class",
+      "verified": false,
+      "zirconNameMatches": []
+    },
+    {
+      "crystal": {
+        "name": "VampireShot",
+        "spellId": 133,
+        "category": "Archer",
+        "kind": "deferred_class",
+        "hasDefaultMagicInfo": true
+      },
+      "status": "deferred_unsupported_class",
+      "verified": false,
+      "zirconNameMatches": []
+    },
+    {
+      "crystal": {
+        "name": "SummonToad",
+        "spellId": 134,
+        "category": "Archer",
+        "kind": "deferred_class",
+        "hasDefaultMagicInfo": true
+      },
+      "status": "deferred_unsupported_class",
+      "verified": false,
+      "zirconNameMatches": []
+    },
+    {
+      "crystal": {
+        "name": "PoisonShot",
+        "spellId": 135,
+        "category": "Archer",
+        "kind": "deferred_class",
+        "hasDefaultMagicInfo": true
+      },
+      "status": "deferred_unsupported_class",
+      "verified": false,
+      "zirconNameMatches": []
+    },
+    {
+      "crystal": {
+        "name": "CrippleShot",
+        "spellId": 136,
+        "category": "Archer",
+        "kind": "deferred_class",
+        "hasDefaultMagicInfo": true
+      },
+      "status": "deferred_unsupported_class",
+      "verified": false,
+      "zirconNameMatches": []
+    },
+    {
+      "crystal": {
+        "name": "SummonSnakes",
+        "spellId": 137,
+        "category": "Archer",
+        "kind": "deferred_class",
+        "hasDefaultMagicInfo": true
+      },
+      "status": "deferred_unsupported_class",
+      "verified": false,
+      "zirconNameMatches": []
+    },
+    {
+      "crystal": {
+        "name": "NapalmShot",
+        "spellId": 138,
+        "category": "Archer",
+        "kind": "deferred_class",
+        "hasDefaultMagicInfo": true
+      },
+      "status": "deferred_unsupported_class",
+      "verified": false,
+      "zirconNameMatches": []
+    },
+    {
+      "crystal": {
+        "name": "OneWithNature",
+        "spellId": 139,
+        "category": "Archer",
+        "kind": "deferred_class",
+        "hasDefaultMagicInfo": true
+      },
+      "status": "deferred_unsupported_class",
+      "verified": false,
+      "zirconNameMatches": []
+    },
+    {
+      "crystal": {
+        "name": "BindingShot",
+        "spellId": 140,
+        "category": "Archer",
+        "kind": "deferred_class",
+        "hasDefaultMagicInfo": true
+      },
+      "status": "deferred_unsupported_class",
+      "verified": false,
+      "zirconNameMatches": []
+    },
+    {
+      "crystal": {
+        "name": "MentalState",
+        "spellId": 141,
+        "category": "Archer",
+        "kind": "deferred_class",
+        "hasDefaultMagicInfo": true
+      },
+      "status": "deferred_unsupported_class",
+      "verified": false,
+      "zirconNameMatches": []
+    },
+    {
+      "crystal": {
+        "name": "Blink",
+        "spellId": 151,
+        "category": "Custom",
+        "kind": "custom_player_candidate",
+        "hasDefaultMagicInfo": true
+      },
+      "status": "needs_semantic_and_behavior_review",
+      "verified": false,
+      "zirconNameMatches": []
+    },
+    {
+      "crystal": {
+        "name": "Portal",
+        "spellId": 152,
+        "category": "Custom",
+        "kind": "custom_player_candidate",
+        "hasDefaultMagicInfo": true
+      },
+      "status": "needs_semantic_and_behavior_review",
+      "verified": false,
+      "zirconNameMatches": []
+    },
+    {
+      "crystal": {
+        "name": "BattleCry",
+        "spellId": 153,
+        "category": "Custom",
+        "kind": "custom_player_candidate",
+        "hasDefaultMagicInfo": true
+      },
+      "status": "needs_semantic_and_behavior_review",
+      "verified": false,
+      "zirconNameMatches": []
+    },
+    {
+      "crystal": {
+        "name": "FireBounce",
+        "spellId": 154,
+        "category": "Custom",
+        "kind": "custom_player_candidate",
+        "hasDefaultMagicInfo": true
+      },
+      "status": "name_match_needs_behavior_check",
+      "verified": false,
+      "zirconNameMatches": [
+        {
+          "index": 53,
+          "name": "Fire Bounce",
+          "magicTypeNumeric": 231,
+          "classNumeric": 1
+        }
+      ]
+    },
+    {
+      "crystal": {
+        "name": "MeteorShower",
+        "spellId": 155,
+        "category": "Custom",
+        "kind": "custom_player_candidate",
+        "hasDefaultMagicInfo": true
+      },
+      "status": "name_match_needs_behavior_check",
+      "verified": false,
+      "zirconNameMatches": [
+        {
+          "index": 48,
+          "name": "Meteor Shower",
+          "magicTypeNumeric": 226,
+          "classNumeric": 1
+        }
+      ]
+    },
+    {
+      "crystal": {
+        "name": "DigOutZombie",
+        "spellId": 200,
+        "category": "MapEvent",
+        "kind": "map_event",
+        "hasDefaultMagicInfo": false
+      },
+      "status": "excluded_map_event",
+      "verified": false,
+      "zirconNameMatches": []
+    },
+    {
+      "crystal": {
+        "name": "Rubble",
+        "spellId": 201,
+        "category": "MapEvent",
+        "kind": "map_event",
+        "hasDefaultMagicInfo": false
+      },
+      "status": "excluded_map_event",
+      "verified": false,
+      "zirconNameMatches": []
+    },
+    {
+      "crystal": {
+        "name": "MapLightning",
+        "spellId": 202,
+        "category": "MapEvent",
+        "kind": "map_event",
+        "hasDefaultMagicInfo": false
+      },
+      "status": "excluded_map_event",
+      "verified": false,
+      "zirconNameMatches": []
+    },
+    {
+      "crystal": {
+        "name": "MapLava",
+        "spellId": 203,
+        "category": "MapEvent",
+        "kind": "map_event",
+        "hasDefaultMagicInfo": false
+      },
+      "status": "excluded_map_event",
+      "verified": false,
+      "zirconNameMatches": []
+    },
+    {
+      "crystal": {
+        "name": "MapQuake1",
+        "spellId": 204,
+        "category": "MapEvent",
+        "kind": "map_event",
+        "hasDefaultMagicInfo": false
+      },
+      "status": "excluded_map_event",
+      "verified": false,
+      "zirconNameMatches": []
+    },
+    {
+      "crystal": {
+        "name": "MapQuake2",
+        "spellId": 205,
+        "category": "MapEvent",
+        "kind": "map_event",
+        "hasDefaultMagicInfo": false
+      },
+      "status": "excluded_map_event",
+      "verified": false,
+      "zirconNameMatches": []
+    },
+    {
+      "crystal": {
+        "name": "DigOutArmadillo",
+        "spellId": 206,
+        "category": "MapEvent",
+        "kind": "map_event",
+        "hasDefaultMagicInfo": false
+      },
+      "status": "excluded_map_event",
+      "verified": false,
+      "zirconNameMatches": []
+    },
+    {
+      "crystal": {
+        "name": "GeneralMeowMeowThunder",
+        "spellId": 207,
+        "category": "MapEvent",
+        "kind": "map_event",
+        "hasDefaultMagicInfo": false
+      },
+      "status": "excluded_map_event",
+      "verified": false,
+      "zirconNameMatches": []
+    },
+    {
+      "crystal": {
+        "name": "StoneGolemQuake",
+        "spellId": 208,
+        "category": "MapEvent",
+        "kind": "map_event",
+        "hasDefaultMagicInfo": false
+      },
+      "status": "excluded_map_event",
+      "verified": false,
+      "zirconNameMatches": []
+    },
+    {
+      "crystal": {
+        "name": "EarthGolemPile",
+        "spellId": 209,
+        "category": "MapEvent",
+        "kind": "map_event",
+        "hasDefaultMagicInfo": false
+      },
+      "status": "excluded_map_event",
+      "verified": false,
+      "zirconNameMatches": []
+    },
+    {
+      "crystal": {
+        "name": "TreeQueenRoot",
+        "spellId": 210,
+        "category": "MapEvent",
+        "kind": "map_event",
+        "hasDefaultMagicInfo": false
+      },
+      "status": "excluded_map_event",
+      "verified": false,
+      "zirconNameMatches": []
+    },
+    {
+      "crystal": {
+        "name": "TreeQueenMassRoots",
+        "spellId": 211,
+        "category": "MapEvent",
+        "kind": "map_event",
+        "hasDefaultMagicInfo": false
+      },
+      "status": "excluded_map_event",
+      "verified": false,
+      "zirconNameMatches": []
+    },
+    {
+      "crystal": {
+        "name": "TreeQueenGroundRoots",
+        "spellId": 212,
+        "category": "MapEvent",
+        "kind": "map_event",
+        "hasDefaultMagicInfo": false
+      },
+      "status": "excluded_map_event",
+      "verified": false,
+      "zirconNameMatches": []
+    },
+    {
+      "crystal": {
+        "name": "TucsonGeneralRock",
+        "spellId": 213,
+        "category": "MapEvent",
+        "kind": "map_event",
+        "hasDefaultMagicInfo": false
+      },
+      "status": "excluded_map_event",
+      "verified": false,
+      "zirconNameMatches": []
+    },
+    {
+      "crystal": {
+        "name": "FlyingStatueIceTornado",
+        "spellId": 214,
+        "category": "MapEvent",
+        "kind": "map_event",
+        "hasDefaultMagicInfo": false
+      },
+      "status": "excluded_map_event",
+      "verified": false,
+      "zirconNameMatches": []
+    },
+    {
+      "crystal": {
+        "name": "DarkOmaKingNuke",
+        "spellId": 215,
+        "category": "MapEvent",
+        "kind": "map_event",
+        "hasDefaultMagicInfo": false
+      },
+      "status": "excluded_map_event",
+      "verified": false,
+      "zirconNameMatches": []
+    },
+    {
+      "crystal": {
+        "name": "HornedSorcererDustTornado",
+        "spellId": 216,
+        "category": "MapEvent",
+        "kind": "map_event",
+        "hasDefaultMagicInfo": false
+      },
+      "status": "excluded_map_event",
+      "verified": false,
+      "zirconNameMatches": []
+    },
+    {
+      "crystal": {
+        "name": "HornedCommanderRockFall",
+        "spellId": 217,
+        "category": "MapEvent",
+        "kind": "map_event",
+        "hasDefaultMagicInfo": false
+      },
+      "status": "excluded_map_event",
+      "verified": false,
+      "zirconNameMatches": []
+    },
+    {
+      "crystal": {
+        "name": "HornedCommanderRockSpike",
+        "spellId": 218,
+        "category": "MapEvent",
+        "kind": "map_event",
+        "hasDefaultMagicInfo": false
+      },
+      "status": "excluded_map_event",
+      "verified": false,
+      "zirconNameMatches": []
+    }
+  ]
+}

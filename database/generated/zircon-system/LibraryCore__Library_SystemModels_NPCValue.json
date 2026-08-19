@@ -1,0 +1,32 @@
+[
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCValue",
+    "DataCategory": "",
+    "DataType": 0,
+    "FieldType": 100,
+    "Index": 1,
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 334
+    },
+    "ValueID": 1,
+    "ValueType": 3
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCValue",
+    "DataCategory": "",
+    "DataType": 0,
+    "FieldType": 1,
+    "Index": 2,
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 334
+    },
+    "ValueID": 2,
+    "ValueType": 3
+  }
+]

@@ -1,0 +1,2009 @@
+{
+  "schemaVersion": 2,
+  "sourceCatalogCommit": "0e315fe327192afe52c3d7357ddd1f5b7e26c5b8",
+  "jevDatabaseCommit": "a19f6dca8f5e238d4ed79801820777abbf0a9ca4",
+  "jevDatabaseVersion": 111,
+  "policy": {
+    "joinKey": "normalized spell name",
+    "numericSpellIdUsedAsJoinKey": false,
+    "unresolvedSourceExpressionCountsAsOverride": false,
+    "legacyUnknownNameAutoImported": false
+  },
+  "counts": {
+    "effectiveJevSpells": 111,
+    "jevOverridesSourceDefaults": 41,
+    "jevOnlyUnknownName": 2,
+    "legacyIdMismatches": 2,
+    "spellsWithUnresolvedSourceFields": 0,
+    "unresolvedSourceFieldCount": 0
+  },
+  "entries": [
+    {
+      "crystalName": "Fencing",
+      "sourceSpellId": 1,
+      "jevName": "Fencing",
+      "jevSpellId": 1,
+      "legacyIdMismatch": false,
+      "category": "Warrior",
+      "kind": "player",
+      "status": "jev_matches_source_defaults",
+      "differences": {},
+      "unresolvedSourceFields": []
+    },
+    {
+      "crystalName": "Slaying",
+      "sourceSpellId": 2,
+      "jevName": "Slaying",
+      "jevSpellId": 2,
+      "legacyIdMismatch": false,
+      "category": "Warrior",
+      "kind": "player",
+      "status": "jev_matches_source_defaults",
+      "differences": {},
+      "unresolvedSourceFields": []
+    },
+    {
+      "crystalName": "Thrusting",
+      "sourceSpellId": 3,
+      "jevName": "Thrusting",
+      "jevSpellId": 3,
+      "legacyIdMismatch": false,
+      "category": "Warrior",
+      "kind": "player",
+      "status": "jev_matches_source_defaults",
+      "differences": {},
+      "unresolvedSourceFields": []
+    },
+    {
+      "crystalName": "HalfMoon",
+      "sourceSpellId": 4,
+      "jevName": "HalfMoon",
+      "jevSpellId": 4,
+      "legacyIdMismatch": false,
+      "category": "Warrior",
+      "kind": "player",
+      "status": "jev_matches_source_defaults",
+      "differences": {},
+      "unresolvedSourceFields": []
+    },
+    {
+      "crystalName": "ShoulderDash",
+      "sourceSpellId": 5,
+      "jevName": "ShoulderDash",
+      "jevSpellId": 5,
+      "legacyIdMismatch": false,
+      "category": "Warrior",
+      "kind": "player",
+      "status": "jev_matches_source_defaults",
+      "differences": {},
+      "unresolvedSourceFields": []
+    },
+    {
+      "crystalName": "TwinDrakeBlade",
+      "sourceSpellId": 6,
+      "jevName": "TwinDrakeBlade",
+      "jevSpellId": 6,
+      "legacyIdMismatch": false,
+      "category": "Warrior",
+      "kind": "player",
+      "status": "jev_matches_source_defaults",
+      "differences": {},
+      "unresolvedSourceFields": []
+    },
+    {
+      "crystalName": "Entrapment",
+      "sourceSpellId": 7,
+      "jevName": "Entrapment",
+      "jevSpellId": 7,
+      "legacyIdMismatch": false,
+      "category": "Warrior",
+      "kind": "player",
+      "status": "jev_matches_source_defaults",
+      "differences": {},
+      "unresolvedSourceFields": []
+    },
+    {
+      "crystalName": "FlamingSword",
+      "sourceSpellId": 8,
+      "jevName": "FlamingSword",
+      "jevSpellId": 8,
+      "legacyIdMismatch": false,
+      "category": "Warrior",
+      "kind": "player",
+      "status": "jev_matches_source_defaults",
+      "differences": {},
+      "unresolvedSourceFields": []
+    },
+    {
+      "crystalName": "LionRoar",
+      "sourceSpellId": 9,
+      "jevName": "LionRoar",
+      "jevSpellId": 9,
+      "legacyIdMismatch": false,
+      "category": "Warrior",
+      "kind": "player",
+      "status": "jev_overrides_source_defaults",
+      "differences": {
+        "Range": {
+          "sourceEffectiveDefault": 0,
+          "jevEffective": 9
+        }
+      },
+      "unresolvedSourceFields": []
+    },
+    {
+      "crystalName": "CrossHalfMoon",
+      "sourceSpellId": 10,
+      "jevName": "CrossHalfMoon",
+      "jevSpellId": 10,
+      "legacyIdMismatch": false,
+      "category": "Warrior",
+      "kind": "player",
+      "status": "jev_matches_source_defaults",
+      "differences": {},
+      "unresolvedSourceFields": []
+    },
+    {
+      "crystalName": "BladeAvalanche",
+      "sourceSpellId": 11,
+      "jevName": "BladeAvalanche",
+      "jevSpellId": 11,
+      "legacyIdMismatch": false,
+      "category": "Warrior",
+      "kind": "player",
+      "status": "jev_overrides_source_defaults",
+      "differences": {
+        "Icon": {
+          "sourceEffectiveDefault": 43,
+          "jevEffective": 71
+        },
+        "Range": {
+          "sourceEffectiveDefault": 0,
+          "jevEffective": 9
+        }
+      },
+      "unresolvedSourceFields": []
+    },
+    {
+      "crystalName": "ProtectionField",
+      "sourceSpellId": 12,
+      "jevName": "ProtectionField",
+      "jevSpellId": 12,
+      "legacyIdMismatch": false,
+      "category": "Warrior",
+      "kind": "player",
+      "status": "jev_matches_source_defaults",
+      "differences": {},
+      "unresolvedSourceFields": []
+    },
+    {
+      "crystalName": "Rage",
+      "sourceSpellId": 13,
+      "jevName": "Rage",
+      "jevSpellId": 13,
+      "legacyIdMismatch": false,
+      "category": "Warrior",
+      "kind": "player",
+      "status": "jev_matches_source_defaults",
+      "differences": {},
+      "unresolvedSourceFields": []
+    },
+    {
+      "crystalName": "CounterAttack",
+      "sourceSpellId": 14,
+      "jevName": "CounterAttack",
+      "jevSpellId": 14,
+      "legacyIdMismatch": false,
+      "category": "Warrior",
+      "kind": "player",
+      "status": "jev_overrides_source_defaults",
+      "differences": {
+        "MultiplierBonus": {
+          "sourceEffectiveDefault": 0.4,
+          "jevEffective": 0
+        }
+      },
+      "unresolvedSourceFields": []
+    },
+    {
+      "crystalName": "SlashingBurst",
+      "sourceSpellId": 15,
+      "jevName": "SlashingBurst",
+      "jevSpellId": 15,
+      "legacyIdMismatch": false,
+      "category": "Warrior",
+      "kind": "player",
+      "status": "jev_matches_source_defaults",
+      "differences": {},
+      "unresolvedSourceFields": []
+    },
+    {
+      "crystalName": "Fury",
+      "sourceSpellId": 16,
+      "jevName": "Fury",
+      "jevSpellId": 16,
+      "legacyIdMismatch": false,
+      "category": "Warrior",
+      "kind": "player",
+      "status": "jev_overrides_source_defaults",
+      "differences": {
+        "Need1": {
+          "sourceEffectiveDefault": 8000,
+          "jevEffective": 1500
+        },
+        "Need2": {
+          "sourceEffectiveDefault": 14000,
+          "jevEffective": 2500
+        },
+        "Need3": {
+          "sourceEffectiveDefault": 20000,
+          "jevEffective": 4000
+        }
+      },
+      "unresolvedSourceFields": []
+    },
+    {
+      "crystalName": "ImmortalSkin",
+      "sourceSpellId": 17,
+      "jevName": "ImmortalSkin",
+      "jevSpellId": 17,
+      "legacyIdMismatch": false,
+      "category": "Warrior",
+      "kind": "player",
+      "status": "jev_matches_source_defaults",
+      "differences": {},
+      "unresolvedSourceFields": []
+    },
+    {
+      "crystalName": "FireBall",
+      "sourceSpellId": 31,
+      "jevName": "FireBall",
+      "jevSpellId": 31,
+      "legacyIdMismatch": false,
+      "category": "Wizard",
+      "kind": "player",
+      "status": "jev_matches_source_defaults",
+      "differences": {},
+      "unresolvedSourceFields": []
+    },
+    {
+      "crystalName": "Repulsion",
+      "sourceSpellId": 32,
+      "jevName": "Repulsion",
+      "jevSpellId": 32,
+      "legacyIdMismatch": false,
+      "category": "Wizard",
+      "kind": "player",
+      "status": "jev_matches_source_defaults",
+      "differences": {},
+      "unresolvedSourceFields": []
+    },
+    {
+      "crystalName": "ElectricShock",
+      "sourceSpellId": 33,
+      "jevName": "ElectricShock",
+      "jevSpellId": 33,
+      "legacyIdMismatch": false,
+      "category": "Wizard",
+      "kind": "player",
+      "status": "jev_matches_source_defaults",
+      "differences": {},
+      "unresolvedSourceFields": []
+    },
+    {
+      "crystalName": "GreatFireBall",
+      "sourceSpellId": 34,
+      "jevName": "GreatFireBall",
+      "jevSpellId": 34,
+      "legacyIdMismatch": false,
+      "category": "Wizard",
+      "kind": "player",
+      "status": "jev_matches_source_defaults",
+      "differences": {},
+      "unresolvedSourceFields": []
+    },
+    {
+      "crystalName": "HellFire",
+      "sourceSpellId": 35,
+      "jevName": "HellFire",
+      "jevSpellId": 35,
+      "legacyIdMismatch": false,
+      "category": "Wizard",
+      "kind": "player",
+      "status": "jev_matches_source_defaults",
+      "differences": {},
+      "unresolvedSourceFields": []
+    },
+    {
+      "crystalName": "ThunderBolt",
+      "sourceSpellId": 36,
+      "jevName": "ThunderBolt",
+      "jevSpellId": 36,
+      "legacyIdMismatch": false,
+      "category": "Wizard",
+      "kind": "player",
+      "status": "jev_matches_source_defaults",
+      "differences": {},
+      "unresolvedSourceFields": []
+    },
+    {
+      "crystalName": "Teleport",
+      "sourceSpellId": 37,
+      "jevName": "Teleport",
+      "jevSpellId": 37,
+      "legacyIdMismatch": false,
+      "category": "Wizard",
+      "kind": "player",
+      "status": "jev_matches_source_defaults",
+      "differences": {},
+      "unresolvedSourceFields": []
+    },
+    {
+      "crystalName": "FireBang",
+      "sourceSpellId": 38,
+      "jevName": "FireBang",
+      "jevSpellId": 38,
+      "legacyIdMismatch": false,
+      "category": "Wizard",
+      "kind": "player",
+      "status": "jev_matches_source_defaults",
+      "differences": {},
+      "unresolvedSourceFields": []
+    },
+    {
+      "crystalName": "FireWall",
+      "sourceSpellId": 39,
+      "jevName": "FireWall",
+      "jevSpellId": 39,
+      "legacyIdMismatch": false,
+      "category": "Wizard",
+      "kind": "player",
+      "status": "jev_matches_source_defaults",
+      "differences": {},
+      "unresolvedSourceFields": []
+    },
+    {
+      "crystalName": "Lightning",
+      "sourceSpellId": 40,
+      "jevName": "Lightning",
+      "jevSpellId": 40,
+      "legacyIdMismatch": false,
+      "category": "Wizard",
+      "kind": "player",
+      "status": "jev_matches_source_defaults",
+      "differences": {},
+      "unresolvedSourceFields": []
+    },
+    {
+      "crystalName": "FrostCrunch",
+      "sourceSpellId": 41,
+      "jevName": "FrostCrunch",
+      "jevSpellId": 41,
+      "legacyIdMismatch": false,
+      "category": "Wizard",
+      "kind": "player",
+      "status": "jev_matches_source_defaults",
+      "differences": {},
+      "unresolvedSourceFields": []
+    },
+    {
+      "crystalName": "ThunderStorm",
+      "sourceSpellId": 42,
+      "jevName": "ThunderStorm",
+      "jevSpellId": 42,
+      "legacyIdMismatch": false,
+      "category": "Wizard",
+      "kind": "player",
+      "status": "jev_matches_source_defaults",
+      "differences": {},
+      "unresolvedSourceFields": []
+    },
+    {
+      "crystalName": "MagicShield",
+      "sourceSpellId": 43,
+      "jevName": "MagicShield",
+      "jevSpellId": 43,
+      "legacyIdMismatch": false,
+      "category": "Wizard",
+      "kind": "player",
+      "status": "jev_matches_source_defaults",
+      "differences": {},
+      "unresolvedSourceFields": []
+    },
+    {
+      "crystalName": "TurnUndead",
+      "sourceSpellId": 44,
+      "jevName": "TurnUndead",
+      "jevSpellId": 44,
+      "legacyIdMismatch": false,
+      "category": "Wizard",
+      "kind": "player",
+      "status": "jev_matches_source_defaults",
+      "differences": {},
+      "unresolvedSourceFields": []
+    },
+    {
+      "crystalName": "Vampirism",
+      "sourceSpellId": 45,
+      "jevName": "Vampirism",
+      "jevSpellId": 45,
+      "legacyIdMismatch": false,
+      "category": "Wizard",
+      "kind": "player",
+      "status": "jev_matches_source_defaults",
+      "differences": {},
+      "unresolvedSourceFields": []
+    },
+    {
+      "crystalName": "IceStorm",
+      "sourceSpellId": 46,
+      "jevName": "IceStorm",
+      "jevSpellId": 46,
+      "legacyIdMismatch": false,
+      "category": "Wizard",
+      "kind": "player",
+      "status": "jev_matches_source_defaults",
+      "differences": {},
+      "unresolvedSourceFields": []
+    },
+    {
+      "crystalName": "FlameDisruptor",
+      "sourceSpellId": 47,
+      "jevName": "FlameDisruptor",
+      "jevSpellId": 47,
+      "legacyIdMismatch": false,
+      "category": "Wizard",
+      "kind": "player",
+      "status": "jev_matches_source_defaults",
+      "differences": {},
+      "unresolvedSourceFields": []
+    },
+    {
+      "crystalName": "Mirroring",
+      "sourceSpellId": 48,
+      "jevName": "Mirroring",
+      "jevSpellId": 48,
+      "legacyIdMismatch": false,
+      "category": "Wizard",
+      "kind": "player",
+      "status": "jev_matches_source_defaults",
+      "differences": {},
+      "unresolvedSourceFields": []
+    },
+    {
+      "crystalName": "FlameField",
+      "sourceSpellId": 49,
+      "jevName": "FlameField",
+      "jevSpellId": 49,
+      "legacyIdMismatch": false,
+      "category": "Wizard",
+      "kind": "player",
+      "status": "jev_overrides_source_defaults",
+      "differences": {
+        "Range": {
+          "sourceEffectiveDefault": 9,
+          "jevEffective": 0
+        }
+      },
+      "unresolvedSourceFields": []
+    },
+    {
+      "crystalName": "Blizzard",
+      "sourceSpellId": 50,
+      "jevName": "Blizzard",
+      "jevSpellId": 50,
+      "legacyIdMismatch": false,
+      "category": "Wizard",
+      "kind": "player",
+      "status": "jev_matches_source_defaults",
+      "differences": {},
+      "unresolvedSourceFields": []
+    },
+    {
+      "crystalName": "MagicBooster",
+      "sourceSpellId": 51,
+      "jevName": "MagicBooster",
+      "jevSpellId": 51,
+      "legacyIdMismatch": false,
+      "category": "Wizard",
+      "kind": "player",
+      "status": "jev_overrides_source_defaults",
+      "differences": {
+        "Level2": {
+          "sourceEffectiveDefault": 49,
+          "jevEffective": 51
+        },
+        "Level3": {
+          "sourceEffectiveDefault": 52,
+          "jevEffective": 55
+        }
+      },
+      "unresolvedSourceFields": []
+    },
+    {
+      "crystalName": "MeteorStrike",
+      "sourceSpellId": 52,
+      "jevName": "MeteorStrike",
+      "jevSpellId": 52,
+      "legacyIdMismatch": false,
+      "category": "Wizard",
+      "kind": "player",
+      "status": "jev_matches_source_defaults",
+      "differences": {},
+      "unresolvedSourceFields": []
+    },
+    {
+      "crystalName": "IceThrust",
+      "sourceSpellId": 53,
+      "jevName": "IceThrust",
+      "jevSpellId": 53,
+      "legacyIdMismatch": false,
+      "category": "Wizard",
+      "kind": "player",
+      "status": "jev_matches_source_defaults",
+      "differences": {},
+      "unresolvedSourceFields": []
+    },
+    {
+      "crystalName": "Blink",
+      "sourceSpellId": 151,
+      "jevName": "Blink",
+      "jevSpellId": 54,
+      "legacyIdMismatch": true,
+      "category": "Custom",
+      "kind": "custom_player_candidate",
+      "status": "jev_overrides_source_defaults",
+      "differences": {
+        "Range": {
+          "sourceEffectiveDefault": 9,
+          "jevEffective": 0
+        }
+      },
+      "unresolvedSourceFields": []
+    },
+    {
+      "crystalName": "StormEscape",
+      "sourceSpellId": 55,
+      "jevName": "StormEscape",
+      "jevSpellId": 55,
+      "legacyIdMismatch": false,
+      "category": "Wizard",
+      "kind": "player",
+      "status": "jev_overrides_source_defaults",
+      "differences": {
+        "PowerBonus": {
+          "sourceEffectiveDefault": 0,
+          "jevEffective": 4
+        }
+      },
+      "unresolvedSourceFields": []
+    },
+    {
+      "crystalName": "Healing",
+      "sourceSpellId": 61,
+      "jevName": "Healing",
+      "jevSpellId": 61,
+      "legacyIdMismatch": false,
+      "category": "Taoist",
+      "kind": "player",
+      "status": "jev_overrides_source_defaults",
+      "differences": {
+        "Level3": {
+          "sourceEffectiveDefault": 14,
+          "jevEffective": 16
+        }
+      },
+      "unresolvedSourceFields": []
+    },
+    {
+      "crystalName": "SpiritSword",
+      "sourceSpellId": 62,
+      "jevName": "SpiritSword",
+      "jevSpellId": 62,
+      "legacyIdMismatch": false,
+      "category": "Taoist",
+      "kind": "player",
+      "status": "jev_overrides_source_defaults",
+      "differences": {
+        "Range": {
+          "sourceEffectiveDefault": 0,
+          "jevEffective": 9
+        }
+      },
+      "unresolvedSourceFields": []
+    },
+    {
+      "crystalName": "Poisoning",
+      "sourceSpellId": 63,
+      "jevName": "Poisoning",
+      "jevSpellId": 63,
+      "legacyIdMismatch": false,
+      "category": "Taoist",
+      "kind": "player",
+      "status": "jev_matches_source_defaults",
+      "differences": {},
+      "unresolvedSourceFields": []
+    },
+    {
+      "crystalName": "SoulFireBall",
+      "sourceSpellId": 64,
+      "jevName": "SoulFireBall",
+      "jevSpellId": 64,
+      "legacyIdMismatch": false,
+      "category": "Taoist",
+      "kind": "player",
+      "status": "jev_matches_source_defaults",
+      "differences": {},
+      "unresolvedSourceFields": []
+    },
+    {
+      "crystalName": "SummonSkeleton",
+      "sourceSpellId": 65,
+      "jevName": "SummonSkeleton",
+      "jevSpellId": 65,
+      "legacyIdMismatch": false,
+      "category": "Taoist",
+      "kind": "player",
+      "status": "jev_matches_source_defaults",
+      "differences": {},
+      "unresolvedSourceFields": []
+    },
+    {
+      "crystalName": "Hiding",
+      "sourceSpellId": 67,
+      "jevName": "Hiding",
+      "jevSpellId": 67,
+      "legacyIdMismatch": false,
+      "category": "Taoist",
+      "kind": "player",
+      "status": "jev_overrides_source_defaults",
+      "differences": {
+        "Range": {
+          "sourceEffectiveDefault": 0,
+          "jevEffective": 9
+        }
+      },
+      "unresolvedSourceFields": []
+    },
+    {
+      "crystalName": "MassHiding",
+      "sourceSpellId": 68,
+      "jevName": "MassHiding",
+      "jevSpellId": 68,
+      "legacyIdMismatch": false,
+      "category": "Taoist",
+      "kind": "player",
+      "status": "jev_matches_source_defaults",
+      "differences": {},
+      "unresolvedSourceFields": []
+    },
+    {
+      "crystalName": "SoulShield",
+      "sourceSpellId": 69,
+      "jevName": "SoulShield",
+      "jevSpellId": 69,
+      "legacyIdMismatch": false,
+      "category": "Taoist",
+      "kind": "player",
+      "status": "jev_matches_source_defaults",
+      "differences": {},
+      "unresolvedSourceFields": []
+    },
+    {
+      "crystalName": "Revelation",
+      "sourceSpellId": 70,
+      "jevName": "Revelation",
+      "jevSpellId": 70,
+      "legacyIdMismatch": false,
+      "category": "Taoist",
+      "kind": "player",
+      "status": "jev_matches_source_defaults",
+      "differences": {},
+      "unresolvedSourceFields": []
+    },
+    {
+      "crystalName": "BlessedArmour",
+      "sourceSpellId": 71,
+      "jevName": "BlessedArmour",
+      "jevSpellId": 71,
+      "legacyIdMismatch": false,
+      "category": "Taoist",
+      "kind": "player",
+      "status": "jev_matches_source_defaults",
+      "differences": {},
+      "unresolvedSourceFields": []
+    },
+    {
+      "crystalName": "EnergyRepulsor",
+      "sourceSpellId": 72,
+      "jevName": "EnergyRepulsor",
+      "jevSpellId": 72,
+      "legacyIdMismatch": false,
+      "category": "Taoist",
+      "kind": "player",
+      "status": "jev_overrides_source_defaults",
+      "differences": {
+        "MPowerBase": {
+          "sourceEffectiveDefault": 4,
+          "jevEffective": 0
+        }
+      },
+      "unresolvedSourceFields": []
+    },
+    {
+      "crystalName": "TrapHexagon",
+      "sourceSpellId": 73,
+      "jevName": "TrapHexagon",
+      "jevSpellId": 73,
+      "legacyIdMismatch": false,
+      "category": "Taoist",
+      "kind": "player",
+      "status": "jev_matches_source_defaults",
+      "differences": {},
+      "unresolvedSourceFields": []
+    },
+    {
+      "crystalName": "Purification",
+      "sourceSpellId": 74,
+      "jevName": "Purification",
+      "jevSpellId": 74,
+      "legacyIdMismatch": false,
+      "category": "Taoist",
+      "kind": "player",
+      "status": "jev_matches_source_defaults",
+      "differences": {},
+      "unresolvedSourceFields": []
+    },
+    {
+      "crystalName": "MassHealing",
+      "sourceSpellId": 75,
+      "jevName": "MassHealing",
+      "jevSpellId": 75,
+      "legacyIdMismatch": false,
+      "category": "Taoist",
+      "kind": "player",
+      "status": "jev_matches_source_defaults",
+      "differences": {},
+      "unresolvedSourceFields": []
+    },
+    {
+      "crystalName": "Hallucination",
+      "sourceSpellId": 76,
+      "jevName": "Hallucination",
+      "jevSpellId": 76,
+      "legacyIdMismatch": false,
+      "category": "Taoist",
+      "kind": "player",
+      "status": "jev_matches_source_defaults",
+      "differences": {},
+      "unresolvedSourceFields": []
+    },
+    {
+      "crystalName": null,
+      "sourceSpellId": null,
+      "jevName": "UltimateEnchancer",
+      "jevSpellId": 77,
+      "status": "legacy_unknown_name_not_in_current_source",
+      "differences": {},
+      "unresolvedSourceFields": []
+    },
+    {
+      "crystalName": "SummonShinsu",
+      "sourceSpellId": 78,
+      "jevName": "SummonShinsu",
+      "jevSpellId": 78,
+      "legacyIdMismatch": false,
+      "category": "Taoist",
+      "kind": "player",
+      "status": "jev_matches_source_defaults",
+      "differences": {},
+      "unresolvedSourceFields": []
+    },
+    {
+      "crystalName": "Reincarnation",
+      "sourceSpellId": 79,
+      "jevName": "Reincarnation",
+      "jevSpellId": 79,
+      "legacyIdMismatch": false,
+      "category": "Taoist",
+      "kind": "player",
+      "status": "jev_matches_source_defaults",
+      "differences": {},
+      "unresolvedSourceFields": []
+    },
+    {
+      "crystalName": "SummonHolyDeva",
+      "sourceSpellId": 80,
+      "jevName": "SummonHolyDeva",
+      "jevSpellId": 80,
+      "legacyIdMismatch": false,
+      "category": "Taoist",
+      "kind": "player",
+      "status": "jev_matches_source_defaults",
+      "differences": {},
+      "unresolvedSourceFields": []
+    },
+    {
+      "crystalName": "Curse",
+      "sourceSpellId": 81,
+      "jevName": "Curse",
+      "jevSpellId": 81,
+      "legacyIdMismatch": false,
+      "category": "Taoist",
+      "kind": "player",
+      "status": "jev_matches_source_defaults",
+      "differences": {},
+      "unresolvedSourceFields": []
+    },
+    {
+      "crystalName": "Plague",
+      "sourceSpellId": 82,
+      "jevName": "Plague",
+      "jevSpellId": 82,
+      "legacyIdMismatch": false,
+      "category": "Taoist",
+      "kind": "player",
+      "status": "jev_overrides_source_defaults",
+      "differences": {
+        "Need1": {
+          "sourceEffectiveDefault": 5000,
+          "jevEffective": 8000
+        },
+        "Need2": {
+          "sourceEffectiveDefault": 9000,
+          "jevEffective": 14000
+        },
+        "Need3": {
+          "sourceEffectiveDefault": 13000,
+          "jevEffective": 20000
+        }
+      },
+      "unresolvedSourceFields": []
+    },
+    {
+      "crystalName": "PoisonCloud",
+      "sourceSpellId": 83,
+      "jevName": "PoisonCloud",
+      "jevSpellId": 83,
+      "legacyIdMismatch": false,
+      "category": "Taoist",
+      "kind": "player",
+      "status": "jev_matches_source_defaults",
+      "differences": {},
+      "unresolvedSourceFields": []
+    },
+    {
+      "crystalName": "EnergyShield",
+      "sourceSpellId": 84,
+      "jevName": "EnergyShield",
+      "jevSpellId": 84,
+      "legacyIdMismatch": false,
+      "category": "Taoist",
+      "kind": "player",
+      "status": "jev_overrides_source_defaults",
+      "differences": {
+        "Range": {
+          "sourceEffectiveDefault": 9,
+          "jevEffective": 0
+        }
+      },
+      "unresolvedSourceFields": []
+    },
+    {
+      "crystalName": "PetEnhancer",
+      "sourceSpellId": 85,
+      "jevName": "PetEnhancer",
+      "jevSpellId": 85,
+      "legacyIdMismatch": false,
+      "category": "Taoist",
+      "kind": "player",
+      "status": "jev_overrides_source_defaults",
+      "differences": {
+        "Range": {
+          "sourceEffectiveDefault": 0,
+          "jevEffective": 9
+        }
+      },
+      "unresolvedSourceFields": []
+    },
+    {
+      "crystalName": "HealingCircle",
+      "sourceSpellId": 86,
+      "jevName": "HealingCircle",
+      "jevSpellId": 86,
+      "legacyIdMismatch": false,
+      "category": "Taoist",
+      "kind": "player",
+      "status": "jev_overrides_source_defaults",
+      "differences": {
+        "Level1": {
+          "sourceEffectiveDefault": 39,
+          "jevEffective": 60
+        },
+        "Level2": {
+          "sourceEffectiveDefault": 41,
+          "jevEffective": 61
+        },
+        "Level3": {
+          "sourceEffectiveDefault": 43,
+          "jevEffective": 62
+        },
+        "Need1": {
+          "sourceEffectiveDefault": 7000,
+          "jevEffective": 4400
+        },
+        "Need2": {
+          "sourceEffectiveDefault": 12000,
+          "jevEffective": 7400
+        },
+        "Need3": {
+          "sourceEffectiveDefault": 15000,
+          "jevEffective": 11700
+        }
+      },
+      "unresolvedSourceFields": []
+    },
+    {
+      "crystalName": "FatalSword",
+      "sourceSpellId": 91,
+      "jevName": "FatalSword",
+      "jevSpellId": 91,
+      "legacyIdMismatch": false,
+      "category": "Assassin",
+      "kind": "player",
+      "status": "jev_matches_source_defaults",
+      "differences": {},
+      "unresolvedSourceFields": []
+    },
+    {
+      "crystalName": "DoubleSlash",
+      "sourceSpellId": 92,
+      "jevName": "DoubleSlash",
+      "jevSpellId": 92,
+      "legacyIdMismatch": false,
+      "category": "Assassin",
+      "kind": "player",
+      "status": "jev_overrides_source_defaults",
+      "differences": {
+        "Range": {
+          "sourceEffectiveDefault": 9,
+          "jevEffective": 0
+        }
+      },
+      "unresolvedSourceFields": []
+    },
+    {
+      "crystalName": "Haste",
+      "sourceSpellId": 93,
+      "jevName": "Haste",
+      "jevSpellId": 93,
+      "legacyIdMismatch": false,
+      "category": "Assassin",
+      "kind": "player",
+      "status": "jev_matches_source_defaults",
+      "differences": {},
+      "unresolvedSourceFields": []
+    },
+    {
+      "crystalName": "FlashDash",
+      "sourceSpellId": 94,
+      "jevName": "FlashDash",
+      "jevSpellId": 94,
+      "legacyIdMismatch": false,
+      "category": "Assassin",
+      "kind": "player",
+      "status": "jev_matches_source_defaults",
+      "differences": {},
+      "unresolvedSourceFields": []
+    },
+    {
+      "crystalName": "LightBody",
+      "sourceSpellId": 95,
+      "jevName": "LightBody",
+      "jevSpellId": 95,
+      "legacyIdMismatch": false,
+      "category": "Assassin",
+      "kind": "player",
+      "status": "jev_matches_source_defaults",
+      "differences": {},
+      "unresolvedSourceFields": []
+    },
+    {
+      "crystalName": "HeavenlySword",
+      "sourceSpellId": 96,
+      "jevName": "HeavenlySword",
+      "jevSpellId": 96,
+      "legacyIdMismatch": false,
+      "category": "Assassin",
+      "kind": "player",
+      "status": "jev_matches_source_defaults",
+      "differences": {},
+      "unresolvedSourceFields": []
+    },
+    {
+      "crystalName": "FireBurst",
+      "sourceSpellId": 97,
+      "jevName": "FireBurst",
+      "jevSpellId": 97,
+      "legacyIdMismatch": false,
+      "category": "Assassin",
+      "kind": "player",
+      "status": "jev_matches_source_defaults",
+      "differences": {},
+      "unresolvedSourceFields": []
+    },
+    {
+      "crystalName": "Trap",
+      "sourceSpellId": 98,
+      "jevName": "Trap",
+      "jevSpellId": 98,
+      "legacyIdMismatch": false,
+      "category": "Assassin",
+      "kind": "player",
+      "status": "jev_overrides_source_defaults",
+      "differences": {
+        "Range": {
+          "sourceEffectiveDefault": 9,
+          "jevEffective": 0
+        }
+      },
+      "unresolvedSourceFields": []
+    },
+    {
+      "crystalName": "PoisonSword",
+      "sourceSpellId": 99,
+      "jevName": "PoisonSword",
+      "jevSpellId": 99,
+      "legacyIdMismatch": false,
+      "category": "Assassin",
+      "kind": "player",
+      "status": "jev_matches_source_defaults",
+      "differences": {},
+      "unresolvedSourceFields": []
+    },
+    {
+      "crystalName": "MoonLight",
+      "sourceSpellId": 100,
+      "jevName": "MoonLight",
+      "jevSpellId": 100,
+      "legacyIdMismatch": false,
+      "category": "Assassin",
+      "kind": "player",
+      "status": "jev_matches_source_defaults",
+      "differences": {},
+      "unresolvedSourceFields": []
+    },
+    {
+      "crystalName": "MPEater",
+      "sourceSpellId": 101,
+      "jevName": "MPEater",
+      "jevSpellId": 101,
+      "legacyIdMismatch": false,
+      "category": "Assassin",
+      "kind": "player",
+      "status": "jev_matches_source_defaults",
+      "differences": {},
+      "unresolvedSourceFields": []
+    },
+    {
+      "crystalName": "SwiftFeet",
+      "sourceSpellId": 102,
+      "jevName": "SwiftFeet",
+      "jevSpellId": 102,
+      "legacyIdMismatch": false,
+      "category": "Assassin",
+      "kind": "player",
+      "status": "jev_matches_source_defaults",
+      "differences": {},
+      "unresolvedSourceFields": []
+    },
+    {
+      "crystalName": "DarkBody",
+      "sourceSpellId": 103,
+      "jevName": "DarkBody",
+      "jevSpellId": 103,
+      "legacyIdMismatch": false,
+      "category": "Assassin",
+      "kind": "player",
+      "status": "jev_matches_source_defaults",
+      "differences": {},
+      "unresolvedSourceFields": []
+    },
+    {
+      "crystalName": "Hemorrhage",
+      "sourceSpellId": 104,
+      "jevName": "Hemorrhage",
+      "jevSpellId": 104,
+      "legacyIdMismatch": false,
+      "category": "Assassin",
+      "kind": "player",
+      "status": "jev_matches_source_defaults",
+      "differences": {},
+      "unresolvedSourceFields": []
+    },
+    {
+      "crystalName": null,
+      "sourceSpellId": null,
+      "jevName": "CresentSlash",
+      "jevSpellId": 105,
+      "status": "legacy_unknown_name_not_in_current_source",
+      "differences": {},
+      "unresolvedSourceFields": []
+    },
+    {
+      "crystalName": "MoonMist",
+      "sourceSpellId": 106,
+      "jevName": "MoonMist",
+      "jevSpellId": 106,
+      "legacyIdMismatch": false,
+      "category": "Assassin",
+      "kind": "player",
+      "status": "jev_overrides_source_defaults",
+      "differences": {
+        "Level1": {
+          "sourceEffectiveDefault": 48,
+          "jevEffective": 60
+        },
+        "Level2": {
+          "sourceEffectiveDefault": 51,
+          "jevEffective": 61
+        },
+        "Level3": {
+          "sourceEffectiveDefault": 56,
+          "jevEffective": 62
+        },
+        "Need1": {
+          "sourceEffectiveDefault": 10,
+          "jevEffective": 3650
+        },
+        "Need2": {
+          "sourceEffectiveDefault": 20,
+          "jevEffective": 5950
+        },
+        "Need3": {
+          "sourceEffectiveDefault": 30,
+          "jevEffective": 8800
+        }
+      },
+      "unresolvedSourceFields": []
+    },
+    {
+      "crystalName": "CatTongue",
+      "sourceSpellId": 107,
+      "jevName": "CatTongue",
+      "jevSpellId": 107,
+      "legacyIdMismatch": false,
+      "category": "Assassin",
+      "kind": "player",
+      "status": "jev_matches_source_defaults",
+      "differences": {},
+      "unresolvedSourceFields": []
+    },
+    {
+      "crystalName": "Focus",
+      "sourceSpellId": 121,
+      "jevName": "Focus",
+      "jevSpellId": 121,
+      "legacyIdMismatch": false,
+      "category": "Archer",
+      "kind": "deferred_class",
+      "status": "jev_overrides_source_defaults",
+      "differences": {
+        "Level2": {
+          "sourceEffectiveDefault": 13,
+          "jevEffective": 23
+        },
+        "Level3": {
+          "sourceEffectiveDefault": 17,
+          "jevEffective": 38
+        },
+        "Need1": {
+          "sourceEffectiveDefault": 270,
+          "jevEffective": 5900
+        },
+        "Need2": {
+          "sourceEffectiveDefault": 600,
+          "jevEffective": 11800
+        },
+        "Need3": {
+          "sourceEffectiveDefault": 1300,
+          "jevEffective": 17100
+        }
+      },
+      "unresolvedSourceFields": []
+    },
+    {
+      "crystalName": "StraightShot",
+      "sourceSpellId": 122,
+      "jevName": "StraightShot",
+      "jevSpellId": 122,
+      "legacyIdMismatch": false,
+      "category": "Archer",
+      "kind": "deferred_class",
+      "status": "jev_overrides_source_defaults",
+      "differences": {
+        "Level3": {
+          "sourceEffectiveDefault": 16,
+          "jevEffective": 15
+        },
+        "Need1": {
+          "sourceEffectiveDefault": 350,
+          "jevEffective": 3100
+        },
+        "Need2": {
+          "sourceEffectiveDefault": 750,
+          "jevEffective": 5800
+        },
+        "Need3": {
+          "sourceEffectiveDefault": 1400,
+          "jevEffective": 8100
+        }
+      },
+      "unresolvedSourceFields": []
+    },
+    {
+      "crystalName": "DoubleShot",
+      "sourceSpellId": 123,
+      "jevName": "DoubleShot",
+      "jevSpellId": 123,
+      "legacyIdMismatch": false,
+      "category": "Archer",
+      "kind": "deferred_class",
+      "status": "jev_overrides_source_defaults",
+      "differences": {
+        "Level1": {
+          "sourceEffectiveDefault": 14,
+          "jevEffective": 11
+        },
+        "Level2": {
+          "sourceEffectiveDefault": 18,
+          "jevEffective": 15
+        },
+        "Level3": {
+          "sourceEffectiveDefault": 21,
+          "jevEffective": 19
+        },
+        "Need1": {
+          "sourceEffectiveDefault": 700,
+          "jevEffective": 2900
+        },
+        "Need2": {
+          "sourceEffectiveDefault": 1500,
+          "jevEffective": 5400
+        },
+        "Need3": {
+          "sourceEffectiveDefault": 2100,
+          "jevEffective": 8100
+        }
+      },
+      "unresolvedSourceFields": []
+    },
+    {
+      "crystalName": "ExplosiveTrap",
+      "sourceSpellId": 124,
+      "jevName": "ExplosiveTrap",
+      "jevSpellId": 124,
+      "legacyIdMismatch": false,
+      "category": "Archer",
+      "kind": "deferred_class",
+      "status": "jev_overrides_source_defaults",
+      "differences": {
+        "Level1": {
+          "sourceEffectiveDefault": 22,
+          "jevEffective": 15
+        },
+        "Level2": {
+          "sourceEffectiveDefault": 25,
+          "jevEffective": 27
+        },
+        "Level3": {
+          "sourceEffectiveDefault": 30,
+          "jevEffective": 39
+        },
+        "Need1": {
+          "sourceEffectiveDefault": 2000,
+          "jevEffective": 2900
+        },
+        "Need2": {
+          "sourceEffectiveDefault": 3500,
+          "jevEffective": 6600
+        },
+        "Need3": {
+          "sourceEffectiveDefault": 5000,
+          "jevEffective": 11100
+        },
+        "Range": {
+          "sourceEffectiveDefault": 0,
+          "jevEffective": 9
+        }
+      },
+      "unresolvedSourceFields": []
+    },
+    {
+      "crystalName": "DelayedExplosion",
+      "sourceSpellId": 125,
+      "jevName": "DelayedExplosion",
+      "jevSpellId": 125,
+      "legacyIdMismatch": false,
+      "category": "Archer",
+      "kind": "deferred_class",
+      "status": "jev_overrides_source_defaults",
+      "differences": {
+        "Need1": {
+          "sourceEffectiveDefault": 3000,
+          "jevEffective": 4100
+        },
+        "Need2": {
+          "sourceEffectiveDefault": 7000,
+          "jevEffective": 7800
+        },
+        "Need3": {
+          "sourceEffectiveDefault": 10000,
+          "jevEffective": 11100
+        }
+      },
+      "unresolvedSourceFields": []
+    },
+    {
+      "crystalName": "Meditation",
+      "sourceSpellId": 126,
+      "jevName": "Meditation",
+      "jevSpellId": 126,
+      "legacyIdMismatch": false,
+      "category": "Archer",
+      "kind": "deferred_class",
+      "status": "jev_overrides_source_defaults",
+      "differences": {
+        "Level2": {
+          "sourceEffectiveDefault": 24,
+          "jevEffective": 27
+        },
+        "Level3": {
+          "sourceEffectiveDefault": 29,
+          "jevEffective": 35
+        },
+        "Need1": {
+          "sourceEffectiveDefault": 1800,
+          "jevEffective": 5500
+        },
+        "Need2": {
+          "sourceEffectiveDefault": 2600,
+          "jevEffective": 10600
+        },
+        "Need3": {
+          "sourceEffectiveDefault": 5600,
+          "jevEffective": 15900
+        }
+      },
+      "unresolvedSourceFields": []
+    },
+    {
+      "crystalName": "BackStep",
+      "sourceSpellId": 127,
+      "jevName": "BackStep",
+      "jevSpellId": 127,
+      "legacyIdMismatch": false,
+      "category": "Archer",
+      "kind": "deferred_class",
+      "status": "jev_overrides_source_defaults",
+      "differences": {
+        "Level1": {
+          "sourceEffectiveDefault": 30,
+          "jevEffective": 26
+        },
+        "Level2": {
+          "sourceEffectiveDefault": 34,
+          "jevEffective": 31
+        },
+        "Level3": {
+          "sourceEffectiveDefault": 38,
+          "jevEffective": 36
+        },
+        "Need1": {
+          "sourceEffectiveDefault": 2400,
+          "jevEffective": 4900
+        },
+        "Need2": {
+          "sourceEffectiveDefault": 3000,
+          "jevEffective": 9400
+        },
+        "Need3": {
+          "sourceEffectiveDefault": 6000,
+          "jevEffective": 14100
+        }
+      },
+      "unresolvedSourceFields": []
+    },
+    {
+      "crystalName": "ElementalShot",
+      "sourceSpellId": 128,
+      "jevName": "ElementalShot",
+      "jevSpellId": 128,
+      "legacyIdMismatch": false,
+      "category": "Archer",
+      "kind": "deferred_class",
+      "status": "jev_overrides_source_defaults",
+      "differences": {
+        "Level1": {
+          "sourceEffectiveDefault": 20,
+          "jevEffective": 19
+        },
+        "Level2": {
+          "sourceEffectiveDefault": 25,
+          "jevEffective": 24
+        },
+        "Level3": {
+          "sourceEffectiveDefault": 31,
+          "jevEffective": 29
+        },
+        "Need1": {
+          "sourceEffectiveDefault": 1800,
+          "jevEffective": 5500
+        },
+        "Need2": {
+          "sourceEffectiveDefault": 2700,
+          "jevEffective": 11400
+        },
+        "Need3": {
+          "sourceEffectiveDefault": 6000,
+          "jevEffective": 17100
+        }
+      },
+      "unresolvedSourceFields": []
+    },
+    {
+      "crystalName": "Concentration",
+      "sourceSpellId": 129,
+      "jevName": "Concentration",
+      "jevSpellId": 129,
+      "legacyIdMismatch": false,
+      "category": "Archer",
+      "kind": "deferred_class",
+      "status": "jev_overrides_source_defaults",
+      "differences": {
+        "Level1": {
+          "sourceEffectiveDefault": 23,
+          "jevEffective": 30
+        },
+        "Level2": {
+          "sourceEffectiveDefault": 27,
+          "jevEffective": 36
+        },
+        "Level3": {
+          "sourceEffectiveDefault": 32,
+          "jevEffective": 42
+        },
+        "Need1": {
+          "sourceEffectiveDefault": 2100,
+          "jevEffective": 3500
+        },
+        "Need2": {
+          "sourceEffectiveDefault": 3800,
+          "jevEffective": 7000
+        },
+        "Need3": {
+          "sourceEffectiveDefault": 6500,
+          "jevEffective": 10500
+        }
+      },
+      "unresolvedSourceFields": []
+    },
+    {
+      "crystalName": "Stonetrap",
+      "sourceSpellId": 130,
+      "jevName": "StoneTrap",
+      "jevSpellId": 130,
+      "legacyIdMismatch": false,
+      "category": "Archer",
+      "kind": "deferred_class",
+      "status": "jev_overrides_source_defaults",
+      "differences": {
+        "Name": {
+          "sourceEffectiveDefault": "Stonetrap",
+          "jevEffective": "StoneTrap"
+        },
+        "Need3": {
+          "sourceEffectiveDefault": 141,
+          "jevEffective": 14100
+        }
+      },
+      "unresolvedSourceFields": []
+    },
+    {
+      "crystalName": "ElementalBarrier",
+      "sourceSpellId": 131,
+      "jevName": "ElementalBarrier",
+      "jevSpellId": 131,
+      "legacyIdMismatch": false,
+      "category": "Archer",
+      "kind": "deferred_class",
+      "status": "jev_overrides_source_defaults",
+      "differences": {
+        "Level1": {
+          "sourceEffectiveDefault": 33,
+          "jevEffective": 37
+        },
+        "Level2": {
+          "sourceEffectiveDefault": 38,
+          "jevEffective": 42
+        },
+        "Level3": {
+          "sourceEffectiveDefault": 44,
+          "jevEffective": 47
+        },
+        "Need1": {
+          "sourceEffectiveDefault": 3000,
+          "jevEffective": 4500
+        },
+        "Need2": {
+          "sourceEffectiveDefault": 7000,
+          "jevEffective": 9000
+        },
+        "Need3": {
+          "sourceEffectiveDefault": 10000,
+          "jevEffective": 12900
+        },
+        "Range": {
+          "sourceEffectiveDefault": 0,
+          "jevEffective": 9
+        }
+      },
+      "unresolvedSourceFields": []
+    },
+    {
+      "crystalName": "SummonVampire",
+      "sourceSpellId": 132,
+      "jevName": "SummonVampire",
+      "jevSpellId": 132,
+      "legacyIdMismatch": false,
+      "category": "Archer",
+      "kind": "deferred_class",
+      "status": "jev_overrides_source_defaults",
+      "differences": {
+        "Level1": {
+          "sourceEffectiveDefault": 28,
+          "jevEffective": 33
+        },
+        "Level2": {
+          "sourceEffectiveDefault": 33,
+          "jevEffective": 37
+        },
+        "Need1": {
+          "sourceEffectiveDefault": 2000,
+          "jevEffective": 4100
+        },
+        "Need2": {
+          "sourceEffectiveDefault": 2700,
+          "jevEffective": 8200
+        },
+        "Need3": {
+          "sourceEffectiveDefault": 7500,
+          "jevEffective": 11100
+        },
+        "Range": {
+          "sourceEffectiveDefault": 9,
+          "jevEffective": 0
+        }
+      },
+      "unresolvedSourceFields": []
+    },
+    {
+      "crystalName": "VampireShot",
+      "sourceSpellId": 133,
+      "jevName": "VampireShot",
+      "jevSpellId": 133,
+      "legacyIdMismatch": false,
+      "category": "Archer",
+      "kind": "deferred_class",
+      "status": "jev_overrides_source_defaults",
+      "differences": {
+        "Level1": {
+          "sourceEffectiveDefault": 26,
+          "jevEffective": 42
+        },
+        "Level2": {
+          "sourceEffectiveDefault": 32,
+          "jevEffective": 45
+        },
+        "Level3": {
+          "sourceEffectiveDefault": 36,
+          "jevEffective": 48
+        },
+        "Need1": {
+          "sourceEffectiveDefault": 3000,
+          "jevEffective": 5100
+        },
+        "Need2": {
+          "sourceEffectiveDefault": 6000,
+          "jevEffective": 9800
+        },
+        "Need3": {
+          "sourceEffectiveDefault": 12000,
+          "jevEffective": 13500
+        }
+      },
+      "unresolvedSourceFields": []
+    },
+    {
+      "crystalName": "SummonToad",
+      "sourceSpellId": 134,
+      "jevName": "SummonToad",
+      "jevSpellId": 134,
+      "legacyIdMismatch": false,
+      "category": "Archer",
+      "kind": "deferred_class",
+      "status": "jev_overrides_source_defaults",
+      "differences": {
+        "Level1": {
+          "sourceEffectiveDefault": 37,
+          "jevEffective": 52
+        },
+        "Level2": {
+          "sourceEffectiveDefault": 43,
+          "jevEffective": 54
+        },
+        "Level3": {
+          "sourceEffectiveDefault": 47,
+          "jevEffective": 56
+        },
+        "Need1": {
+          "sourceEffectiveDefault": 5800,
+          "jevEffective": 5500
+        },
+        "Need2": {
+          "sourceEffectiveDefault": 10000,
+          "jevEffective": 10600
+        },
+        "Need3": {
+          "sourceEffectiveDefault": 13000,
+          "jevEffective": 15300
+        },
+        "Range": {
+          "sourceEffectiveDefault": 9,
+          "jevEffective": 0
+        }
+      },
+      "unresolvedSourceFields": []
+    },
+    {
+      "crystalName": "PoisonShot",
+      "sourceSpellId": 135,
+      "jevName": "PoisonShot",
+      "jevSpellId": 135,
+      "legacyIdMismatch": false,
+      "category": "Archer",
+      "kind": "deferred_class",
+      "status": "jev_overrides_source_defaults",
+      "differences": {
+        "Level1": {
+          "sourceEffectiveDefault": 40,
+          "jevEffective": 50
+        },
+        "Level2": {
+          "sourceEffectiveDefault": 45,
+          "jevEffective": 53
+        },
+        "Level3": {
+          "sourceEffectiveDefault": 49,
+          "jevEffective": 56
+        },
+        "Need1": {
+          "sourceEffectiveDefault": 6000,
+          "jevEffective": 7500
+        },
+        "Need2": {
+          "sourceEffectiveDefault": 14000,
+          "jevEffective": 14200
+        },
+        "Need3": {
+          "sourceEffectiveDefault": 16000,
+          "jevEffective": 20700
+        }
+      },
+      "unresolvedSourceFields": []
+    },
+    {
+      "crystalName": "CrippleShot",
+      "sourceSpellId": 136,
+      "jevName": "CrippleShot",
+      "jevSpellId": 136,
+      "legacyIdMismatch": false,
+      "category": "Archer",
+      "kind": "deferred_class",
+      "status": "jev_overrides_source_defaults",
+      "differences": {
+        "Level1": {
+          "sourceEffectiveDefault": 43,
+          "jevEffective": 50
+        },
+        "Level2": {
+          "sourceEffectiveDefault": 47,
+          "jevEffective": 53
+        },
+        "Level3": {
+          "sourceEffectiveDefault": 50,
+          "jevEffective": 56
+        },
+        "Need1": {
+          "sourceEffectiveDefault": 12000,
+          "jevEffective": 7100
+        },
+        "Need2": {
+          "sourceEffectiveDefault": 15000,
+          "jevEffective": 13800
+        },
+        "Need3": {
+          "sourceEffectiveDefault": 18000,
+          "jevEffective": 19500
+        }
+      },
+      "unresolvedSourceFields": []
+    },
+    {
+      "crystalName": "SummonSnakes",
+      "sourceSpellId": 137,
+      "jevName": "SummonSnakes",
+      "jevSpellId": 137,
+      "legacyIdMismatch": false,
+      "category": "Archer",
+      "kind": "deferred_class",
+      "status": "jev_overrides_source_defaults",
+      "differences": {
+        "Level1": {
+          "sourceEffectiveDefault": 46,
+          "jevEffective": 45
+        },
+        "Level2": {
+          "sourceEffectiveDefault": 51,
+          "jevEffective": 48
+        },
+        "Level3": {
+          "sourceEffectiveDefault": 54,
+          "jevEffective": 51
+        },
+        "Need1": {
+          "sourceEffectiveDefault": 14000,
+          "jevEffective": 5100
+        },
+        "Need2": {
+          "sourceEffectiveDefault": 17000,
+          "jevEffective": 9800
+        },
+        "Need3": {
+          "sourceEffectiveDefault": 20000,
+          "jevEffective": 14100
+        },
+        "Range": {
+          "sourceEffectiveDefault": 9,
+          "jevEffective": 0
+        }
+      },
+      "unresolvedSourceFields": []
+    },
+    {
+      "crystalName": "NapalmShot",
+      "sourceSpellId": 138,
+      "jevName": "NapalmShot",
+      "jevSpellId": 138,
+      "legacyIdMismatch": false,
+      "category": "Archer",
+      "kind": "deferred_class",
+      "status": "jev_overrides_source_defaults",
+      "differences": {
+        "Level1": {
+          "sourceEffectiveDefault": 48,
+          "jevEffective": 60
+        },
+        "Level2": {
+          "sourceEffectiveDefault": 52,
+          "jevEffective": 61
+        },
+        "Level3": {
+          "sourceEffectiveDefault": 55,
+          "jevEffective": 62
+        },
+        "Need1": {
+          "sourceEffectiveDefault": 15000,
+          "jevEffective": 6300
+        },
+        "Need2": {
+          "sourceEffectiveDefault": 18000,
+          "jevEffective": 12200
+        },
+        "Need3": {
+          "sourceEffectiveDefault": 21000,
+          "jevEffective": 17700
+        }
+      },
+      "unresolvedSourceFields": []
+    },
+    {
+      "crystalName": "OneWithNature",
+      "sourceSpellId": 139,
+      "jevName": "OneWithNature",
+      "jevSpellId": 139,
+      "legacyIdMismatch": false,
+      "category": "Archer",
+      "kind": "deferred_class",
+      "status": "jev_overrides_source_defaults",
+      "differences": {
+        "Level1": {
+          "sourceEffectiveDefault": 50,
+          "jevEffective": 62
+        },
+        "Level2": {
+          "sourceEffectiveDefault": 53,
+          "jevEffective": 64
+        },
+        "Level3": {
+          "sourceEffectiveDefault": 56,
+          "jevEffective": 66
+        },
+        "Need1": {
+          "sourceEffectiveDefault": 17000,
+          "jevEffective": 5700
+        },
+        "Need2": {
+          "sourceEffectiveDefault": 19000,
+          "jevEffective": 11000
+        },
+        "Need3": {
+          "sourceEffectiveDefault": 24000,
+          "jevEffective": 15900
+        }
+      },
+      "unresolvedSourceFields": []
+    },
+    {
+      "crystalName": "BindingShot",
+      "sourceSpellId": 140,
+      "jevName": "BindingShot",
+      "jevSpellId": 140,
+      "legacyIdMismatch": false,
+      "category": "Archer",
+      "kind": "deferred_class",
+      "status": "jev_matches_source_defaults",
+      "differences": {},
+      "unresolvedSourceFields": []
+    },
+    {
+      "crystalName": "MentalState",
+      "sourceSpellId": 141,
+      "jevName": "MentalState",
+      "jevSpellId": 141,
+      "legacyIdMismatch": false,
+      "category": "Archer",
+      "kind": "deferred_class",
+      "status": "jev_overrides_source_defaults",
+      "differences": {
+        "Range": {
+          "sourceEffectiveDefault": 0,
+          "jevEffective": 9
+        }
+      },
+      "unresolvedSourceFields": []
+    },
+    {
+      "crystalName": "Portal",
+      "sourceSpellId": 152,
+      "jevName": "Portal",
+      "jevSpellId": 150,
+      "legacyIdMismatch": true,
+      "category": "Custom",
+      "kind": "custom_player_candidate",
+      "status": "jev_matches_source_defaults",
+      "differences": {},
+      "unresolvedSourceFields": []
+    },
+    {
+      "crystalName": "Blink",
+      "sourceSpellId": 151,
+      "jevName": "Blink",
+      "jevSpellId": 151,
+      "legacyIdMismatch": false,
+      "category": "Custom",
+      "kind": "custom_player_candidate",
+      "status": "jev_matches_source_defaults",
+      "differences": {},
+      "unresolvedSourceFields": []
+    },
+    {
+      "crystalName": "Portal",
+      "sourceSpellId": 152,
+      "jevName": "Portal",
+      "jevSpellId": 152,
+      "legacyIdMismatch": false,
+      "category": "Custom",
+      "kind": "custom_player_candidate",
+      "status": "jev_matches_source_defaults",
+      "differences": {},
+      "unresolvedSourceFields": []
+    },
+    {
+      "crystalName": "BattleCry",
+      "sourceSpellId": 153,
+      "jevName": "BattleCry",
+      "jevSpellId": 153,
+      "legacyIdMismatch": false,
+      "category": "Custom",
+      "kind": "custom_player_candidate",
+      "status": "jev_overrides_source_defaults",
+      "differences": {
+        "Level1": {
+          "sourceEffectiveDefault": 48,
+          "jevEffective": 62
+        },
+        "Level2": {
+          "sourceEffectiveDefault": 51,
+          "jevEffective": 64
+        },
+        "Level3": {
+          "sourceEffectiveDefault": 55,
+          "jevEffective": 66
+        },
+        "Need1": {
+          "sourceEffectiveDefault": 8000,
+          "jevEffective": 1000
+        },
+        "Need2": {
+          "sourceEffectiveDefault": 11000,
+          "jevEffective": 1560
+        },
+        "Need3": {
+          "sourceEffectiveDefault": 15000,
+          "jevEffective": 2200
+        }
+      },
+      "unresolvedSourceFields": []
+    },
+    {
+      "crystalName": "FireBounce",
+      "sourceSpellId": 154,
+      "jevName": "FireBounce",
+      "jevSpellId": 154,
+      "legacyIdMismatch": false,
+      "category": "Custom",
+      "kind": "custom_player_candidate",
+      "status": "jev_matches_source_defaults",
+      "differences": {},
+      "unresolvedSourceFields": []
+    },
+    {
+      "crystalName": "MeteorShower",
+      "sourceSpellId": 155,
+      "jevName": "MeteorShower",
+      "jevSpellId": 155,
+      "legacyIdMismatch": false,
+      "category": "Custom",
+      "kind": "custom_player_candidate",
+      "status": "jev_overrides_source_defaults",
+      "differences": {
+        "BaseCost": {
+          "sourceEffectiveDefault": 5,
+          "jevEffective": 28
+        },
+        "Level1": {
+          "sourceEffectiveDefault": 15,
+          "jevEffective": 50
+        },
+        "Level2": {
+          "sourceEffectiveDefault": 18,
+          "jevEffective": 53
+        },
+        "Level3": {
+          "sourceEffectiveDefault": 21,
+          "jevEffective": 56
+        },
+        "Need1": {
+          "sourceEffectiveDefault": 2000,
+          "jevEffective": 1000
+        },
+        "Need2": {
+          "sourceEffectiveDefault": 2700,
+          "jevEffective": 2000
+        }
+      },
+      "unresolvedSourceFields": []
+    }
+  ]
+}

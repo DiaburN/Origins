@@ -1,0 +1,434 @@
+[
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.CompanionSkillInfo",
+    "Index": 1,
+    "Level": 3,
+    "MaxAmount": 10,
+    "StatType": 5,
+    "Weight": 7
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.CompanionSkillInfo",
+    "Index": 2,
+    "Level": 3,
+    "MaxAmount": 10,
+    "StatType": 7,
+    "Weight": 7
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.CompanionSkillInfo",
+    "Index": 3,
+    "Level": 3,
+    "MaxAmount": 10,
+    "StatType": 9,
+    "Weight": 5
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.CompanionSkillInfo",
+    "Index": 4,
+    "Level": 3,
+    "MaxAmount": 10,
+    "StatType": 11,
+    "Weight": 5
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.CompanionSkillInfo",
+    "Index": 5,
+    "Level": 3,
+    "MaxAmount": 10,
+    "StatType": 13,
+    "Weight": 5
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.CompanionSkillInfo",
+    "Index": 6,
+    "Level": 3,
+    "MaxAmount": 200,
+    "StatType": 2,
+    "Weight": 5
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.CompanionSkillInfo",
+    "Index": 7,
+    "Level": 3,
+    "MaxAmount": 100,
+    "StatType": 3,
+    "Weight": 5
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.CompanionSkillInfo",
+    "Index": 8,
+    "Level": 3,
+    "MaxAmount": 4,
+    "StatType": 34,
+    "Weight": 5
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.CompanionSkillInfo",
+    "Index": 9,
+    "Level": 5,
+    "MaxAmount": 200,
+    "StatType": 73,
+    "Weight": 10
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.CompanionSkillInfo",
+    "Index": 10,
+    "Level": 5,
+    "MaxAmount": 10,
+    "StatType": 14,
+    "Weight": 10
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.CompanionSkillInfo",
+    "Index": 11,
+    "Level": 5,
+    "MaxAmount": 10,
+    "StatType": 15,
+    "Weight": 10
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.CompanionSkillInfo",
+    "Index": 12,
+    "Level": 5,
+    "MaxAmount": 10,
+    "StatType": 36,
+    "Weight": 5
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.CompanionSkillInfo",
+    "Index": 13,
+    "Level": 5,
+    "MaxAmount": 10,
+    "StatType": 37,
+    "Weight": 5
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.CompanionSkillInfo",
+    "Index": 14,
+    "Level": 5,
+    "MaxAmount": 10,
+    "StatType": 76,
+    "Weight": 5
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.CompanionSkillInfo",
+    "Index": 15,
+    "Level": 5,
+    "MaxAmount": 5,
+    "StatType": 16,
+    "Weight": 5
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.CompanionSkillInfo",
+    "Index": 16,
+    "Level": 7,
+    "MaxAmount": 300,
+    "StatType": 2,
+    "Weight": 10
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.CompanionSkillInfo",
+    "Index": 17,
+    "Level": 7,
+    "MaxAmount": 150,
+    "StatType": 3,
+    "Weight": 10
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.CompanionSkillInfo",
+    "Index": 18,
+    "Level": 7,
+    "MaxAmount": 15,
+    "StatType": 5,
+    "Weight": 7
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.CompanionSkillInfo",
+    "Index": 19,
+    "Level": 7,
+    "MaxAmount": 15,
+    "StatType": 7,
+    "Weight": 7
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.CompanionSkillInfo",
+    "Index": 20,
+    "Level": 7,
+    "MaxAmount": 20,
+    "StatType": 9,
+    "Weight": 5
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.CompanionSkillInfo",
+    "Index": 21,
+    "Level": 7,
+    "MaxAmount": 20,
+    "StatType": 11,
+    "Weight": 5
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.CompanionSkillInfo",
+    "Index": 22,
+    "Level": 7,
+    "MaxAmount": 20,
+    "StatType": 13,
+    "Weight": 5
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.CompanionSkillInfo",
+    "Index": 23,
+    "Level": 10,
+    "MaxAmount": 1,
+    "StatType": 19,
+    "Weight": 2
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.CompanionSkillInfo",
+    "Index": 24,
+    "Level": 10,
+    "MaxAmount": 10,
+    "StatType": 55,
+    "Weight": 2
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.CompanionSkillInfo",
+    "Index": 25,
+    "Level": 10,
+    "MaxAmount": 5,
+    "StatType": 35,
+    "Weight": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.CompanionSkillInfo",
+    "Index": 26,
+    "Level": 10,
+    "MaxAmount": 5,
+    "StatType": 21,
+    "Weight": 2
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.CompanionSkillInfo",
+    "Index": 27,
+    "Level": 10,
+    "MaxAmount": 5,
+    "StatType": 23,
+    "Weight": 2
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.CompanionSkillInfo",
+    "Index": 28,
+    "Level": 10,
+    "MaxAmount": 5,
+    "StatType": 25,
+    "Weight": 2
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.CompanionSkillInfo",
+    "Index": 29,
+    "Level": 10,
+    "MaxAmount": 5,
+    "StatType": 27,
+    "Weight": 2
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.CompanionSkillInfo",
+    "Index": 30,
+    "Level": 10,
+    "MaxAmount": 5,
+    "StatType": 29,
+    "Weight": 2
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.CompanionSkillInfo",
+    "Index": 31,
+    "Level": 10,
+    "MaxAmount": 5,
+    "StatType": 31,
+    "Weight": 2
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.CompanionSkillInfo",
+    "Index": 32,
+    "Level": 10,
+    "MaxAmount": 5,
+    "StatType": 33,
+    "Weight": 2
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.CompanionSkillInfo",
+    "Index": 33,
+    "Level": 10,
+    "MaxAmount": 5,
+    "StatType": 118,
+    "Weight": 2
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.CompanionSkillInfo",
+    "Index": 34,
+    "Level": 11,
+    "MaxAmount": 55,
+    "StatType": 20,
+    "Weight": 2
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.CompanionSkillInfo",
+    "Index": 35,
+    "Level": 11,
+    "MaxAmount": 55,
+    "StatType": 22,
+    "Weight": 2
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.CompanionSkillInfo",
+    "Index": 36,
+    "Level": 11,
+    "MaxAmount": 55,
+    "StatType": 24,
+    "Weight": 2
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.CompanionSkillInfo",
+    "Index": 37,
+    "Level": 11,
+    "MaxAmount": 55,
+    "StatType": 26,
+    "Weight": 2
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.CompanionSkillInfo",
+    "Index": 38,
+    "Level": 11,
+    "MaxAmount": 55,
+    "StatType": 28,
+    "Weight": 2
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.CompanionSkillInfo",
+    "Index": 39,
+    "Level": 11,
+    "MaxAmount": 55,
+    "StatType": 30,
+    "Weight": 2
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.CompanionSkillInfo",
+    "Index": 40,
+    "Level": 11,
+    "MaxAmount": 55,
+    "StatType": 32,
+    "Weight": 2
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.CompanionSkillInfo",
+    "Index": 41,
+    "Level": 13,
+    "MaxAmount": 7,
+    "StatType": 125,
+    "Weight": 2
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.CompanionSkillInfo",
+    "Index": 42,
+    "Level": 13,
+    "MaxAmount": 7,
+    "StatType": 126,
+    "Weight": 2
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.CompanionSkillInfo",
+    "Index": 43,
+    "Level": 13,
+    "MaxAmount": 10,
+    "StatType": 54,
+    "Weight": 2
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.CompanionSkillInfo",
+    "Index": 44,
+    "Level": 13,
+    "MaxAmount": 750,
+    "StatType": 2,
+    "Weight": 2
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.CompanionSkillInfo",
+    "Index": 45,
+    "Level": 13,
+    "MaxAmount": 50,
+    "StatType": 115,
+    "Weight": 2
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.CompanionSkillInfo",
+    "Index": 46,
+    "Level": 15,
+    "MaxAmount": 7,
+    "StatType": 122,
+    "Weight": 2
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.CompanionSkillInfo",
+    "Index": 47,
+    "Level": 15,
+    "MaxAmount": 7,
+    "StatType": 124,
+    "Weight": 2
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.CompanionSkillInfo",
+    "Index": 48,
+    "Level": 15,
+    "MaxAmount": 40,
+    "StatType": 123,
+    "Weight": 2
+  }
+]

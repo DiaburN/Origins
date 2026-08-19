@@ -1,0 +1,114 @@
+[
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.FameInfoReward",
+    "Amount": 100000,
+    "Fame": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.FameInfo",
+      "Index": 3
+    },
+    "Index": 1,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 1
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.FameInfoReward",
+    "Amount": 250000,
+    "Fame": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.FameInfo",
+      "Index": 4
+    },
+    "Index": 2,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 1
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.FameInfoReward",
+    "Amount": 400000,
+    "Fame": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.FameInfo",
+      "Index": 5
+    },
+    "Index": 3,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 1
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.FameInfoReward",
+    "Amount": 500000,
+    "Fame": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.FameInfo",
+      "Index": 6
+    },
+    "Index": 4,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 1
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.FameInfoReward",
+    "Amount": 750000,
+    "Fame": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.FameInfo",
+      "Index": 7
+    },
+    "Index": 5,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 1
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.FameInfoReward",
+    "Amount": 1000000,
+    "Fame": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.FameInfo",
+      "Index": 8
+    },
+    "Index": 6,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 1
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.FameInfoReward",
+    "Amount": 1250000,
+    "Fame": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.FameInfo",
+      "Index": 9
+    },
+    "Index": 7,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 1
+    }
+  }
+]

@@ -1,0 +1,152 @@
+[
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.CompanionInfo",
+    "Available": true,
+    "Currency": null,
+    "Description": "",
+    "Index": 1,
+    "MonsterInfo": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MonsterInfo",
+      "Index": 189
+    },
+    "Price": 500000,
+    "UnlockItem": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.CompanionInfo",
+    "Available": false,
+    "Currency": null,
+    "Description": "",
+    "Index": 2,
+    "MonsterInfo": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MonsterInfo",
+      "Index": 190
+    },
+    "Price": 750000,
+    "UnlockItem": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.CompanionInfo",
+    "Available": false,
+    "Currency": null,
+    "Description": "",
+    "Index": 3,
+    "MonsterInfo": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MonsterInfo",
+      "Index": 191
+    },
+    "Price": 750000,
+    "UnlockItem": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.CompanionInfo",
+    "Available": false,
+    "Currency": null,
+    "Description": "",
+    "Index": 4,
+    "MonsterInfo": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MonsterInfo",
+      "Index": 192
+    },
+    "Price": 750000,
+    "UnlockItem": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.CompanionInfo",
+    "Available": false,
+    "Currency": null,
+    "Description": "",
+    "Index": 5,
+    "MonsterInfo": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MonsterInfo",
+      "Index": 193
+    },
+    "Price": 750000,
+    "UnlockItem": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.CompanionInfo",
+    "Available": false,
+    "Currency": null,
+    "Description": "",
+    "Index": 6,
+    "MonsterInfo": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MonsterInfo",
+      "Index": 194
+    },
+    "Price": 750000,
+    "UnlockItem": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.CompanionInfo",
+    "Available": false,
+    "Currency": null,
+    "Description": "",
+    "Index": 7,
+    "MonsterInfo": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MonsterInfo",
+      "Index": 195
+    },
+    "Price": 750000,
+    "UnlockItem": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.CompanionInfo",
+    "Available": false,
+    "Currency": null,
+    "Description": "",
+    "Index": 8,
+    "MonsterInfo": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MonsterInfo",
+      "Index": 196
+    },
+    "Price": 750000,
+    "UnlockItem": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.CompanionInfo",
+    "Available": false,
+    "Currency": null,
+    "Description": "",
+    "Index": 9,
+    "MonsterInfo": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MonsterInfo",
+      "Index": 197
+    },
+    "Price": 750000,
+    "UnlockItem": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.CompanionInfo",
+    "Available": false,
+    "Currency": null,
+    "Description": "",
+    "Index": 10,
+    "MonsterInfo": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MonsterInfo",
+      "Index": 198
+    },
+    "Price": 750000,
+    "UnlockItem": null
+  }
+]

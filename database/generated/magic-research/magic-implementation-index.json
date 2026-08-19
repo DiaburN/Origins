@@ -1,0 +1,4931 @@
+{
+  "schemaVersion": 1,
+  "source": {
+    "crystalCommit": "0e315fe327192afe52c3d7357ddd1f5b7e26c5b8",
+    "zirconCommit": "cbf1aa919083bc13fc3f23f93772a8ab8370632d"
+  },
+  "policy": {
+    "callSiteIndexIsBehaviorVerification": false,
+    "purpose": "Locate implementation code before manual/structured behavior comparison"
+  },
+  "counts": {
+    "catalogSpells": 130,
+    "spellsWithCrystalServerCallSites": 129,
+    "spellsWithExactZirconHandlerName": 27
+  },
+  "entries": [
+    {
+      "crystal": {
+        "name": "None",
+        "spellId": 0,
+        "category": "Uncategorized",
+        "kind": "none",
+        "serverCallSites": [
+          {
+            "file": "Server/MirObjects/Hero/ArcherHero.cs",
+            "line": 109,
+            "method": "ProcessAttack",
+            "snippet": "magic = GetMagic(Spell.None);"
+          },
+          {
+            "file": "Server/MirObjects/Hero/ArcherHero.cs",
+            "line": 115,
+            "method": "ProcessAttack",
+            "snippet": "magic = GetMagic(Spell.None);"
+          },
+          {
+            "file": "Server/MirObjects/Hero/ArcherHero.cs",
+            "line": 133,
+            "method": "ProcessTarget",
+            "snippet": "if (HasClassWeapon && CanCast && NextMagicSpell != Spell.None)"
+          },
+          {
+            "file": "Server/MirObjects/Hero/ArcherHero.cs",
+            "line": 136,
+            "method": "ProcessTarget",
+            "snippet": "NextMagicSpell = Spell.None;"
+          },
+          {
+            "file": "Server/MirObjects/Hero/ArcherHero.cs",
+            "line": 151,
+            "method": "ProcessTarget",
+            "snippet": "if ((CanAttack && Target != null && HasClassWeapon && (NextMagicSpell == Spell.None || !HasRangedSpell || !CanCast)))"
+          },
+          {
+            "file": "Server/MirObjects/Hero/AssassinHero.cs",
+            "line": 78,
+            "method": "Attack",
+            "snippet": "Spell spell = Spell.None;"
+          },
+          {
+            "file": "Server/MirObjects/Hero/TaoistHero.cs",
+            "line": 88,
+            "method": "ProcessFriend",
+            "snippet": "magic = GetMagic(Spell.None);"
+          },
+          {
+            "file": "Server/MirObjects/Hero/TaoistHero.cs",
+            "line": 141,
+            "method": "ProcessAttack",
+            "snippet": "magic = GetMagic(Spell.None);"
+          },
+          {
+            "file": "Server/MirObjects/Hero/TaoistHero.cs",
+            "line": 147,
+            "method": "ProcessAttack",
+            "snippet": "magic = GetMagic(Spell.None);"
+          },
+          {
+            "file": "Server/MirObjects/Hero/TaoistHero.cs",
+            "line": 161,
+            "method": "ProcessTarget",
+            "snippet": "if (CanMove && ((!CanCast || NextMagicSpell == Spell.None) && Owner.Info.HeroBehaviour == HeroBehaviour.CounterAttack))"
+          },
+          {
+            "file": "Server/MirObjects/Hero/TaoistHero.cs",
+            "line": 167,
+            "method": "ProcessTarget",
+            "snippet": "if (CanCast && NextMagicSpell != Spell.None)"
+          },
+          {
+            "file": "Server/MirObjects/Hero/TaoistHero.cs",
+            "line": 171,
+            "method": "ProcessTarget",
+            "snippet": "NextMagicSpell = Spell.None;"
+          },
+          {
+            "file": "Server/MirObjects/Hero/TaoistHero.cs",
+            "line": 176,
+            "method": "ProcessTarget",
+            "snippet": "if (CanAttack && (!HasRangedSpell && InAttackRange() || NextMagicSpell == Spell.None && Owner.Info.HeroBehaviour == HeroBehaviour.Attack && TargetDistance == 1))"
+          },
+          {
+            "file": "Server/MirObjects/Hero/TaoistHero.cs",
+            "line": 188,
+            "method": "ProcessTarget",
+            "snippet": "if (CanMove && (!HasRangedSpell || NextMagicSpell == Spell.None && Owner.Info.HeroBehaviour == HeroBehaviour.Attack && TargetDistance > 1))"
+          },
+          {
+            "file": "Server/MirObjects/Hero/WarriorHero.cs",
+            "line": 71,
+            "method": "Attack",
+            "snippet": "Spell spell = Spell.None;"
+          },
+          {
+            "file": "Server/MirObjects/Hero/WarriorHero.cs",
+            "line": 78,
+            "method": "Attack",
+            "snippet": "if (spell == Spell.None && Slaying)"
+          },
+          {
+            "file": "Server/MirObjects/Hero/WarriorHero.cs",
+            "line": 81,
+            "method": "Attack",
+            "snippet": "if (spell == Spell.None)"
+          },
+          {
+            "file": "Server/MirObjects/Hero/WizardHero.cs",
+            "line": 153,
+            "method": "ProcessAttack",
+            "snippet": "magic = GetMagic(Spell.None);"
+          },
+          {
+            "file": "Server/MirObjects/Hero/WizardHero.cs",
+            "line": 159,
+            "method": "ProcessAttack",
+            "snippet": "magic = GetMagic(Spell.None);"
+          },
+          {
+            "file": "Server/MirObjects/Hero/WizardHero.cs",
+            "line": 173,
+            "method": "ProcessTarget",
+            "snippet": "if (CanMove && ((!CanCast || NextMagicSpell == Spell.None) && Owner.Info.HeroBehaviour == HeroBehaviour.CounterAttack))"
+          },
+          {
+            "file": "Server/MirObjects/Hero/WizardHero.cs",
+            "line": 181,
+            "method": "ProcessTarget",
+            "snippet": "if (CanCast && NextMagicSpell != Spell.None)"
+          },
+          {
+            "file": "Server/MirObjects/Hero/WizardHero.cs",
+            "line": 184,
+            "method": "ProcessTarget",
+            "snippet": "NextMagicSpell = Spell.None;"
+          },
+          {
+            "file": "Server/MirObjects/Hero/WizardHero.cs",
+            "line": 187,
+            "method": "ProcessTarget",
+            "snippet": "if (CanAttack && (!HasRangedSpell && InAttackRange() || NextMagicSpell == Spell.None && Owner.Info.HeroBehaviour == HeroBehaviour.Attack && TargetDistance == 1))"
+          },
+          {
+            "file": "Server/MirObjects/Hero/WizardHero.cs",
+            "line": 199,
+            "method": "ProcessTarget",
+            "snippet": "if (CanMove && (!HasRangedSpell || NextMagicSpell == Spell.None && Owner.Info.HeroBehaviour == HeroBehaviour.Attack && TargetDistance > 1))"
+          },
+          {
+            "file": "Server/MirObjects/HeroObject.cs",
+            "line": 830,
+            "method": "ProcessAI",
+            "snippet": "if (NextMagicSpell != Spell.None) return;"
+          },
+          {
+            "file": "Server/MirObjects/HeroObject.cs",
+            "line": 833,
+            "method": "ProcessAI",
+            "snippet": "if (NextMagicSpell != Spell.None) return;"
+          },
+          {
+            "file": "Server/MirObjects/HeroObject.cs",
+            "line": 901,
+            "method": "ProcessTarget",
+            "snippet": "if (CanCast && NextMagicSpell != Spell.None)"
+          },
+          {
+            "file": "Server/MirObjects/HeroObject.cs",
+            "line": 904,
+            "method": "ProcessTarget",
+            "snippet": "NextMagicSpell = Spell.None;"
+          },
+          {
+            "file": "Server/MirObjects/HeroObject.cs",
+            "line": 935,
+            "method": "Attack",
+            "snippet": "Attack(Direction, Spell.None);"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 2792,
+            "method": "RangeAttack",
+            "snippet": "Spell spell = Spell.None;"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 2893,
+            "method": "Attack",
+            "snippet": "spell = Spell.None;"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 2900,
+            "method": "Attack",
+            "snippet": "spell = Spell.None;"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 2913,
+            "method": "Attack",
+            "snippet": "spell = Spell.None;"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 2924,
+            "method": "Attack",
+            "snippet": "spell = Spell.None;"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 2934,
+            "method": "Attack",
+            "snippet": "spell = Spell.None;"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 2944,
+            "method": "Attack",
+            "snippet": "spell = Spell.None;"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 2951,
+            "method": "Attack",
+            "snippet": "spell = Spell.None;"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 3005,
+            "method": null,
+            "snippet": "case Spell.None:"
+          },
+          {
+            "file": "Server/MirObjects/PlayerObject.cs",
+            "line": 3177,
+            "method": null,
+            "snippet": "if (skill == Spell.None) return;"
+          },
+          {
+            "file": "Server/MirObjects/PlayerObject.cs",
+            "line": 4081,
+            "method": null,
+            "snippet": "if (skill1 == Spell.None) return;"
+          }
+        ]
+      },
+      "zirconExactMagicTypeHandlers": []
+    },
+    {
+      "crystal": {
+        "name": "Fencing",
+        "spellId": 1,
+        "category": "Warrior",
+        "kind": "player",
+        "serverCallSites": [
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 2303,
+            "method": "RefreshSkills",
+            "snippet": "case Spell.Fencing:"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 6820,
+            "method": "CompleteAttack",
+            "snippet": "case Spell.Fencing:"
+          }
+        ]
+      },
+      "zirconExactMagicTypeHandlers": []
+    },
+    {
+      "crystal": {
+        "name": "Slaying",
+        "spellId": 2,
+        "category": "Warrior",
+        "kind": "player",
+        "serverCallSites": [
+          {
+            "file": "Server/MirObjects/Hero/WarriorHero.cs",
+            "line": 79,
+            "method": "Attack",
+            "snippet": "spell = Spell.Slaying;"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 2308,
+            "method": "RefreshSkills",
+            "snippet": "case Spell.Slaying:"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 2860,
+            "method": "Attack",
+            "snippet": "case Spell.Slaying:"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 2898,
+            "method": "Attack",
+            "snippet": "case Spell.Slaying:"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 2903,
+            "method": "Attack",
+            "snippet": "magic = GetMagic(Spell.Slaying);"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 2958,
+            "method": "Attack",
+            "snippet": "magic = GetMagic(Spell.Slaying);"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 2963,
+            "method": "Attack",
+            "snippet": "Enqueue(new S.SpellToggle { ObjectID = ObjectID, Spell = Spell.Slaying, CanUse = Slaying });"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 3148,
+            "method": null,
+            "snippet": "case Spell.Slaying:"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 3149,
+            "method": null,
+            "snippet": "magic = GetMagic(Spell.Slaying);"
+          },
+          {
+            "file": "Server/MirObjects/PlayerObject.cs",
+            "line": 1614,
+            "method": "AddObserver",
+            "snippet": "if (Slaying) Enqueue(new S.SpellToggle { ObjectID = ObjectID, Spell = Spell.Slaying, CanUse = true }, observer);"
+          }
+        ]
+      },
+      "zirconExactMagicTypeHandlers": [
+        {
+          "file": "ServerLibrary/Models/Magics/Warrior/Slaying.cs",
+          "attributeLine": 8,
+          "class": "Slaying",
+          "methods": [
+            "AttackCast",
+            "GetPassiveStats",
+            "ModifyPowerAdditionner"
+          ]
+        }
+      ]
+    },
+    {
+      "crystal": {
+        "name": "Thrusting",
+        "spellId": 3,
+        "category": "Warrior",
+        "kind": "player",
+        "serverCallSites": [
+          {
+            "file": "Server/MirObjects/Hero/WarriorHero.cs",
+            "line": 75,
+            "method": "Attack",
+            "snippet": "spell = Spell.Thrusting;"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 2919,
+            "method": "Attack",
+            "snippet": "case Spell.Thrusting:"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 2999,
+            "method": null,
+            "snippet": "case Spell.Thrusting:"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 3018,
+            "method": null,
+            "snippet": "case Spell.Thrusting:"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 3163,
+            "method": null,
+            "snippet": "case Spell.Thrusting:"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 3164,
+            "method": null,
+            "snippet": "magic = GetMagic(Spell.Thrusting);"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 3207,
+            "method": null,
+            "snippet": "if (spell == Spell.Thrusting)"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 8514,
+            "method": "SpellToggle",
+            "snippet": "case Spell.Thrusting:"
+          },
+          {
+            "file": "Server/MirObjects/PlayerObject.cs",
+            "line": 1226,
+            "method": "StartGameSuccess",
+            "snippet": "if (Info.Thrusting) Enqueue(new S.SpellToggle { ObjectID = ObjectID, Spell = Spell.Thrusting, CanUse = true });"
+          },
+          {
+            "file": "Server/MirObjects/PlayerObject.cs",
+            "line": 1610,
+            "method": "AddObserver",
+            "snippet": "if (Info.Thrusting) Enqueue(new S.SpellToggle { ObjectID = ObjectID, Spell = Spell.Thrusting, CanUse = true }, observer);"
+          }
+        ]
+      },
+      "zirconExactMagicTypeHandlers": [
+        {
+          "file": "ServerLibrary/Models/Magics/Warrior/Thrusting.cs",
+          "attributeLine": 8,
+          "class": "Thrusting",
+          "methods": [
+            "AttackCast",
+            "ModifyPowerAdditionner",
+            "RefreshToggle",
+            "SecondaryAttackLocation",
+            "Toggle"
+          ]
+        }
+      ]
+    },
+    {
+      "crystal": {
+        "name": "HalfMoon",
+        "spellId": 4,
+        "category": "Warrior",
+        "kind": "player",
+        "serverCallSites": [
+          {
+            "file": "Server/MirObjects/Hero/WarriorHero.cs",
+            "line": 84,
+            "method": "Attack",
+            "snippet": "spell = Spell.HalfMoon;"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 2929,
+            "method": "Attack",
+            "snippet": "case Spell.HalfMoon:"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 3001,
+            "method": null,
+            "snippet": "case Spell.HalfMoon:"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 3020,
+            "method": null,
+            "snippet": "case Spell.HalfMoon:"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 3167,
+            "method": null,
+            "snippet": "case Spell.HalfMoon:"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 3168,
+            "method": null,
+            "snippet": "magic = GetMagic(Spell.HalfMoon);"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 3234,
+            "method": null,
+            "snippet": "if (spell == Spell.HalfMoon)"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 8517,
+            "method": "SpellToggle",
+            "snippet": "case Spell.HalfMoon:"
+          },
+          {
+            "file": "Server/MirObjects/PlayerObject.cs",
+            "line": 1227,
+            "method": "StartGameSuccess",
+            "snippet": "if (Info.HalfMoon) Enqueue(new S.SpellToggle { ObjectID = ObjectID, Spell = Spell.HalfMoon, CanUse = true });"
+          },
+          {
+            "file": "Server/MirObjects/PlayerObject.cs",
+            "line": 1611,
+            "method": "AddObserver",
+            "snippet": "if (Info.HalfMoon) Enqueue(new S.SpellToggle { ObjectID = ObjectID, Spell = Spell.HalfMoon, CanUse = true }, observer);"
+          }
+        ]
+      },
+      "zirconExactMagicTypeHandlers": [
+        {
+          "file": "ServerLibrary/Models/Magics/Warrior/HalfMoon.cs",
+          "attributeLine": 9,
+          "class": "HalfMoon",
+          "methods": [
+            "AttackCast",
+            "ModifyPowerAdditionner",
+            "RefreshToggle",
+            "SecondaryAttackLocation",
+            "Toggle"
+          ]
+        }
+      ]
+    },
+    {
+      "crystal": {
+        "name": "ShoulderDash",
+        "spellId": 5,
+        "category": "Warrior",
+        "kind": "player",
+        "serverCallSites": [
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 3427,
+            "method": "Magic",
+            "snippet": "if (spell != Spell.ShoulderDash)"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 3453,
+            "method": "Magic",
+            "snippet": "if (spell == Spell.ShoulderDash && Race == ObjectType.Hero)"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 3457,
+            "method": "Magic",
+            "snippet": "if (spell != Spell.ShoulderDash && spell != Spell.BackStep && spell != Spell.FlashDash)"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 3577,
+            "method": null,
+            "snippet": "case Spell.ShoulderDash:"
+          }
+        ]
+      },
+      "zirconExactMagicTypeHandlers": [
+        {
+          "file": "ServerLibrary/Models/Magics/Warrior/ShoulderDash.cs",
+          "attributeLine": 12,
+          "class": "ShoulderDash",
+          "methods": [
+            "ApplyAugment",
+            "CanPushTarget",
+            "FinalizeDash",
+            "MagicCast",
+            "MagicComplete",
+            "TryPush"
+          ]
+        }
+      ]
+    },
+    {
+      "crystal": {
+        "name": "TwinDrakeBlade",
+        "spellId": 6,
+        "category": "Warrior",
+        "kind": "player",
+        "serverCallSites": [
+          {
+            "file": "Server/MirObjects/Hero/WarriorHero.cs",
+            "line": 90,
+            "method": "Attack",
+            "snippet": "spell = Spell.TwinDrakeBlade;"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 2940,
+            "method": "Attack",
+            "snippet": "case Spell.TwinDrakeBlade:"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 3175,
+            "method": null,
+            "snippet": "case Spell.TwinDrakeBlade:"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 3176,
+            "method": null,
+            "snippet": "magic = GetMagic(Spell.TwinDrakeBlade);"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 6803,
+            "method": "CompleteAttack",
+            "snippet": "if (userMagic.Spell == Spell.TwinDrakeBlade)"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 8526,
+            "method": "SpellToggle",
+            "snippet": "case Spell.TwinDrakeBlade:"
+          },
+          {
+            "file": "Server/MirObjects/Monsters/SepHighWarrior.cs",
+            "line": 96,
+            "method": "TwinDrakeBlade",
+            "snippet": "Broadcast(new S.ObjectAttack { ObjectID = ObjectID, Direction = Direction, Location = CurrentLocation, Spell = Spell.TwinDrakeBlade });"
+          },
+          {
+            "file": "Server/MirObjects/Monsters/SepWarrior.cs",
+            "line": 74,
+            "method": "Attack",
+            "snippet": "Broadcast(new S.ObjectAttack { ObjectID = ObjectID, Direction = Direction, Location = CurrentLocation, Spell = Spell.TwinDrakeBlade });"
+          }
+        ]
+      },
+      "zirconExactMagicTypeHandlers": []
+    },
+    {
+      "crystal": {
+        "name": "Entrapment",
+        "spellId": 7,
+        "category": "Warrior",
+        "kind": "player",
+        "serverCallSites": [
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 3626,
+            "method": null,
+            "snippet": "case Spell.Entrapment:"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 6315,
+            "method": null,
+            "snippet": "case Spell.Entrapment:"
+          }
+        ]
+      },
+      "zirconExactMagicTypeHandlers": []
+    },
+    {
+      "crystal": {
+        "name": "FlamingSword",
+        "spellId": 8,
+        "category": "Warrior",
+        "kind": "player",
+        "serverCallSites": [
+          {
+            "file": "Server/MirObjects/Hero/WarriorHero.cs",
+            "line": 51,
+            "method": "ProcessAttack",
+            "snippet": "if (HasMagic(Spell.FlamingSword) && Envir.Time > FlamingSwordTime)"
+          },
+          {
+            "file": "Server/MirObjects/Hero/WarriorHero.cs",
+            "line": 52,
+            "method": "ProcessAttack",
+            "snippet": "SpellToggle(Spell.FlamingSword, SpellToggleState.True);"
+          },
+          {
+            "file": "Server/MirObjects/Hero/WarriorHero.cs",
+            "line": 93,
+            "method": "Attack",
+            "snippet": "spell = Spell.FlamingSword;"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 266,
+            "method": "Process",
+            "snippet": "Enqueue(new S.SpellToggle { ObjectID = ObjectID, Spell = Spell.FlamingSword, CanUse = false });"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 2920,
+            "method": "Attack",
+            "snippet": "case Spell.FlamingSword:"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 2922,
+            "method": "Attack",
+            "snippet": "if ((magic == null) || (!FlamingSword && (spell == Spell.FlamingSword)))"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 3189,
+            "method": null,
+            "snippet": "case Spell.FlamingSword:"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 3190,
+            "method": null,
+            "snippet": "magic = GetMagic(Spell.FlamingSword);"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 8538,
+            "method": "SpellToggle",
+            "snippet": "case Spell.FlamingSword:"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 8547,
+            "method": "SpellToggle",
+            "snippet": "Enqueue(new S.SpellToggle { ObjectID = ObjectID, Spell = Spell.FlamingSword, CanUse = true });"
+          },
+          {
+            "file": "Server/MirObjects/PlayerObject.cs",
+            "line": 1615,
+            "method": "AddObserver",
+            "snippet": "if (FlamingSword) Enqueue(new S.SpellToggle { ObjectID = ObjectID, Spell = Spell.FlamingSword, CanUse = true }, observer);"
+          }
+        ]
+      },
+      "zirconExactMagicTypeHandlers": [
+        {
+          "file": "ServerLibrary/Models/Magics/Warrior/FlamingSword.cs",
+          "attributeLine": 9,
+          "class": "FlamingSword",
+          "methods": [
+            "AttackCast",
+            "ModifyPowerAdditionner",
+            "Process",
+            "Toggle"
+          ]
+        }
+      ]
+    },
+    {
+      "crystal": {
+        "name": "LionRoar",
+        "spellId": 9,
+        "category": "Warrior",
+        "kind": "player",
+        "serverCallSites": [
+          {
+            "file": "Server/MirEnvir/Map.cs",
+            "line": 1398,
+            "method": null,
+            "snippet": "case Spell.LionRoar:"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 3616,
+            "method": null,
+            "snippet": "case Spell.LionRoar:"
+          }
+        ]
+      },
+      "zirconExactMagicTypeHandlers": []
+    },
+    {
+      "crystal": {
+        "name": "CrossHalfMoon",
+        "spellId": 10,
+        "category": "Warrior",
+        "kind": "player",
+        "serverCallSites": [
+          {
+            "file": "Server/MirObjects/Hero/WarriorHero.cs",
+            "line": 87,
+            "method": "Attack",
+            "snippet": "spell = Spell.CrossHalfMoon;"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 2930,
+            "method": "Attack",
+            "snippet": "case Spell.CrossHalfMoon:"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 3003,
+            "method": null,
+            "snippet": "case Spell.CrossHalfMoon:"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 3022,
+            "method": null,
+            "snippet": "case Spell.CrossHalfMoon:"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 3171,
+            "method": null,
+            "snippet": "case Spell.CrossHalfMoon:"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 3172,
+            "method": null,
+            "snippet": "magic = GetMagic(Spell.CrossHalfMoon);"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 3265,
+            "method": null,
+            "snippet": "if (spell == Spell.CrossHalfMoon)"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 8520,
+            "method": "SpellToggle",
+            "snippet": "case Spell.CrossHalfMoon:"
+          },
+          {
+            "file": "Server/MirObjects/Monsters/SepHighWarrior.cs",
+            "line": 112,
+            "method": "CrossHalfMoon",
+            "snippet": "Broadcast(new S.ObjectAttack { ObjectID = ObjectID, Direction = Direction, Location = CurrentLocation, Spell = Spell.CrossHalfMoon });"
+          },
+          {
+            "file": "Server/MirObjects/PlayerObject.cs",
+            "line": 1228,
+            "method": "StartGameSuccess",
+            "snippet": "if (Info.CrossHalfMoon) Enqueue(new S.SpellToggle { ObjectID = ObjectID, Spell = Spell.CrossHalfMoon, CanUse = true });"
+          },
+          {
+            "file": "Server/MirObjects/PlayerObject.cs",
+            "line": 1612,
+            "method": "AddObserver",
+            "snippet": "if (Info.CrossHalfMoon) Enqueue(new S.SpellToggle { ObjectID = ObjectID, Spell = Spell.CrossHalfMoon, CanUse = true }, observer);"
+          }
+        ]
+      },
+      "zirconExactMagicTypeHandlers": []
+    },
+    {
+      "crystal": {
+        "name": "BladeAvalanche",
+        "spellId": 11,
+        "category": "Warrior",
+        "kind": "player",
+        "serverCallSites": [
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 3629,
+            "method": null,
+            "snippet": "case Spell.BladeAvalanche:"
+          },
+          {
+            "file": "Server/MirObjects/Monsters/SepHighWarrior.cs",
+            "line": 131,
+            "method": "BladeAvalanche",
+            "snippet": "Broadcast(new S.ObjectMagic { ObjectID = ObjectID, Direction = Direction, Location = CurrentLocation, Spell = Spell.BladeAvalanche, TargetID = Target.ObjectID, Target = Target.CurrentLocation, Cast = true, Level = 3 });"
+          }
+        ]
+      },
+      "zirconExactMagicTypeHandlers": []
+    },
+    {
+      "crystal": {
+        "name": "ProtectionField",
+        "spellId": 12,
+        "category": "Warrior",
+        "kind": "player",
+        "serverCallSites": [
+          {
+            "file": "Server/MirObjects/Hero/WarriorHero.cs",
+            "line": 38,
+            "method": "ProcessFriend",
+            "snippet": "magic = GetMagic(Spell.ProtectionField);"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 3650,
+            "method": null,
+            "snippet": "case Spell.ProtectionField:"
+          }
+        ]
+      },
+      "zirconExactMagicTypeHandlers": []
+    },
+    {
+      "crystal": {
+        "name": "Rage",
+        "spellId": 13,
+        "category": "Warrior",
+        "kind": "player",
+        "serverCallSites": [
+          {
+            "file": "Server/MirObjects/Hero/WarriorHero.cs",
+            "line": 31,
+            "method": "ProcessFriend",
+            "snippet": "UserMagic magic = GetMagic(Spell.Rage);"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 3635,
+            "method": null,
+            "snippet": "case Spell.Rage:"
+          }
+        ]
+      },
+      "zirconExactMagicTypeHandlers": []
+    },
+    {
+      "crystal": {
+        "name": "CounterAttack",
+        "spellId": 14,
+        "category": "Warrior",
+        "kind": "player",
+        "serverCallSites": [
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 5229,
+            "method": "CounterAttackCast",
+            "snippet": "Enqueue(new S.ObjectMagic { ObjectID = ObjectID, Direction = Direction, Location = CurrentLocation, Spell = Spell.CounterAttack, TargetID = target.ObjectID, Target = target.CurrentLocation, Cast = true, Level = GetMagic(Spell.CounterAttack).Level, SelfBroadcast = true });"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 5229,
+            "method": "CounterAttackCast",
+            "snippet": "Enqueue(new S.ObjectMagic { ObjectID = ObjectID, Direction = Direction, Location = CurrentLocation, Spell = Spell.CounterAttack, TargetID = target.ObjectID, Target = target.CurrentLocation, Cast = true, Level = GetMagic(Spell.CounterAttack).Level, SelfBroadcast = true });"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 7212,
+            "method": null,
+            "snippet": "CounterAttackCast(GetMagic(Spell.CounterAttack), LastHitter);"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 7302,
+            "method": "Attacked",
+            "snippet": "CounterAttackCast(GetMagic(Spell.CounterAttack), LastHitter);"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 8550,
+            "method": "SpellToggle",
+            "snippet": "case Spell.CounterAttack:"
+          }
+        ]
+      },
+      "zirconExactMagicTypeHandlers": []
+    },
+    {
+      "crystal": {
+        "name": "SlashingBurst",
+        "spellId": 15,
+        "category": "Warrior",
+        "kind": "player",
+        "serverCallSites": [
+          {
+            "file": "Server/MirEnvir/Map.cs",
+            "line": 1578,
+            "method": null,
+            "snippet": "case Spell.SlashingBurst:"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 3632,
+            "method": null,
+            "snippet": "case Spell.SlashingBurst:"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 6757,
+            "method": null,
+            "snippet": "case Spell.SlashingBurst:"
+          }
+        ]
+      },
+      "zirconExactMagicTypeHandlers": []
+    },
+    {
+      "crystal": {
+        "name": "Fury",
+        "spellId": 16,
+        "category": "Warrior",
+        "kind": "player",
+        "serverCallSites": [
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 3548,
+            "method": null,
+            "snippet": "case Spell.Fury:"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 6160,
+            "method": null,
+            "snippet": "case Spell.Fury:"
+          }
+        ]
+      },
+      "zirconExactMagicTypeHandlers": []
+    },
+    {
+      "crystal": {
+        "name": "ImmortalSkin",
+        "spellId": 17,
+        "category": "Warrior",
+        "kind": "player",
+        "serverCallSites": [
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 3551,
+            "method": null,
+            "snippet": "case Spell.ImmortalSkin:"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 6171,
+            "method": null,
+            "snippet": "case Spell.ImmortalSkin:"
+          }
+        ]
+      },
+      "zirconExactMagicTypeHandlers": []
+    },
+    {
+      "crystal": {
+        "name": "FireBall",
+        "spellId": 31,
+        "category": "Wizard",
+        "kind": "player",
+        "serverCallSites": [
+          {
+            "file": "Server/MirObjects/Hero/WizardHero.cs",
+            "line": 146,
+            "method": "ProcessAttack",
+            "snippet": "magic = GetMagic(Spell.FireBall);"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 3501,
+            "method": "Magic",
+            "snippet": "case Spell.FireBall:"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 5916,
+            "method": "CompleteMagic",
+            "snippet": "case Spell.FireBall:"
+          },
+          {
+            "file": "Shared/Globals.cs",
+            "line": 54,
+            "method": null,
+            "snippet": "Spell.FireBall,"
+          }
+        ]
+      },
+      "zirconExactMagicTypeHandlers": [
+        {
+          "file": "ServerLibrary/Models/Magics/Wizard/FireBall.cs",
+          "attributeLine": 9,
+          "class": "FireBall",
+          "methods": [
+            "CanFly",
+            "MagicCast",
+            "MagicComplete",
+            "ModifyPowerAdditionner"
+          ]
+        }
+      ]
+    },
+    {
+      "crystal": {
+        "name": "Repulsion",
+        "spellId": 32,
+        "category": "Wizard",
+        "kind": "player",
+        "serverCallSites": [
+          {
+            "file": "Server/MirObjects/Hero/WizardHero.cs",
+            "line": 58,
+            "method": "ProcessAttack",
+            "snippet": "magic = GetMagic(Spell.Repulsion);"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 3514,
+            "method": "Magic",
+            "snippet": "case Spell.Repulsion:"
+          },
+          {
+            "file": "Server/MirObjects/Monsters/SepHighWizard.cs",
+            "line": 52,
+            "method": "Attack",
+            "snippet": "Broadcast(new S.ObjectMagic { ObjectID = ObjectID, Direction = Direction, Location = CurrentLocation, Spell = Spell.Repulsion, Cast = true, Level = 3 });"
+          },
+          {
+            "file": "Server/MirObjects/Monsters/SepWizard.cs",
+            "line": 55,
+            "method": "Attack",
+            "snippet": "Broadcast(new S.ObjectMagic { ObjectID = ObjectID, Direction = Direction, Location = CurrentLocation, Spell = Spell.Repulsion, Cast = true, Level = 3 });"
+          }
+        ]
+      },
+      "zirconExactMagicTypeHandlers": [
+        {
+          "file": "ServerLibrary/Models/Magics/Wizard/Repulsion.cs",
+          "attributeLine": 9,
+          "class": "Repulsion",
+          "methods": [
+            "MagicCast",
+            "MagicComplete"
+          ]
+        }
+      ]
+    },
+    {
+      "crystal": {
+        "name": "ElectricShock",
+        "spellId": 33,
+        "category": "Wizard",
+        "kind": "player",
+        "serverCallSites": [
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 3519,
+            "method": "Magic",
+            "snippet": "case Spell.ElectricShock:"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 6033,
+            "method": null,
+            "snippet": "case Spell.ElectricShock:"
+          }
+        ]
+      },
+      "zirconExactMagicTypeHandlers": [
+        {
+          "file": "ServerLibrary/Models/Magics/Wizard/ElectricShock.cs",
+          "attributeLine": 12,
+          "class": "ElectricShock",
+          "methods": [
+            "MagicCast",
+            "MagicComplete"
+          ]
+        }
+      ]
+    },
+    {
+      "crystal": {
+        "name": "GreatFireBall",
+        "spellId": 34,
+        "category": "Wizard",
+        "kind": "player",
+        "serverCallSites": [
+          {
+            "file": "Server/MirObjects/Hero/WizardHero.cs",
+            "line": 139,
+            "method": "ProcessAttack",
+            "snippet": "magic = GetMagic(Spell.GreatFireBall);"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 3502,
+            "method": "Magic",
+            "snippet": "case Spell.GreatFireBall:"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 5917,
+            "method": "CompleteMagic",
+            "snippet": "case Spell.GreatFireBall:"
+          },
+          {
+            "file": "Server/MirObjects/Monsters/SepHighWizard.cs",
+            "line": 79,
+            "method": "Attack",
+            "snippet": "Broadcast(new S.ObjectMagic { ObjectID = ObjectID, Direction = Direction, Location = CurrentLocation, Spell = Spell.GreatFireBall, TargetID = Target.ObjectID, Target = Target.CurrentLocation, Cast = true, Level = 3 });"
+          },
+          {
+            "file": "Server/MirObjects/Monsters/SepWizard.cs",
+            "line": 69,
+            "method": "Attack",
+            "snippet": "Broadcast(new S.ObjectMagic { ObjectID = ObjectID, Direction = Direction, Location = CurrentLocation, Spell = Spell.GreatFireBall, TargetID = Target.ObjectID, Target = Target.CurrentLocation, Cast = true, Level = 3 });"
+          }
+        ]
+      },
+      "zirconExactMagicTypeHandlers": [
+        {
+          "file": "ServerLibrary/Models/Magics/Wizard/GreatFireBall.cs",
+          "attributeLine": 9,
+          "class": "GreatFireBall",
+          "methods": [
+            "CanFly",
+            "MagicCast",
+            "MagicComplete",
+            "ModifyPowerAdditionner"
+          ]
+        }
+      ]
+    },
+    {
+      "crystal": {
+        "name": "HellFire",
+        "spellId": 35,
+        "category": "Wizard",
+        "kind": "player",
+        "serverCallSites": [
+          {
+            "file": "Server/MirEnvir/Map.cs",
+            "line": 875,
+            "method": "CompleteMagic",
+            "snippet": "case Spell.HellFire:"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 3525,
+            "method": null,
+            "snippet": "case Spell.HellFire:"
+          }
+        ]
+      },
+      "zirconExactMagicTypeHandlers": [
+        {
+          "file": "ServerLibrary/Models/Magics/Assassin/HellFire.cs",
+          "attributeLine": 10,
+          "class": "HellFire",
+          "methods": [
+            "MagicCast",
+            "MagicComplete",
+            "ModifyPowerAdditionner"
+          ]
+        }
+      ]
+    },
+    {
+      "crystal": {
+        "name": "ThunderBolt",
+        "spellId": 36,
+        "category": "Wizard",
+        "kind": "player",
+        "serverCallSites": [
+          {
+            "file": "Server/MirObjects/Hero/WizardHero.cs",
+            "line": 132,
+            "method": "ProcessAttack",
+            "snippet": "magic = GetMagic(Spell.ThunderBolt);"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 3528,
+            "method": null,
+            "snippet": "case Spell.ThunderBolt:"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 5918,
+            "method": "CompleteMagic",
+            "snippet": "case Spell.ThunderBolt:"
+          },
+          {
+            "file": "Server/MirObjects/Monsters/HumanWizard.cs",
+            "line": 35,
+            "method": "Attack",
+            "snippet": "Broadcast(new S.ObjectMagic { ObjectID = ObjectID, Direction = Direction, Location = CurrentLocation, Spell = Spell.ThunderBolt, TargetID = Target.ObjectID, Target = Target.CurrentLocation, Cast = true, Level = 3 });"
+          },
+          {
+            "file": "Shared/Globals.cs",
+            "line": 55,
+            "method": null,
+            "snippet": "Spell.ThunderBolt,"
+          }
+        ]
+      },
+      "zirconExactMagicTypeHandlers": [
+        {
+          "file": "ServerLibrary/Models/Magics/Wizard/ThunderBolt.cs",
+          "attributeLine": 9,
+          "class": "ThunderBolt",
+          "methods": [
+            "MagicCast",
+            "MagicComplete",
+            "ModifyPowerAdditionner"
+          ]
+        }
+      ]
+    },
+    {
+      "crystal": {
+        "name": "Teleport",
+        "spellId": 37,
+        "category": "Wizard",
+        "kind": "player",
+        "serverCallSites": [
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 3379,
+            "method": "MagicCost",
+            "snippet": "if (spell == Spell.Teleport || spell == Spell.Blink || spell == Spell.StormEscape)"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 3537,
+            "method": null,
+            "snippet": "case Spell.Teleport:"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 6096,
+            "method": null,
+            "snippet": "case Spell.Teleport:"
+          }
+        ]
+      },
+      "zirconExactMagicTypeHandlers": []
+    },
+    {
+      "crystal": {
+        "name": "FireBang",
+        "spellId": 38,
+        "category": "Wizard",
+        "kind": "player",
+        "serverCallSites": [
+          {
+            "file": "Server/MirEnvir/Map.cs",
+            "line": 952,
+            "method": "CompleteMagic",
+            "snippet": "case Spell.FireBang:"
+          },
+          {
+            "file": "Server/MirObjects/Hero/WizardHero.cs",
+            "line": 93,
+            "method": "ProcessAttack",
+            "snippet": "magic = GetMagic(Spell.FireBang);"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 3554,
+            "method": null,
+            "snippet": "case Spell.FireBang:"
+          },
+          {
+            "file": "Server/MirObjects/Monsters/SepHighWizard.cs",
+            "line": 66,
+            "method": "Attack",
+            "snippet": "Broadcast(new S.ObjectMagic { ObjectID = ObjectID, Direction = Direction, Location = CurrentLocation, Spell = Spell.FireBang, TargetID = Target.ObjectID, Target = Target.CurrentLocation, Cast = true, Level = 3 });"
+          },
+          {
+            "file": "Server/MirObjects/Monsters/SepWizard.cs",
+            "line": 63,
+            "method": "Attack",
+            "snippet": "Broadcast(new S.ObjectMagic { ObjectID = ObjectID, Direction = Direction, Location = CurrentLocation, Spell = Spell.FireBang, TargetID = Target.ObjectID, Target = Target.CurrentLocation, Cast = true, Level = 3 });"
+          },
+          {
+            "file": "Shared/Globals.cs",
+            "line": 56,
+            "method": null,
+            "snippet": "Spell.FireBang,"
+          }
+        ]
+      },
+      "zirconExactMagicTypeHandlers": [
+        {
+          "file": "ServerLibrary/Models/Magics/Wizard/FireBang.cs",
+          "attributeLine": 9,
+          "class": "FireBang",
+          "methods": [
+            "MagicAttackSuccess",
+            "MagicCast",
+            "MagicComplete",
+            "ModifyPowerAdditionner"
+          ]
+        }
+      ]
+    },
+    {
+      "crystal": {
+        "name": "FireWall",
+        "spellId": 39,
+        "category": "Wizard",
+        "kind": "player",
+        "serverCallSites": [
+          {
+            "file": "Server/MirEnvir/Map.cs",
+            "line": 1103,
+            "method": null,
+            "snippet": "case Spell.FireWall:"
+          },
+          {
+            "file": "Server/MirEnvir/Map.cs",
+            "line": 1121,
+            "method": null,
+            "snippet": "if (target.Race != ObjectType.Spell || ((SpellObject)target).Spell != Spell.FireWall) continue;"
+          },
+          {
+            "file": "Server/MirEnvir/Map.cs",
+            "line": 1131,
+            "method": null,
+            "snippet": "Spell = Spell.FireWall,"
+          },
+          {
+            "file": "Server/MirEnvir/Map.cs",
+            "line": 1160,
+            "method": null,
+            "snippet": "if (target.Race != ObjectType.Spell || ((SpellObject)target).Spell != Spell.FireWall) continue;"
+          },
+          {
+            "file": "Server/MirEnvir/Map.cs",
+            "line": 1170,
+            "method": null,
+            "snippet": "Spell = Spell.FireWall,"
+          },
+          {
+            "file": "Server/MirEnvir/Map.cs",
+            "line": 1914,
+            "method": null,
+            "snippet": "if (target.Race != ObjectType.Spell || (((SpellObject)target).Spell != Spell.FireWall && ((SpellObject)target).Spell != Spell.ExplosiveTrap)) continue;"
+          },
+          {
+            "file": "Server/MirEnvir/Map.cs",
+            "line": 1941,
+            "method": null,
+            "snippet": "if (target.Race != ObjectType.Spell || (((SpellObject)target).Spell != Spell.FireWall && ((SpellObject)target).Spell != Spell.ExplosiveTrap)) continue;"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 3565,
+            "method": null,
+            "snippet": "case Spell.FireWall:"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 4157,
+            "method": "FireWall",
+            "snippet": ".Where(so => so.Spell == Spell.FireWall && so.Caster == this)"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 5112,
+            "method": null,
+            "snippet": "case Spell.FireWall:"
+          },
+          {
+            "file": "Server/MirObjects/Monsters/ZumaMonster.cs",
+            "line": 135,
+            "method": "Walk",
+            "snippet": "if (((SpellObject)ob).Spell == Spell.FireWall) return false;"
+          },
+          {
+            "file": "Server/MirObjects/SpellObject.cs",
+            "line": 57,
+            "method": "Process",
+            "snippet": "if (Envir.Time > ExpireTime || ((Spell == Spell.FireWall || Spell == Spell.Portal || Spell == Spell.ExplosiveTrap || Spell == Spell.Reincarnation || Spell == Spell.HealingCircle) && Caster == null) || (Spell == Spell.TrapHexagon && Target != null) || (Spell == Spell.Trap && Target != null))"
+          },
+          {
+            "file": "Server/MirObjects/SpellObject.cs",
+            "line": 82,
+            "method": "Process",
+            "snippet": "if (Spell == Spell.FireWall)"
+          },
+          {
+            "file": "Server/MirObjects/SpellObject.cs",
+            "line": 128,
+            "method": "ProcessSpell",
+            "snippet": "case Spell.FireWall:"
+          },
+          {
+            "file": "Shared/Globals.cs",
+            "line": 57,
+            "method": null,
+            "snippet": "Spell.FireWall,"
+          }
+        ]
+      },
+      "zirconExactMagicTypeHandlers": [
+        {
+          "file": "ServerLibrary/Models/Magics/Wizard/FireWall.cs",
+          "attributeLine": 11,
+          "class": "FireWall",
+          "methods": [
+            "MagicAttackSuccess",
+            "MagicCast",
+            "MagicComplete",
+            "ModifyPowerAdditionner",
+            "ModifyPowerMultiplier"
+          ]
+        }
+      ]
+    },
+    {
+      "crystal": {
+        "name": "Lightning",
+        "spellId": 40,
+        "category": "Wizard",
+        "kind": "player",
+        "serverCallSites": [
+          {
+            "file": "Server/MirEnvir/Map.cs",
+            "line": 1189,
+            "method": null,
+            "snippet": "case Spell.Lightning:"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 3568,
+            "method": null,
+            "snippet": "case Spell.Lightning:"
+          }
+        ]
+      },
+      "zirconExactMagicTypeHandlers": [
+        {
+          "file": "ServerLibrary/Models/Magics/Wizard/Lightning.cs",
+          "attributeLine": 9,
+          "class": "Lightning",
+          "methods": [
+            "MagicAttackSuccess",
+            "MagicCast",
+            "MagicComplete",
+            "ModifyPowerAdditionner"
+          ]
+        }
+      ]
+    },
+    {
+      "crystal": {
+        "name": "FrostCrunch",
+        "spellId": 41,
+        "category": "Wizard",
+        "kind": "player",
+        "serverCallSites": [
+          {
+            "file": "Server/MirObjects/Hero/WizardHero.cs",
+            "line": 125,
+            "method": "ProcessAttack",
+            "snippet": "magic = GetMagic(Spell.FrostCrunch);"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 3503,
+            "method": "Magic",
+            "snippet": "case Spell.FrostCrunch:"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 5962,
+            "method": "CompleteMagic",
+            "snippet": "case Spell.FrostCrunch:"
+          },
+          {
+            "file": "Shared/Globals.cs",
+            "line": 58,
+            "method": null,
+            "snippet": "Spell.FrostCrunch,"
+          }
+        ]
+      },
+      "zirconExactMagicTypeHandlers": [
+        {
+          "file": "ServerLibrary/Models/Magics/Wizard/FrostCrunch.cs",
+          "attributeLine": 9,
+          "class": "FrostCrunch",
+          "methods": [
+            "CanFly",
+            "MagicCast",
+            "MagicComplete",
+            "ModifyPowerAdditionner"
+          ]
+        }
+      ]
+    },
+    {
+      "crystal": {
+        "name": "ThunderStorm",
+        "spellId": 42,
+        "category": "Wizard",
+        "kind": "player",
+        "serverCallSites": [
+          {
+            "file": "Server/MirEnvir/Map.cs",
+            "line": 1303,
+            "method": null,
+            "snippet": "case Spell.ThunderStorm:"
+          },
+          {
+            "file": "Server/MirEnvir/Map.cs",
+            "line": 1332,
+            "method": null,
+            "snippet": "target.Attacked(player, magic.Spell == Spell.ThunderStorm && !target.Undead ? value / 10 : value, DefenceType.MAC, false);"
+          },
+          {
+            "file": "Server/MirEnvir/Map.cs",
+            "line": 1375,
+            "method": null,
+            "snippet": "if (target.Attacked(player, magic.Spell == Spell.ThunderStorm && !target.Undead ? value / 10 : value, DefenceType.AC, false) <= 0)"
+          },
+          {
+            "file": "Server/MirObjects/Hero/WizardHero.cs",
+            "line": 76,
+            "method": "ProcessAttack",
+            "snippet": "magic = GetMagic(Spell.ThunderStorm);"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 3580,
+            "method": null,
+            "snippet": "case Spell.ThunderStorm:"
+          }
+        ]
+      },
+      "zirconExactMagicTypeHandlers": [
+        {
+          "file": "ServerLibrary/Models/Magics/Wizard/ThunderStorm.cs",
+          "attributeLine": 9,
+          "class": "ThunderStorm",
+          "methods": [
+            "MagicAttackSuccess",
+            "MagicCast",
+            "MagicComplete",
+            "ModifyPowerAdditionner"
+          ]
+        }
+      ]
+    },
+    {
+      "crystal": {
+        "name": "MagicShield",
+        "spellId": 43,
+        "category": "Wizard",
+        "kind": "player",
+        "serverCallSites": [
+          {
+            "file": "Server/MirObjects/Hero/WizardHero.cs",
+            "line": 25,
+            "method": "ProcessFriend",
+            "snippet": "UserMagic magic = GetMagic(Spell.MagicShield);"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 3590,
+            "method": null,
+            "snippet": "case Spell.MagicShield:"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 6198,
+            "method": null,
+            "snippet": "case Spell.MagicShield:"
+          }
+        ]
+      },
+      "zirconExactMagicTypeHandlers": [
+        {
+          "file": "ServerLibrary/Models/Magics/Wizard/MagicShield.cs",
+          "attributeLine": 10,
+          "class": "MagicShield",
+          "methods": [
+            "MagicCast",
+            "MagicComplete"
+          ]
+        }
+      ]
+    },
+    {
+      "crystal": {
+        "name": "TurnUndead",
+        "spellId": 44,
+        "category": "Wizard",
+        "kind": "player",
+        "serverCallSites": [
+          {
+            "file": "Server/MirObjects/Hero/WizardHero.cs",
+            "line": 103,
+            "method": "ProcessAttack",
+            "snippet": "magic = GetMagic(Spell.TurnUndead);"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 3596,
+            "method": null,
+            "snippet": "case Spell.TurnUndead:"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 6211,
+            "method": null,
+            "snippet": "case Spell.TurnUndead:"
+          }
+        ]
+      },
+      "zirconExactMagicTypeHandlers": []
+    },
+    {
+      "crystal": {
+        "name": "Vampirism",
+        "spellId": 45,
+        "category": "Wizard",
+        "kind": "player",
+        "serverCallSites": [
+          {
+            "file": "Server/MirObjects/Hero/WizardHero.cs",
+            "line": 118,
+            "method": "ProcessAttack",
+            "snippet": "magic = GetMagic(Spell.Vampirism);"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 3602,
+            "method": null,
+            "snippet": "case Spell.Vampirism:"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 6002,
+            "method": "CompleteMagic",
+            "snippet": "case Spell.Vampirism:"
+          },
+          {
+            "file": "Server/MirObjects/Monsters/SepHighWizard.cs",
+            "line": 73,
+            "method": "Attack",
+            "snippet": "Broadcast(new S.ObjectMagic { ObjectID = ObjectID, Direction = Direction, Location = CurrentLocation, Spell = Spell.Vampirism, TargetID = Target.ObjectID, Target = Target.CurrentLocation, Cast = true, Level = 3 });"
+          },
+          {
+            "file": "Shared/Globals.cs",
+            "line": 59,
+            "method": null,
+            "snippet": "Spell.Vampirism,"
+          }
+        ]
+      },
+      "zirconExactMagicTypeHandlers": []
+    },
+    {
+      "crystal": {
+        "name": "IceStorm",
+        "spellId": 46,
+        "category": "Wizard",
+        "kind": "player",
+        "serverCallSites": [
+          {
+            "file": "Server/MirEnvir/Map.cs",
+            "line": 951,
+            "method": "CompleteMagic",
+            "snippet": "case Spell.IceStorm:"
+          },
+          {
+            "file": "Server/MirObjects/Hero/WizardHero.cs",
+            "line": 86,
+            "method": "ProcessAttack",
+            "snippet": "magic = GetMagic(Spell.IceStorm);"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 3555,
+            "method": null,
+            "snippet": "case Spell.IceStorm:"
+          },
+          {
+            "file": "Shared/Globals.cs",
+            "line": 61,
+            "method": null,
+            "snippet": "Spell.IceStorm,"
+          }
+        ]
+      },
+      "zirconExactMagicTypeHandlers": [
+        {
+          "file": "ServerLibrary/Models/Magics/Wizard/IceStorm.cs",
+          "attributeLine": 9,
+          "class": "IceStorm",
+          "methods": [
+            "MagicAttackSuccess",
+            "MagicCast",
+            "MagicComplete",
+            "ModifyPowerAdditionner"
+          ]
+        }
+      ]
+    },
+    {
+      "crystal": {
+        "name": "FlameDisruptor",
+        "spellId": 47,
+        "category": "Wizard",
+        "kind": "player",
+        "serverCallSites": [
+          {
+            "file": "Server/MirObjects/Hero/WizardHero.cs",
+            "line": 111,
+            "method": "ProcessAttack",
+            "snippet": "magic = GetMagic(Spell.FlameDisruptor);"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 3593,
+            "method": null,
+            "snippet": "case Spell.FlameDisruptor:"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 5920,
+            "method": "CompleteMagic",
+            "snippet": "case Spell.FlameDisruptor:"
+          },
+          {
+            "file": "Shared/Globals.cs",
+            "line": 60,
+            "method": null,
+            "snippet": "Spell.FlameDisruptor,"
+          }
+        ]
+      },
+      "zirconExactMagicTypeHandlers": []
+    },
+    {
+      "crystal": {
+        "name": "Mirroring",
+        "spellId": 48,
+        "category": "Wizard",
+        "kind": "player",
+        "serverCallSites": [
+          {
+            "file": "Server/MirEnvir/Map.cs",
+            "line": 1611,
+            "method": null,
+            "snippet": "case Spell.Mirroring:"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 3638,
+            "method": null,
+            "snippet": "case Spell.Mirroring:"
+          }
+        ]
+      },
+      "zirconExactMagicTypeHandlers": []
+    },
+    {
+      "crystal": {
+        "name": "FlameField",
+        "spellId": 49,
+        "category": "Wizard",
+        "kind": "player",
+        "serverCallSites": [
+          {
+            "file": "Server/MirEnvir/Map.cs",
+            "line": 1304,
+            "method": null,
+            "snippet": "case Spell.FlameField:"
+          },
+          {
+            "file": "Server/MirObjects/Hero/WizardHero.cs",
+            "line": 69,
+            "method": "ProcessAttack",
+            "snippet": "magic = GetMagic(Spell.FlameField);"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 3581,
+            "method": null,
+            "snippet": "case Spell.FlameField:"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 3584,
+            "method": null,
+            "snippet": "if (spell == Spell.FlameField)"
+          },
+          {
+            "file": "Server/MirObjects/Monsters/SepHighWizard.cs",
+            "line": 58,
+            "method": "Attack",
+            "snippet": "Broadcast(new S.ObjectMagic { ObjectID = ObjectID, Direction = Direction, Location = CurrentLocation, Spell = Spell.FlameField, TargetID = Target.ObjectID, Target = Target.CurrentLocation });"
+          }
+        ]
+      },
+      "zirconExactMagicTypeHandlers": []
+    },
+    {
+      "crystal": {
+        "name": "Blizzard",
+        "spellId": 50,
+        "category": "Wizard",
+        "kind": "player",
+        "serverCallSites": [
+          {
+            "file": "Server/MirEnvir/Map.cs",
+            "line": 1632,
+            "method": null,
+            "snippet": "case Spell.Blizzard:"
+          },
+          {
+            "file": "Server/MirEnvir/Map.cs",
+            "line": 1658,
+            "method": null,
+            "snippet": "if (target.Race != ObjectType.Spell || ((SpellObject) target).Spell != Spell.Blizzard) continue;"
+          },
+          {
+            "file": "Server/MirEnvir/Map.cs",
+            "line": 1668,
+            "method": null,
+            "snippet": "Spell = Spell.Blizzard,"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 3641,
+            "method": null,
+            "snippet": "case Spell.Blizzard:"
+          },
+          {
+            "file": "Server/MirObjects/SpellObject.cs",
+            "line": 72,
+            "method": "Process",
+            "snippet": "if ((Spell == Spell.Blizzard || Spell == Spell.MeteorStrike) &&  Caster != null)"
+          },
+          {
+            "file": "Server/MirObjects/SpellObject.cs",
+            "line": 168,
+            "method": "ProcessSpell",
+            "snippet": "case Spell.Blizzard:"
+          },
+          {
+            "file": "Server/MirObjects/SpellObject.cs",
+            "line": 510,
+            "method": "GetInfo",
+            "snippet": "case Spell.Blizzard:"
+          },
+          {
+            "file": "Shared/Globals.cs",
+            "line": 63,
+            "method": null,
+            "snippet": "Spell.Blizzard,"
+          }
+        ]
+      },
+      "zirconExactMagicTypeHandlers": []
+    },
+    {
+      "crystal": {
+        "name": "MagicBooster",
+        "spellId": 51,
+        "category": "Wizard",
+        "kind": "player",
+        "serverCallSites": [
+          {
+            "file": "Server/MirObjects/Hero/WizardHero.cs",
+            "line": 32,
+            "method": "ProcessFriend",
+            "snippet": "magic = GetMagic(Spell.MagicBooster);"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 3599,
+            "method": null,
+            "snippet": "case Spell.MagicBooster:"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 6228,
+            "method": null,
+            "snippet": "case Spell.MagicBooster:"
+          }
+        ]
+      },
+      "zirconExactMagicTypeHandlers": []
+    },
+    {
+      "crystal": {
+        "name": "MeteorStrike",
+        "spellId": 52,
+        "category": "Wizard",
+        "kind": "player",
+        "serverCallSites": [
+          {
+            "file": "Server/MirEnvir/Map.cs",
+            "line": 1693,
+            "method": null,
+            "snippet": "case Spell.MeteorStrike:"
+          },
+          {
+            "file": "Server/MirEnvir/Map.cs",
+            "line": 1719,
+            "method": null,
+            "snippet": "if (target.Race != ObjectType.Spell || ((SpellObject)target).Spell != Spell.MeteorStrike) continue;"
+          },
+          {
+            "file": "Server/MirEnvir/Map.cs",
+            "line": 1729,
+            "method": null,
+            "snippet": "Spell = Spell.MeteorStrike,"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 3644,
+            "method": null,
+            "snippet": "case Spell.MeteorStrike:"
+          },
+          {
+            "file": "Server/MirObjects/SpellObject.cs",
+            "line": 72,
+            "method": "Process",
+            "snippet": "if ((Spell == Spell.Blizzard || Spell == Spell.MeteorStrike) &&  Caster != null)"
+          },
+          {
+            "file": "Server/MirObjects/SpellObject.cs",
+            "line": 185,
+            "method": "ProcessSpell",
+            "snippet": "case Spell.MeteorStrike:"
+          },
+          {
+            "file": "Server/MirObjects/SpellObject.cs",
+            "line": 511,
+            "method": "GetInfo",
+            "snippet": "case Spell.MeteorStrike:"
+          },
+          {
+            "file": "Shared/Globals.cs",
+            "line": 62,
+            "method": null,
+            "snippet": "Spell.MeteorStrike,"
+          }
+        ]
+      },
+      "zirconExactMagicTypeHandlers": []
+    },
+    {
+      "crystal": {
+        "name": "IceThrust",
+        "spellId": 53,
+        "category": "Wizard",
+        "kind": "player",
+        "serverCallSites": [
+          {
+            "file": "Server/MirEnvir/Map.cs",
+            "line": 1497,
+            "method": null,
+            "snippet": "case Spell.IceThrust:"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 3647,
+            "method": null,
+            "snippet": "case Spell.IceThrust:"
+          }
+        ]
+      },
+      "zirconExactMagicTypeHandlers": []
+    },
+    {
+      "crystal": {
+        "name": "FastMove",
+        "spellId": 54,
+        "category": "Wizard",
+        "kind": "player",
+        "serverCallSites": []
+      },
+      "zirconExactMagicTypeHandlers": []
+    },
+    {
+      "crystal": {
+        "name": "StormEscape",
+        "spellId": 55,
+        "category": "Wizard",
+        "kind": "player",
+        "serverCallSites": [
+          {
+            "file": "Server/MirEnvir/Map.cs",
+            "line": 1306,
+            "method": null,
+            "snippet": "case Spell.StormEscape:"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 3379,
+            "method": "MagicCost",
+            "snippet": "if (spell == Spell.Teleport || spell == Spell.Blink || spell == Spell.StormEscape)"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 3582,
+            "method": null,
+            "snippet": "case Spell.StormEscape:"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 3586,
+            "method": null,
+            "snippet": "if (spell == Spell.StormEscape)"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 6080,
+            "method": null,
+            "snippet": "case Spell.StormEscape:"
+          }
+        ]
+      },
+      "zirconExactMagicTypeHandlers": []
+    },
+    {
+      "crystal": {
+        "name": "Healing",
+        "spellId": 61,
+        "category": "Taoist",
+        "kind": "player",
+        "serverCallSites": [
+          {
+            "file": "Server/MirEnvir/Map.cs",
+            "line": 577,
+            "method": "CreateSafeZone",
+            "snippet": "Spell = Spell.Healing,"
+          },
+          {
+            "file": "Server/MirObjects/Hero/TaoistHero.cs",
+            "line": 53,
+            "method": "ProcessFriend",
+            "snippet": "magic = GetMagic(Spell.Healing);"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 3506,
+            "method": "Magic",
+            "snippet": "case Spell.Healing:"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 6018,
+            "method": "CompleteMagic",
+            "snippet": "case Spell.Healing:"
+          },
+          {
+            "file": "Server/MirObjects/SpellObject.cs",
+            "line": 137,
+            "method": "ProcessSpell",
+            "snippet": "case Spell.Healing: //SafeZone"
+          },
+          {
+            "file": "Server/MirObjects/SpellObject.cs",
+            "line": 507,
+            "method": "GetInfo",
+            "snippet": "case Spell.Healing:"
+          }
+        ]
+      },
+      "zirconExactMagicTypeHandlers": []
+    },
+    {
+      "crystal": {
+        "name": "SpiritSword",
+        "spellId": 62,
+        "category": "Taoist",
+        "kind": "player",
+        "serverCallSites": [
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 2312,
+            "method": "RefreshSkills",
+            "snippet": "case Spell.SpiritSword:"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 6821,
+            "method": "CompleteAttack",
+            "snippet": "case Spell.SpiritSword:"
+          }
+        ]
+      },
+      "zirconExactMagicTypeHandlers": [
+        {
+          "file": "ServerLibrary/Models/Magics/Taoist/SpiritSword.cs",
+          "attributeLine": 6,
+          "class": "SpiritSword",
+          "methods": [
+            "AttackCast",
+            "GetPassiveStats"
+          ]
+        }
+      ]
+    },
+    {
+      "crystal": {
+        "name": "Poisoning",
+        "spellId": 63,
+        "category": "Taoist",
+        "kind": "player",
+        "serverCallSites": [
+          {
+            "file": "Server/MirObjects/Hero/TaoistHero.cs",
+            "line": 107,
+            "method": "ProcessAttack",
+            "snippet": "magic = GetMagic(Spell.Poisoning);"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 3522,
+            "method": null,
+            "snippet": "case Spell.Poisoning:"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 6043,
+            "method": null,
+            "snippet": "case Spell.Poisoning:"
+          },
+          {
+            "file": "Server/MirObjects/Monsters/SepHighTaoist.cs",
+            "line": 47,
+            "method": "Attack",
+            "snippet": "Broadcast(new S.ObjectMagic { ObjectID = ObjectID, Direction = Direction, Location = CurrentLocation, Spell = Spell.Poisoning, TargetID = Target.ObjectID, Target = Target.CurrentLocation, Cast = true, Level = 3 });"
+          },
+          {
+            "file": "Server/MirObjects/Monsters/SepHighTaoist.cs",
+            "line": 62,
+            "method": "Attack",
+            "snippet": "Broadcast(new S.ObjectMagic { ObjectID = ObjectID, Direction = Direction, Location = CurrentLocation, Spell = Spell.Poisoning, TargetID = Target.ObjectID, Target = Target.CurrentLocation, Cast = true, Level = 3 });"
+          },
+          {
+            "file": "Server/MirObjects/Monsters/SepHighTaoist.cs",
+            "line": 76,
+            "method": "Attack",
+            "snippet": "Broadcast(new S.ObjectMagic { ObjectID = ObjectID, Direction = Direction, Location = CurrentLocation, Spell = Spell.Poisoning, TargetID = Target.ObjectID, Target = Target.CurrentLocation, Cast = true, Level = 3 });"
+          },
+          {
+            "file": "Server/MirObjects/Monsters/SepTaoist.cs",
+            "line": 49,
+            "method": "Attack",
+            "snippet": "Broadcast(new S.ObjectMagic { ObjectID = ObjectID, Direction = Direction, Location = CurrentLocation, Spell = Spell.Poisoning, TargetID = Target.ObjectID, Target = Target.CurrentLocation, Cast = true, Level = 3 });"
+          },
+          {
+            "file": "Server/MirObjects/Monsters/SepTaoist.cs",
+            "line": 64,
+            "method": "Attack",
+            "snippet": "Broadcast(new S.ObjectMagic { ObjectID = ObjectID, Direction = Direction, Location = CurrentLocation, Spell = Spell.Poisoning, TargetID = Target.ObjectID, Target = Target.CurrentLocation, Cast = true, Level = 3 });"
+          },
+          {
+            "file": "Server/MirObjects/Monsters/SepTaoist.cs",
+            "line": 78,
+            "method": "Attack",
+            "snippet": "Broadcast(new S.ObjectMagic { ObjectID = ObjectID, Direction = Direction, Location = CurrentLocation, Spell = Spell.Poisoning, TargetID = Target.ObjectID, Target = Target.CurrentLocation, Cast = true, Level = 3 });"
+          }
+        ]
+      },
+      "zirconExactMagicTypeHandlers": []
+    },
+    {
+      "crystal": {
+        "name": "SoulFireBall",
+        "spellId": 64,
+        "category": "Taoist",
+        "kind": "player",
+        "serverCallSites": [
+          {
+            "file": "Server/MirObjects/Hero/TaoistHero.cs",
+            "line": 134,
+            "method": "ProcessAttack",
+            "snippet": "magic = GetMagic(Spell.SoulFireBall);"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 3531,
+            "method": null,
+            "snippet": "case Spell.SoulFireBall:"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 5919,
+            "method": "CompleteMagic",
+            "snippet": "case Spell.SoulFireBall:"
+          },
+          {
+            "file": "Server/MirObjects/Monsters/SepHighTaoist.cs",
+            "line": 128,
+            "method": "Attack",
+            "snippet": "Broadcast(new S.ObjectMagic { ObjectID = ObjectID, Direction = Direction, Location = CurrentLocation, Spell = Spell.SoulFireBall, TargetID = Target.ObjectID, Target = Target.CurrentLocation, Cast = true, Level = 3 });"
+          },
+          {
+            "file": "Server/MirObjects/Monsters/SepTaoist.cs",
+            "line": 97,
+            "method": "Attack",
+            "snippet": "Broadcast(new S.ObjectMagic { ObjectID = ObjectID, Direction = Direction, Location = CurrentLocation, Spell = Spell.SoulFireBall, TargetID = Target.ObjectID, Target = Target.CurrentLocation, Cast = true, Level = 3 });"
+          },
+          {
+            "file": "Shared/Globals.cs",
+            "line": 64,
+            "method": null,
+            "snippet": "Spell.SoulFireBall,"
+          }
+        ]
+      },
+      "zirconExactMagicTypeHandlers": []
+    },
+    {
+      "crystal": {
+        "name": "SummonSkeleton",
+        "spellId": 65,
+        "category": "Taoist",
+        "kind": "player",
+        "serverCallSites": [
+          {
+            "file": "Server/MirEnvir/Map.cs",
+            "line": 916,
+            "method": "CompleteMagic",
+            "snippet": "case Spell.SummonSkeleton:"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 3534,
+            "method": null,
+            "snippet": "case Spell.SummonSkeleton:"
+          }
+        ]
+      },
+      "zirconExactMagicTypeHandlers": [
+        {
+          "file": "ServerLibrary/Models/Magics/Taoist/SummonSkeleton.cs",
+          "attributeLine": 10,
+          "class": "SummonSkeleton",
+          "methods": [
+            "MagicCast",
+            "MagicComplete"
+          ]
+        }
+      ]
+    },
+    {
+      "crystal": {
+        "name": "Hiding",
+        "spellId": 67,
+        "category": "Taoist",
+        "kind": "player",
+        "serverCallSites": [
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 3541,
+            "method": null,
+            "snippet": "case Spell.Hiding:"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 6135,
+            "method": null,
+            "snippet": "case Spell.Hiding:"
+          }
+        ]
+      },
+      "zirconExactMagicTypeHandlers": []
+    },
+    {
+      "crystal": {
+        "name": "MassHiding",
+        "spellId": 68,
+        "category": "Taoist",
+        "kind": "player",
+        "serverCallSites": [
+          {
+            "file": "Server/MirEnvir/Map.cs",
+            "line": 997,
+            "method": null,
+            "snippet": "case Spell.MassHiding:"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 3558,
+            "method": null,
+            "snippet": "case Spell.MassHiding:"
+          }
+        ]
+      },
+      "zirconExactMagicTypeHandlers": []
+    },
+    {
+      "crystal": {
+        "name": "SoulShield",
+        "spellId": 69,
+        "category": "Taoist",
+        "kind": "player",
+        "serverCallSites": [
+          {
+            "file": "Server/MirEnvir/Map.cs",
+            "line": 1046,
+            "method": null,
+            "snippet": "case Spell.SoulShield:"
+          },
+          {
+            "file": "Server/MirEnvir/Map.cs",
+            "line": 1050,
+            "method": null,
+            "snippet": "BuffType type = magic.Spell == Spell.SoulShield ? BuffType.SoulShield : BuffType.BlessedArmour;"
+          },
+          {
+            "file": "Server/MirObjects/Hero/TaoistHero.cs",
+            "line": 65,
+            "method": "ProcessFriend",
+            "snippet": "magic = GetMagic(Spell.SoulShield);"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 3561,
+            "method": null,
+            "snippet": "case Spell.SoulShield:"
+          }
+        ]
+      },
+      "zirconExactMagicTypeHandlers": []
+    },
+    {
+      "crystal": {
+        "name": "Revelation",
+        "spellId": 70,
+        "category": "Taoist",
+        "kind": "player",
+        "serverCallSites": [
+          {
+            "file": "Server/MirObjects/Hero/TaoistHero.cs",
+            "line": 126,
+            "method": "ProcessAttack",
+            "snippet": "magic = GetMagic(Spell.Revelation);"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 3620,
+            "method": null,
+            "snippet": "case Spell.Revelation:"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 6284,
+            "method": null,
+            "snippet": "case Spell.Revelation:"
+          }
+        ]
+      },
+      "zirconExactMagicTypeHandlers": []
+    },
+    {
+      "crystal": {
+        "name": "BlessedArmour",
+        "spellId": 71,
+        "category": "Taoist",
+        "kind": "player",
+        "serverCallSites": [
+          {
+            "file": "Server/MirEnvir/Map.cs",
+            "line": 1047,
+            "method": null,
+            "snippet": "case Spell.BlessedArmour:"
+          },
+          {
+            "file": "Server/MirObjects/Hero/TaoistHero.cs",
+            "line": 72,
+            "method": "ProcessFriend",
+            "snippet": "magic = GetMagic(Spell.BlessedArmour);"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 3562,
+            "method": null,
+            "snippet": "case Spell.BlessedArmour:"
+          }
+        ]
+      },
+      "zirconExactMagicTypeHandlers": []
+    },
+    {
+      "crystal": {
+        "name": "EnergyRepulsor",
+        "spellId": 72,
+        "category": "Taoist",
+        "kind": "player",
+        "serverCallSites": [
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 3515,
+            "method": "Magic",
+            "snippet": "case Spell.EnergyRepulsor:"
+          }
+        ]
+      },
+      "zirconExactMagicTypeHandlers": []
+    },
+    {
+      "crystal": {
+        "name": "TrapHexagon",
+        "spellId": 73,
+        "category": "Taoist",
+        "kind": "player",
+        "serverCallSites": [
+          {
+            "file": "Server/MirEnvir/Map.cs",
+            "line": 546,
+            "method": "CreateSafeZone",
+            "snippet": "Spell = Spell.TrapHexagon,"
+          },
+          {
+            "file": "Server/MirEnvir/Map.cs",
+            "line": 1754,
+            "method": null,
+            "snippet": "case Spell.TrapHexagon:"
+          },
+          {
+            "file": "Server/MirEnvir/Map.cs",
+            "line": 1814,
+            "method": null,
+            "snippet": "Spell = Spell.TrapHexagon,"
+          },
+          {
+            "file": "Server/MirObjects/ConquestObject.cs",
+            "line": 687,
+            "method": "CreateZone",
+            "snippet": "Spell = Spell.TrapHexagon,"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 3656,
+            "method": null,
+            "snippet": "case Spell.TrapHexagon:"
+          },
+          {
+            "file": "Server/MirObjects/SpellObject.cs",
+            "line": 57,
+            "method": "Process",
+            "snippet": "if (Envir.Time > ExpireTime || ((Spell == Spell.FireWall || Spell == Spell.Portal || Spell == Spell.ExplosiveTrap || Spell == Spell.Reincarnation || Spell == Spell.HealingCircle) && Caster == null) || (Spell == Spell.TrapHexagon && Target != null) || (Spell == Spell.Trap && Target != null))"
+          },
+          {
+            "file": "Server/MirObjects/SpellObject.cs",
+            "line": 59,
+            "method": "Process",
+            "snippet": "if (Spell == Spell.TrapHexagon && Target != null || Spell == Spell.Trap && Target != null)"
+          }
+        ]
+      },
+      "zirconExactMagicTypeHandlers": []
+    },
+    {
+      "crystal": {
+        "name": "Purification",
+        "spellId": 74,
+        "category": "Taoist",
+        "kind": "player",
+        "serverCallSites": [
+          {
+            "file": "Server/MirObjects/Hero/TaoistHero.cs",
+            "line": 36,
+            "method": "ProcessFriend",
+            "snippet": "magic = GetMagic(Spell.Purification);"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 3608,
+            "method": null,
+            "snippet": "case Spell.Purification:"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 6246,
+            "method": null,
+            "snippet": "case Spell.Purification:"
+          }
+        ]
+      },
+      "zirconExactMagicTypeHandlers": [
+        {
+          "file": "ServerLibrary/Models/Magics/Taoist/Purification.cs",
+          "attributeLine": 9,
+          "class": "Purification",
+          "methods": [
+            "MagicCast",
+            "MagicComplete"
+          ]
+        }
+      ]
+    },
+    {
+      "crystal": {
+        "name": "MassHealing",
+        "spellId": 75,
+        "category": "Taoist",
+        "kind": "player",
+        "serverCallSites": [
+          {
+            "file": "Server/MirEnvir/Map.cs",
+            "line": 1255,
+            "method": null,
+            "snippet": "case Spell.MassHealing:"
+          },
+          {
+            "file": "Server/MirObjects/Hero/TaoistHero.cs",
+            "line": 46,
+            "method": "ProcessFriend",
+            "snippet": "magic = GetMagic(Spell.MassHealing);"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 3574,
+            "method": null,
+            "snippet": "case Spell.MassHealing:"
+          },
+          {
+            "file": "Server/MirObjects/Monsters/SepHighTaoist.cs",
+            "line": 98,
+            "method": "Attack",
+            "snippet": "Broadcast(new S.ObjectMagic { ObjectID = ObjectID, Direction = Direction, Location = CurrentLocation, Spell = Spell.MassHealing, TargetID = ObjectID, Target = CurrentLocation, Cast = true, Level = 3 });"
+          }
+        ]
+      },
+      "zirconExactMagicTypeHandlers": []
+    },
+    {
+      "crystal": {
+        "name": "Hallucination",
+        "spellId": 76,
+        "category": "Taoist",
+        "kind": "player",
+        "serverCallSites": [
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 3669,
+            "method": null,
+            "snippet": "case Spell.Hallucination:"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 6342,
+            "method": null,
+            "snippet": "case Spell.Hallucination:"
+          }
+        ]
+      },
+      "zirconExactMagicTypeHandlers": []
+    },
+    {
+      "crystal": {
+        "name": "UltimateEnhancer",
+        "spellId": 77,
+        "category": "Taoist",
+        "kind": "player",
+        "serverCallSites": [
+          {
+            "file": "Server/MirObjects/Hero/TaoistHero.cs",
+            "line": 79,
+            "method": "ProcessFriend",
+            "snippet": "magic = GetMagic(Spell.UltimateEnhancer);"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 3675,
+            "method": null,
+            "snippet": "case Spell.UltimateEnhancer:"
+          }
+        ]
+      },
+      "zirconExactMagicTypeHandlers": []
+    },
+    {
+      "crystal": {
+        "name": "SummonShinsu",
+        "spellId": 78,
+        "category": "Taoist",
+        "kind": "player",
+        "serverCallSites": [
+          {
+            "file": "Server/MirEnvir/Map.cs",
+            "line": 917,
+            "method": "CompleteMagic",
+            "snippet": "case Spell.SummonShinsu:"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 3605,
+            "method": null,
+            "snippet": "case Spell.SummonShinsu:"
+          },
+          {
+            "file": "Server/MirObjects/Monsters/SepHighTaoist.cs",
+            "line": 120,
+            "method": "Attack",
+            "snippet": "Broadcast(new S.ObjectMagic { ObjectID = ObjectID, Direction = Direction, Location = CurrentLocation, Spell = Spell.SummonShinsu, TargetID = Target.ObjectID, Target = Target.CurrentLocation, Cast = true, Level = 3 });"
+          }
+        ]
+      },
+      "zirconExactMagicTypeHandlers": [
+        {
+          "file": "ServerLibrary/Models/Magics/Taoist/SummonShinsu.cs",
+          "attributeLine": 10,
+          "class": "SummonShinsu",
+          "methods": [
+            "MagicCast",
+            "MagicComplete"
+          ]
+        }
+      ]
+    },
+    {
+      "crystal": {
+        "name": "Reincarnation",
+        "spellId": 79,
+        "category": "Taoist",
+        "kind": "player",
+        "serverCallSites": [
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 3659,
+            "method": null,
+            "snippet": "case Spell.Reincarnation:"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 4666,
+            "method": "Reincarnation",
+            "snippet": "Spell = Spell.Reincarnation,"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 6302,
+            "method": null,
+            "snippet": "case Spell.Reincarnation:"
+          },
+          {
+            "file": "Server/MirObjects/SpellObject.cs",
+            "line": 57,
+            "method": "Process",
+            "snippet": "if (Envir.Time > ExpireTime || ((Spell == Spell.FireWall || Spell == Spell.Portal || Spell == Spell.ExplosiveTrap || Spell == Spell.Reincarnation || Spell == Spell.HealingCircle) && Caster == null) || (Spell == Spell.TrapHexagon && Target != null) || (Spell == Spell.Trap && Target != null))"
+          },
+          {
+            "file": "Server/MirObjects/SpellObject.cs",
+            "line": 66,
+            "method": "Process",
+            "snippet": "if (Spell == Spell.Reincarnation && Caster != null)"
+          },
+          {
+            "file": "Server/MirObjects/SpellObject.cs",
+            "line": 92,
+            "method": "Process",
+            "snippet": "if (Spell == Spell.Reincarnation && !((HumanObject)Caster).ActiveReincarnation)"
+          },
+          {
+            "file": "Server/MirObjects/SpellObject.cs",
+            "line": 583,
+            "method": "Despawn",
+            "snippet": "if (Spell == Spell.Reincarnation && Caster != null && Caster.Node != null)"
+          }
+        ]
+      },
+      "zirconExactMagicTypeHandlers": []
+    },
+    {
+      "crystal": {
+        "name": "SummonHolyDeva",
+        "spellId": 80,
+        "category": "Taoist",
+        "kind": "player",
+        "serverCallSites": [
+          {
+            "file": "Server/MirEnvir/Map.cs",
+            "line": 918,
+            "method": "CompleteMagic",
+            "snippet": "case Spell.SummonHolyDeva:"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 3666,
+            "method": null,
+            "snippet": "case Spell.SummonHolyDeva:"
+          }
+        ]
+      },
+      "zirconExactMagicTypeHandlers": []
+    },
+    {
+      "crystal": {
+        "name": "Curse",
+        "spellId": 81,
+        "category": "Taoist",
+        "kind": "player",
+        "serverCallSites": [
+          {
+            "file": "Server/MirEnvir/Map.cs",
+            "line": 1837,
+            "method": null,
+            "snippet": "case Spell.Curse:"
+          },
+          {
+            "file": "Server/MirObjects/Hero/TaoistHero.cs",
+            "line": 117,
+            "method": "ProcessAttack",
+            "snippet": "magic = GetMagic(Spell.Curse);"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 3663,
+            "method": null,
+            "snippet": "case Spell.Curse:"
+          },
+          {
+            "file": "Server/MirObjects/Monsters/SepHighTaoist.cs",
+            "line": 91,
+            "method": "Attack",
+            "snippet": "Broadcast(new S.ObjectMagic { ObjectID = ObjectID, Direction = Direction, Location = CurrentLocation, Spell = Spell.Curse, TargetID = Target.ObjectID, Target = Target.CurrentLocation, Cast = true, Level = 3 });"
+          },
+          {
+            "file": "Server/MirObjects/Monsters/SepTaoist.cs",
+            "line": 92,
+            "method": "Attack",
+            "snippet": "Broadcast(new S.ObjectMagic { ObjectID = ObjectID, Direction = Direction, Location = CurrentLocation, Spell = Spell.Curse, TargetID = Target.ObjectID, Target = Target.CurrentLocation, Cast = true, Level = 3 });"
+          }
+        ]
+      },
+      "zirconExactMagicTypeHandlers": []
+    },
+    {
+      "crystal": {
+        "name": "Plague",
+        "spellId": 82,
+        "category": "Taoist",
+        "kind": "player",
+        "serverCallSites": [
+          {
+            "file": "Server/MirEnvir/Map.cs",
+            "line": 1972,
+            "method": null,
+            "snippet": "case Spell.Plague:"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 3392,
+            "method": "MagicCost",
+            "snippet": "if (spell == Spell.Plague)"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 3678,
+            "method": null,
+            "snippet": "case Spell.Plague:"
+          }
+        ]
+      },
+      "zirconExactMagicTypeHandlers": []
+    },
+    {
+      "crystal": {
+        "name": "PoisonCloud",
+        "spellId": 83,
+        "category": "Taoist",
+        "kind": "player",
+        "serverCallSites": [
+          {
+            "file": "Server/MirEnvir/Map.cs",
+            "line": 1436,
+            "method": null,
+            "snippet": "case Spell.PoisonCloud:"
+          },
+          {
+            "file": "Server/MirEnvir/Map.cs",
+            "line": 1462,
+            "method": null,
+            "snippet": "if (target.Race != ObjectType.Spell || ((SpellObject)target).Spell != Spell.PoisonCloud) continue;"
+          },
+          {
+            "file": "Server/MirEnvir/Map.cs",
+            "line": 1472,
+            "method": null,
+            "snippet": "Spell = Spell.PoisonCloud,"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 3623,
+            "method": null,
+            "snippet": "case Spell.PoisonCloud:"
+          },
+          {
+            "file": "Server/MirObjects/SpellObject.cs",
+            "line": 150,
+            "method": "ProcessSpell",
+            "snippet": "case Spell.PoisonCloud:"
+          },
+          {
+            "file": "Server/MirObjects/SpellObject.cs",
+            "line": 509,
+            "method": "GetInfo",
+            "snippet": "case Spell.PoisonCloud:"
+          }
+        ]
+      },
+      "zirconExactMagicTypeHandlers": [
+        {
+          "file": "ServerLibrary/Models/Magics/Taoist/PoisonCloud.cs",
+          "attributeLine": 9,
+          "class": "PoisonCloud",
+          "methods": [
+            "MagicCast",
+            "MagicComplete"
+          ]
+        }
+      ]
+    },
+    {
+      "crystal": {
+        "name": "EnergyShield",
+        "spellId": 84,
+        "category": "Taoist",
+        "kind": "player",
+        "serverCallSites": [
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 3672,
+            "method": null,
+            "snippet": "case Spell.EnergyShield:"
+          }
+        ]
+      },
+      "zirconExactMagicTypeHandlers": []
+    },
+    {
+      "crystal": {
+        "name": "PetEnhancer",
+        "spellId": 85,
+        "category": "Taoist",
+        "kind": "player",
+        "serverCallSites": [
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 3653,
+            "method": null,
+            "snippet": "case Spell.PetEnhancer:"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 6363,
+            "method": null,
+            "snippet": "case Spell.PetEnhancer:"
+          }
+        ]
+      },
+      "zirconExactMagicTypeHandlers": []
+    },
+    {
+      "crystal": {
+        "name": "HealingCircle",
+        "spellId": 86,
+        "category": "Taoist",
+        "kind": "player",
+        "serverCallSites": [
+          {
+            "file": "Server/MirEnvir/Map.cs",
+            "line": 2297,
+            "method": null,
+            "snippet": "case Spell.HealingCircle:"
+          },
+          {
+            "file": "Server/MirEnvir/Map.cs",
+            "line": 2323,
+            "method": null,
+            "snippet": "if (target.Race != ObjectType.Spell || ((SpellObject)target).Spell != Spell.HealingCircle) continue;"
+          },
+          {
+            "file": "Server/MirEnvir/Map.cs",
+            "line": 2333,
+            "method": null,
+            "snippet": "Spell = Spell.HealingCircle,"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 3754,
+            "method": null,
+            "snippet": "case Spell.HealingCircle:"
+          },
+          {
+            "file": "Server/MirObjects/SpellObject.cs",
+            "line": 57,
+            "method": "Process",
+            "snippet": "if (Envir.Time > ExpireTime || ((Spell == Spell.FireWall || Spell == Spell.Portal || Spell == Spell.ExplosiveTrap || Spell == Spell.Reincarnation || Spell == Spell.HealingCircle) && Caster == null) || (Spell == Spell.TrapHexagon && Target != null) || (Spell == Spell.Trap && Target != null))"
+          },
+          {
+            "file": "Server/MirObjects/SpellObject.cs",
+            "line": 105,
+            "method": "Process",
+            "snippet": "if (Caster != null && Spell == Spell.HealingCircle && FindObject(Caster.ObjectID, 20) == null)"
+          },
+          {
+            "file": "Server/MirObjects/SpellObject.cs",
+            "line": 379,
+            "method": null,
+            "snippet": "case Spell.HealingCircle:"
+          },
+          {
+            "file": "Server/MirObjects/SpellObject.cs",
+            "line": 521,
+            "method": "GetInfo",
+            "snippet": "case Spell.HealingCircle:"
+          }
+        ]
+      },
+      "zirconExactMagicTypeHandlers": []
+    },
+    {
+      "crystal": {
+        "name": "FatalSword",
+        "spellId": 91,
+        "category": "Assassin",
+        "kind": "player",
+        "serverCallSites": [
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 2307,
+            "method": "RefreshSkills",
+            "snippet": "// case Spell.FatalSword:"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 3064,
+            "method": null,
+            "snippet": "magic = GetMagic(Spell.FatalSword);"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 6798,
+            "method": "CompleteAttack",
+            "snippet": "var magic = GetMagic(Spell.FatalSword);"
+          }
+        ]
+      },
+      "zirconExactMagicTypeHandlers": []
+    },
+    {
+      "crystal": {
+        "name": "DoubleSlash",
+        "spellId": 92,
+        "category": "Assassin",
+        "kind": "player",
+        "serverCallSites": [
+          {
+            "file": "Server/MirObjects/Hero/AssassinHero.cs",
+            "line": 14,
+            "method": "Load",
+            "snippet": "if (HasMagic(Spell.DoubleSlash))"
+          },
+          {
+            "file": "Server/MirObjects/Hero/AssassinHero.cs",
+            "line": 81,
+            "method": "Attack",
+            "snippet": "spell = Spell.DoubleSlash;"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 2909,
+            "method": "Attack",
+            "snippet": "case Spell.DoubleSlash:"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 3153,
+            "method": null,
+            "snippet": "case Spell.DoubleSlash:"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 3154,
+            "method": null,
+            "snippet": "magic = GetMagic(Spell.DoubleSlash);"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 8523,
+            "method": "SpellToggle",
+            "snippet": "case Spell.DoubleSlash:"
+          },
+          {
+            "file": "Server/MirObjects/Monsters/SepAssassin.cs",
+            "line": 188,
+            "method": "Attack",
+            "snippet": "Broadcast(new S.ObjectAttack { ObjectID = ObjectID, Direction = Direction, Location = CurrentLocation, Spell = Spell.DoubleSlash });"
+          },
+          {
+            "file": "Server/MirObjects/Monsters/SepHighAssassin.cs",
+            "line": 234,
+            "method": "Attack",
+            "snippet": "Broadcast(new S.ObjectAttack { ObjectID = ObjectID, Direction = Direction, Location = CurrentLocation, Spell = Spell.DoubleSlash });"
+          },
+          {
+            "file": "Server/MirObjects/PlayerObject.cs",
+            "line": 1229,
+            "method": "StartGameSuccess",
+            "snippet": "if (Info.DoubleSlash) Enqueue(new S.SpellToggle { ObjectID = ObjectID, Spell = Spell.DoubleSlash, CanUse = true });"
+          },
+          {
+            "file": "Server/MirObjects/PlayerObject.cs",
+            "line": 1613,
+            "method": "AddObserver",
+            "snippet": "if (Info.DoubleSlash) Enqueue(new S.SpellToggle { ObjectID = ObjectID, Spell = Spell.DoubleSlash, CanUse = true }, observer);"
+          }
+        ]
+      },
+      "zirconExactMagicTypeHandlers": []
+    },
+    {
+      "crystal": {
+        "name": "Haste",
+        "spellId": 93,
+        "category": "Assassin",
+        "kind": "player",
+        "serverCallSites": [
+          {
+            "file": "Server/MirObjects/Hero/AssassinHero.cs",
+            "line": 39,
+            "method": "ProcessFriend",
+            "snippet": "UserMagic magic = GetMagic(Spell.Haste);"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 3544,
+            "method": null,
+            "snippet": "case Spell.Haste:"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 6149,
+            "method": null,
+            "snippet": "case Spell.Haste:"
+          }
+        ]
+      },
+      "zirconExactMagicTypeHandlers": []
+    },
+    {
+      "crystal": {
+        "name": "FlashDash",
+        "spellId": 94,
+        "category": "Assassin",
+        "kind": "player",
+        "serverCallSites": [
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 3457,
+            "method": "Magic",
+            "snippet": "if (spell != Spell.ShoulderDash && spell != Spell.BackStep && spell != Spell.FlashDash)"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 3699,
+            "method": null,
+            "snippet": "case Spell.FlashDash:"
+          }
+        ]
+      },
+      "zirconExactMagicTypeHandlers": []
+    },
+    {
+      "crystal": {
+        "name": "LightBody",
+        "spellId": 95,
+        "category": "Assassin",
+        "kind": "player",
+        "serverCallSites": [
+          {
+            "file": "Server/MirObjects/Hero/AssassinHero.cs",
+            "line": 46,
+            "method": "ProcessFriend",
+            "snippet": "magic = GetMagic(Spell.LightBody);"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 3545,
+            "method": null,
+            "snippet": "case Spell.LightBody:"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 6187,
+            "method": null,
+            "snippet": "case Spell.LightBody:"
+          }
+        ]
+      },
+      "zirconExactMagicTypeHandlers": []
+    },
+    {
+      "crystal": {
+        "name": "HeavenlySword",
+        "spellId": 96,
+        "category": "Assassin",
+        "kind": "player",
+        "serverCallSites": [
+          {
+            "file": "Server/MirEnvir/Map.cs",
+            "line": 1222,
+            "method": null,
+            "snippet": "case Spell.HeavenlySword:"
+          },
+          {
+            "file": "Server/MirObjects/Hero/AssassinHero.cs",
+            "line": 60,
+            "method": "ProcessAttack",
+            "snippet": "UserMagic magic = GetMagic(Spell.HeavenlySword);"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 3571,
+            "method": null,
+            "snippet": "case Spell.HeavenlySword:"
+          },
+          {
+            "file": "Server/MirObjects/Monsters/SepAssassin.cs",
+            "line": 212,
+            "method": "RangeAttack",
+            "snippet": "Broadcast(new S.ObjectMagic { ObjectID = ObjectID, Direction = Direction, Location = CurrentLocation, Spell = Spell.HeavenlySword, TargetID = Target.ObjectID, Target = Target.CurrentLocation, Cast = true, Level = 3 });"
+          },
+          {
+            "file": "Server/MirObjects/Monsters/SepHighAssassin.cs",
+            "line": 257,
+            "method": "RangeAttack",
+            "snippet": "Broadcast(new S.ObjectMagic { ObjectID = ObjectID, Direction = Direction, Location = CurrentLocation, Spell = Spell.HeavenlySword, TargetID = Target.ObjectID, Target = Target.CurrentLocation, Cast = true, Level = 3 });"
+          }
+        ]
+      },
+      "zirconExactMagicTypeHandlers": []
+    },
+    {
+      "crystal": {
+        "name": "FireBurst",
+        "spellId": 97,
+        "category": "Assassin",
+        "kind": "player",
+        "serverCallSites": [
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 3516,
+            "method": "Magic",
+            "snippet": "case Spell.FireBurst:"
+          }
+        ]
+      },
+      "zirconExactMagicTypeHandlers": []
+    },
+    {
+      "crystal": {
+        "name": "Trap",
+        "spellId": 98,
+        "category": "Assassin",
+        "kind": "player",
+        "serverCallSites": [
+          {
+            "file": "Server/MirEnvir/Map.cs",
+            "line": 2048,
+            "method": null,
+            "snippet": "case Spell.Trap:"
+          },
+          {
+            "file": "Server/MirEnvir/Map.cs",
+            "line": 2081,
+            "method": null,
+            "snippet": "Spell = Spell.Trap,"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 3687,
+            "method": null,
+            "snippet": "case Spell.Trap:"
+          },
+          {
+            "file": "Server/MirObjects/SpellObject.cs",
+            "line": 57,
+            "method": "Process",
+            "snippet": "if (Envir.Time > ExpireTime || ((Spell == Spell.FireWall || Spell == Spell.Portal || Spell == Spell.ExplosiveTrap || Spell == Spell.Reincarnation || Spell == Spell.HealingCircle) && Caster == null) || (Spell == Spell.TrapHexagon && Target != null) || (Spell == Spell.Trap && Target != null))"
+          },
+          {
+            "file": "Server/MirObjects/SpellObject.cs",
+            "line": 59,
+            "method": "Process",
+            "snippet": "if (Spell == Spell.TrapHexagon && Target != null || Spell == Spell.Trap && Target != null)"
+          }
+        ]
+      },
+      "zirconExactMagicTypeHandlers": []
+    },
+    {
+      "crystal": {
+        "name": "PoisonSword",
+        "spellId": 99,
+        "category": "Assassin",
+        "kind": "player",
+        "serverCallSites": [
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 3693,
+            "method": null,
+            "snippet": "case Spell.PoisonSword:"
+          }
+        ]
+      },
+      "zirconExactMagicTypeHandlers": []
+    },
+    {
+      "crystal": {
+        "name": "MoonLight",
+        "spellId": 100,
+        "category": "Assassin",
+        "kind": "player",
+        "serverCallSites": [
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 2987,
+            "method": null,
+            "snippet": "magic = MoonLightAttack ? GetMagic(Spell.MoonLight) : GetMagic(Spell.DarkBody);"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 3684,
+            "method": null,
+            "snippet": "case Spell.MoonLight:"
+          }
+        ]
+      },
+      "zirconExactMagicTypeHandlers": []
+    },
+    {
+      "crystal": {
+        "name": "MPEater",
+        "spellId": 101,
+        "category": "Assassin",
+        "kind": "player",
+        "serverCallSites": [
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 3079,
+            "method": null,
+            "snippet": "magic = GetMagic(Spell.MPEater);"
+          }
+        ]
+      },
+      "zirconExactMagicTypeHandlers": []
+    },
+    {
+      "crystal": {
+        "name": "SwiftFeet",
+        "spellId": 102,
+        "category": "Assassin",
+        "kind": "player",
+        "serverCallSites": [
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 3681,
+            "method": null,
+            "snippet": "case Spell.SwiftFeet:"
+          }
+        ]
+      },
+      "zirconExactMagicTypeHandlers": []
+    },
+    {
+      "crystal": {
+        "name": "DarkBody",
+        "spellId": 103,
+        "category": "Assassin",
+        "kind": "player",
+        "serverCallSites": [
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 2987,
+            "method": null,
+            "snippet": "magic = MoonLightAttack ? GetMagic(Spell.MoonLight) : GetMagic(Spell.DarkBody);"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 3696,
+            "method": null,
+            "snippet": "case Spell.DarkBody:"
+          }
+        ]
+      },
+      "zirconExactMagicTypeHandlers": []
+    },
+    {
+      "crystal": {
+        "name": "Hemorrhage",
+        "spellId": 104,
+        "category": "Assassin",
+        "kind": "player",
+        "serverCallSites": [
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 3111,
+            "method": null,
+            "snippet": "magic = GetMagic(Spell.Hemorrhage);"
+          }
+        ]
+      },
+      "zirconExactMagicTypeHandlers": [
+        {
+          "file": "ServerLibrary/Models/Magics/Assassin/Hemorrhage.cs",
+          "attributeLine": 9,
+          "class": "Hemorrhage",
+          "methods": [
+            "MagicCast",
+            "MagicComplete",
+            "ModifyPowerAdditionner"
+          ]
+        }
+      ]
+    },
+    {
+      "crystal": {
+        "name": "CrescentSlash",
+        "spellId": 105,
+        "category": "Assassin",
+        "kind": "player",
+        "serverCallSites": [
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 3702,
+            "method": null,
+            "snippet": "case Spell.CrescentSlash:"
+          },
+          {
+            "file": "Server/MirObjects/Monsters/SepHighAssassin.cs",
+            "line": 188,
+            "method": "Attack",
+            "snippet": "Broadcast(new S.ObjectMagic { ObjectID = ObjectID, Direction = Direction, Location = CurrentLocation, Spell = Spell.CrescentSlash, TargetID = Target.ObjectID, Target = Target.CurrentLocation, Cast = true, Level = 3 });"
+          }
+        ]
+      },
+      "zirconExactMagicTypeHandlers": []
+    },
+    {
+      "crystal": {
+        "name": "MoonMist",
+        "spellId": 106,
+        "category": "Assassin",
+        "kind": "player",
+        "serverCallSites": [
+          {
+            "file": "Server/MirEnvir/Map.cs",
+            "line": 1347,
+            "method": null,
+            "snippet": "case Spell.MoonMist:"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 3751,
+            "method": null,
+            "snippet": "case Spell.MoonMist:"
+          }
+        ]
+      },
+      "zirconExactMagicTypeHandlers": []
+    },
+    {
+      "crystal": {
+        "name": "CatTongue",
+        "spellId": 107,
+        "category": "Assassin",
+        "kind": "player",
+        "serverCallSites": [
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 3690,
+            "method": null,
+            "snippet": "case Spell.CatTongue:"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 6389,
+            "method": null,
+            "snippet": "case Spell.CatTongue:"
+          }
+        ]
+      },
+      "zirconExactMagicTypeHandlers": []
+    },
+    {
+      "crystal": {
+        "name": "Focus",
+        "spellId": 121,
+        "category": "Archer",
+        "kind": "deferred_class",
+        "serverCallSites": [
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 2803,
+            "method": "RangeAttack",
+            "snippet": "magic = GetMagic(Spell.Focus);"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 2809,
+            "method": "RangeAttack",
+            "snippet": "spell = Spell.Focus;"
+          }
+        ]
+      },
+      "zirconExactMagicTypeHandlers": []
+    },
+    {
+      "crystal": {
+        "name": "StraightShot",
+        "spellId": 122,
+        "category": "Archer",
+        "kind": "deferred_class",
+        "serverCallSites": [
+          {
+            "file": "Server/MirObjects/Hero/ArcherHero.cs",
+            "line": 102,
+            "method": "ProcessAttack",
+            "snippet": "magic = GetMagic(Spell.StraightShot);"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 3705,
+            "method": null,
+            "snippet": "case Spell.StraightShot:"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 5921,
+            "method": "CompleteMagic",
+            "snippet": "case Spell.StraightShot:"
+          },
+          {
+            "file": "Server/MirObjects/Monsters/SepArcher.cs",
+            "line": 94,
+            "method": "Attack",
+            "snippet": "Broadcast(new S.ObjectMagic { ObjectID = ObjectID, Direction = Direction, Location = CurrentLocation, Spell = Spell.StraightShot, TargetID = Target.ObjectID, Target = Target.CurrentLocation, Cast = true, Level = 3 });"
+          },
+          {
+            "file": "Shared/Globals.cs",
+            "line": 65,
+            "method": null,
+            "snippet": "Spell.StraightShot,"
+          }
+        ]
+      },
+      "zirconExactMagicTypeHandlers": []
+    },
+    {
+      "crystal": {
+        "name": "DoubleShot",
+        "spellId": 123,
+        "category": "Archer",
+        "kind": "deferred_class",
+        "serverCallSites": [
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 3708,
+            "method": null,
+            "snippet": "case Spell.DoubleShot:"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 5922,
+            "method": "CompleteMagic",
+            "snippet": "case Spell.DoubleShot:"
+          },
+          {
+            "file": "Server/MirObjects/Monsters/SepArcher.cs",
+            "line": 87,
+            "method": "Attack",
+            "snippet": "Broadcast(new S.ObjectMagic { ObjectID = ObjectID, Direction = Direction, Location = CurrentLocation, Spell = Spell.DoubleShot, TargetID = Target.ObjectID, Target = Target.CurrentLocation, Cast = true, Level = 3 });"
+          }
+        ]
+      },
+      "zirconExactMagicTypeHandlers": []
+    },
+    {
+      "crystal": {
+        "name": "ExplosiveTrap",
+        "spellId": 124,
+        "category": "Archer",
+        "kind": "deferred_class",
+        "serverCallSites": [
+          {
+            "file": "Server/MirEnvir/Map.cs",
+            "line": 1900,
+            "method": null,
+            "snippet": "case Spell.ExplosiveTrap:"
+          },
+          {
+            "file": "Server/MirEnvir/Map.cs",
+            "line": 1914,
+            "method": null,
+            "snippet": "if (target.Race != ObjectType.Spell || (((SpellObject)target).Spell != Spell.FireWall && ((SpellObject)target).Spell != Spell.ExplosiveTrap)) continue;"
+          },
+          {
+            "file": "Server/MirEnvir/Map.cs",
+            "line": 1941,
+            "method": null,
+            "snippet": "if (target.Race != ObjectType.Spell || (((SpellObject)target).Spell != Spell.FireWall && ((SpellObject)target).Spell != Spell.ExplosiveTrap)) continue;"
+          },
+          {
+            "file": "Server/MirEnvir/Map.cs",
+            "line": 1950,
+            "method": null,
+            "snippet": "Spell = Spell.ExplosiveTrap,"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 3714,
+            "method": null,
+            "snippet": "case Spell.ExplosiveTrap:"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 5634,
+            "method": "ExplosiveTrap",
+            "snippet": "var trapIDs = CurrentMap.GetSpellObjects(Spell.ExplosiveTrap, this).Select(x => x.ExplosiveTrapID).Distinct();"
+          },
+          {
+            "file": "Server/MirObjects/PlayerObject.cs",
+            "line": 1800,
+            "method": "GetObjectsPassive",
+            "snippet": "if ((obSpell.Spell != Spell.ExplosiveTrap) || (obSpell.Caster != null && IsFriendlyTarget(obSpell.Caster)))"
+          },
+          {
+            "file": "Server/MirObjects/SpellObject.cs",
+            "line": 57,
+            "method": "Process",
+            "snippet": "if (Envir.Time > ExpireTime || ((Spell == Spell.FireWall || Spell == Spell.Portal || Spell == Spell.ExplosiveTrap || Spell == Spell.Reincarnation || Spell == Spell.HealingCircle) && Caster == null) || (Spell == Spell.TrapHexagon && Target != null) || (Spell == Spell.Trap && Target != null))"
+          },
+          {
+            "file": "Server/MirObjects/SpellObject.cs",
+            "line": 99,
+            "method": "Process",
+            "snippet": "if (Spell == Spell.ExplosiveTrap && Caster != null && !Functions.InRange(CurrentLocation, Caster.CurrentLocation, 15))"
+          },
+          {
+            "file": "Server/MirObjects/SpellObject.cs",
+            "line": 194,
+            "method": "ProcessSpell",
+            "snippet": "case Spell.ExplosiveTrap:"
+          },
+          {
+            "file": "Server/MirObjects/SpellObject.cs",
+            "line": 532,
+            "method": "GetInfo",
+            "snippet": "case Spell.ExplosiveTrap:"
+          },
+          {
+            "file": "Server/MirObjects/SpellObject.cs",
+            "line": 589,
+            "method": "Despawn",
+            "snippet": "if (Spell == Spell.ExplosiveTrap && Caster != null)"
+          },
+          {
+            "file": "Server/MirObjects/SpellObject.cs",
+            "line": 591,
+            "method": "Despawn",
+            "snippet": "var linkedTraps = CurrentMap.GetSpellObjects(Spell.ExplosiveTrap, Owner).Where(x => x.ExplosiveTrapID == ExplosiveTrapID);"
+          },
+          {
+            "file": "Server/MirObjects/SpellObject.cs",
+            "line": 615,
+            "method": "BroadcastInfo",
+            "snippet": "if ((Spell != Spell.ExplosiveTrap) || (Caster == null))"
+          }
+        ]
+      },
+      "zirconExactMagicTypeHandlers": []
+    },
+    {
+      "crystal": {
+        "name": "DelayedExplosion",
+        "spellId": 125,
+        "category": "Archer",
+        "kind": "deferred_class",
+        "serverCallSites": [
+          {
+            "file": "Server/MirEnvir/Map.cs",
+            "line": 2206,
+            "method": null,
+            "snippet": "case Spell.DelayedExplosion:"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 762,
+            "method": "ProcessDelayedExplosion",
+            "snippet": "DelayedAction action = new DelayedAction(DelayedType.Magic, Envir.Time, poison.Owner, caster.GetMagic(Spell.DelayedExplosion), poison.Value, this.CurrentLocation);"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 3717,
+            "method": null,
+            "snippet": "case Spell.DelayedExplosion:"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 6464,
+            "method": null,
+            "snippet": "case Spell.DelayedExplosion:"
+          },
+          {
+            "file": "Server/MirObjects/MonsterObject.cs",
+            "line": 1596,
+            "method": "ProcessDelayedExplosion",
+            "snippet": "DelayedAction action = new DelayedAction(DelayedType.Magic, Envir.Time, poison.Owner, caster.GetMagic(Spell.DelayedExplosion), poison.Value, this.CurrentLocation);"
+          }
+        ]
+      },
+      "zirconExactMagicTypeHandlers": []
+    },
+    {
+      "crystal": {
+        "name": "Meditation",
+        "spellId": 126,
+        "category": "Archer",
+        "kind": "deferred_class",
+        "serverCallSites": [
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 3827,
+            "method": "GatherElement",
+            "snippet": "UserMagic magic = GetMagic(Spell.Meditation);"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 3850,
+            "method": "GatherElement",
+            "snippet": "LevelMagic(GetMagic(Spell.Meditation));"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 3859,
+            "method": "ObtainElement",
+            "snippet": "UserMagic spell = GetMagic(Spell.Meditation);"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 3892,
+            "method": "ObtainElement",
+            "snippet": "if (ElementsLevel > Settings.OrbsExpList[GetMagic(Spell.Meditation).Level])"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 3895,
+            "method": "ObtainElement",
+            "snippet": "ElementsLevel = (int)Settings.OrbsExpList[GetMagic(Spell.Meditation).Level];"
+          }
+        ]
+      },
+      "zirconExactMagicTypeHandlers": []
+    },
+    {
+      "crystal": {
+        "name": "BackStep",
+        "spellId": 127,
+        "category": "Archer",
+        "kind": "deferred_class",
+        "serverCallSites": [
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 3457,
+            "method": "Magic",
+            "snippet": "if (spell != Spell.ShoulderDash && spell != Spell.BackStep && spell != Spell.FlashDash)"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 3711,
+            "method": null,
+            "snippet": "case Spell.BackStep:"
+          },
+          {
+            "file": "Server/MirObjects/Monsters/SepArcher.cs",
+            "line": 43,
+            "method": "Attack",
+            "snippet": "Broadcast(new S.ObjectMagic { ObjectID = ObjectID, Direction = Direction, Location = CurrentLocation, Spell = Spell.BackStep, TargetID = Target.ObjectID, Target = Target.CurrentLocation, Cast = true, Level = 3 });"
+          },
+          {
+            "file": "Server/MirObjects/Monsters/SepHighArcher.cs",
+            "line": 50,
+            "method": "Attack",
+            "snippet": "Broadcast(new S.ObjectMagic { ObjectID = ObjectID, Direction = Direction, Location = CurrentLocation, Spell = Spell.BackStep, TargetID = Target.ObjectID, Target = Target.CurrentLocation, Cast = true, Level = 3 });"
+          }
+        ]
+      },
+      "zirconExactMagicTypeHandlers": []
+    },
+    {
+      "crystal": {
+        "name": "ElementalShot",
+        "spellId": 128,
+        "category": "Archer",
+        "kind": "deferred_class",
+        "serverCallSites": [
+          {
+            "file": "Server/MirObjects/Hero/ArcherHero.cs",
+            "line": 94,
+            "method": "ProcessAttack",
+            "snippet": "magic = GetMagic(Spell.ElementalShot);"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 3723,
+            "method": null,
+            "snippet": "case Spell.ElementalShot:"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 6439,
+            "method": null,
+            "snippet": "case Spell.ElementalShot:"
+          },
+          {
+            "file": "Shared/Globals.cs",
+            "line": 66,
+            "method": null,
+            "snippet": "Spell.ElementalShot,"
+          }
+        ]
+      },
+      "zirconExactMagicTypeHandlers": []
+    },
+    {
+      "crystal": {
+        "name": "Concentration",
+        "spellId": 129,
+        "category": "Archer",
+        "kind": "deferred_class",
+        "serverCallSites": [
+          {
+            "file": "Server/MirObjects/Hero/ArcherHero.cs",
+            "line": 59,
+            "method": "ProcessFriend",
+            "snippet": "UserMagic magic = GetMagic(Spell.Concentration);"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 3720,
+            "method": null,
+            "snippet": "case Spell.Concentration:"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 3836,
+            "method": "GatherElement",
+            "snippet": "magic = GetMagic(Spell.Concentration);"
+          }
+        ]
+      },
+      "zirconExactMagicTypeHandlers": [
+        {
+          "file": "ServerLibrary/Models/Magics/Assassin/Concentration.cs",
+          "attributeLine": 9,
+          "class": "Concentration",
+          "methods": [
+            "MagicCast",
+            "MagicComplete"
+          ]
+        }
+      ]
+    },
+    {
+      "crystal": {
+        "name": "Stonetrap",
+        "spellId": 130,
+        "category": "Archer",
+        "kind": "deferred_class",
+        "serverCallSites": [
+          {
+            "file": "Server/MirEnvir/Map.cs",
+            "line": 934,
+            "method": "CompleteMagic",
+            "snippet": "case Spell.Stonetrap:"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 3737,
+            "method": null,
+            "snippet": "case Spell.Stonetrap:"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 6727,
+            "method": null,
+            "snippet": "case Spell.Stonetrap:"
+          }
+        ]
+      },
+      "zirconExactMagicTypeHandlers": []
+    },
+    {
+      "crystal": {
+        "name": "ElementalBarrier",
+        "spellId": 131,
+        "category": "Archer",
+        "kind": "deferred_class",
+        "serverCallSites": [
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 3726,
+            "method": null,
+            "snippet": "case Spell.ElementalBarrier:"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 6417,
+            "method": null,
+            "snippet": "case Spell.ElementalBarrier:"
+          }
+        ]
+      },
+      "zirconExactMagicTypeHandlers": []
+    },
+    {
+      "crystal": {
+        "name": "SummonVampire",
+        "spellId": 132,
+        "category": "Archer",
+        "kind": "deferred_class",
+        "serverCallSites": [
+          {
+            "file": "Server/MirEnvir/Map.cs",
+            "line": 919,
+            "method": "CompleteMagic",
+            "snippet": "case Spell.SummonVampire:"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 3732,
+            "method": null,
+            "snippet": "case Spell.SummonVampire:"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 6663,
+            "method": null,
+            "snippet": "case Spell.SummonVampire:"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 6673,
+            "method": null,
+            "snippet": "case Spell.SummonVampire:"
+          }
+        ]
+      },
+      "zirconExactMagicTypeHandlers": []
+    },
+    {
+      "crystal": {
+        "name": "VampireShot",
+        "spellId": 133,
+        "category": "Archer",
+        "kind": "deferred_class",
+        "serverCallSites": [
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 3740,
+            "method": null,
+            "snippet": "case Spell.VampireShot:"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 6552,
+            "method": null,
+            "snippet": "case Spell.VampireShot:"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 6568,
+            "method": null,
+            "snippet": "if (magic.Spell == Spell.VampireShot)"
+          }
+        ]
+      },
+      "zirconExactMagicTypeHandlers": []
+    },
+    {
+      "crystal": {
+        "name": "SummonToad",
+        "spellId": 134,
+        "category": "Archer",
+        "kind": "deferred_class",
+        "serverCallSites": [
+          {
+            "file": "Server/MirEnvir/Map.cs",
+            "line": 920,
+            "method": "CompleteMagic",
+            "snippet": "case Spell.SummonToad:"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 3733,
+            "method": null,
+            "snippet": "case Spell.SummonToad:"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 6664,
+            "method": null,
+            "snippet": "case Spell.SummonToad:"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 6676,
+            "method": null,
+            "snippet": "case Spell.SummonToad:"
+          }
+        ]
+      },
+      "zirconExactMagicTypeHandlers": []
+    },
+    {
+      "crystal": {
+        "name": "PoisonShot",
+        "spellId": 135,
+        "category": "Archer",
+        "kind": "deferred_class",
+        "serverCallSites": [
+          {
+            "file": "Server/MirObjects/Hero/ArcherHero.cs",
+            "line": 79,
+            "method": "ProcessAttack",
+            "snippet": "magic = GetMagic(Spell.PoisonShot);"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 3741,
+            "method": null,
+            "snippet": "case Spell.PoisonShot:"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 6553,
+            "method": null,
+            "snippet": "case Spell.PoisonShot:"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 6577,
+            "method": null,
+            "snippet": "if (magic.Spell == Spell.PoisonShot)"
+          },
+          {
+            "file": "Server/MirObjects/Monsters/SepHighArcher.cs",
+            "line": 140,
+            "method": "Attack",
+            "snippet": "Broadcast(new S.ObjectMagic { ObjectID = ObjectID, Direction = Direction, Location = CurrentLocation, Spell = Spell.PoisonShot, TargetID = Target.ObjectID, Target = Target.CurrentLocation, Cast = true, Level = 3 });"
+          },
+          {
+            "file": "Shared/Globals.cs",
+            "line": 67,
+            "method": null,
+            "snippet": "Spell.PoisonShot"
+          }
+        ]
+      },
+      "zirconExactMagicTypeHandlers": []
+    },
+    {
+      "crystal": {
+        "name": "CrippleShot",
+        "spellId": 136,
+        "category": "Archer",
+        "kind": "deferred_class",
+        "serverCallSites": [
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 3742,
+            "method": null,
+            "snippet": "case Spell.CrippleShot:"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 6554,
+            "method": null,
+            "snippet": "case Spell.CrippleShot:"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 6586,
+            "method": null,
+            "snippet": "if (magic.Spell == Spell.CrippleShot)"
+          },
+          {
+            "file": "Server/MirObjects/Monsters/SepHighArcher.cs",
+            "line": 97,
+            "method": "Attack",
+            "snippet": "Broadcast(new S.ObjectMagic { ObjectID = ObjectID, Direction = Direction, Location = CurrentLocation, Spell = Spell.CrippleShot, TargetID = Target.ObjectID, Target = Target.CurrentLocation, Cast = true, Level = 3 });"
+          }
+        ]
+      },
+      "zirconExactMagicTypeHandlers": []
+    },
+    {
+      "crystal": {
+        "name": "SummonSnakes",
+        "spellId": 137,
+        "category": "Archer",
+        "kind": "deferred_class",
+        "serverCallSites": [
+          {
+            "file": "Server/MirEnvir/Map.cs",
+            "line": 921,
+            "method": "CompleteMagic",
+            "snippet": "case Spell.SummonSnakes:"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 3734,
+            "method": null,
+            "snippet": "case Spell.SummonSnakes:"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 6665,
+            "method": null,
+            "snippet": "case Spell.SummonSnakes:"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 6679,
+            "method": null,
+            "snippet": "case Spell.SummonSnakes:"
+          }
+        ]
+      },
+      "zirconExactMagicTypeHandlers": []
+    },
+    {
+      "crystal": {
+        "name": "NapalmShot",
+        "spellId": 138,
+        "category": "Archer",
+        "kind": "deferred_class",
+        "serverCallSites": [
+          {
+            "file": "Server/MirEnvir/Map.cs",
+            "line": 1305,
+            "method": null,
+            "snippet": "case Spell.NapalmShot:"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 3745,
+            "method": null,
+            "snippet": "case Spell.NapalmShot:"
+          }
+        ]
+      },
+      "zirconExactMagicTypeHandlers": []
+    },
+    {
+      "crystal": {
+        "name": "OneWithNature",
+        "spellId": 139,
+        "category": "Archer",
+        "kind": "deferred_class",
+        "serverCallSites": [
+          {
+            "file": "Server/MirEnvir/Map.cs",
+            "line": 2101,
+            "method": null,
+            "snippet": "case Spell.OneWithNature:"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 3748,
+            "method": null,
+            "snippet": "case Spell.OneWithNature:"
+          }
+        ]
+      },
+      "zirconExactMagicTypeHandlers": []
+    },
+    {
+      "crystal": {
+        "name": "BindingShot",
+        "spellId": 140,
+        "category": "Archer",
+        "kind": "deferred_class",
+        "serverCallSites": [
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 3729,
+            "method": null,
+            "snippet": "case Spell.BindingShot:"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 6489,
+            "method": null,
+            "snippet": "case Spell.BindingShot:"
+          }
+        ]
+      },
+      "zirconExactMagicTypeHandlers": []
+    },
+    {
+      "crystal": {
+        "name": "MentalState",
+        "spellId": 141,
+        "category": "Archer",
+        "kind": "deferred_class",
+        "serverCallSites": [
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 5506,
+            "method": "ApplyArcherState",
+            "snippet": "UserMagic magic = GetMagic(Spell.MentalState);"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 8571,
+            "method": "SpellToggle",
+            "snippet": "case Spell.MentalState:"
+          }
+        ]
+      },
+      "zirconExactMagicTypeHandlers": []
+    },
+    {
+      "crystal": {
+        "name": "Blink",
+        "spellId": 151,
+        "category": "Custom",
+        "kind": "custom_player_candidate",
+        "serverCallSites": [
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 3379,
+            "method": "MagicCost",
+            "snippet": "if (spell == Spell.Teleport || spell == Spell.Blink || spell == Spell.StormEscape)"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 3538,
+            "method": null,
+            "snippet": "case Spell.Blink:"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 6114,
+            "method": null,
+            "snippet": "case Spell.Blink:"
+          }
+        ]
+      },
+      "zirconExactMagicTypeHandlers": []
+    },
+    {
+      "crystal": {
+        "name": "Portal",
+        "spellId": 152,
+        "category": "Custom",
+        "kind": "custom_player_candidate",
+        "serverCallSites": [
+          {
+            "file": "Server/MirEnvir/Map.cs",
+            "line": 2181,
+            "method": null,
+            "snippet": "case Spell.Portal:"
+          },
+          {
+            "file": "Server/MirEnvir/Map.cs",
+            "line": 2188,
+            "method": null,
+            "snippet": "Spell = Spell.Portal,"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 3759,
+            "method": null,
+            "snippet": "case Spell.Portal:"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 5796,
+            "method": "Portal",
+            "snippet": "var portalCount = Envir.Spells.Count(x => x.Spell == Spell.Portal && x.Caster == this);"
+          },
+          {
+            "file": "Server/MirObjects/SpellObject.cs",
+            "line": 57,
+            "method": "Process",
+            "snippet": "if (Envir.Time > ExpireTime || ((Spell == Spell.FireWall || Spell == Spell.Portal || Spell == Spell.ExplosiveTrap || Spell == Spell.Reincarnation || Spell == Spell.HealingCircle) && Caster == null) || (Spell == Spell.TrapHexagon && Target != null) || (Spell == Spell.Trap && Target != null))"
+          },
+          {
+            "file": "Server/MirObjects/SpellObject.cs",
+            "line": 304,
+            "method": null,
+            "snippet": "case Spell.Portal:"
+          },
+          {
+            "file": "Server/MirObjects/SpellObject.cs",
+            "line": 310,
+            "method": null,
+            "snippet": "&& ob.Spell == Spell.Portal"
+          },
+          {
+            "file": "Server/MirObjects/SpellObject.cs",
+            "line": 599,
+            "method": "Despawn",
+            "snippet": "if (Spell == Spell.Portal && Caster != null)"
+          },
+          {
+            "file": "Server/MirObjects/SpellObject.cs",
+            "line": 602,
+            "method": "Despawn",
+            "snippet": "&& ob.Spell == Spell.Portal"
+          }
+        ]
+      },
+      "zirconExactMagicTypeHandlers": []
+    },
+    {
+      "crystal": {
+        "name": "BattleCry",
+        "spellId": 153,
+        "category": "Custom",
+        "kind": "custom_player_candidate",
+        "serverCallSites": [
+          {
+            "file": "Server/MirEnvir/Map.cs",
+            "line": 2250,
+            "method": null,
+            "snippet": "case Spell.BattleCry:"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 3617,
+            "method": null,
+            "snippet": "case Spell.BattleCry:"
+          }
+        ]
+      },
+      "zirconExactMagicTypeHandlers": []
+    },
+    {
+      "crystal": {
+        "name": "FireBounce",
+        "spellId": 154,
+        "category": "Custom",
+        "kind": "custom_player_candidate",
+        "serverCallSites": [
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 3765,
+            "method": null,
+            "snippet": "case Spell.FireBounce:"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 5936,
+            "method": "CompleteMagic",
+            "snippet": "case Spell.FireBounce:"
+          }
+        ]
+      },
+      "zirconExactMagicTypeHandlers": [
+        {
+          "file": "ServerLibrary/Models/Magics/Wizard/FireBounce.cs",
+          "attributeLine": 10,
+          "class": "FireBounce",
+          "methods": [
+            "Bounce",
+            "GetBurn",
+            "GetBurnLevel",
+            "MagicCast",
+            "MagicComplete",
+            "ModifyPowerAdditionner"
+          ]
+        }
+      ]
+    },
+    {
+      "crystal": {
+        "name": "MeteorShower",
+        "spellId": 155,
+        "category": "Custom",
+        "kind": "custom_player_candidate",
+        "serverCallSites": [
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 3762,
+            "method": null,
+            "snippet": "case Spell.MeteorShower:"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 5863,
+            "method": "MeteorShower",
+            "snippet": "Enqueue(new S.Magic { Spell = Spell.MeteorShower, TargetID = target.ObjectID, Target = target.CurrentLocation, Cast = true, Level = magic.Level, SecondaryTargetIDs = targetIDs });"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 5923,
+            "method": "CompleteMagic",
+            "snippet": "case Spell.MeteorShower:"
+          }
+        ]
+      },
+      "zirconExactMagicTypeHandlers": [
+        {
+          "file": "ServerLibrary/Models/Magics/Wizard/MeteorShower.cs",
+          "attributeLine": 9,
+          "class": "MeteorShower",
+          "methods": [
+            "GetBurn",
+            "GetBurnLevel",
+            "MagicCast",
+            "MagicComplete",
+            "ModifyPowerAdditionner"
+          ]
+        }
+      ]
+    },
+    {
+      "crystal": {
+        "name": "DigOutZombie",
+        "spellId": 200,
+        "category": "MapEvent",
+        "kind": "map_event",
+        "serverCallSites": [
+          {
+            "file": "Server/MirObjects/Monsters/DigOutZombie.cs",
+            "line": 74,
+            "method": "SpawnDigOutEffect",
+            "snippet": "Spell = Spell.DigOutZombie,"
+          },
+          {
+            "file": "Server/MirObjects/PlayerObject.cs",
+            "line": 4485,
+            "method": "CheckMovement",
+            "snippet": "cell.Objects.Where(ob => ob.Race == ObjectType.Spell).All(ob => ((SpellObject)ob).Spell != Spell.DigOutZombie && ((SpellObject)ob).Spell != Spell.DigOutArmadillo))"
+          }
+        ]
+      },
+      "zirconExactMagicTypeHandlers": []
+    },
+    {
+      "crystal": {
+        "name": "Rubble",
+        "spellId": 201,
+        "category": "MapEvent",
+        "kind": "map_event",
+        "serverCallSites": [
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 3321,
+            "method": null,
+            "snippet": "if (ob.Spell != Spell.Rubble) continue;"
+          },
+          {
+            "file": "Server/MirObjects/HumanObject.cs",
+            "line": 3330,
+            "method": null,
+            "snippet": "Spell = Spell.Rubble,"
+          }
+        ]
+      },
+      "zirconExactMagicTypeHandlers": []
+    },
+    {
+      "crystal": {
+        "name": "MapLightning",
+        "spellId": 202,
+        "category": "MapEvent",
+        "kind": "map_event",
+        "serverCallSites": [
+          {
+            "file": "Server/MirEnvir/Map.cs",
+            "line": 685,
+            "method": "Process",
+            "snippet": "Spell = Spell.MapLightning,"
+          },
+          {
+            "file": "Server/MirObjects/SpellObject.cs",
+            "line": 121,
+            "method": "Process",
+            "snippet": "if ((Spell == Spell.MapLava) || (Spell == Spell.MapLightning)) Value = 0;"
+          },
+          {
+            "file": "Server/MirObjects/SpellObject.cs",
+            "line": 205,
+            "method": "ProcessSpell",
+            "snippet": "case Spell.MapLightning:"
+          }
+        ]
+      },
+      "zirconExactMagicTypeHandlers": []
+    },
+    {
+      "crystal": {
+        "name": "MapLava",
+        "spellId": 203,
+        "category": "MapEvent",
+        "kind": "map_event",
+        "serverCallSites": [
+          {
+            "file": "Server/MirEnvir/Map.cs",
+            "line": 718,
+            "method": "Process",
+            "snippet": "Spell = Spell.MapLava,"
+          },
+          {
+            "file": "Server/MirObjects/SpellObject.cs",
+            "line": 121,
+            "method": "Process",
+            "snippet": "if ((Spell == Spell.MapLava) || (Spell == Spell.MapLightning)) Value = 0;"
+          },
+          {
+            "file": "Server/MirObjects/SpellObject.cs",
+            "line": 204,
+            "method": "ProcessSpell",
+            "snippet": "case Spell.MapLava:"
+          }
+        ]
+      },
+      "zirconExactMagicTypeHandlers": []
+    },
+    {
+      "crystal": {
+        "name": "MapQuake1",
+        "spellId": 204,
+        "category": "MapEvent",
+        "kind": "map_event",
+        "serverCallSites": [
+          {
+            "file": "Server/MirObjects/Monsters/HellLord.cs",
+            "line": 140,
+            "method": "SpawnQuakes",
+            "snippet": "Spell = Envir.Random.Next(2) == 0 ? Spell.MapQuake1 : Spell.MapQuake2,"
+          },
+          {
+            "file": "Server/MirObjects/SpellObject.cs",
+            "line": 214,
+            "method": "ProcessSpell",
+            "snippet": "case Spell.MapQuake1:"
+          }
+        ]
+      },
+      "zirconExactMagicTypeHandlers": []
+    },
+    {
+      "crystal": {
+        "name": "MapQuake2",
+        "spellId": 205,
+        "category": "MapEvent",
+        "kind": "map_event",
+        "serverCallSites": [
+          {
+            "file": "Server/MirObjects/Monsters/HellLord.cs",
+            "line": 140,
+            "method": "SpawnQuakes",
+            "snippet": "Spell = Envir.Random.Next(2) == 0 ? Spell.MapQuake1 : Spell.MapQuake2,"
+          },
+          {
+            "file": "Server/MirObjects/SpellObject.cs",
+            "line": 215,
+            "method": "ProcessSpell",
+            "snippet": "case Spell.MapQuake2:"
+          }
+        ]
+      },
+      "zirconExactMagicTypeHandlers": []
+    },
+    {
+      "crystal": {
+        "name": "DigOutArmadillo",
+        "spellId": 206,
+        "category": "MapEvent",
+        "kind": "map_event",
+        "serverCallSites": [
+          {
+            "file": "Server/MirObjects/Monsters/Armadillo.cs",
+            "line": 23,
+            "method": "SpawnDigOutEffect",
+            "snippet": "Spell = Spell.DigOutArmadillo,"
+          },
+          {
+            "file": "Server/MirObjects/PlayerObject.cs",
+            "line": 4485,
+            "method": "CheckMovement",
+            "snippet": "cell.Objects.Where(ob => ob.Race == ObjectType.Spell).All(ob => ((SpellObject)ob).Spell != Spell.DigOutZombie && ((SpellObject)ob).Spell != Spell.DigOutArmadillo))"
+          }
+        ]
+      },
+      "zirconExactMagicTypeHandlers": []
+    },
+    {
+      "crystal": {
+        "name": "GeneralMeowMeowThunder",
+        "spellId": 207,
+        "category": "MapEvent",
+        "kind": "map_event",
+        "serverCallSites": [
+          {
+            "file": "Server/MirObjects/Monsters/GeneralMeowMeow.cs",
+            "line": 151,
+            "method": "MassThunderAttack",
+            "snippet": "Spell = Spell.GeneralMeowMeowThunder,"
+          },
+          {
+            "file": "Server/MirObjects/SpellObject.cs",
+            "line": 223,
+            "method": "ProcessSpell",
+            "snippet": "case Spell.GeneralMeowMeowThunder:"
+          }
+        ]
+      },
+      "zirconExactMagicTypeHandlers": []
+    },
+    {
+      "crystal": {
+        "name": "StoneGolemQuake",
+        "spellId": 208,
+        "category": "MapEvent",
+        "kind": "map_event",
+        "serverCallSites": [
+          {
+            "file": "Server/MirObjects/Monsters/StoneGolem.cs",
+            "line": 80,
+            "method": "Attack",
+            "snippet": "Spell = Spell.StoneGolemQuake,"
+          },
+          {
+            "file": "Server/MirObjects/SpellObject.cs",
+            "line": 271,
+            "method": null,
+            "snippet": "case Spell.StoneGolemQuake:"
+          },
+          {
+            "file": "Server/MirObjects/SpellObject.cs",
+            "line": 512,
+            "method": "GetInfo",
+            "snippet": "case Spell.StoneGolemQuake:"
+          }
+        ]
+      },
+      "zirconExactMagicTypeHandlers": []
+    },
+    {
+      "crystal": {
+        "name": "EarthGolemPile",
+        "spellId": 209,
+        "category": "MapEvent",
+        "kind": "map_event",
+        "serverCallSites": [
+          {
+            "file": "Server/MirObjects/Monsters/EarthGolem.cs",
+            "line": 103,
+            "method": "Attack",
+            "snippet": "Spell = Spell.EarthGolemPile,"
+          },
+          {
+            "file": "Server/MirObjects/SpellObject.cs",
+            "line": 282,
+            "method": null,
+            "snippet": "case Spell.EarthGolemPile:"
+          },
+          {
+            "file": "Server/MirObjects/SpellObject.cs",
+            "line": 513,
+            "method": "GetInfo",
+            "snippet": "case Spell.EarthGolemPile:"
+          }
+        ]
+      },
+      "zirconExactMagicTypeHandlers": []
+    },
+    {
+      "crystal": {
+        "name": "TreeQueenRoot",
+        "spellId": 210,
+        "category": "MapEvent",
+        "kind": "map_event",
+        "serverCallSites": [
+          {
+            "file": "Server/MirObjects/Monsters/TreeQueen.cs",
+            "line": 165,
+            "method": "SpawnRoots",
+            "snippet": "Spell = Spell.TreeQueenRoot,"
+          },
+          {
+            "file": "Server/MirObjects/SpellObject.cs",
+            "line": 234,
+            "method": "ProcessSpell",
+            "snippet": "case Spell.TreeQueenRoot:"
+          }
+        ]
+      },
+      "zirconExactMagicTypeHandlers": []
+    },
+    {
+      "crystal": {
+        "name": "TreeQueenMassRoots",
+        "spellId": 211,
+        "category": "MapEvent",
+        "kind": "map_event",
+        "serverCallSites": [
+          {
+            "file": "Server/MirObjects/Monsters/TreeQueen.cs",
+            "line": 222,
+            "method": "SpawnMassRoots",
+            "snippet": "Spell = Spell.TreeQueenMassRoots,"
+          },
+          {
+            "file": "Server/MirObjects/SpellObject.cs",
+            "line": 245,
+            "method": null,
+            "snippet": "case Spell.TreeQueenMassRoots:"
+          },
+          {
+            "file": "Server/MirObjects/SpellObject.cs",
+            "line": 514,
+            "method": "GetInfo",
+            "snippet": "case Spell.TreeQueenMassRoots:"
+          }
+        ]
+      },
+      "zirconExactMagicTypeHandlers": []
+    },
+    {
+      "crystal": {
+        "name": "TreeQueenGroundRoots",
+        "spellId": 212,
+        "category": "MapEvent",
+        "kind": "map_event",
+        "serverCallSites": [
+          {
+            "file": "Server/MirObjects/Monsters/TreeQueen.cs",
+            "line": 270,
+            "method": "SpawnGroundRoots",
+            "snippet": "Spell = Spell.TreeQueenGroundRoots,"
+          },
+          {
+            "file": "Server/MirObjects/SpellObject.cs",
+            "line": 256,
+            "method": null,
+            "snippet": "case Spell.TreeQueenGroundRoots:"
+          },
+          {
+            "file": "Server/MirObjects/SpellObject.cs",
+            "line": 515,
+            "method": "GetInfo",
+            "snippet": "case Spell.TreeQueenGroundRoots:"
+          }
+        ]
+      },
+      "zirconExactMagicTypeHandlers": []
+    },
+    {
+      "crystal": {
+        "name": "TucsonGeneralRock",
+        "spellId": 213,
+        "category": "MapEvent",
+        "kind": "map_event",
+        "serverCallSites": [
+          {
+            "file": "Server/MirObjects/Monsters/TucsonGeneral.cs",
+            "line": 67,
+            "method": "Attack",
+            "snippet": "Spell = Spell.TucsonGeneralRock,"
+          },
+          {
+            "file": "Server/MirObjects/SpellObject.cs",
+            "line": 293,
+            "method": null,
+            "snippet": "case Spell.TucsonGeneralRock:"
+          }
+        ]
+      },
+      "zirconExactMagicTypeHandlers": []
+    },
+    {
+      "crystal": {
+        "name": "FlyingStatueIceTornado",
+        "spellId": 214,
+        "category": "MapEvent",
+        "kind": "map_event",
+        "serverCallSites": [
+          {
+            "file": "Server/MirObjects/Monsters/FlyingStatue.cs",
+            "line": 107,
+            "method": "SpawnIceTornado",
+            "snippet": "Spell = Spell.FlyingStatueIceTornado,"
+          },
+          {
+            "file": "Server/MirObjects/SpellObject.cs",
+            "line": 330,
+            "method": null,
+            "snippet": "case Spell.FlyingStatueIceTornado:"
+          },
+          {
+            "file": "Server/MirObjects/SpellObject.cs",
+            "line": 516,
+            "method": "GetInfo",
+            "snippet": "case Spell.FlyingStatueIceTornado:"
+          }
+        ]
+      },
+      "zirconExactMagicTypeHandlers": []
+    },
+    {
+      "crystal": {
+        "name": "DarkOmaKingNuke",
+        "spellId": 215,
+        "category": "MapEvent",
+        "kind": "map_event",
+        "serverCallSites": [
+          {
+            "file": "Server/MirObjects/Monsters/DarkOmaKing.cs",
+            "line": 118,
+            "method": "Attack",
+            "snippet": "Spell = Spell.DarkOmaKingNuke,"
+          },
+          {
+            "file": "Server/MirObjects/SpellObject.cs",
+            "line": 345,
+            "method": null,
+            "snippet": "case Spell.DarkOmaKingNuke:"
+          },
+          {
+            "file": "Server/MirObjects/SpellObject.cs",
+            "line": 517,
+            "method": "GetInfo",
+            "snippet": "case Spell.DarkOmaKingNuke:"
+          }
+        ]
+      },
+      "zirconExactMagicTypeHandlers": []
+    },
+    {
+      "crystal": {
+        "name": "HornedSorcererDustTornado",
+        "spellId": 216,
+        "category": "MapEvent",
+        "kind": "map_event",
+        "serverCallSites": [
+          {
+            "file": "Server/MirObjects/Monsters/HornedSorceror.cs",
+            "line": 181,
+            "method": "Tornado",
+            "snippet": "Spell = Spell.HornedSorcererDustTornado,"
+          },
+          {
+            "file": "Server/MirObjects/SpellObject.cs",
+            "line": 356,
+            "method": null,
+            "snippet": "case Spell.HornedSorcererDustTornado:"
+          },
+          {
+            "file": "Server/MirObjects/SpellObject.cs",
+            "line": 518,
+            "method": "GetInfo",
+            "snippet": "case Spell.HornedSorcererDustTornado:"
+          }
+        ]
+      },
+      "zirconExactMagicTypeHandlers": []
+    },
+    {
+      "crystal": {
+        "name": "HornedCommanderRockFall",
+        "spellId": 217,
+        "category": "MapEvent",
+        "kind": "map_event",
+        "serverCallSites": [
+          {
+            "file": "Server/MirObjects/Monsters/HornedCommander.cs",
+            "line": 397,
+            "method": "SpawnRockFall",
+            "snippet": "Spell = Spell.HornedCommanderRockFall,"
+          },
+          {
+            "file": "Server/MirObjects/SpellObject.cs",
+            "line": 367,
+            "method": null,
+            "snippet": "case Spell.HornedCommanderRockFall:"
+          },
+          {
+            "file": "Server/MirObjects/SpellObject.cs",
+            "line": 519,
+            "method": "GetInfo",
+            "snippet": "case Spell.HornedCommanderRockFall:"
+          }
+        ]
+      },
+      "zirconExactMagicTypeHandlers": []
+    },
+    {
+      "crystal": {
+        "name": "HornedCommanderRockSpike",
+        "spellId": 218,
+        "category": "MapEvent",
+        "kind": "map_event",
+        "serverCallSites": [
+          {
+            "file": "Server/MirObjects/Monsters/HornedCommander.cs",
+            "line": 504,
+            "method": "SpawnRockSpike",
+            "snippet": "Spell = Spell.HornedCommanderRockSpike,"
+          },
+          {
+            "file": "Server/MirObjects/SpellObject.cs",
+            "line": 368,
+            "method": null,
+            "snippet": "case Spell.HornedCommanderRockSpike:"
+          },
+          {
+            "file": "Server/MirObjects/SpellObject.cs",
+            "line": 520,
+            "method": "GetInfo",
+            "snippet": "case Spell.HornedCommanderRockSpike:"
+          }
+        ]
+      },
+      "zirconExactMagicTypeHandlers": []
+    }
+  ]
+}

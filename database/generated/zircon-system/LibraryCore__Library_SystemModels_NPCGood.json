@@ -1,0 +1,5646 @@
+[
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 13,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 179
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 4
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 14,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 180
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 4
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 15,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 182
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 4
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 16,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 181
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 4
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 17,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 183
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 4
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 94,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 235
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 24
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 95,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 236
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 24
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 96,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 127
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 22
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 97,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 128
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 22
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 98,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 130
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 22
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 99,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 131
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 22
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 100,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 188
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 22
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 101,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 189
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 22
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 102,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 190
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 22
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 103,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 191
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 22
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 106,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 192
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 22
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 107,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 193
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 22
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 108,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 194
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 22
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 109,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 195
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 22
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 110,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 196
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 22
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 111,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 197
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 22
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 112,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 132
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 21
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 113,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 157
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 21
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 114,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 158
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 21
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 115,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 159
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 21
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 116,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 156
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 21
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 117,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 155
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 21
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 118,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 296
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 21
+    },
+    "Rate": 500
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 129,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 2
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 14
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 130,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 4
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 14
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 132,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 24
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 15
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 133,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 25
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 15
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 134,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 26
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 15
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 135,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 27
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 15
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 136,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 28
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 15
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 137,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 50
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 15
+    },
+    "Rate": 2500
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 138,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 29
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 15
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 139,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 30
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 15
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 140,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 31
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 15
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 141,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 32
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 15
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 142,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 33
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 15
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 143,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 60
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 16
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 144,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 61
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 16
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 145,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 62
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 16
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 146,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 63
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 16
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 147,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 64
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 16
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 149,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 88
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 17
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 150,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 89
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 17
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 151,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 113
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 17
+    },
+    "Rate": 2500
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 152,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 90
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 17
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 170,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 198
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 22
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 171,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 199
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 22
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 574,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 229
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 68
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 575,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 230
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 68
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 576,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 220
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 68
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 577,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 222
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 68
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 578,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 224
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 68
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 579,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 226
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 68
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 580,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 227
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 68
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 581,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 223
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 68
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 582,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 221
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 68
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 583,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 225
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 68
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 584,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 228
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 68
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 585,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 408
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 69
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 586,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 409
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 69
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 587,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 413
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 69
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 588,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 414
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 69
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 589,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 418
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 69
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 590,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 419
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 69
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 591,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 423
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 69
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 592,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 424
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 69
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 593,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 126
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 6
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 594,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 129
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 6
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 596,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 174
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 6
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 597,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 445
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 6
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 598,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 439
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 6
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 599,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 446
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 6
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 600,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 176
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 6
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 601,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 178
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 6
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 603,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 449
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 6
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 605,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 184
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 6
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 606,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 185
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 6
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 607,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 186
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 6
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 608,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 187
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 6
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 612,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 200
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 6
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 613,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 201
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 6
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 614,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 202
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 6
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 615,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 203
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 6
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 616,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 231
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 24
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 617,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 232
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 24
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 618,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 233
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 24
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 619,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 234
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 24
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 621,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 161
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 10
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 622,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 444
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 10
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 623,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 163
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 10
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 624,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 167
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 10
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 625,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 168
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 10
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 626,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 443
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 10
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 627,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 170
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 10
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 628,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 451
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 10
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 629,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 169
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 10
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 630,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 171
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 10
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 631,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 293
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 10
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 632,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 164
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 11
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 633,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 162
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 11
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 634,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 295
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 11
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 635,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 212
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 11
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 636,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 213
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 11
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 637,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 450
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 11
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 638,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 205
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 11
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 639,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 204
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 11
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 640,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 206
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 11
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 641,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 453
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 11
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 642,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 207
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 11
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 643,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 442
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 9
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 644,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 160
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 9
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 645,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 165
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 9
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 646,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 166
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 9
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 647,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 440
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 9
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 648,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 441
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 9
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 649,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 172
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 9
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 650,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 173
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 9
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 651,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 452
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 9
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 652,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 209
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 9
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 653,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 308
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 9
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 654,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 468
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 9
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 657,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 408
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 99
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 658,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 409
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 99
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 659,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 410
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 99
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 660,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 411
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 99
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 661,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 413
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 99
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 662,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 414
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 99
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 663,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 415
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 99
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 664,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 416
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 99
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 665,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 418
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 99
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 666,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 419
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 99
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 667,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 420
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 99
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 668,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 421
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 99
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 669,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 423
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 99
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 670,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 424
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 99
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 671,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 425
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 99
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 672,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 426
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 99
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 673,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 229
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 100
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 674,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 230
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 100
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 675,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 220
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 100
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 676,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 222
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 100
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 677,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 224
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 100
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 678,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 226
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 100
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 679,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 227
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 100
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 680,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 223
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 100
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 681,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 221
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 100
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 682,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 225
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 100
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 683,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 228
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 100
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 684,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 132
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 101
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 685,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 157
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 101
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 686,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 158
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 101
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 687,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 159
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 101
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 688,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 156
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 101
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 689,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 155
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 101
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 690,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 296
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 101
+    },
+    "Rate": 500
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 691,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 133
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 103
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 692,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 134
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 103
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 693,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 135
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 103
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 694,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 136
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 103
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 695,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 143
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 103
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 696,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 144
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 103
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 697,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 145
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 103
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 698,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 146
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 103
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 699,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 138
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 103
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 700,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 139
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 103
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 701,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 140
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 103
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 703,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 141
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 103
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 704,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 148
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 103
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 705,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 149
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 103
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 707,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 150
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 103
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 708,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 151
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 103
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 709,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 262
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 103
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 710,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 263
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 103
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 711,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 264
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 103
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 712,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 265
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 103
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 713,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 266
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 103
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 714,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 267
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 103
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 715,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 268
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 103
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 716,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 269
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 103
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 717,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 270
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 103
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 718,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 271
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 103
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 719,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 272
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 103
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 720,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 273
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 103
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 721,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 274
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 103
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 722,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 275
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 103
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 723,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 276
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 103
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 724,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 277
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 103
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 725,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 278
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 103
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 726,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 279
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 103
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 727,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 280
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 103
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 728,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 281
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 103
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 729,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 282
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 103
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 730,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 283
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 103
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 731,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 534
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 101
+    },
+    "Rate": 1000
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 732,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 132
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 111
+    },
+    "Rate": 2
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 733,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 157
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 111
+    },
+    "Rate": 2
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 734,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 158
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 111
+    },
+    "Rate": 2
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 735,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 159
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 111
+    },
+    "Rate": 2
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 736,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 156
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 111
+    },
+    "Rate": 2
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 737,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 155
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 111
+    },
+    "Rate": 2
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 738,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 133
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 111
+    },
+    "Rate": 2
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 739,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 134
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 111
+    },
+    "Rate": 2
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 740,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 135
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 111
+    },
+    "Rate": 2
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 741,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 136
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 111
+    },
+    "Rate": 2
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 742,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 143
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 111
+    },
+    "Rate": 2
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 743,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 144
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 111
+    },
+    "Rate": 2
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 744,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 145
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 111
+    },
+    "Rate": 2
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 745,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 146
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 111
+    },
+    "Rate": 2
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 746,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 138
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 111
+    },
+    "Rate": 2
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 747,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 139
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 111
+    },
+    "Rate": 2
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 748,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 140
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 111
+    },
+    "Rate": 2
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 749,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 141
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 111
+    },
+    "Rate": 2
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 750,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 148
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 111
+    },
+    "Rate": 2
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 751,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 149
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 111
+    },
+    "Rate": 2
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 752,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 150
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 111
+    },
+    "Rate": 2
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 753,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 151
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 111
+    },
+    "Rate": 2
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 754,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 262
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 111
+    },
+    "Rate": 2
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 755,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 263
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 111
+    },
+    "Rate": 2
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 756,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 264
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 111
+    },
+    "Rate": 2
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 757,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 265
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 111
+    },
+    "Rate": 2
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 758,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 267
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 111
+    },
+    "Rate": 2
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 759,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 268
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 111
+    },
+    "Rate": 2
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 760,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 269
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 111
+    },
+    "Rate": 2
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 761,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 270
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 111
+    },
+    "Rate": 2
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 762,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 272
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 111
+    },
+    "Rate": 2
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 763,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 273
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 111
+    },
+    "Rate": 2
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 764,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 274
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 111
+    },
+    "Rate": 2
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 765,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 275
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 111
+    },
+    "Rate": 2
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 766,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 277
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 111
+    },
+    "Rate": 2
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 767,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 278
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 111
+    },
+    "Rate": 2
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 768,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 279
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 111
+    },
+    "Rate": 2
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 769,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 280
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 111
+    },
+    "Rate": 2
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 770,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 282
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 111
+    },
+    "Rate": 2
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 771,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 283
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 111
+    },
+    "Rate": 2
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 772,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 284
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 111
+    },
+    "Rate": 2
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 773,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 285
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 111
+    },
+    "Rate": 2
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 774,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 463
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 111
+    },
+    "Rate": 2
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 775,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 464
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 111
+    },
+    "Rate": 2
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 776,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 465
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 111
+    },
+    "Rate": 2
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 777,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 466
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 111
+    },
+    "Rate": 2
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 779,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 82
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 16
+    },
+    "Rate": 2500
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 780,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 214
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 16
+    },
+    "Rate": 2500
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 781,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 215
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 16
+    },
+    "Rate": 2500
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 782,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 3
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 14
+    },
+    "Rate": 2500
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 783,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 65
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 16
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 784,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 5
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 14
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 785,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 772
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 150
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 786,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 773
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 150
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 787,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 774
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 150
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 788,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 775
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 150
+    },
+    "Rate": 30
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 789,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 776
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 150
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 791,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 767
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 150
+    },
+    "Rate": 100
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 792,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 768
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 150
+    },
+    "Rate": 100
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 793,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 769
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 150
+    },
+    "Rate": 100
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 794,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 770
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 150
+    },
+    "Rate": 100
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 795,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 816
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 6
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 796,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 817
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 6
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 797,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 818
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 6
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 798,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 284
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 103
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 799,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 91
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 17
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 800,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 92
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 17
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 801,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 34
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 15
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 802,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 285
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 103
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 803,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 992
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 290
+    },
+    "Rate": 200
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 804,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 993
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 290
+    },
+    "Rate": 400
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 805,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 994
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 290
+    },
+    "Rate": 600
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 806,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 286
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 103
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 807,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 464
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 103
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 808,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 465
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 103
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 809,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 466
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 103
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 810,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 467
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 103
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 811,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 791
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 103
+    },
+    "Rate": 15
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 812,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 991
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 103
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 813,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 133
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 2
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 814,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 134
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 2
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 815,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 135
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 2
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 816,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 136
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 2
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 817,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 143
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 2
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 818,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 144
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 2
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 819,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 145
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 2
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 820,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 146
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 2
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 821,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 138
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 2
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 822,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 139
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 2
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 823,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 140
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 2
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 824,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 141
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 2
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 825,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 148
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 2
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 826,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 149
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 2
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 827,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 150
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 2
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 828,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 151
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 2
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 829,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 262
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 2
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 830,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 263
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 2
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 831,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 264
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 2
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 832,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 265
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 2
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 833,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 266
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 2
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 834,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 267
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 2
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 835,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 268
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 2
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 836,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 269
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 2
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 837,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 270
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 2
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 838,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 271
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 2
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 839,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 272
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 2
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 840,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 273
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 2
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 841,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 274
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 2
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 842,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 275
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 2
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 843,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 276
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 2
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 844,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 277
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 2
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 845,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 278
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 2
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 846,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 279
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 2
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 847,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 280
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 2
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 848,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 281
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 2
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 849,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 282
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 2
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 850,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 283
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 2
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 851,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 284
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 2
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 852,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 285
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 2
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 853,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 286
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 2
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 854,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 464
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 2
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 855,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 465
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 2
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 856,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 466
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 2
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 857,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 467
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 2
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 858,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 791
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 2
+    },
+    "Rate": 15
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 859,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 991
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 2
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 860,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 1094
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 150
+    },
+    "Rate": 1000
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 861,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 1095
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 150
+    },
+    "Rate": 1000
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 862,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 1096
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 150
+    },
+    "Rate": 1000
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 864,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 327
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 101
+    },
+    "Rate": 12
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 865,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 1097
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 101
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 866,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 793
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 338
+    },
+    "Rate": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCGood",
+    "GoodsIndex": 0,
+    "Index": 867,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 794
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 338
+    },
+    "Rate": 1
+  }
+]

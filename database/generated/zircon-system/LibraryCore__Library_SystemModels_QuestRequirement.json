@@ -1,0 +1,998 @@
+[
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestRequirement",
+    "Class": 0,
+    "Index": 16,
+    "IntParameter1": 0,
+    "Quest": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 9
+    },
+    "QuestParameter": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 9
+    },
+    "Requirement": 4
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestRequirement",
+    "Class": 0,
+    "Index": 17,
+    "IntParameter1": 20,
+    "Quest": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 9
+    },
+    "QuestParameter": null,
+    "Requirement": 0
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestRequirement",
+    "Class": 0,
+    "Index": 18,
+    "IntParameter1": 0,
+    "Quest": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 10
+    },
+    "QuestParameter": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 10
+    },
+    "Requirement": 4
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestRequirement",
+    "Class": 0,
+    "Index": 19,
+    "IntParameter1": 0,
+    "Quest": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 10
+    },
+    "QuestParameter": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 9
+    },
+    "Requirement": 3
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestRequirement",
+    "Class": 0,
+    "Index": 20,
+    "IntParameter1": 0,
+    "Quest": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 11
+    },
+    "QuestParameter": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 11
+    },
+    "Requirement": 4
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestRequirement",
+    "Class": 0,
+    "Index": 21,
+    "IntParameter1": 0,
+    "Quest": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 11
+    },
+    "QuestParameter": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 10
+    },
+    "Requirement": 3
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestRequirement",
+    "Class": 0,
+    "Index": 22,
+    "IntParameter1": 0,
+    "Quest": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 12
+    },
+    "QuestParameter": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 12
+    },
+    "Requirement": 4
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestRequirement",
+    "Class": 0,
+    "Index": 23,
+    "IntParameter1": 0,
+    "Quest": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 12
+    },
+    "QuestParameter": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 11
+    },
+    "Requirement": 3
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestRequirement",
+    "Class": 0,
+    "Index": 24,
+    "IntParameter1": 0,
+    "Quest": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 13
+    },
+    "QuestParameter": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 13
+    },
+    "Requirement": 4
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestRequirement",
+    "Class": 0,
+    "Index": 25,
+    "IntParameter1": 0,
+    "Quest": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 14
+    },
+    "QuestParameter": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 14
+    },
+    "Requirement": 4
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestRequirement",
+    "Class": 0,
+    "Index": 26,
+    "IntParameter1": 0,
+    "Quest": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 14
+    },
+    "QuestParameter": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 13
+    },
+    "Requirement": 3
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestRequirement",
+    "Class": 0,
+    "Index": 27,
+    "IntParameter1": 0,
+    "Quest": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 13
+    },
+    "QuestParameter": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 12
+    },
+    "Requirement": 3
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestRequirement",
+    "Class": 0,
+    "Index": 29,
+    "IntParameter1": 0,
+    "Quest": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 16
+    },
+    "QuestParameter": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 16
+    },
+    "Requirement": 4
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestRequirement",
+    "Class": 0,
+    "Index": 30,
+    "IntParameter1": 25,
+    "Quest": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 16
+    },
+    "QuestParameter": null,
+    "Requirement": 0
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestRequirement",
+    "Class": 0,
+    "Index": 31,
+    "IntParameter1": 0,
+    "Quest": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 17
+    },
+    "QuestParameter": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 17
+    },
+    "Requirement": 4
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestRequirement",
+    "Class": 0,
+    "Index": 32,
+    "IntParameter1": 7,
+    "Quest": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 17
+    },
+    "QuestParameter": null,
+    "Requirement": 0
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestRequirement",
+    "Class": 0,
+    "Index": 77,
+    "IntParameter1": 0,
+    "Quest": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 34
+    },
+    "QuestParameter": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 34
+    },
+    "Requirement": 4
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestRequirement",
+    "Class": 0,
+    "Index": 78,
+    "IntParameter1": 25,
+    "Quest": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 34
+    },
+    "QuestParameter": null,
+    "Requirement": 0
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestRequirement",
+    "Class": 0,
+    "Index": 79,
+    "IntParameter1": 0,
+    "Quest": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 35
+    },
+    "QuestParameter": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 35
+    },
+    "Requirement": 4
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestRequirement",
+    "Class": 0,
+    "Index": 80,
+    "IntParameter1": 0,
+    "Quest": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 35
+    },
+    "QuestParameter": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 34
+    },
+    "Requirement": 3
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestRequirement",
+    "Class": 0,
+    "Index": 81,
+    "IntParameter1": 0,
+    "Quest": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 36
+    },
+    "QuestParameter": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 36
+    },
+    "Requirement": 4
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestRequirement",
+    "Class": 0,
+    "Index": 82,
+    "IntParameter1": 0,
+    "Quest": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 36
+    },
+    "QuestParameter": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 35
+    },
+    "Requirement": 3
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestRequirement",
+    "Class": 0,
+    "Index": 83,
+    "IntParameter1": 0,
+    "Quest": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 37
+    },
+    "QuestParameter": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 37
+    },
+    "Requirement": 4
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestRequirement",
+    "Class": 0,
+    "Index": 84,
+    "IntParameter1": 0,
+    "Quest": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 37
+    },
+    "QuestParameter": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 36
+    },
+    "Requirement": 3
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestRequirement",
+    "Class": 0,
+    "Index": 87,
+    "IntParameter1": 0,
+    "Quest": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 39
+    },
+    "QuestParameter": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 39
+    },
+    "Requirement": 4
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestRequirement",
+    "Class": 0,
+    "Index": 88,
+    "IntParameter1": 0,
+    "Quest": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 40
+    },
+    "QuestParameter": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 40
+    },
+    "Requirement": 4
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestRequirement",
+    "Class": 0,
+    "Index": 89,
+    "IntParameter1": 0,
+    "Quest": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 40
+    },
+    "QuestParameter": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 39
+    },
+    "Requirement": 3
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestRequirement",
+    "Class": 0,
+    "Index": 91,
+    "IntParameter1": 0,
+    "Quest": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 42
+    },
+    "QuestParameter": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 42
+    },
+    "Requirement": 4
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestRequirement",
+    "Class": 0,
+    "Index": 92,
+    "IntParameter1": 0,
+    "Quest": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 43
+    },
+    "QuestParameter": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 43
+    },
+    "Requirement": 4
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestRequirement",
+    "Class": 0,
+    "Index": 94,
+    "IntParameter1": 0,
+    "Quest": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 44
+    },
+    "QuestParameter": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 44
+    },
+    "Requirement": 4
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestRequirement",
+    "Class": 0,
+    "Index": 97,
+    "IntParameter1": 0,
+    "Quest": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 45
+    },
+    "QuestParameter": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 45
+    },
+    "Requirement": 4
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestRequirement",
+    "Class": 0,
+    "Index": 98,
+    "IntParameter1": 7,
+    "Quest": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 45
+    },
+    "QuestParameter": null,
+    "Requirement": 0
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestRequirement",
+    "Class": 0,
+    "Index": 99,
+    "IntParameter1": 0,
+    "Quest": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 46
+    },
+    "QuestParameter": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 46
+    },
+    "Requirement": 4
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestRequirement",
+    "Class": 0,
+    "Index": 101,
+    "IntParameter1": 0,
+    "Quest": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 47
+    },
+    "QuestParameter": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 47
+    },
+    "Requirement": 4
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestRequirement",
+    "Class": 0,
+    "Index": 103,
+    "IntParameter1": 0,
+    "Quest": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 48
+    },
+    "QuestParameter": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 48
+    },
+    "Requirement": 4
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestRequirement",
+    "Class": 0,
+    "Index": 106,
+    "IntParameter1": 0,
+    "Quest": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 50
+    },
+    "QuestParameter": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 50
+    },
+    "Requirement": 4
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestRequirement",
+    "Class": 0,
+    "Index": 108,
+    "IntParameter1": 0,
+    "Quest": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 51
+    },
+    "QuestParameter": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 51
+    },
+    "Requirement": 4
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestRequirement",
+    "Class": 0,
+    "Index": 110,
+    "IntParameter1": 4,
+    "Quest": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 50
+    },
+    "QuestParameter": null,
+    "Requirement": 0
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestRequirement",
+    "Class": 0,
+    "Index": 111,
+    "IntParameter1": 4,
+    "Quest": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 51
+    },
+    "QuestParameter": null,
+    "Requirement": 0
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestRequirement",
+    "Class": 0,
+    "Index": 112,
+    "IntParameter1": 0,
+    "Quest": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 52
+    },
+    "QuestParameter": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 52
+    },
+    "Requirement": 4
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestRequirement",
+    "Class": 0,
+    "Index": 114,
+    "IntParameter1": 4,
+    "Quest": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 52
+    },
+    "QuestParameter": null,
+    "Requirement": 0
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestRequirement",
+    "Class": 0,
+    "Index": 115,
+    "IntParameter1": 0,
+    "Quest": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 53
+    },
+    "QuestParameter": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 53
+    },
+    "Requirement": 4
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestRequirement",
+    "Class": 0,
+    "Index": 117,
+    "IntParameter1": 0,
+    "Quest": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 54
+    },
+    "QuestParameter": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 54
+    },
+    "Requirement": 4
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestRequirement",
+    "Class": 0,
+    "Index": 119,
+    "IntParameter1": 0,
+    "Quest": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 55
+    },
+    "QuestParameter": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 55
+    },
+    "Requirement": 4
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestRequirement",
+    "Class": 0,
+    "Index": 121,
+    "IntParameter1": 0,
+    "Quest": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 56
+    },
+    "QuestParameter": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 56
+    },
+    "Requirement": 4
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestRequirement",
+    "Class": 0,
+    "Index": 122,
+    "IntParameter1": 14,
+    "Quest": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 56
+    },
+    "QuestParameter": null,
+    "Requirement": 0
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestRequirement",
+    "Class": 0,
+    "Index": 123,
+    "IntParameter1": 0,
+    "Quest": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 57
+    },
+    "QuestParameter": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 57
+    },
+    "Requirement": 4
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestRequirement",
+    "Class": 0,
+    "Index": 124,
+    "IntParameter1": 0,
+    "Quest": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 57
+    },
+    "QuestParameter": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 56
+    },
+    "Requirement": 3
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestRequirement",
+    "Class": 0,
+    "Index": 125,
+    "IntParameter1": 0,
+    "Quest": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 58
+    },
+    "QuestParameter": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 58
+    },
+    "Requirement": 4
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestRequirement",
+    "Class": 0,
+    "Index": 126,
+    "IntParameter1": 0,
+    "Quest": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 58
+    },
+    "QuestParameter": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 57
+    },
+    "Requirement": 3
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestRequirement",
+    "Class": 0,
+    "Index": 127,
+    "IntParameter1": 0,
+    "Quest": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 59
+    },
+    "QuestParameter": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 59
+    },
+    "Requirement": 4
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestRequirement",
+    "Class": 0,
+    "Index": 128,
+    "IntParameter1": 0,
+    "Quest": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 59
+    },
+    "QuestParameter": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 58
+    },
+    "Requirement": 3
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestRequirement",
+    "Class": 0,
+    "Index": 129,
+    "IntParameter1": 0,
+    "Quest": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 60
+    },
+    "QuestParameter": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 60
+    },
+    "Requirement": 4
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestRequirement",
+    "Class": 0,
+    "Index": 131,
+    "IntParameter1": 5,
+    "Quest": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 60
+    },
+    "QuestParameter": null,
+    "Requirement": 0
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestRequirement",
+    "Class": 0,
+    "Index": 132,
+    "IntParameter1": 0,
+    "Quest": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 61
+    },
+    "QuestParameter": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 61
+    },
+    "Requirement": 4
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestRequirement",
+    "Class": 0,
+    "Index": 134,
+    "IntParameter1": 5,
+    "Quest": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 61
+    },
+    "QuestParameter": null,
+    "Requirement": 0
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestRequirement",
+    "Class": 0,
+    "Index": 135,
+    "IntParameter1": 0,
+    "Quest": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 62
+    },
+    "QuestParameter": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 62
+    },
+    "Requirement": 4
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestRequirement",
+    "Class": 0,
+    "Index": 137,
+    "IntParameter1": 5,
+    "Quest": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 62
+    },
+    "QuestParameter": null,
+    "Requirement": 0
+  }
+]

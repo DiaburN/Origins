@@ -1,0 +1,3640 @@
+[
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Basic Potion Main",
+    "DialogType": 0,
+    "Index": 1,
+    "Say": "Drugs, Get your Drugs here,\r\n\r\nYou there, You look like an addict, Wanna by some potions!?\r\n\r\n[Browse Potions:1]\r\n\r\n[Back away slowly:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Basic Potion BuySell",
+    "DialogType": 1,
+    "Index": 2,
+    "Say": "Excellent...\r\n\r\nNow spend every penny.\r\n\r\n\r\n\r\n[Back:1]\r\n\r\n[Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Meat Main",
+    "DialogType": 0,
+    "Index": 3,
+    "Say": "Welcome to my store,\r\n\r\nI have been in business for years, I know all of the best cuts.\r\n\r\nWhat can I do for you?\r\n\r\n[Browse Store:1]\r\n\r\n[Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Meat BuySell",
+    "DialogType": 1,
+    "Index": 4,
+    "Say": "Be with you in a moment,\r\n\r\nTake a look let me know if there is anything you would like...\r\n\r\nI am getting low on stock so I will pay well for some high quality meat.\r\n\r\n\r\n[Back:1]\r\n\r\n[Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Weapon Main",
+    "DialogType": 0,
+    "Index": 5,
+    "Say": "What can I do for you, \r\n\r\nMy services are:\r\n\r\n[Browse Weapons:1]\r\n[Repair Weapons:2]\r\n\r\n[Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Weapon BuySell",
+    "DialogType": 1,
+    "Index": 6,
+    "Say": "Take your time,\r\n\r\nI\u0027ve got all day.\r\n\r\n\r\n[Back:1]\r\n\r\n[Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Weapon Repair",
+    "DialogType": 2,
+    "Index": 7,
+    "Say": "I can do a cheap repair or I can do a perfect repair, the choice is yours.\r\n\r\n\r\n[Back:1]\r\n\r\n[Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Jewellery Main",
+    "DialogType": 0,
+    "Index": 8,
+    "Say": "One moment,\r\n \r\nJust putting this shipment away.\r\n\r\n[Browse Rings:1]\r\n[Browse Bracelets:2]\r\n[Browse Necklaces:3]\r\n\r\n[Repair Jewellery:4]\r\n\r\n[Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Ring BuySell",
+    "DialogType": 1,
+    "Index": 9,
+    "Say": "I have some new rings for sale,\r\n\r\nTake your time, they are all genuine, none of them are counterfeits...\r\n\r\n[Browse Bracelets:1]\r\n\r\n[Browse Necklaces:2]\r\n\r\n[Back:3]\r\n\r\n[Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Bracelet BuySell",
+    "DialogType": 1,
+    "Index": 10,
+    "Say": "I have some new bracelets for sale,\r\n\r\nTake your time, they are all genuine, none of them are counterfeits...\r\n\r\n[Browse Rings:1]\r\n\r\n[Browse Necklaces:2]\r\n\r\n[Back:3]\r\n\r\n[Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Necklace BuySell",
+    "DialogType": 1,
+    "Index": 11,
+    "Say": "I have some new necklaces for sale,\r\n\r\nTake your time, they are all genuine, none of them are counterfeits...\r\n\r\n[Browse Rings:1]\r\n\r\n[Browse Bracelets:2]\r\n\r\n[Back:3]\r\n\r\n[Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Jewellery Repair",
+    "DialogType": 2,
+    "Index": 12,
+    "Say": "Lay your precious \u0022valuables\u0022 on this table,\r\n\r\nI shall inspect them thoroughly...\r\n\r\n[Back:1]\r\n\r\n[Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Book Main",
+    "DialogType": 0,
+    "Index": 13,
+    "Say": "Quiet, I am reading my books, take a look and then tell me what you want.\r\n\r\n[Warrior Books:1]\r\n[Wizard Books:2]\r\n[Taoist Books:3]\r\n[Assassin Books:4]\r\n\r\n[Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Warrior Books",
+    "DialogType": 1,
+    "Index": 14,
+    "Say": "Quiet, I am reading my books, take a look and then tell me what you want.\r\n\r\nWarrior Books\r\n[Wizard Books:2]\r\n[Taoist Books:3]\r\n[Assassin Books:4]\r\n\r\n[Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Wizard Books",
+    "DialogType": 1,
+    "Index": 15,
+    "Say": "Quiet, I am reading my books, take a look and then tell me what you want.\r\n\r\n[Warrior Books:1]\r\nWizard Books\r\n[Taoist Books:3]\r\n[Assassin Books:4]\r\n\r\n[Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Taoist Books",
+    "DialogType": 1,
+    "Index": 16,
+    "Say": "Quiet, I am reading my books, take a look and then tell me what you want.\r\n\r\n[Warrior Books:1]\r\n[Wizard Books:2]\r\nTaoist Books\r\n[Assassin Books:4]\r\n\r\n[Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Assassin Books",
+    "DialogType": 1,
+    "Index": 17,
+    "Say": "Quiet, I am reading my books, take a look and then tell me what you want.\r\n\r\n[Warrior Books:1]\r\n[Wizard Books:2]\r\n[Taoist Books:3]\r\nAssassin Books\r\n\r\n[Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Essentials Main",
+    "DialogType": 0,
+    "Index": 18,
+    "Say": "I got what you need,\r\n\r\nMy prices are just,\r\n\r\n[Browse Essentials:1]\r\n[Browse Taoist Goods:2]\r\n[Browse Dark Stones:3]\r\n\r\n[Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Armour Main",
+    "DialogType": 0,
+    "Index": 19,
+    "Say": "I\u0027ve got some fabulous new outfits,\r\n\r\nWhat are you interested in?\r\n\r\n[Browse Armours:1]\r\n[Browse Helmets and Shoes:2]\r\n[Repair Armours:3]\r\n\r\n[Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Collector BuySell",
+    "DialogType": 1,
+    "Index": 20,
+    "Say": "I\u0027m a collector, \r\n\r\nI collect items most consider worthless.\r\n\r\n\r\n[Exit:0]\r\n\r\n",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Essentials BuySell",
+    "DialogType": 1,
+    "Index": 21,
+    "Say": "I should be getting some new stock soon!\r\n\r\n\r\n[Browse Taoist Goods:2]\r\n[Browse Dark Stones:3]\r\n\r\n\r\n[Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Armour BuySell",
+    "DialogType": 1,
+    "Index": 22,
+    "Say": "Armours and Clothing,\r\n\r\nOne size fits all.\r\n\r\n[Back:1]\r\n\r\n[Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Armour Repair",
+    "DialogType": 2,
+    "Index": 23,
+    "Say": "Fine,\r\n\r\nI will also fix the hobo suit.\r\n\r\n[Back:1]\r\n\r\n[Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Armour Other BuySell",
+    "DialogType": 1,
+    "Index": 24,
+    "Say": "Helmets and Shoes,\r\n\r\nOne size fits all.\r\n\r\n[Back:1]\r\n\r\n[Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Well",
+    "DialogType": 0,
+    "Index": 25,
+    "Say": "",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Teleport Fail Cost",
+    "DialogType": 0,
+    "Index": 30,
+    "Say": "Failed to teleport to destination,\r\n\r\nNot enough gold.\r\n\r\n[Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Teleport to Bichon Town",
+    "DialogType": 0,
+    "Index": 31,
+    "Say": "",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Teleport to Lost Paradise",
+    "DialogType": 0,
+    "Index": 32,
+    "Say": "",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Teleport to Sabuk Keep",
+    "DialogType": 0,
+    "Index": 33,
+    "Say": "",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Teleport to BanyaVillage",
+    "DialogType": 0,
+    "Index": 34,
+    "Say": "",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Teleport to MudWall",
+    "DialogType": 0,
+    "Index": 35,
+    "Say": "",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Teleport to Banya Island",
+    "DialogType": 0,
+    "Index": 36,
+    "Say": "",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Teleport to Numa Village",
+    "DialogType": 0,
+    "Index": 37,
+    "Say": "",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "BT Teleporter",
+    "DialogType": 0,
+    "Index": 38,
+    "Say": "Select Destination\r\n\r\n[Lost Paradise:1] 10,000 Gold\r\n[Sabuk Keep:2] 3,000 Gold\r\n[Banya Village:3] 5,000 Gold\r\n\r\n[Bichon Castle:4] 10,000 Gold,  (Level 45\u002B)\r\n\r\n\r\n[Freedom Pass:5] [Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "BV Teleporter",
+    "DialogType": 0,
+    "Index": 39,
+    "Say": "Select Destination\r\n\r\n[Numa Village:1] 10,000 Gold\r\n[Sabuk Keep:2] 3,000 Gold\r\n[Bichon Town:3] 5,000 Gold\r\n\r\n[Banya Island:4] 10,000 Gold (Level 25\u002B)\r\n[Infernal Island:5] 50,000 Gold\r\n\r\n[Freedom Pass:6] [Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "LP Teleporter",
+    "DialogType": 0,
+    "Index": 40,
+    "Say": "Select Destination\r\n\r\n[Bichon Town:1] 10,000 Gold\r\n[Desert Mud Wall:2] 3,000 Gold\r\n[Numa Village:3] 5,000 Gold\r\n\r\n[Taoist Temple:4] 10,000 Gold\r\n\r\n[Frost Village:5] 20,000 Gold,  (Level 45\u002B)\r\n\r\n[Freedom Pass:6] [Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "SK Teleporter",
+    "DialogType": 0,
+    "Index": 41,
+    "Say": "Select Destination\r\n\r\n[Bichon Town:1] 3,000 Gold\r\n[Desert Mud Wall:2] 5,000 Gold\r\n[Banya Village:3] 3,000 Gold\r\n\r\n\r\n[Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "MW Teleporter",
+    "DialogType": 0,
+    "Index": 42,
+    "Say": "Select Destination\r\n\r\n[Lost Paradise:1] 3,000 Gold\r\n[Sabuk Keep:2] 5,000 Gold\r\n[Numa Village:3] 3,000 Gold\r\n\r\n\r\n[Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "NV Teleporter",
+    "DialogType": 0,
+    "Index": 43,
+    "Say": "Select Destination\r\n\r\n[Banya Village:1] 10,000 Gold\r\n[Desert Mud Wall:2] 3,000 Gold\r\n[Lost Paradise:3] 5,000 Gold\r\n[Western Arids:5] 5,000,000 Gold (Level 60\u002B)\r\n[Arid Flats:6] 5,000,000 Gold \u002B Freedom Pass (Level 60\u002B)\r\n\r\n[Freedom Pass:4] [Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "BI Teleporter",
+    "DialogType": 0,
+    "Index": 49,
+    "Say": "Select Destination\r\n\r\n[Banya Village:1] 10,000 Gold\r\n\r\n[Lost Land:3] 30,000 Gold (Level 35\u002B)\r\n\r\n\r\n[Freedom Pass:2] [Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "BT 10K",
+    "DialogType": 0,
+    "Index": 50,
+    "Say": "",
+    "SuccessPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 31
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "BT 5K",
+    "DialogType": 0,
+    "Index": 51,
+    "Say": "",
+    "SuccessPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 31
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "BT 3K",
+    "DialogType": 0,
+    "Index": 52,
+    "Say": "",
+    "SuccessPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 31
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "SK 5K",
+    "DialogType": 0,
+    "Index": 53,
+    "Say": "",
+    "SuccessPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 33
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "SK 3K",
+    "DialogType": 0,
+    "Index": 54,
+    "Say": "",
+    "SuccessPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 33
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "MW 5K",
+    "DialogType": 0,
+    "Index": 55,
+    "Say": "",
+    "SuccessPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 35
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "MW 3K",
+    "DialogType": 0,
+    "Index": 56,
+    "Say": "",
+    "SuccessPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 35
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "BV 10K",
+    "DialogType": 0,
+    "Index": 57,
+    "Say": "",
+    "SuccessPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 34
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "BV 5K",
+    "DialogType": 0,
+    "Index": 58,
+    "Say": "",
+    "SuccessPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 34
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "BV 3K",
+    "DialogType": 0,
+    "Index": 59,
+    "Say": "",
+    "SuccessPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 34
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "NV 10K",
+    "DialogType": 0,
+    "Index": 60,
+    "Say": "",
+    "SuccessPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 37
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "NV 5K",
+    "DialogType": 0,
+    "Index": 61,
+    "Say": "",
+    "SuccessPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 37
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "NV 3K",
+    "DialogType": 0,
+    "Index": 62,
+    "Say": "",
+    "SuccessPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 37
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "LP 10K",
+    "DialogType": 0,
+    "Index": 63,
+    "Say": "",
+    "SuccessPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 32
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "LP 5K",
+    "DialogType": 0,
+    "Index": 64,
+    "Say": "",
+    "SuccessPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 32
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "LP 3K",
+    "DialogType": 0,
+    "Index": 65,
+    "Say": "",
+    "SuccessPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 32
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "BI 10K and Level 25\u002B",
+    "DialogType": 0,
+    "Index": 66,
+    "Say": "",
+    "SuccessPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 36
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Amulet BuySell",
+    "DialogType": 1,
+    "Index": 68,
+    "Say": "I should be getting some new stock soon!\r\n\r\n[Browse Essentials:1]\r\n\r\n[Browse Dark Stones:3]\r\n\r\n\r\n[Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "DarkStone BuySell",
+    "DialogType": 1,
+    "Index": 69,
+    "Say": "I should be getting some new stock soon!\r\n\r\n[Browse Essentials:1]\r\n[Browse Taoist Goods:2]\r\n\r\n\r\n\r\n[Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Teleport Banya Hall",
+    "DialogType": 0,
+    "Index": 70,
+    "Say": "",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Weapon Refiner",
+    "DialogType": 0,
+    "Index": 71,
+    "Say": "I\u0027m an artisan who refines weapons. Let me refine your weapon for you.\r\n\r\n[Refine:1] your weapon. \r\n[Retrieve:2] a refined weapon.\r\n[Change:4] element of weapon at a cost of 100,000 Gold.\r\n[Inquire:3] about refining.\r\n[Inquire:5] about the refinement stone.\r\n[Reset:6] Weapon Level\r\n[Start:7] Master refining process.\r\n[Start:8] Special refining process.\r\n\r\n[Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Weapon Refiner - Fail - No Weapon",
+    "DialogType": 0,
+    "Index": 72,
+    "Say": "You are not holding a weapon.\r\n\r\nPlease come back when you have a weapon.\r\n\r\n\r\n[Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Weapon Refiner - Change Element - Start",
+    "DialogType": 0,
+    "Index": 73,
+    "Say": "What element would you like to embue your weapon with?\r\n\r\nChange to [Fire:1] element.\r\nChange to [Ice:2] element.\r\nChange to [Lightning:3] element.\r\nChange to [Wind:4] element.\r\nChange to [Holy:5] element.\r\nChange to [Dark:6] element.\r\nChange to [Phantom:7] element.\r\n\r\n[Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Weapon Refiner - Change Element - Fail - No Elements",
+    "DialogType": 0,
+    "Index": 74,
+    "Say": "The weapon you are holding does not contain any elemental properties.\r\n\r\nI cannot help.\r\n\r\n\r\n[Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Weapon Refiner - Change Element - Complete - Fire",
+    "DialogType": 0,
+    "Index": 75,
+    "Say": "Congratulations,\r\n\r\nYour weapon is now Fire element.\r\n\r\n[Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Weapon Refiner - Fail - No Gold",
+    "DialogType": 0,
+    "Index": 76,
+    "Say": "You do not have enough Gold.\r\n\r\nPlease come back when you have enough Gold.\r\n\r\n\r\n[Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Weapon Refiner - Change Element - Fail - Same Element",
+    "DialogType": 0,
+    "Index": 77,
+    "Say": "Failed to change the element of your weapon...\r\n\r\nYour weapon is already this element.\r\n\r\n[Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Weapon Refiner - Change Element - Complete - Ice",
+    "DialogType": 0,
+    "Index": 78,
+    "Say": "Congratulations,\r\n\r\nYour weapon is now Ice element.\r\n\r\n[Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Weapon Refiner - Change Element - Complete - Lightning",
+    "DialogType": 0,
+    "Index": 79,
+    "Say": "Congratulations,\r\n\r\nYour weapon is now Lightning element.\r\n\r\n[Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Weapon Refiner - Change Element - Complete - Wind",
+    "DialogType": 0,
+    "Index": 80,
+    "Say": "Congratulations,\r\n\r\nYour weapon is now Wind element.\r\n\r\n[Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Weapon Refiner - Change Element - Complete - Holy",
+    "DialogType": 0,
+    "Index": 81,
+    "Say": "Congratulations,\r\n\r\nYour weapon is now Holy element.\r\n\r\n[Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Weapon Refiner - Change Element - Complete - Dark",
+    "DialogType": 0,
+    "Index": 82,
+    "Say": "Congratulations,\r\n\r\nYour weapon is now Dark element.\r\n\r\n[Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Weapon Refiner - Change Element - Complete - Phantom",
+    "DialogType": 0,
+    "Index": 83,
+    "Say": "Congratulations,\r\n\r\nYour weapon is now Phantom element.\r\n\r\n[Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Todo",
+    "DialogType": 0,
+    "Index": 84,
+    "Say": "\r\n\r\nNot Yet Added\r\n\r\n[Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Weapon Refiner - Refine Weapon - Start",
+    "DialogType": 3,
+    "Index": 85,
+    "Say": "Good news, I can see that your weapon is ready to be refined.\r\n\r\nRefinement: DC.\r\nRefinement: Spell Power (MC, SC or both depending on the weapon).\r\n\r\nRefinement: Fire Element, Ice Element, Lightning Element, Wind Element.\r\nRefinement: Holy Element, Dark Element.\r\nRefinement: Phantom Element.\r\n\r\n[Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Weapon Refiner - Refine Weapon - Fail - Cannot Refine",
+    "DialogType": 0,
+    "Index": 86,
+    "Say": "Failed to refine your weapon...\r\n\r\n\r\nIt is not ready to be refined.\r\n\r\n[Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Weapon Refiner - Refine Weapon - Retreive Weapon",
+    "DialogType": 4,
+    "Index": 97,
+    "Say": "Here\u0027s the list of weapons you are currently refineing,\r\n\r\nIf you don\u0027t see it, then you must have already received it.\r\n\r\n\r\n[Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Essentials Main - Castle",
+    "DialogType": 0,
+    "Index": 98,
+    "Say": "I got what you need,\r\n\r\nMy prices are just,\r\n\r\n[Browse Essentials:1]\r\n[Browse Taoist Goods:2]\r\n[Browse Dark Stones:3]\r\n\r\n[Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "DarkStone BuySell - Castle",
+    "DialogType": 1,
+    "Index": 99,
+    "Say": "I should be getting some new stock soon!\r\n\r\n[Browse Essentials:1]\r\n[Browse Taoist Goods:2]\r\n\r\n\r\n\r\n[Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Amulet BuySell - Castle",
+    "DialogType": 1,
+    "Index": 100,
+    "Say": "I should be getting some new stock soon!\r\n\r\n[Browse Essentials:1]\r\n\r\n[Browse Dark Stones:3]\r\n\r\n\r\n[Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Essentials BuySell - Castle",
+    "DialogType": 1,
+    "Index": 101,
+    "Say": "I should be getting some new stock soon!\r\n\r\n\r\n[Browse Taoist Goods:2]\r\n[Browse Dark Stones:3]\r\n\r\n\r\n[Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Basic Potion Main - Castle",
+    "DialogType": 0,
+    "Index": 102,
+    "Say": "Drugs, Get your Drugs here,\r\n\r\nYou there, You look like an addict, Wanna by some potions!?\r\n\r\n[Browse Potions:1]\r\n\r\n[Back away slowly:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Basic Potion BuySell - Castle",
+    "DialogType": 1,
+    "Index": 103,
+    "Say": "Excellent...\r\n\r\nNow spend every penny.\r\n\r\n\r\n\r\n[Back:1]\r\n\r\n[Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "II Teleporter",
+    "DialogType": 0,
+    "Index": 104,
+    "Say": "Select Destination\r\n\r\n[Numa Village:1] 1,000 Gold\r\n\r\n\r\n\r\n\r\n\r\n[Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "NV 1K",
+    "DialogType": 0,
+    "Index": 105,
+    "Say": "",
+    "SuccessPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 37
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "II 50K",
+    "DialogType": 0,
+    "Index": 106,
+    "Say": "",
+    "SuccessPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 107
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Teleport to Infernal Island",
+    "DialogType": 0,
+    "Index": 107,
+    "Say": "",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "PK Fail - Text",
+    "DialogType": 0,
+    "Index": 108,
+    "Say": "Leave this instant.\r\n\r\nI do not want to get blood all over my products.\r\n\r\n[Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "PK Fail - Teleport",
+    "DialogType": 0,
+    "Index": 109,
+    "Say": "",
+    "SuccessPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 107
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "II Merchant",
+    "DialogType": 0,
+    "Index": 110,
+    "Say": "I do no want to be seen dealing with you.\r\n\r\n[Buy Items:1]\r\n[Repair Items:2]\r\n\r\n\r\n[Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "II Buy",
+    "DialogType": 1,
+    "Index": 111,
+    "Say": "Faster, before someone arrives.\r\n\r\n\r\n\r\n[Back:1]\r\n\r\n\r\n[Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "II Repair",
+    "DialogType": 2,
+    "Index": 112,
+    "Say": "Quick, I think someone is coming.\r\n\r\n\r\n[Back:1]\r\n\r\n\r\n[Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "SK1 Teleporter",
+    "DialogType": 0,
+    "Index": 113,
+    "Say": "Select Destination\r\n\r\n[Inner Wall:1] 1,000 Gold\r\n\r\n\r\n\r\n\r\n[Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "MW1 Teleporter",
+    "DialogType": 0,
+    "Index": 114,
+    "Say": "Select Destination\r\n\r\n[Inner Wall:1] 1,000 Gold\r\n\r\n\r\n\r\n\r\n[Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Inner SK 1K",
+    "DialogType": 0,
+    "Index": 115,
+    "Say": "",
+    "SuccessPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 116
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Teleport to Inner Sabuk Keep",
+    "DialogType": 0,
+    "Index": 116,
+    "Say": "",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Inner MW 1k",
+    "DialogType": 0,
+    "Index": 117,
+    "Say": "",
+    "SuccessPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 118
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Teleport to Inner Mud Wall",
+    "DialogType": 0,
+    "Index": 118,
+    "Say": "",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Horse Main",
+    "DialogType": 0,
+    "Index": 119,
+    "Say": "Welcome to my stables.\r\nHere\u0027s a selection of the horses available.\r\n\r\n[Brown Horse:1] - 500,000 Gold, Level 15.\r\n[White Horse:2] - 20,000,000 Gold, Level 42.\r\n[Red Horse:3] - 100,000,000 Gold, Level 51.\r\n[Black Horse:4] - 600,000,000 Gold, Level 75.\r\n\r\n[Sell Horse:5]\r\n\r\n[Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Brown Horse - Buy",
+    "DialogType": 0,
+    "Index": 120,
+    "Say": "",
+    "SuccessPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 124
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Buy Horse Fail - Already have horse",
+    "DialogType": 0,
+    "Index": 121,
+    "Say": "I am unable to sell you another horse at the moment.\r\n\r\nYou currently already own a horse.\r\n\r\nPlease sell your current horse if you want to buy a new one.\r\n\r\n[Main:1]\r\n\r\n[Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Buy Horse Fail - Level",
+    "DialogType": 0,
+    "Index": 122,
+    "Say": "I am unable to sell you this horse at the moment.\r\n\r\nYou not strong enough.\r\n\r\nPlease come back when you are higher level.\r\n\r\n[Main:1]\r\n\r\n[Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Buy Horse Fail - Gold",
+    "DialogType": 0,
+    "Index": 123,
+    "Say": "I am unable to sell you this horse at the moment.\r\n\r\nYou cannot afford to buy this horse\r\n\r\nPlease come back when you are wealthier.\r\n\r\n[Main:1]\r\n\r\n[Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Buy Horse Success",
+    "DialogType": 0,
+    "Index": 124,
+    "Say": "Congratulations on purchasing your new horse.\r\n\r\nPlease take good care of it.\r\n\r\n[Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "White Horse - Buy",
+    "DialogType": 0,
+    "Index": 125,
+    "Say": "",
+    "SuccessPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 124
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Red Horse - Buy",
+    "DialogType": 0,
+    "Index": 126,
+    "Say": "",
+    "SuccessPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 124
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Black Horse - Buy",
+    "DialogType": 0,
+    "Index": 127,
+    "Say": "",
+    "SuccessPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 124
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Horse - Sell",
+    "DialogType": 0,
+    "Index": 129,
+    "Say": "It\u0027s sad to see another horse abandoned by its owner, My offer is as follows:\r\n\r\nBrown Horse - 250,000 Gold.\r\nWhite Horse - 10,00,000 Gold.\r\nRed Horse - 50,000,000 Gold.\r\nBlack Horse - 300,000,000 Gold.\r\n\r\n[Main:1]\r\n\r\n[Sell Horse:2]\r\n\r\n[Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Brown Horse - Buy Start",
+    "DialogType": 0,
+    "Index": 130,
+    "Say": "Horse Contract Information:\r\n\r\nType: Brown Horse.\r\nCost: 500,000 Gold.\r\n\r\nIf you want to buy this horse please [Sign Here:1]\r\n\r\n[Main:2]\r\n[Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "White Horse - Buy Start",
+    "DialogType": 0,
+    "Index": 131,
+    "Say": "Horse Contract Information:\r\n\r\nType: White Horse.\r\nCost: 20,000,000 Gold.\r\n\r\nIf you want to buy this horse please [Sign Here:1]\r\n\r\n[Main:2]\r\n[Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Red Horse - Buy Start",
+    "DialogType": 0,
+    "Index": 132,
+    "Say": "Horse Contract Information:\r\n\r\nType: Red Horse.\r\nCost: 100,000,000 Gold.\r\n\r\nIf you want to buy this horse please [Sign Here:1]\r\n\r\n[Main:2]\r\n[Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Black Horse - Buy Start",
+    "DialogType": 0,
+    "Index": 133,
+    "Say": "Horse Contract Information:\r\n\r\nType: Black Horse.\r\nCost: 600,000,000 Gold.\r\n\r\nIf you want to buy this horse please [Sign Here:1]\r\n\r\n[Main:2]\r\n[Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Horse Sell - None - Start",
+    "DialogType": 0,
+    "Index": 134,
+    "Say": "I am unable to buy a horse from you.\r\n\r\nYou currently don\u0027t own any horse.\r\n\r\n[Main:1]\r\n\r\n[Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Horse Sell - Brown - Start",
+    "DialogType": 0,
+    "Index": 135,
+    "Say": "Horse Contract Information:\r\n\r\nType: Brown Horse.\r\nPrice: 250,000 Gold.\r\n\r\nIf you want to sell this horse please [Sign Here:1]\r\n\r\n[Main:2]\r\n[Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Horse Sell - White - Start",
+    "DialogType": 0,
+    "Index": 136,
+    "Say": "Horse Contract Information:\r\n\r\nType: White Horse.\r\nPrice: 10,000,000 Gold.\r\n\r\nIf you want to sell this horse please [Sign Here:1]\r\n\r\n[Main:2]\r\n[Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Horse Sell - Red - Start",
+    "DialogType": 0,
+    "Index": 137,
+    "Say": "Horse Contract Information:\r\n\r\nType: Red Horse.\r\nPrice: 50,000,000 Gold.\r\n\r\nIf you want to sell this horse please [Sign Here:1]\r\n\r\n[Main:2]\r\n[Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Horse Sell - Black - Start",
+    "DialogType": 0,
+    "Index": 138,
+    "Say": "Horse Contract Information:\r\n\r\nType: Black Horse.\r\nPrice: 300,000,000 Gold.\r\n\r\nIf you want to sell this horse please [Sign Here:1]\r\n\r\n[Main:2]\r\n[Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Horse Sell - Unknown - Start",
+    "DialogType": 0,
+    "Index": 139,
+    "Say": "Horse Contract Information:\r\n\r\nType: Unknown Horse.\r\nCost: Your Soul...\r\n\r\nIf you want to sell this horse please [Sign Here:1]\r\n\r\n[Main:2]\r\n[Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Horse Sell - Brown",
+    "DialogType": 0,
+    "Index": 140,
+    "Say": "",
+    "SuccessPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 141
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Sell Horse Success",
+    "DialogType": 0,
+    "Index": 141,
+    "Say": "You\u0027ve sold your horse.\r\n\r\nIt no longer loves you, Not even if you feed it a carrot.\r\n\r\n\r\n[Main:1]\r\n\r\n[Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Horse Sell - White",
+    "DialogType": 0,
+    "Index": 142,
+    "Say": "",
+    "SuccessPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 141
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Horse Sell - Red",
+    "DialogType": 0,
+    "Index": 143,
+    "Say": "",
+    "SuccessPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 141
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Horse Sell - Black",
+    "DialogType": 0,
+    "Index": 144,
+    "Say": "",
+    "SuccessPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 141
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Teleport Fail Level",
+    "DialogType": 0,
+    "Index": 146,
+    "Say": "Failed to teleport to destination,\r\n\r\nNot High Enough Level.\r\n\r\n[Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Notice Board",
+    "DialogType": 0,
+    "Index": 147,
+    "Say": "...",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Companion Main",
+    "DialogType": 0,
+    "Index": 148,
+    "Say": "Want to adopt a lovable companion?\r\n\r\nThey will help you pick up items whilst you hunt.\r\n\r\n[Manage Pets:1]\r\n[Buy Pet Food:2]\r\n\r\n[Exit:0]\r\n",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Companion Manage",
+    "DialogType": 5,
+    "Index": 149,
+    "Say": "Please take your time,\r\n\r\n\r\n[Back:1]\r\n\r\n\r\n[Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Companion BuySell",
+    "DialogType": 1,
+    "Index": 150,
+    "Say": "I have all of the pet food your lovable pet could ever want.\r\n\r\n\r\n[Back:1]\r\n\r\n[Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Marriage Main",
+    "DialogType": 0,
+    "Index": 151,
+    "Say": "Hello, How can I help someone such as yourself.\r\n\r\n[Get Married:1]\r\n[Get Devorced:2]\r\n[Remove Wedding Ring:3]\r\n[Make Wedding Ring:4]\r\n\r\n[Rebirth:5]\r\n\r\n[Exit:0]\r\n",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Marriage - Request Start",
+    "DialogType": 0,
+    "Index": 152,
+    "Say": "Please face your partner...\r\n\r\nLet me know when you are ready.\r\n\r\nI will charge both of you 500,000 gold for a successful marriage.\r\n\r\n[Continue:1]\r\n\r\n[Back:2]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Marriage - Divorce Start",
+    "DialogType": 0,
+    "Index": 153,
+    "Say": "Are you sure you want to get Divorced?\r\n\r\nIt will cost you 1,000,000 Gold.\r\n\r\n[Proceed:1]\r\n\r\n[Main:2]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Marriage - Remove Ring Start",
+    "DialogType": 0,
+    "Index": 154,
+    "Say": "Are you sure you want to remove your wedding ring?\r\n\r\nIt will cost you 200,000 Gold.\r\n\r\n[Remove Ring:1]\r\n\r\n[Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Marriage - Make Ring",
+    "DialogType": 6,
+    "Index": 155,
+    "Say": "I understand that you have a ring in your possession that you want to make as your wedding ring.\r\n\r\nPlease show me the ring you would like to use.\r\n\r\n[Back:1]\r\n\r\n[Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Marriage - Request End",
+    "DialogType": 0,
+    "Index": 156,
+    "Say": "",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Marriage Fail - Gold",
+    "DialogType": 0,
+    "Index": 157,
+    "Say": "You do not have enough gold to use this service.\r\n\r\n[Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Marriage - Divorce End",
+    "DialogType": 0,
+    "Index": 160,
+    "Say": "",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Marriage - Remove Ring End",
+    "DialogType": 0,
+    "Index": 161,
+    "Say": "",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Marriage Fail - Already Married",
+    "DialogType": 0,
+    "Index": 162,
+    "Say": "I am unable to provide you with the service you requested.\r\n\r\nYou are already married.\r\n\r\n[Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Marriage Fail - Not Married",
+    "DialogType": 0,
+    "Index": 163,
+    "Say": "I am unable to provide you with the service you requested.\r\n\r\nYou are not married.\r\n\r\n[Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Marriage Fail - No Ring",
+    "DialogType": 0,
+    "Index": 164,
+    "Say": "I am unable to provide you with the service you requested.\r\n\r\nYou do not currently have a wedding ring.\r\n\r\n[Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Marriage Fail - Already Have Ring",
+    "DialogType": 0,
+    "Index": 165,
+    "Say": "I am unable to provide you with the service you requested.\r\n\r\nYou already have a wedding ring.\r\n\r\n[Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Weapon Refiner - About Refine",
+    "DialogType": 0,
+    "Index": 166,
+    "Say": "You seek knowledge on the refinement process?\r\n\r\nYour weapon needs to be ready for refine.\r\nYou can use upto 5 Black Iron Ore, Higher the purity the higher the success rate.\r\nYou can use upto 3 Accessories, Higher the level and quality the higher the succes rate.\r\nDuration, The longer the refine time, the higher the success rate.\r\n\r\n[Main:1]\r\n[Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Weapon Refiner - Refinement Stone",
+    "DialogType": 7,
+    "Index": 167,
+    "Say": "If you want to make a refinement stone. You will need the following:\r\n\r\n1x Crystal\r\n2x Gold Ore\r\n4x Diamond\r\n4x Silver Ore\r\n4x Iron Ore\r\nGold... As much or as little as you like, Higher is always better!\r\n\r\n[Main:1]\r\n[Exit:0]\r\n",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Weapon Refiner - Master Refine",
+    "DialogType": 8,
+    "Index": 168,
+    "Say": "You will need the following:\r\n\r\nFragment (I) x10\r\nFragment (II) x10\r\nFragment (III) x1 ~ x1000\r\nRefinement Stone x1\r\n\r\nThe process will either Add or Remove 5 of your chosen stat type.\r\nYou cannot break your weapon.\r\n\r\n[Main:1]\r\n[Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Weapon Refiner - Weapon Reset",
+    "DialogType": 0,
+    "Index": 169,
+    "Say": "Hello,  So you are looking to reset your weapons level?\r\n\r\nThis process takes 24 hours and has 100% success rate.\r\nThere\u0027s a chance to keep some of the stats gained refining.\r\nThe cost to reset your weapon is 1,000,000 Gold and 1x Refinement Stone.\r\n\r\n[Reset Weapon:1]\r\n\r\n[Back:2]\r\n[Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Item Fragment - Main",
+    "DialogType": 0,
+    "Index": 170,
+    "Say": "Hello, Welcome... How can I help you?\r\n\r\n[Fragment Items:1]\r\n\r\n[Exchange Frament:2] :- 100x Fragment \u002B 20,000 Gold = 1x Fragment (II)\r\n[Exchange Frament (II):3]  :- 25x Fragment (II) \u002B 50,000 Gold = 1x Fragment (III)\r\n\r\n\r\n[Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Item Fragment - Fragment",
+    "DialogType": 10,
+    "Index": 171,
+    "Say": "Please show me the item you want to fragment.\r\n\r\nI can break down, Weapons, Armours, Helmets, Necklaces, Bracelets, Rings and Shoes.\r\n\r\nCommon Items will yield Fragments\r\nSuperiour and Elite Items will result in Fragment (II)s.\r\n\r\n[Back:1]\r\n[Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Item Fragment - Upgrade Fragment",
+    "DialogType": 0,
+    "Index": 172,
+    "Say": "",
+    "SuccessPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 170
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Item Fragment - Upgrade Fragment (II)",
+    "DialogType": 0,
+    "Index": 173,
+    "Say": "",
+    "SuccessPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 170
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Item Fragment - Fail - Gold",
+    "DialogType": 0,
+    "Index": 174,
+    "Say": "I cannot upgrade your fragments.\r\n\r\n\r\nNot enough Money.\r\n\r\n\r\n[Main:1]\r\n[Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Item Fragment - Fail - Not enough Fragments",
+    "DialogType": 0,
+    "Index": 175,
+    "Say": "I cannot upgrade your fragments.\r\n\r\nNot enough Fragments.\r\n\r\n\r\n[Main:1]\r\n[Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Item Fragment - Fail - Not enough Fragment (II)s",
+    "DialogType": 0,
+    "Index": 176,
+    "Say": "I cannot upgrade your fragments.\r\n\r\nNot enough Fragments (II).\r\n\r\n\r\n[Main:1]\r\n[Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Item Fragment - Fail - Not enough Inventory Room",
+    "DialogType": 0,
+    "Index": 177,
+    "Say": "I cannot upgrade your fragments.\r\n\r\nNot enough space in your inventory.\r\n\r\n\r\n[Main:1]\r\n[Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Weapon Refiner - Reset Start",
+    "DialogType": 0,
+    "Index": 178,
+    "Say": "",
+    "SuccessPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 97
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Weapon Refiner - Fail - Not Leveled",
+    "DialogType": 0,
+    "Index": 179,
+    "Say": "Your weapon has not leveled.\r\n\r\nPlease come back when you have a weapon that\u0027s leveled.\r\n\r\n\r\n[Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Weapon Refiner - Fail - Reset Cooldown",
+    "DialogType": 0,
+    "Index": 180,
+    "Say": "Your weapon has recently been reset.\r\n\r\nPlease come back when the reset cooldown has finished\r\n\r\n\r\n[Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Weapon Refiner - Fail - No Refinement Stone",
+    "DialogType": 0,
+    "Index": 181,
+    "Say": "You do not have a Refinement Stone.\r\n\r\nPlease come back when you have a Refinement Stone.\r\n\r\n\r\n[Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "TT Teleporter",
+    "DialogType": 0,
+    "Index": 182,
+    "Say": "Select Destination\r\n\r\n[Lost Paradise:1] 10,000 Gold\r\n\r\n\r\n\r\n\r\n[Freedom Pass:2] [Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "TT 10K",
+    "DialogType": 0,
+    "Index": 183,
+    "Say": "",
+    "SuccessPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 184
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Teleport to Taoist Temple",
+    "DialogType": 0,
+    "Index": 184,
+    "Say": "",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "LP 20K",
+    "DialogType": 0,
+    "Index": 186,
+    "Say": "",
+    "SuccessPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 32
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "FV 20K and Level 45\u002B",
+    "DialogType": 0,
+    "Index": 187,
+    "Say": "",
+    "SuccessPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 189
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Teleport to Frost Village",
+    "DialogType": 0,
+    "Index": 189,
+    "Say": "",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "FV Teleporter",
+    "DialogType": 0,
+    "Index": 190,
+    "Say": "Select Destination\r\n\r\n[Lost Paradise:1] 20,000 Gold\r\n\r\n[Holy Palace:2] 30,000 Gold\r\n\r\n\r\n[Freedom Pass:3] [Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "BC Teleporter",
+    "DialogType": 0,
+    "Index": 191,
+    "Say": "Select Destination\r\n\r\n[Bichon Town:1] 10,000 Gold\r\n\r\n\r\n\r\n\r\n[Freedom Pass:2] [Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Teleport to Bichon Castle",
+    "DialogType": 0,
+    "Index": 192,
+    "Say": "",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "BC 10K and Level 45\u002B",
+    "DialogType": 0,
+    "Index": 193,
+    "Say": "",
+    "SuccessPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 192
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Accessory Refiner - Main",
+    "DialogType": 0,
+    "Index": 194,
+    "Say": "So you\u0027re looking to upgrade your accessory...\r\n\r\n[About:1] Accessory upgrading.\r\n\r\n[Level Up:2] Accessory.\r\n[Upgrade:3] Accessory.\r\n\r\n[Reset:4] Accessory.\r\n\r\n\r\n[Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Accessory Refiner - About",
+    "DialogType": 0,
+    "Index": 195,
+    "Say": "In order to upgrade an accessory you first must level it up.\r\n\r\nYou melt down the same type of accessory until the accessory has leveled.\r\n\r\nOnce the accessory has leveled you can then choose what to upgrade.\r\n\r\n[Main:1]\r\n[Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Accessory Refiner - Level Up",
+    "DialogType": 12,
+    "Index": 196,
+    "Say": "First Select the accessory that you want to level up.\r\n\r\nThen select other assessories that you want to melt down and use.\r\n\r\n\r\n[Main:1]\r\n[Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Accessory Refiner - Upgrade",
+    "DialogType": 11,
+    "Index": 197,
+    "Say": "Show me your accessory that has leveled up and is ready for upgrade.\r\n\r\nThe process cannot fail, so do not worry.\r\n\r\n\r\n[Main:1]\r\n[Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Rusty Accessory Main",
+    "DialogType": 0,
+    "Index": 198,
+    "Say": "Welcome!\r\n\r\n[Ask:1] About Numa Rusty Accessories\r\n\r\n[Ask:2] About Lair Accessories.\r\n\r\n[Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Rusty Accessory - Numa Start",
+    "DialogType": 0,
+    "Index": 200,
+    "Say": "The Cleaning fee is 1,000,000 but the process rarely works because of how old the items are.\r\n\r\n[Rusty Signet Of Myrmidon:1]\r\n[Rusty Signet Of Evoker:2]\r\n[Rusty Signet Of Vicar:3]\r\n[Rusty Charm Of The Destroyer:4]\r\n[Rusty Amulet Of Dark Sorcery:5]\r\n[Rusty Pendant Of Purification:6]\r\n[Rusty Bracer Of Revelation:7]\r\n[Rusty Ring Of Enlightenment:8]\r\n[Rusty Bracelet Of Ascension:9]\r\n",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Rusty Accessory - Signet Of Myrmidon - Start",
+    "DialogType": 0,
+    "Index": 201,
+    "Say": "",
+    "SuccessPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 202
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Rusty Accessory - Signet Of Myrmidon - End",
+    "DialogType": 0,
+    "Index": 202,
+    "Say": "Congratulations,\r\n\r\nYour ring has survive the clearning process, You can now go and Upgrade the accessory in Bichon Town.\r\n\r\n[Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Rusty Accessory - Numa - Fail - No Item",
+    "DialogType": 0,
+    "Index": 203,
+    "Say": "I am unable to find the rusty item.\r\n\r\n[Retry:1]\r\n\r\n[Main:2]\r\n\r\n[Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Rusty Accessory - Numa - Fail - No Room",
+    "DialogType": 0,
+    "Index": 204,
+    "Say": "You do not have inventory space.\r\n\r\n[Retry:1]\r\n\r\n[Main:2]\r\n\r\n[Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Rusty Accessory - Numa - Fail - No Gold",
+    "DialogType": 0,
+    "Index": 205,
+    "Say": "You cannot aford the cost of the cleaning service.\r\n\r\n[Retry:1]\r\n\r\n[Main:2]\r\n\r\n[Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Rusty Accessory - Numa - Fail - Break",
+    "DialogType": 0,
+    "Index": 206,
+    "Say": "I am sorry, The ring was too old to survive the cleaning process.\r\n\r\n[Retry:1]\r\n\r\n[Main:2]\r\n\r\n[Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Rusty Accessory - Signet Of Evoker - Start",
+    "DialogType": 0,
+    "Index": 207,
+    "Say": "",
+    "SuccessPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 208
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Rusty Accessory - Signet Of Evoker - End",
+    "DialogType": 0,
+    "Index": 208,
+    "Say": "Congratulations,\r\n\r\nYour ring has survive the clearning process, You can now go and Upgrade the accessory in Bichon Town.\r\n\r\n[Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Rusty Accessory - Signet Of Vicar - Start",
+    "DialogType": 0,
+    "Index": 209,
+    "Say": "",
+    "SuccessPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 210
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Rusty Accessory - Signet Of Vicar - End",
+    "DialogType": 0,
+    "Index": 210,
+    "Say": "Congratulations,\r\n\r\nYour ring has survive the clearning process, You can now go and Upgrade the accessory in Bichon Town.\r\n\r\n[Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Rusty Accessory - Charm Of The Destroyer - Start",
+    "DialogType": 0,
+    "Index": 211,
+    "Say": "",
+    "SuccessPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 212
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Rusty Accessory - Charm Of The Destroyer - End",
+    "DialogType": 0,
+    "Index": 212,
+    "Say": "Congratulations,\r\n\r\nYour ring has survive the clearning process, You can now go and Upgrade the accessory in Bichon Town.\r\n\r\n[Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Rusty Accessory - Amulet Of Dark Sorcery - Start",
+    "DialogType": 0,
+    "Index": 213,
+    "Say": "",
+    "SuccessPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 214
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Rusty Accessory - Amulet Of Dark Sorcery - End",
+    "DialogType": 0,
+    "Index": 214,
+    "Say": "Congratulations,\r\n\r\nYour ring has survive the clearning process, You can now go and Upgrade the accessory in Bichon Town.\r\n\r\n[Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Rusty Accessory - Pendant Of Purification - Start",
+    "DialogType": 0,
+    "Index": 220,
+    "Say": "",
+    "SuccessPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 221
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Rusty Accessory - Pendant Of Purification - End",
+    "DialogType": 0,
+    "Index": 221,
+    "Say": "Congratulations,\r\n\r\nYour ring has survive the clearning process, You can now go and Upgrade the accessory in Bichon Town.\r\n\r\n[Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Rusty Accessory - Bracer Of Revelation - Start",
+    "DialogType": 0,
+    "Index": 222,
+    "Say": "",
+    "SuccessPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 223
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Rusty Accessory - Bracer Of Revelation - End",
+    "DialogType": 0,
+    "Index": 223,
+    "Say": "Congratulations,\r\n\r\nYour ring has survive the clearning process, You can now go and Upgrade the accessory in Bichon Town.\r\n\r\n[Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Rusty Accessory - Ring Of Enlightenment - Start",
+    "DialogType": 0,
+    "Index": 224,
+    "Say": "",
+    "SuccessPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 225
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Rusty Accessory - Ring Of Enlightenment - End",
+    "DialogType": 0,
+    "Index": 225,
+    "Say": "Congratulations,\r\n\r\nYour ring has survive the clearning process, You can now go and Upgrade the accessory in Bichon Town.\r\n\r\n[Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Rusty Accessory - Bracelet Of Ascension - Start",
+    "DialogType": 0,
+    "Index": 226,
+    "Say": "",
+    "SuccessPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 227
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Rusty Accessory - Bracelet Of Ascension - End",
+    "DialogType": 0,
+    "Index": 227,
+    "Say": "Congratulations,\r\n\r\nYour ring has survive the clearning process, You can now go and Upgrade the accessory in Bichon Town.\r\n\r\n[Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Weapon Refiner - Fail - Not Max Level",
+    "DialogType": 0,
+    "Index": 228,
+    "Say": "Your weapon has not reached the maximum level.\r\n\r\nPlease come back when you have a weapon that\u0027s fully leveled up.\r\n\r\n\r\n[Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "HP 30K and Lv 45\u002B",
+    "DialogType": 0,
+    "Index": 229,
+    "Say": "",
+    "SuccessPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 230
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Teleport to Holy Palace",
+    "DialogType": 0,
+    "Index": 230,
+    "Say": "",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "MS Freedom Pass",
+    "DialogType": 0,
+    "Index": 231,
+    "Say": "",
+    "SuccessPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 232
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Teleport to Mystery Ship",
+    "DialogType": 0,
+    "Index": 232,
+    "Say": "",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "LA Freedom Pass and Lv 45\u002B",
+    "DialogType": 0,
+    "Index": 233,
+    "Say": "",
+    "SuccessPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 234
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Teleport to Lava Area ",
+    "DialogType": 0,
+    "Index": 234,
+    "Say": "",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "BC Freedom Pass and Lv 45\u002B",
+    "DialogType": 0,
+    "Index": 235,
+    "Say": "",
+    "SuccessPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 236
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Teleport to Banyo Cave",
+    "DialogType": 0,
+    "Index": 236,
+    "Say": "",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Teleport Fail Freedom Pass",
+    "DialogType": 0,
+    "Index": 237,
+    "Say": "Failed to teleport to destination,\r\n\r\nNo Freedom Pass.\r\n\r\n[Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Freedom Teleporter",
+    "DialogType": 0,
+    "Index": 238,
+    "Say": "Where would you like to teleport to?\r\n\r\n[Mystery Ship:1] Freedom Pass\r\n\r\n[Lava Area:2] Freedom Pass (Level 45\u002B)\r\n\r\n[Banyo Cave:3] Freedom Pass (Level 45\u002B)\r\n\r\n[Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Rusty Accessory - Lair Start",
+    "DialogType": 0,
+    "Index": 239,
+    "Say": "The Forging fee is 2,000,000 but the process rarely works because of how old the items are.\r\n\r\n[Seal Of Overlord:1]\r\n[Bracelet Of Overlord:2]\r\n[Medallion Of Overlord:3]\r\n[Arcanist\u0027s Band Of Dignity:4]\r\n[Arcanist\u0027s Bracelet Of Dignity:5]\r\n[Arcanist\u0027s Amulet Of Dignity:6]\r\n[Hierophant\u0027s Signet Of Moon:7]\r\n[Hierophant\u0027s Bracer Of Moon:8]\r\n[Hierophant\u0027s Pendant Of Moon:9]\r\n",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Rusty Accessory - Lair - Fail - No Rings",
+    "DialogType": 0,
+    "Index": 240,
+    "Say": "I am unable to find the items.\r\n\r\nYou need Rusty, Cracked and Worn Rings\r\n\r\n[Retry:1]\r\n\r\n[Main:2]\r\n\r\n[Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Rusty Accessory - Lair - Fail - No Bracelets",
+    "DialogType": 0,
+    "Index": 241,
+    "Say": "I am unable to find the items.\r\n\r\nYou need Rusty, Cracked, Scracted and Worn Bracelets\r\n\r\n\r\n[Retry:1]\r\n\r\n[Main:2]\r\n\r\n[Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Rusty Accessory - Lair - Fail - No Necklace",
+    "DialogType": 0,
+    "Index": 242,
+    "Say": "I am unable to find the items.\r\n\r\nYou need Rusty, Cracked and Worn Necklaces\r\n\r\n[Retry:1]\r\n\r\n[Main:2]\r\n\r\n[Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Rusty Accessory - Lair - Fail - No Room",
+    "DialogType": 0,
+    "Index": 243,
+    "Say": "You do not have inventory space.\r\n\r\n[Retry:1]\r\n\r\n[Main:2]\r\n\r\n[Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Rusty Accessory - Lair - Fail - No Gold",
+    "DialogType": 0,
+    "Index": 244,
+    "Say": "You cannot aford the cost of the cleaning service.\r\n\r\n[Retry:1]\r\n\r\n[Main:2]\r\n\r\n[Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Rusty Accessory - Lair - Fail - Break",
+    "DialogType": 0,
+    "Index": 245,
+    "Say": "I am sorry, The items was too old and damaged.\r\n\r\n[Retry:1]\r\n\r\n[Main:2]\r\n\r\n[Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Rusty Accessory - Seal Of Overlord - Start",
+    "DialogType": 0,
+    "Index": 246,
+    "Say": "",
+    "SuccessPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 247
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Rusty Accessory - Seal Of Overlord - End",
+    "DialogType": 0,
+    "Index": 247,
+    "Say": "Congratulations,\r\n\r\nYour ring has survive the forging process.\r\n\r\n[Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Rusty Accessory - Bracelet Of Overlord - Start",
+    "DialogType": 0,
+    "Index": 248,
+    "Say": "",
+    "SuccessPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 249
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Rusty Accessory - Bracelet Of Overlord - End",
+    "DialogType": 0,
+    "Index": 249,
+    "Say": "Congratulations,\r\n\r\nYour bracelet has survive the forging process.\r\n\r\n[Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Rusty Accessory - Medallion Of Overlord - Start",
+    "DialogType": 0,
+    "Index": 251,
+    "Say": "",
+    "SuccessPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 252
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Rusty Accessory - Medallion Of Overlord - End",
+    "DialogType": 0,
+    "Index": 252,
+    "Say": "Congratulations,\r\n\r\nYour Necklace has survive the forging process.\r\n\r\n[Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Rusty Accessory - Arcanist\u0027s Band Of Dignity - Start",
+    "DialogType": 0,
+    "Index": 254,
+    "Say": "",
+    "SuccessPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 255
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Rusty Accessory - Arcanist\u0027s Band Of Dignity - End",
+    "DialogType": 0,
+    "Index": 255,
+    "Say": "Congratulations,\r\n\r\nYour ring has survive the forging process.\r\n\r\n[Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Rusty Accessory - Arcanist\u0027s Bracelet Of Dignity - Start",
+    "DialogType": 0,
+    "Index": 256,
+    "Say": "",
+    "SuccessPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 257
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Rusty Accessory - Arcanist\u0027s Bracelet Of Dignity - End",
+    "DialogType": 0,
+    "Index": 257,
+    "Say": "Congratulations,\r\n\r\nYour bracelet has survive the forging process.\r\n\r\n[Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Rusty Accessory - Arcanist\u0027s Amulet Of Dignity - Start",
+    "DialogType": 0,
+    "Index": 258,
+    "Say": "",
+    "SuccessPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 259
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Rusty Accessory - Arcanist\u0027s Amulet Of Dignity - End",
+    "DialogType": 0,
+    "Index": 259,
+    "Say": "Congratulations,\r\n\r\nYour Necklace has survive the forging process.\r\n\r\n[Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Rusty Accessory - Hierophant\u0027s Signet Of Moon - Start",
+    "DialogType": 0,
+    "Index": 260,
+    "Say": "",
+    "SuccessPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 261
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Rusty Accessory - Hierophant\u0027s Signet Of Moon - End",
+    "DialogType": 0,
+    "Index": 261,
+    "Say": "Congratulations,\r\n\r\nYour ring has survive the forging process.\r\n\r\n[Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Rusty Accessory - Hierophant\u0027s Bracer Of Moon - Start",
+    "DialogType": 0,
+    "Index": 262,
+    "Say": "",
+    "SuccessPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 263
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Rusty Accessory - Hierophant\u0027s Bracer Of Moon - End",
+    "DialogType": 0,
+    "Index": 263,
+    "Say": "Congratulations,\r\n\r\nYour bracelet has survive the forging process.\r\n\r\n[Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Rusty Accessory - Hierophant\u0027s Pendant Of Moon - Start",
+    "DialogType": 0,
+    "Index": 264,
+    "Say": "",
+    "SuccessPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 265
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Rusty Accessory - Hierophant\u0027s Pendant Of Moon - End",
+    "DialogType": 0,
+    "Index": 265,
+    "Say": "Congratulations,\r\n\r\nYour Necklace has survive the forging process.\r\n\r\n[Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Accessory Refiner - Reset",
+    "DialogType": 13,
+    "Index": 266,
+    "Say": "Show me your accessory that has been leveled up and is ready to be reset.\r\n\r\nThe process cannot fail, so do not worry.\r\n\r\n\r\n[Main:1]\r\n[Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Weapon Craft Main",
+    "DialogType": 0,
+    "Index": 267,
+    "Say": "...\r\n\r\n\r\n[Craft Weapon:1]\r\n\r\n[Upgrade Trinkets:2]\r\n\r\n\r\n[Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Weapon Craft - Craft",
+    "DialogType": 14,
+    "Index": 268,
+    "Say": "...\r\n\r\nEach Jewel will add a stat to the weapon.\r\n\r\nHigher quality Jewels will result in more stats.\r\n\r\n[Back:1]\r\n\r\n[Main:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Weapon Craft - Upgrade",
+    "DialogType": 0,
+    "Index": 269,
+    "Say": "Upgrade will need Component x100 and 100,000 Gold.\r\n\r\n[Yellow Orb to Yellow Trinket:20] -- [Yellow Trinket to Yellow Cube:21]\r\n[Blue Orb to Blue Trinket:30] -- [Blue Trinket to Blue Cube:31]\r\n[Red Orb to Red Trinket:40] -- [Red Trinket to Red Cube:41]\r\n[Purple Orb to Purple Trinket:50] -- [Purple Trinket to Purple Cube:51]\r\n[Green Orb to Green Trinket:60] -- [Green Trinket to Green Cube:61]\r\n[Grey Orb to Grey Trinket:70] -- [Grey Trinket to Grey Cube:71]\r\n\r\n[Back:1]\r\n[Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Weapon Craft - Failed - Not enough Items",
+    "DialogType": 0,
+    "Index": 270,
+    "Say": "Failed to craft item.\r\n\r\nNot enough items.\r\n\r\n[Main:1]\r\n\r\n[Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Weapon Craft - Failed - Not enough Gold",
+    "DialogType": 0,
+    "Index": 271,
+    "Say": "Failed to craft item.\r\n\r\nNot enough gold.\r\n\r\n[Main:1]\r\n\r\n[Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Weapon Craft - Failed - Not enough Space",
+    "DialogType": 0,
+    "Index": 272,
+    "Say": "Failed to craft item.\r\n\r\nNot enough inventory space.\r\n\r\n[Main:1]\r\n\r\n[Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Weapon Craft - Yellow Orb",
+    "DialogType": 0,
+    "Index": 274,
+    "Say": "Your Item has been crafted successfully.\n\n\r\n\r\n[Again:2]\r\n\r\n[Main:1]\n\n\r\n\r\n[Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Weapon Craft - Yellow Trinket",
+    "DialogType": 0,
+    "Index": 275,
+    "Say": "Your Item has been crafted successfully.\n\n\r\n\r\n[Again:2]\r\n\r\n[Main:1]\n\n\r\n\r\n[Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Weapon Craft - Blue Orb",
+    "DialogType": 0,
+    "Index": 276,
+    "Say": "Your Item has been crafted successfully.\n\n\r\n\r\n[Again:2]\r\n\r\n[Main:1]\n\n\r\n\r\n[Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Weapon Craft - Blue Trinket",
+    "DialogType": 0,
+    "Index": 277,
+    "Say": "Your Item has been crafted successfully.\n\n\r\n\r\n[Again:2]\r\n\r\n[Main:1]\n\n\r\n\r\n[Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Weapon Craft - Red Orb",
+    "DialogType": 0,
+    "Index": 278,
+    "Say": "Your Item has been crafted successfully.\n\n\r\n\r\n[Again:2]\r\n\r\n[Main:1]\n\n\r\n\r\n[Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Weapon Craft - Red Trinket",
+    "DialogType": 0,
+    "Index": 279,
+    "Say": "Your Item has been crafted successfully.\n\n\r\n\r\n[Again:2]\r\n\r\n[Main:1]\n\n\r\n\r\n[Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Weapon Craft - Purple Orb",
+    "DialogType": 0,
+    "Index": 280,
+    "Say": "Your Item has been crafted successfully.\n\n\r\n\r\n[Again:2]\r\n\r\n[Main:1]\n\n\r\n\r\n[Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Weapon Craft - Purple Trinket",
+    "DialogType": 0,
+    "Index": 281,
+    "Say": "Your Item has been crafted successfully.\n\n\r\n\r\n[Again:2]\r\n\r\n[Main:1]\n\n\r\n\r\n[Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Weapon Craft - Green Orb",
+    "DialogType": 0,
+    "Index": 282,
+    "Say": "Your Item has been crafted successfully.\n\n\r\n\r\n[Again:2]\r\n\r\n[Main:1]\n\n\r\n\r\n[Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Weapon Craft - Green Trinket",
+    "DialogType": 0,
+    "Index": 283,
+    "Say": "Your Item has been crafted successfully.\n\n\r\n\r\n[Again:2]\r\n\r\n[Main:1]\n\n\r\n\r\n[Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Weapon Craft - Grey Orb",
+    "DialogType": 0,
+    "Index": 284,
+    "Say": "Your Item has been crafted successfully.\n\n\r\n\r\n[Again:2]\r\n\r\n[Main:1]\n\n\r\n\r\n[Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Weapon Craft - Grey Trinket",
+    "DialogType": 0,
+    "Index": 285,
+    "Say": "Your Item has been crafted successfully.\n\n\r\n\r\n[Again:2]\r\n\r\n[Main:1]\n\n\r\n\r\n[Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "LL Teleporter",
+    "DialogType": 0,
+    "Index": 286,
+    "Say": "Select Destination\r\n\r\n[Banya Island:1] 10,000 Gold (Level 25\u002B)\r\n\r\n\r\n\r\n[Freedom Pass:2] [Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "LL 30K and Level 35\u002B",
+    "DialogType": 0,
+    "Index": 287,
+    "Say": "",
+    "SuccessPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 288
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Teleport to Lost Land",
+    "DialogType": 0,
+    "Index": 288,
+    "Say": "",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Emblem Main",
+    "DialogType": 0,
+    "Index": 289,
+    "Say": "Emblems are expensive to make...\r\n\r\n\r\n[Buy:1] an Emblem\r\n\r\n\r\n\r\n[Exit:0] \r\n",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Emblem Buy Sell",
+    "DialogType": 1,
+    "Index": 290,
+    "Say": "Take your time...\r\n\r\n\r\n\r\n\r\n[Back:1]\r\n\r\n[Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Weapon Refiner - Special Refine - Main",
+    "DialogType": 0,
+    "Index": 291,
+    "Say": "Special Refine requires:\r\n\r\nOil of Conservation x1\r\nOil of The War God x1\r\n\r\n[Fragment (III):1] x30 \u002B Crystal x 30\r\n[Fragment (III):2] x60 \u002B Crystal x 50 \r\n[Fragment (III):3] x100 \u002B Crystal x 50 \r\n\r\n[Main:4]\r\n[Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Weapon Refiner - Special Refine - 30",
+    "DialogType": 0,
+    "Index": 292,
+    "Say": "For 30 Fragments I can offer:\r\n\r\n[Health:1] \u002B 75    (Limit: \u002B1250)\r\n[Mana:2] \u002B40    (Limit: \u002B850)\r\n[Accuracy:3] \u002B3    (Limit: \u002B30)\r\n[Agility:4] \u002B3    (Limit: \u002B30)\r\n[AC:5] 0-5    (Limit: \u002B50)\r\n[MR:6] 0-5    (Limit: \u002B50)\r\n\r\n[Main:7]\r\n[Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Weapon Refiner - Special Refine - 60",
+    "DialogType": 0,
+    "Index": 293,
+    "Say": "For 60 Fragments I can offer:\r\n\r\n[Critical Chance:1] \u002B1    (Limit: \u002B25)\r\n[Critical Damage:2] \u002B5    (Limit: \u002B200)\r\n[Attack Speed:3] \u002B3    (Limit: \u002B15)\r\n[Life Steal:4] \u002B3    (Limit: \u002B21)\r\n\r\n\r\n\r\n[Main:5]\r\n[Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Weapon Refiner - Special Refine - 100",
+    "DialogType": 0,
+    "Index": 294,
+    "Say": "For 100 Fragments I can offer:\r\n\r\n[Paralysis:1] \u002B1% (PvP and PvE - 2 Seconds)    (Limit: \u002B13)\r\n[Slow:2] \u002B1% (PvE) - 10 Seconds    (Limit: \u002B15)\r\n[Silence:3] \u002B1% (PvP and PvE - 5 Seconds)    (Limit: \u002B10)\r\n[Block Chance:4] \u002B1% (Melee)    (Limit: \u002B10)\r\n[Evasion Chance:5] \u002B 1% (Magic)    (Limit: \u002B10)\r\n\r\n\r\n[Main:6]\r\n[Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Weapon Refiner - Special Refine - Health Q",
+    "DialogType": 0,
+    "Index": 295,
+    "Say": "Are you sure you want to add Health to your weapon?\r\n\r\n[Yes, Refine:1]\r\n\r\n[Main:2]\r\n[Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Weapon Refiner - Special Refine - Health A",
+    "DialogType": 0,
+    "Index": 296,
+    "Say": "",
+    "SuccessPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 291
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Weapon Refiner - Special Refine - Mana Q",
+    "DialogType": 0,
+    "Index": 297,
+    "Say": "Are you sure you want to add Mana to your weapon?\r\n\r\n[Yes, Refine:1]\r\n\r\n[Main:2]\r\n[Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Weapon Refiner - Special Refine - Mana A",
+    "DialogType": 0,
+    "Index": 298,
+    "Say": "",
+    "SuccessPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 291
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Weapon Refiner - Special Refine - Accuracy Q",
+    "DialogType": 0,
+    "Index": 300,
+    "Say": "Are you sure you want to add Accuracy to your weapon?\r\n\r\n[Yes, Refine:1]\r\n\r\n[Main:2]\r\n[Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Weapon Refiner - Special Refine - Accuracy A",
+    "DialogType": 0,
+    "Index": 301,
+    "Say": "",
+    "SuccessPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 291
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Weapon Refiner - Special Refine - Agility Q",
+    "DialogType": 0,
+    "Index": 302,
+    "Say": "Are you sure you want to add Agility to your weapon?\r\n\r\n[Yes, Refine:1]\r\n\r\n[Main:2]\r\n[Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Weapon Refiner - Special Refine - Agility A",
+    "DialogType": 0,
+    "Index": 303,
+    "Say": "",
+    "SuccessPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 291
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Weapon Refiner - Special Refine - AC Q",
+    "DialogType": 0,
+    "Index": 304,
+    "Say": "Are you sure you want to add AC to your weapon?\r\n\r\n[Yes, Refine:1]\r\n\r\n[Main:2]\r\n[Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Weapon Refiner - Special Refine - AC A",
+    "DialogType": 0,
+    "Index": 305,
+    "Say": "",
+    "SuccessPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 291
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Weapon Refiner - Special Refine - MR Q",
+    "DialogType": 0,
+    "Index": 306,
+    "Say": "Are you sure you want to add MR to your weapon?\r\n\r\n[Yes, Refine:1]\r\n\r\n[Main:2]\r\n[Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Weapon Refiner - Special Refine - MR A",
+    "DialogType": 0,
+    "Index": 307,
+    "Say": "",
+    "SuccessPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 291
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Weapon Refiner - Special Refine - Not enough Material",
+    "DialogType": 0,
+    "Index": 308,
+    "Say": "You lack the required materials to special refine.\r\n\r\n[Main:1]\r\n[Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Weapon Refiner - Special Refine - Critical Chance Q",
+    "DialogType": 0,
+    "Index": 309,
+    "Say": "Are you sure you want to add Critical Chance to your weapon?\r\n\r\n[Yes, Refine:1]\r\n\r\n[Main:2]\r\n[Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Weapon Refiner - Special Refine - Critical Chance A",
+    "DialogType": 0,
+    "Index": 310,
+    "Say": "",
+    "SuccessPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 291
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Weapon Refiner - Special Refine - Critical Damage Q",
+    "DialogType": 0,
+    "Index": 311,
+    "Say": "Are you sure you want to add Critical Damage to your weapon?\r\n\r\n[Yes, Refine:1]\r\n\r\n[Main:2]\r\n[Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Weapon Refiner - Special Refine - Critical Damage A",
+    "DialogType": 0,
+    "Index": 312,
+    "Say": "",
+    "SuccessPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 291
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Weapon Refiner - Special Refine - Attack Speed Q",
+    "DialogType": 0,
+    "Index": 313,
+    "Say": "Are you sure you want to add Attack Speed to your weapon?\r\n\r\n[Yes, Refine:1]\r\n\r\n[Main:2]\r\n[Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Weapon Refiner - Special Refine - Attack Speed A",
+    "DialogType": 0,
+    "Index": 314,
+    "Say": "",
+    "SuccessPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 291
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Weapon Refiner - Special Refine - Life Steal Q",
+    "DialogType": 0,
+    "Index": 315,
+    "Say": "Are you sure you want to add Life Steal to your weapon?\r\n\r\n[Yes, Refine:1]\r\n\r\n[Main:2]\r\n[Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Weapon Refiner - Special Refine - Life Steal A",
+    "DialogType": 0,
+    "Index": 316,
+    "Say": "",
+    "SuccessPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 291
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Weapon Refiner - Special Refine - Paralysis Chance Q",
+    "DialogType": 0,
+    "Index": 317,
+    "Say": "Are you sure you want to add Paralysis Chance to your weapon?\r\n\r\n[Yes, Refine:1]\r\n\r\n[Main:2]\r\n[Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Weapon Refiner - Special Refine - Paralysis Chance A",
+    "DialogType": 0,
+    "Index": 318,
+    "Say": "",
+    "SuccessPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 291
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Weapon Refiner - Special Refine - Slow Chance Q",
+    "DialogType": 0,
+    "Index": 319,
+    "Say": "Are you sure you want to add Slow Chance to your weapon?\r\n\r\n[Yes, Refine:1]\r\n\r\n[Main:2]\r\n[Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Weapon Refiner - Special Refine - Slow Chance A",
+    "DialogType": 0,
+    "Index": 320,
+    "Say": "",
+    "SuccessPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 291
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Weapon Refiner - Special Refine - Silence Chance Q",
+    "DialogType": 0,
+    "Index": 321,
+    "Say": "Are you sure you want to add Silence Chance to your weapon?\r\n\r\n[Yes, Refine:1]\r\n\r\n[Main:2]\r\n[Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Weapon Refiner - Special Refine - Silence Chance A",
+    "DialogType": 0,
+    "Index": 322,
+    "Say": "",
+    "SuccessPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 291
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Weapon Refiner - Special Refine - Block Chance Q",
+    "DialogType": 0,
+    "Index": 323,
+    "Say": "Are you sure you want to add Block Chance to your weapon?\r\n\r\n[Yes, Refine:1]\r\n\r\n[Main:2]\r\n[Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Weapon Refiner - Special Refine - Block Chance A",
+    "DialogType": 0,
+    "Index": 324,
+    "Say": "",
+    "SuccessPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 291
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Weapon Refiner - Special Refine - Evasion Chance Q",
+    "DialogType": 0,
+    "Index": 325,
+    "Say": "Are you sure you want to add Evasoin Chance to your weapon?\r\n\r\n[Yes, Refine:1]\r\n\r\n[Main:2]\r\n[Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Weapon Refiner - Special Refine - Evasion Chance A",
+    "DialogType": 0,
+    "Index": 326,
+    "Say": "",
+    "SuccessPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 291
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Weapon Refiner - Special Refine - Too many Status",
+    "DialogType": 0,
+    "Index": 327,
+    "Say": "You cannot not add anymore of this stat to your weapon.\r\n\r\n[Main:1]\r\n[Exit:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "WA 5M and Level 60\u002B",
+    "DialogType": 0,
+    "Index": 328,
+    "Say": "",
+    "SuccessPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 330
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "AF 5mil and Freedom Pass and Level 60\u002B",
+    "DialogType": 0,
+    "Index": 329,
+    "Say": "",
+    "SuccessPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 331
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Teleport to Western Arids",
+    "DialogType": 0,
+    "Index": 330,
+    "Say": "",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Teleport to Arid Flats",
+    "DialogType": 0,
+    "Index": 331,
+    "Say": "",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Rebirth Main",
+    "DialogType": 0,
+    "Index": 332,
+    "Say": "For EACH rebirth that you accept the following changes will happen:\r\n\r\nYou will need to be level  86 \u002B Current Rebith Count.\r\nWhen Rebirthing, you will be set to level 1 and keep 0.5% of your current experience\r\nx50% More Damage in PvE\r\nx20% More Damage in PvP\r\n\u002B20% More Drop Rate\r\n\u002B20% More Gold Rate\r\nx50% Less Experience Gained.\r\nEvery death in PvE will cost you all of your experience. (PvP no Punishment)\r\n[Accept:1]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Rebirth Act",
+    "DialogType": 0,
+    "Index": 333,
+    "Say": "If you met the requirements You will have rebirthed.",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Fame Main",
+    "DialogType": 0,
+    "Index": 334,
+    "Say": "I am the village chief. If you have been doing quests throughout the world you can earn rewards and titles as recognition.\r\n\r\n{\u003C1:Unlimited\u003E:LawnGreen} points are required for your next title.\r\n\r\n[Purchase Title:1]\r\n[Browse Store:2]\r\n\r\n[Close:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Fame Check",
+    "DialogType": 0,
+    "Index": 335,
+    "Say": "",
+    "SuccessPage": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 336
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Fame Act",
+    "DialogType": 0,
+    "Index": 336,
+    "Say": "",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": null,
+    "Description": "Fame Fail",
+    "DialogType": 0,
+    "Index": 337,
+    "Say": "You cannot increase your fame any further right now.\r\n\r\n[Back:1]\r\n[Close:0]",
+    "SuccessPage": null
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCPage",
+    "Arguments": "",
+    "Currency": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.CurrencyInfo",
+      "Index": 4
+    },
+    "Description": "Fame BuySell",
+    "DialogType": 1,
+    "Index": 338,
+    "Say": "Take your time,\r\n\r\nI\u0027ve got all day.\r\n\r\n[Back:1]\r\n[Close:0]",
+    "SuccessPage": null
+  }
+]

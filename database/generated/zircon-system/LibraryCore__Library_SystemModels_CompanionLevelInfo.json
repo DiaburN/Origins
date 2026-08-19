@@ -1,0 +1,152 @@
+[
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.CompanionLevelInfo",
+    "Index": 1,
+    "InventorySpace": 0,
+    "InventoryWeight": 50,
+    "Level": 1,
+    "MaxExperience": 100,
+    "MaxHunger": 100
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.CompanionLevelInfo",
+    "Index": 2,
+    "InventorySpace": 1,
+    "InventoryWeight": 70,
+    "Level": 2,
+    "MaxExperience": 250,
+    "MaxHunger": 100
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.CompanionLevelInfo",
+    "Index": 3,
+    "InventorySpace": 2,
+    "InventoryWeight": 90,
+    "Level": 3,
+    "MaxExperience": 400,
+    "MaxHunger": 125
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.CompanionLevelInfo",
+    "Index": 4,
+    "InventorySpace": 3,
+    "InventoryWeight": 110,
+    "Level": 4,
+    "MaxExperience": 700,
+    "MaxHunger": 125
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.CompanionLevelInfo",
+    "Index": 5,
+    "InventorySpace": 4,
+    "InventoryWeight": 130,
+    "Level": 5,
+    "MaxExperience": 900,
+    "MaxHunger": 150
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.CompanionLevelInfo",
+    "Index": 6,
+    "InventorySpace": 6,
+    "InventoryWeight": 150,
+    "Level": 6,
+    "MaxExperience": 1250,
+    "MaxHunger": 150
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.CompanionLevelInfo",
+    "Index": 7,
+    "InventorySpace": 7,
+    "InventoryWeight": 190,
+    "Level": 7,
+    "MaxExperience": 1750,
+    "MaxHunger": 175
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.CompanionLevelInfo",
+    "Index": 8,
+    "InventorySpace": 8,
+    "InventoryWeight": 210,
+    "Level": 8,
+    "MaxExperience": 2350,
+    "MaxHunger": 175
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.CompanionLevelInfo",
+    "Index": 9,
+    "InventorySpace": 9,
+    "InventoryWeight": 230,
+    "Level": 9,
+    "MaxExperience": 4000,
+    "MaxHunger": 175
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.CompanionLevelInfo",
+    "Index": 10,
+    "InventorySpace": 10,
+    "InventoryWeight": 250,
+    "Level": 10,
+    "MaxExperience": 11611,
+    "MaxHunger": 200
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.CompanionLevelInfo",
+    "Index": 11,
+    "InventorySpace": 11,
+    "InventoryWeight": 270,
+    "Level": 11,
+    "MaxExperience": 11611,
+    "MaxHunger": 250
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.CompanionLevelInfo",
+    "Index": 12,
+    "InventorySpace": 12,
+    "InventoryWeight": 350,
+    "Level": 12,
+    "MaxExperience": 11611,
+    "MaxHunger": 300
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.CompanionLevelInfo",
+    "Index": 13,
+    "InventorySpace": 12,
+    "InventoryWeight": 450,
+    "Level": 13,
+    "MaxExperience": 11611,
+    "MaxHunger": 350
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.CompanionLevelInfo",
+    "Index": 14,
+    "InventorySpace": 12,
+    "InventoryWeight": 600,
+    "Level": 14,
+    "MaxExperience": 11611,
+    "MaxHunger": 400
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.CompanionLevelInfo",
+    "Index": 15,
+    "InventorySpace": 12,
+    "InventoryWeight": 800,
+    "Level": 15,
+    "MaxExperience": 0,
+    "MaxHunger": 500
+  }
+]

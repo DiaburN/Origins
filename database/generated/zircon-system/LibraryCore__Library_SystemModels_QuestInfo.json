@@ -1,0 +1,716 @@
+[
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestInfo",
+    "AcceptText": "Hello [PLAYERNAME], A number of our soldiers have been poisoned by spiders, could you help me gather the ingredients for an antidote?. The Spitting Spiders located around town should provide you with the necessary Venom for the antidote.",
+    "ArchiveText": "At the request from [STARTNAME] You gathered the first set of ingredients for [FINISHNAME]",
+    "CompletedText": "Thank you very much [PLAYERNAME], We still need a few more ingredients.",
+    "FinishNPC": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCInfo",
+      "Index": 13
+    },
+    "Index": 9,
+    "ProgressText": "[STARTNAME] has asked you to gather Venom from Spitting Spiders around town.",
+    "QuestName": "Curing the Poison Pt. 1",
+    "QuestType": 0,
+    "StartNPC": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCInfo",
+      "Index": 13
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestInfo",
+    "AcceptText": "Hello [PLAYERNAME], The Venon is only the first Ingredient we need, I need you to travel south and gather Arachnid Teeth from the Spiders in Phantom Forest.",
+    "ArchiveText": "At the request from [STARTNAME] You gathered the second set of ingredients for [FINISHNAME]",
+    "CompletedText": "Thank you very much [PLAYERNAME], I think this should be enough to complete the Antidote.",
+    "FinishNPC": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCInfo",
+      "Index": 13
+    },
+    "Index": 10,
+    "ProgressText": "[STARTNAME] has asked you to gather Arachnid Teeth from Spiders located in Phantom Forest.",
+    "QuestName": "Curing the Poison Pt. 2",
+    "QuestType": 0,
+    "StartNPC": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCInfo",
+      "Index": 13
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestInfo",
+    "AcceptText": "Hello [PLAYERNAME], It would seem the Poison is more advanced than we first suspected. We need to find the source of the paralysis, Could you gather some samples from the Spider Bats located in Phantom Forest?.",
+    "ArchiveText": "At the request from [STARTNAME] You gathered the final set of ingredients for [FINISHNAME]",
+    "CompletedText": "Thank you very much [PLAYERNAME], This should be enough to complete the antitode.",
+    "FinishNPC": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCInfo",
+      "Index": 13
+    },
+    "Index": 11,
+    "ProgressText": "[STARTNAME] has asked you to gather Spider Curare from Spider Bats located in Phantom Forest.",
+    "QuestName": "Curing the Poison Pt. 3",
+    "QuestType": 0,
+    "StartNPC": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCInfo",
+      "Index": 13
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestInfo",
+    "AcceptText": "Hello [PLAYERNAME], I can\u0027t thank you enough for doing this, Please take the ingredients to [FINISHNAME] at the Bichon Town Potion Store.",
+    "ArchiveText": "At the request from [STARTNAME] You gathered the final set of ingredients for [FINISHNAME]",
+    "CompletedText": "Thank you very much [PLAYERNAME], It won\u0027t take me long to complete the antidote.",
+    "FinishNPC": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCInfo",
+      "Index": 15
+    },
+    "Index": 12,
+    "ProgressText": "[STARTNAME] has asked you to deliver the Ingredients to [FINISHNAME].",
+    "QuestName": "Curing the Poison Pt. 4",
+    "QuestType": 0,
+    "StartNPC": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCInfo",
+      "Index": 13
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestInfo",
+    "AcceptText": "Hello [PLAYERNAME], I have completed the Antidote, Please deliver it to [FINISHNAME].",
+    "ArchiveText": "At the request from [STARTNAME] you delivered the Antidote to [FINISHNAME]",
+    "CompletedText": "Thank you very much [PLAYERNAME], I\u0027ll get this to the soldiers immediately.",
+    "FinishNPC": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCInfo",
+      "Index": 13
+    },
+    "Index": 13,
+    "ProgressText": "[STARTNAME] has asked you to deliver the completed Antidote to [FINISHNAME].",
+    "QuestName": "Curing the Poison Pt. 5",
+    "QuestType": 0,
+    "StartNPC": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCInfo",
+      "Index": 15
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestInfo",
+    "AcceptText": "Hello [PLAYERNAME], It\u0027s time we ended this threat, kill the ArachnidBroodmother responsible for spawning these defiled creatures.",
+    "ArchiveText": "At the request from [STARTNAME] You defeated the Arachnid Broodmother.",
+    "CompletedText": "Great work [PLAYERNAME]!, With the threat of the Broodmother gone we should be much safer.",
+    "FinishNPC": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCInfo",
+      "Index": 13
+    },
+    "Index": 14,
+    "ProgressText": "[STARTNAME] has asked you to slay the Arachnid Broodmother located in Phantom Forest.",
+    "QuestName": "Curing the Poison Pt. 6",
+    "QuestType": 0,
+    "StartNPC": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCInfo",
+      "Index": 13
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestInfo",
+    "AcceptText": "Hello [PLAYERNAME], The Evil Elephants in Lost Paradise Forest have been trampling everything. Maybe you could lower their numbers in some way?",
+    "ArchiveText": "[STARTNAME] had you successfully lower the population of Evil Elephants in Lost Paradise Forest.",
+    "CompletedText": "That should give some breathing room for groups to grow, Thanks [PLAYERNAME].",
+    "FinishNPC": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCInfo",
+      "Index": 21
+    },
+    "Index": 16,
+    "ProgressText": "[STARTNAME] has asked you to kill Evil Elephants in Lost Paradise Forest.",
+    "QuestName": "Elephants on Parade",
+    "QuestType": 0,
+    "StartNPC": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCInfo",
+      "Index": 21
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestInfo",
+    "AcceptText": "Over here [PLAYERNAME]!, We could really do with clearing out the Flea Cave north west of here. Mind giving us a hand?",
+    "ArchiveText": "You managed to clear out the Flea population that had infested Flea Cave at the request of [FINISHNAME]",
+    "CompletedText": "That will do nicely [PLAYERNAME].",
+    "FinishNPC": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCInfo",
+      "Index": 30
+    },
+    "Index": 17,
+    "ProgressText": "[STARTNAME] has asked you to Clear out the Flea population in the cave to the North west of Banya Village.",
+    "QuestName": "Time for the Fleas to Flee",
+    "QuestType": 0,
+    "StartNPC": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCInfo",
+      "Index": 30
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestInfo",
+    "AcceptText": "Greetings [PLAYERNAME], It\u0027s time for us reclaim the Carved Stone Tomb for ourselves. We need to work our way downwards into the bowels of the tomb and unlock the treasure within, Let\u0027s start with the Red and Black Boars that guard the tomb.",
+    "ArchiveText": "You helped [STARTNAME] to clear out Black and Red Boars within the Carved Stone Tomb [FINISHNAME]",
+    "CompletedText": "That\u0027s a great start [PLAYERNAME], Come back later for the next step in our plan.",
+    "FinishNPC": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCInfo",
+      "Index": 25
+    },
+    "Index": 34,
+    "ProgressText": "[STARTNAME] has asked you to kill the Red and Black Boars within the Carved Stone Tomb",
+    "QuestName": "Reclaiming the Carved Tomb Pt. 1",
+    "QuestType": 0,
+    "StartNPC": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCInfo",
+      "Index": 25
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestInfo",
+    "AcceptText": "That was a great job you did with the Boars[PLAYERNAME], We sent some explorer further into the Tomb and they returned with stories of Serpent like creatures and paralysing moths down there, Can you investigate and eliminate the threat for us?",
+    "ArchiveText": "You helped [STARTNAME] to defeat the Claw Serpents and Wedge Moths found within the Carved Stone Tomb [FINISHNAME]",
+    "CompletedText": "I can only wish we never see those horrors again [PLAYERNAME], Have a rest and then we will discuss our next step.",
+    "FinishNPC": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCInfo",
+      "Index": 25
+    },
+    "Index": 35,
+    "ProgressText": "[STARTNAME] has asked you to Travel deeper into the Carved Stone Tomb in order to defeat the Claw Serpents and Wedge moths found within.",
+    "QuestName": "Reclaiming the Carved Tomb Pt. 2",
+    "QuestType": 0,
+    "StartNPC": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCInfo",
+      "Index": 25
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestInfo",
+    "AcceptText": "We are closing in on the deepest sections of the Carved Stone Tomb [PLAYERNAME], We\u0027ve come across a grand entrance that we wish to enter. The room however is closely guarded by 2 TuskLords and creatures that continually overwhelm our explorers with their young, I don\u0027t like asking over and over but could you deal with it?",
+    "ArchiveText": "You helped [STARTNAME] to defeat the Tusklords and Wedge Moth Larva protecting the deepest sections of the Carved Stone Tomb [FINISHNAME]",
+    "CompletedText": "It\u0027s done!, we can finally breach the door and seek the treasures within.",
+    "FinishNPC": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCInfo",
+      "Index": 25
+    },
+    "Index": 36,
+    "ProgressText": "[STARTNAME] has asked you to descend into some of the deepest sections of the Carved Stone Tomb in order to slay the TuskLords and WedgeMothLarva found there.",
+    "QuestName": "Reclaiming the Carved Tomb Pt. 3",
+    "QuestType": 0,
+    "StartNPC": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCInfo",
+      "Index": 25
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestInfo",
+    "AcceptText": "[PLAYERNAME] You must save us!, We didn\u0027t mean to unleash the creature within the Kings room. I cannot begin to describe the monstrosity ..... Please save us!",
+    "ArchiveText": "At the request of [STARTNAME] you travelled to the deepest section of the Carved Stone Tomb and elimnated the threat of Razortusk[FINISHNAME]",
+    "CompletedText": "Thank you [PLAYERNAME]!, You have saved the Lost Paradise and given us access to the treasures within the Carved Stone Tomb.",
+    "FinishNPC": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCInfo",
+      "Index": 25
+    },
+    "Index": 37,
+    "ProgressText": "[STARTNAME] has awoken the creature within the Carved Stone Tomb, You have been tasked with defeating the creature known as Razortusk in the deepest section of the Carved Stone Tomb.",
+    "QuestName": "Reclaiming the Carved Tomb Pt. 4",
+    "QuestType": 0,
+    "StartNPC": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCInfo",
+      "Index": 25
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestInfo",
+    "AcceptText": "Good day to you [PLAYERNAME], It seems a slight problem has arisen, namely in the form of Skeletons that have taken over a number of caves. How about you deal with those for me and bring me back some spines to prove it?",
+    "ArchiveText": "You have defeated the horde of Skeletal mobs within the caves at the request of [FINISHNAME]",
+    "CompletedText": "Thank you [PLAYERNAME], Looks like we have another problem to deal with however.",
+    "FinishNPC": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCInfo",
+      "Index": 16
+    },
+    "Index": 39,
+    "ProgressText": "[STARTNAME] has asked you to remove the Skeleton threat from within the caves.",
+    "QuestName": "Crushing the Remains Pt. 1",
+    "QuestType": 0,
+    "StartNPC": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCInfo",
+      "Index": 16
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestInfo",
+    "AcceptText": "It seems something more sinister is at hand, Those skeletons seemed to be receiving instructions from elsewhere, Maybe you should check that out?",
+    "ArchiveText": "You cleared the Skeleton Lord out of the caves, [FINISHNAME] was very happy with your work.",
+    "CompletedText": "Fantastic [PLAYERNAME], That seems to have done the job.",
+    "FinishNPC": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCInfo",
+      "Index": 16
+    },
+    "Index": 40,
+    "ProgressText": "[STARTNAME] has asked you to find the SkeletonLord.",
+    "QuestName": "Crushing the Remains Pt. 2",
+    "QuestType": 0,
+    "StartNPC": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCInfo",
+      "Index": 16
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestInfo",
+    "AcceptText": "Hello [PLAYERNAME], I have a bit of a problem, one of those Scarecrows has gotten hold of the key for the Bichon Town Potion store. Could you get it for me?",
+    "ArchiveText": "You managed to find [FINISHNAME]\u0027s key for the Bichon Town Potion store, they were attached to a wandering Scarecrow.",
+    "CompletedText": "Thank you [PLAYERNAME] for returning my key, here is a little reward for you.",
+    "FinishNPC": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCInfo",
+      "Index": 15
+    },
+    "Index": 42,
+    "ProgressText": "[STARTNAME] has asked you to get his key back from the Scarecrow.",
+    "QuestName": "Hunting for David\u0027s Key",
+    "QuestType": 0,
+    "StartNPC": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCInfo",
+      "Index": 15
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestInfo",
+    "AcceptText": "Hello [PLAYERNAME], I have a bit of a problem, one of those Scarecrows has gotten hold of the key for the Lost Paradise Potion store. Could you get it for me?",
+    "ArchiveText": "You managed to find [FINISHNAME]\u0027s key for the Lost Paradise Potion store, they were attached to a wandering Scarecrow.",
+    "CompletedText": "Thank you [PLAYERNAME] for returning my key, here is a little reward for you.",
+    "FinishNPC": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCInfo",
+      "Index": 23
+    },
+    "Index": 43,
+    "ProgressText": "[STARTNAME] has asked you to get his key back from the Scarecrow.",
+    "QuestName": "Hunting for Haylee\u0027s Key",
+    "QuestType": 0,
+    "StartNPC": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCInfo",
+      "Index": 23
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestInfo",
+    "AcceptText": "Hello [PLAYERNAME], I have a bit of a problem, one of those Scarecrows has gotten hold of the key for the Banya Village Potion store. Could you get it for me?",
+    "ArchiveText": "You managed to find [FINISHNAME]\u0027s key for the Banya Village Potion store, they were attached to a wandering Scarecrow.",
+    "CompletedText": "Thank you [PLAYERNAME] for returning my key, here is a little reward for you.",
+    "FinishNPC": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCInfo",
+      "Index": 32
+    },
+    "Index": 44,
+    "ProgressText": "[STARTNAME] has asked you to get his key back from the Scarecrow.",
+    "QuestName": "Hunting for Kacy\u0027s Key",
+    "QuestType": 0,
+    "StartNPC": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCInfo",
+      "Index": 32
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestInfo",
+    "AcceptText": "How can I help you today [PLAYERNAME], actually maybe you could me. I\u0027ve always wanted to try adding some Zombie flesh to my recipes, maybe you can acquire some?",
+    "ArchiveText": "[STARTNAME] asked you to find some Zombie Flesh from the Bichon Mines, apparently it didn\u0027t taste nice.",
+    "CompletedText": "Well that certainly didn\u0027t taste as good as I expected, thank you anyway [PLAYERNAME]",
+    "FinishNPC": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCInfo",
+      "Index": 20
+    },
+    "Index": 45,
+    "ProgressText": "[STARTNAME] has asked you to gather Zombie Flesh from the Bichon Mines",
+    "QuestName": "Let\u0027s try something new",
+    "QuestType": 0,
+    "StartNPC": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCInfo",
+      "Index": 20
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestInfo",
+    "AcceptText": "Why hello there [PLAYERNAME]. I appear to have misplaced my journal. I\u0027m fairly sure I saw one of those Claw Cats walking off with it though. Could you find it for me?.",
+    "ArchiveText": "You returned the journal to [FINISHNAME] in Lost Paradise after recovering it from a Claw Cat.",
+    "CompletedText": "[PLAYERNAME] I cannot thank you enough!.",
+    "FinishNPC": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCInfo",
+      "Index": 22
+    },
+    "Index": 46,
+    "ProgressText": "[STARTNAME] in Lost Paradise has asked you to find the his journal, He thinks a Claw Cat stole it.",
+    "QuestName": "Gresham\u0027s Journal is missing",
+    "QuestType": 0,
+    "StartNPC": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCInfo",
+      "Index": 22
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestInfo",
+    "AcceptText": "Why hello there [PLAYERNAME]. I appear to have misplaced my journal. I\u0027m fairly sure I saw one of those Claw Cats walking off with it though. Could you find it for me?.",
+    "ArchiveText": "You returned the journal to [FINISHNAME] in Bichon Town after recovering it from a Claw Cat.",
+    "CompletedText": "[PLAYERNAME] I cannot thank you enough!.",
+    "FinishNPC": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCInfo",
+      "Index": 14
+    },
+    "Index": 47,
+    "ProgressText": "[STARTNAME] in Bichon Town has asked you to find the his journal, He thinks a Claw Cat stole it.",
+    "QuestName": "Isaac\u0027s Journal is missing",
+    "QuestType": 0,
+    "StartNPC": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCInfo",
+      "Index": 14
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestInfo",
+    "AcceptText": "Why hello there [PLAYERNAME]. I appear to have misplaced my journal. I\u0027m fairly sure I saw one of those Claw Cats walking off with it though. Could you find it for me?.",
+    "ArchiveText": "You returned the journal to [FINISHNAME] in Banya Village after recovering it from a Claw Cat.",
+    "CompletedText": "[PLAYERNAME] I cannot thank you enough!.",
+    "FinishNPC": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCInfo",
+      "Index": 31
+    },
+    "Index": 48,
+    "ProgressText": "[STARTNAME] in Banya Village has asked you to find the his journal, He thinks a Claw Cat stole it.",
+    "QuestName": "Henry\u0027s Journal is missing",
+    "QuestType": 0,
+    "StartNPC": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCInfo",
+      "Index": 31
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestInfo",
+    "AcceptText": "Hello [PLAYERNAME], Those pesky Forest Yeti have made a nuisance of themselves around Bichon Town, Could you go kill a few so we can open our trade routes again.",
+    "ArchiveText": "You helped [STARTNAME] to defeat the Forest Yeti around Bichon Town.",
+    "CompletedText": "Thanks for that [PLAYERNAME], we can move our wares freely now.",
+    "FinishNPC": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCInfo",
+      "Index": 19
+    },
+    "Index": 50,
+    "ProgressText": "[STARTNAME] has asked you to kill some of the Forest Yeti population around Bichon Town.",
+    "QuestName": "Are they in Bichon Yeti?",
+    "QuestType": 0,
+    "StartNPC": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCInfo",
+      "Index": 19
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestInfo",
+    "AcceptText": "Hello [PLAYERNAME], Those pesky Forest Yeti have made a nuisance of themselves around Banya Village, Could you go kill a few so we can open our trade routes again.",
+    "ArchiveText": "You helped [STARTNAME] to defeat the Forest Yeti around Banya Village.",
+    "CompletedText": "Thanks for that [PLAYERNAME], we can move our wares freely now.",
+    "FinishNPC": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCInfo",
+      "Index": 36
+    },
+    "Index": 51,
+    "ProgressText": "[STARTNAME] has asked you to kill some of the Forest Yeti population around Banya Village.",
+    "QuestName": "Are they in Banya Yeti?",
+    "QuestType": 0,
+    "StartNPC": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCInfo",
+      "Index": 36
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestInfo",
+    "AcceptText": "Hello [PLAYERNAME], Those pesky Forest Yeti have made a nuisance of themselves around Lost Paradise, Could you go kill a few so we can open our trade routes again.",
+    "ArchiveText": "You helped [STARTNAME] to defeat the Forest Yeti around Lost Paradise.",
+    "CompletedText": "Thanks for that [PLAYERNAME], we can move our wares freely now.",
+    "FinishNPC": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCInfo",
+      "Index": 27
+    },
+    "Index": 52,
+    "ProgressText": "[STARTNAME] has asked you to kill some of the Forest Yeti population around Lost Paradise.",
+    "QuestName": "Are they in Lost Paradise Yeti?",
+    "QuestType": 0,
+    "StartNPC": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCInfo",
+      "Index": 27
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestInfo",
+    "AcceptText": "Hello [PLAYERNAME], Bichon Town supplies have been running low recently, could you help us restock our supplies of Edible Chestnuts?",
+    "ArchiveText": "You were able to forage enough Edible Chestnuts to assist the people of Bichon Town.",
+    "CompletedText": "These will help out greatly, Thank you [PLAYERNAME].",
+    "FinishNPC": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCInfo",
+      "Index": 18
+    },
+    "Index": 53,
+    "ProgressText": "[STARTNAME] has asked you to gather Edible chestnuts from Chestnut trees around Bichon Town.",
+    "QuestName": "Feeding Bichon Town",
+    "QuestType": 0,
+    "StartNPC": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCInfo",
+      "Index": 18
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestInfo",
+    "AcceptText": "Hello [PLAYERNAME], Banya Village supplies have been running low recently, could you help us restock our supplies of Edible Chestnuts?",
+    "ArchiveText": "You were able to forage enough Edible Chestnuts to assist the people of Banya Village.",
+    "CompletedText": "These will help out greatly, Thank you [PLAYERNAME].",
+    "FinishNPC": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCInfo",
+      "Index": 35
+    },
+    "Index": 54,
+    "ProgressText": "[STARTNAME] has asked you to gather Edible chestnuts from Chestnut trees around Banya Village.",
+    "QuestName": "Feeding Banya Village",
+    "QuestType": 0,
+    "StartNPC": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCInfo",
+      "Index": 35
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestInfo",
+    "AcceptText": "Hello [PLAYERNAME], Lost Paradise supplies have been running low recently, could you help us restock our supplies of Edible Chestnuts?",
+    "ArchiveText": "You were able to forage enough Edible Chestnuts to assist the people of Lost Paradise.",
+    "CompletedText": "These will help out greatly, Thank you [PLAYERNAME].",
+    "FinishNPC": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCInfo",
+      "Index": 26
+    },
+    "Index": 55,
+    "ProgressText": "[STARTNAME] has asked you to gather Edible chestnuts from Chestnut trees around Lost Paradise.",
+    "QuestName": "Feeding Lost Paradise",
+    "QuestType": 0,
+    "StartNPC": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCInfo",
+      "Index": 26
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestInfo",
+    "AcceptText": "[PLAYERNAME] please I must speak with you, Strange rumours are emanating from travellers venturing in to the Banya Stone Caves. Talk of the undead rising once again are rife, could you check it out?",
+    "ArchiveText": "[STARTNAME] asked you to venture into the Banya Stone Caves in order to validate the rumours circulating around Banya Village.",
+    "CompletedText": "I can\u0027t believe it [PLAYERNAME], This is an ominous sign.",
+    "FinishNPC": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCInfo",
+      "Index": 33
+    },
+    "Index": 56,
+    "ProgressText": "[STARTNAME] has asked you to venture into the Banya Stone Caves in order to identify if the rumours were true or not.",
+    "QuestName": "Descent into Darkness Pt. 1",
+    "QuestType": 0,
+    "StartNPC": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCInfo",
+      "Index": 33
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestInfo",
+    "AcceptText": "[PLAYERNAME] We must investigate this further, I\u0027m concerned that even fiercer creatures may lurk deeper into the Banya Stone Caves, You must go quickly and find out for me.",
+    "ArchiveText": "[STARTNAME] requested you travel deeper into the Banya Stone Caves in order to confirm his fears of even more dangerous creatures.",
+    "CompletedText": "It\u0027s exactly as I feared, We must stop this threat before it becomes too much.",
+    "FinishNPC": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCInfo",
+      "Index": 33
+    },
+    "Index": 57,
+    "ProgressText": "[STARTNAME] is concerned that even more dangerous creatures inhabit the deeper sections of Banya Stone Cave, you have been sent to investigate.",
+    "QuestName": "Descent into Darkness Pt. 2",
+    "QuestType": 0,
+    "StartNPC": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCInfo",
+      "Index": 33
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestInfo",
+    "AcceptText": "[PLAYERNAME] we have to hit back and hit hard, The entrance to the kings room is guarded by a small army of undead and the generals that control them, please go and slay them.",
+    "ArchiveText": "[STARTNAME] sent you to destroy the skeletal forces located deep within Banya Stone Caves.",
+    "CompletedText": "This was exactly what we needed, take some time to prepare yourself for the final encounter.",
+    "FinishNPC": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCInfo",
+      "Index": 33
+    },
+    "Index": 58,
+    "ProgressText": "[STARTNAME] has sent you to strike back at the Skeletal enemies found within Banya Stone Cave and the Bone Enforcer that controls them.",
+    "QuestName": "Descent into Darkness Pt. 3",
+    "QuestType": 0,
+    "StartNPC": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCInfo",
+      "Index": 33
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestInfo",
+    "AcceptText": "[PLAYERNAME] It\u0027s time for us to end this, You must travel to the Deepest floor of Banya Stone Cave and destroy Arch Lich Taedu who lives within.",
+    "ArchiveText": "[STARTNAME] sent you to defeat Arch Lich Taedu in the deepest sections of Banya Stone Caves.",
+    "CompletedText": "You are a true Hero [PLAYERNAME], The Village is safe once again.",
+    "FinishNPC": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCInfo",
+      "Index": 33
+    },
+    "Index": 59,
+    "ProgressText": "[STARTNAME] has sent you to defeat Arch Lich Taedu in Banya Stone Cave",
+    "QuestName": "Descent into Darkness Pt. 4",
+    "QuestType": 0,
+    "StartNPC": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCInfo",
+      "Index": 33
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestInfo",
+    "AcceptText": "Welcome to Lost Paradise [PLAYERNAME], If you could spare a moment of time it would be greatly appreciated if you could rid the Town of some Wolves.",
+    "ArchiveText": "You helped [STARTNAME] to defeat the Wolves around Lost Paradise. ",
+    "CompletedText": "Marvelous [PLAYERNAME], That should keep the town safer for a while",
+    "FinishNPC": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCInfo",
+      "Index": 27
+    },
+    "Index": 60,
+    "ProgressText": "[STARTNAME] has asked you to kill some of the Wolves stalking around Lost Paradise.",
+    "QuestName": "Wolves in Lost Paradise",
+    "QuestType": 0,
+    "StartNPC": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCInfo",
+      "Index": 27
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestInfo",
+    "AcceptText": "Welcome to Bichon Town [PLAYERNAME], If you could spare a moment of time it would be greatly appreciated if you could rid the Town of some Wolves.",
+    "ArchiveText": "You helped [STARTNAME] to defeat the Wolves around Bichon Town. ",
+    "CompletedText": "Marvelous [PLAYERNAME], That should keep the town safer for a while",
+    "FinishNPC": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCInfo",
+      "Index": 19
+    },
+    "Index": 61,
+    "ProgressText": "[STARTNAME] has asked you to kill some of the Wolves stalking around Bichon Town.",
+    "QuestName": "Wolves in Bichon",
+    "QuestType": 0,
+    "StartNPC": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCInfo",
+      "Index": 19
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestInfo",
+    "AcceptText": "Welcome to Banya Village [PLAYERNAME], If you could spare a moment of time it would be greatly appreciated if you could rid the Town of some Wolves.",
+    "ArchiveText": "You helped [STARTNAME] to defeat the Wolves around Banya Village. ",
+    "CompletedText": "Marvelous [PLAYERNAME], That should keep the town safer for a while",
+    "FinishNPC": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCInfo",
+      "Index": 36
+    },
+    "Index": 62,
+    "ProgressText": "[STARTNAME] has asked you to kill some of the Wolves stalking around Banya Village.",
+    "QuestName": "Wolves in Banya",
+    "QuestType": 0,
+    "StartNPC": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCInfo",
+      "Index": 36
+    }
+  }
+]

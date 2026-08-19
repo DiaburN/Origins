@@ -1,0 +1,41 @@
+[
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.CastleInfo",
+    "AttackSpawnRegion": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapRegion",
+      "Index": 138
+    },
+    "CastleRegion": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapRegion",
+      "Index": 137
+    },
+    "Discount": 0.10,
+    "Duration": 18000000000,
+    "Index": 1,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 394
+    },
+    "Map": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 7
+    },
+    "Monster": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MonsterInfo",
+      "Index": 220
+    },
+    "Name": "Sabuk Wall",
+    "ObjectiveRegion": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapRegion",
+      "Index": 137
+    },
+    "StartTime": 684000000000
+  }
+]
