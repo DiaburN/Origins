@@ -1,7 +1,7 @@
 diff --git a/LibraryCore/SystemModels/MapInfo.cs b/LibraryCore/SystemModels/MapInfo.cs
 --- a/LibraryCore/SystemModels/MapInfo.cs
 +++ b/LibraryCore/SystemModels/MapInfo.cs
-@@ -100,6 +100,38 @@ namespace Library.SystemModels
+@@ -100,6 +100,36 @@ namespace Library.SystemModels
          }
          private int _SkillDelay;
  
