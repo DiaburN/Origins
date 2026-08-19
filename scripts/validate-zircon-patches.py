@@ -5,7 +5,8 @@ ORIGINS patches are applied by exact source context. Historical files may carry
 stale unified-diff line counts or use a bare `@@` separator, so those numeric
 headers are advisory rather than authoritative. This validator checks the
 structural rules required by `apply-origins-patches.py` without rejecting valid
-context patches for stale line-number metadata.
+context patches for stale line-number metadata. Raw empty lines are accepted as
+hunk separators; real blank source context remains space-prefixed.
 """
 from __future__ import annotations
 
@@ -61,11 +62,8 @@ def validate_patch(path: pathlib.Path) -> tuple[list[str], int]:
                 i += 1
                 continue
             if not current:
-                errors.append(
-                    f"{path}:{i + 1}: unprefixed empty line inside hunk beginning at line {start}"
-                )
                 i += 1
-                continue
+                break
 
             prefix = current[0]
             if prefix == " ":
