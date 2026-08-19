@@ -114,13 +114,20 @@ def parse_magic_type_enum(path: pathlib.Path) -> dict[str, int]:
 
 
 def is_passive(decision: dict) -> bool:
-    metadata = " ".join(
-        str(decision.get(key, ""))
-        for key in ("mode", "executionKind", "sourceStatus")
-    ).lower()
+    behavior = decision.get("portedBehavior", [])
+    if not isinstance(behavior, list):
+        behavior = [behavior]
 
-    # These Archer skills are passive hooks in the port even when their older
-    # decision-mode wording does not contain the literal word "passive".
+    metadata = " ".join([
+        str(decision.get("mode", "")),
+        str(decision.get("executionKind", "")),
+        str(decision.get("sourceStatus", "")),
+        *(str(item) for item in behavior),
+    ]).lower()
+
+    # Meditation is implemented entirely through passive attack-complete hooks,
+    # while its historical decision-mode name describes the orb state rather
+    # than saying "passive" explicitly.
     explicit_passive = {"focus", "meditation"}
     return "passive" in metadata or norm(decision.get("crystalSpell", "")) in explicit_passive
 
@@ -249,7 +256,8 @@ def main() -> int:
             "All 118 explicitly routed active spells are bound to the numeric MagicType values "
             "compiled into patched Zircon. FastMove remains disabled because upstream Crystal "
             "contains no usable MagicInfo/server handler. Existing nonzero Zircon School/Property "
-            "metadata is preserved; new routed rows receive non-None integration metadata."
+            "metadata is preserved; new routed rows receive non-None integration metadata, with "
+            "passive decisions retained as passive."
         ),
         "spells": activated_spells,
     }
