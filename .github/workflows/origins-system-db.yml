@@ -1,0 +1,135 @@
+name: ORIGINS System DB
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'src/Origins.Database/**'
+      - 'tools/Origins.Database.*/**'
+      - 'tools/Origins.UsersDb.Smoke/**'
+      - 'tools/Origins.CrystalJevMagic.Export/**'
+      - 'database/overlays/**'
+      - 'database/magic/**'
+      - 'database/index-policy.json'
+      - 'overrides/zircon/**'
+      - 'patches/zircon/**'
+      - 'scripts/**'
+      - '.github/workflows/origins-system-db.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-origins-system-db:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout ORIGINS
+        uses: actions/checkout@v4
+
+      - name: Install .NET 10
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Install .NET 8 for Crystal reader
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Install 7-Zip
+        run: sudo apt-get update && sudo apt-get install -y p7zip-full
+
+      - name: Pin upstream sources
+        run: |
+          bash scripts/bootstrap-zircon.sh
+          bash scripts/bootstrap-crystal.sh
+          bash scripts/bootstrap-crystal-database.sh
+
+      - name: Compile overridden Zircon runtime
+        run: dotnet build vendor/zircon/ServerLibrary/ServerLibrary.csproj --configuration Release
+
+      - name: Fetch and migrate Zircon content base
+        run: |
+          bash scripts/fetch-zircon-system-db.sh
+          dotnet run --project tools/Origins.Database.Upgrade/Origins.Database.Upgrade.csproj --configuration Release -- ./Database/System.db ./DatabaseBase ./BackupBase
+          dotnet run --project tools/Origins.Database.Verify/Origins.Database.Verify.csproj --configuration Release -- ./DatabaseBase ./BackupBase
+
+      - name: Export index-preserving base snapshot
+        run: dotnet run --project tools/Origins.Database.Export/Origins.Database.Export.csproj --configuration Release -- ./DatabaseBase ./SnapshotBase ./BackupBase
+
+      - name: Generate Crystal values by stable spell name
+        run: |
+          mkdir -p GeneratedResearch
+          python3 scripts/generate-crystal-magic-catalog.py ./vendor/crystal ./GeneratedResearch/crystal-source-catalog.json
+          dotnet run --project tools/Origins.CrystalJevMagic.Export/Origins.CrystalJevMagic.Export.csproj --configuration Release -- ./vendor/crystal-database/Jev/Server.MirDB ./GeneratedResearch/crystal-jev-effective-magics.json
+          python3 scripts/project-crystal-magic-numerics.py ./GeneratedResearch/crystal-source-catalog.json ./GeneratedResearch/crystal-jev-effective-magics.json ./GeneratedResearch/crystal-zircon-numeric-projection.json
+          python3 scripts/generate-ready-crystal-magic-overlay.py ./GeneratedResearch/crystal-zircon-numeric-projection.json ./database/magic/behavior-decisions-wizard-core.json ./SnapshotBase/LibraryCore__Library_SystemModels_MagicInfo.json ./GeneratedResearch/70-magics-crystal.generated.json
+
+      - name: Assemble ORIGINS overlay set
+        run: |
+          mkdir -p GeneratedOverlays
+          cp database/overlays/*.json GeneratedOverlays/
+          cp GeneratedResearch/70-magics-crystal.generated.json GeneratedOverlays/70-magics-crystal.json
+
+      - name: Apply ORIGINS overlays and rebuild System.db
+        run: |
+          dotnet run --project tools/Origins.Database.ApplyOverlay/Origins.Database.ApplyOverlay.csproj --configuration Release -- ./SnapshotBase ./GeneratedOverlays ./SnapshotOrigins ./database/index-policy.json
+          dotnet run --project tools/Origins.Database.Import/Origins.Database.Import.csproj --configuration Release -- ./SnapshotOrigins ./DatabaseOrigins ./BackupOrigins
+          dotnet run --project tools/Origins.Database.Verify/Origins.Database.Verify.csproj --configuration Release -- ./DatabaseOrigins ./BackupOrigins
+          dotnet run --project tools/Origins.Database.Audit/Origins.Database.Audit.csproj --configuration Release -- ./DatabaseOrigins ./DatabaseOrigins/audit.json ./BackupOrigins
+
+      - name: Prove Users.db can learn a spell from final System.db
+        run: dotnet run --project tools/Origins.UsersDb.Smoke/Origins.UsersDb.Smoke.csproj --configuration Release -- ./DatabaseOrigins/System.db ./DatabaseOrigins/usersdb-smoke.json
+
+      - name: Build manifest
+        shell: bash
+        run: |
+          SYSTEM_SHA=$(sha256sum DatabaseOrigins/System.db | awk '{print $1}')
+          cat > DatabaseOrigins/build-manifest.json <<EOF
+          {
+            "schemaVersion": 1,
+            "zirconCommit": "cbf1aa919083bc13fc3f23f93772a8ab8370632d",
+            "crystalCommit": "0e315fe327192afe52c3d7357ddd1f5b7e26c5b8",
+            "crystalDatabaseJevCommit": "a19f6dca8f5e238d4ed79801820777abbf0a9ca4",
+            "systemDbSha256": "$SYSTEM_SHA",
+            "crystalJoinKey": "normalized spell name",
+            "numericSpellIdUsedAsJevJoinKey": false,
+            "runtime": "Zircon MagicObject with explicit ORIGINS overrides/patches"
+          }
+          EOF
+
+      - name: Upload ORIGINS System.db artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: origins-system-db
+          path: |
+            DatabaseOrigins/System.db
+            DatabaseOrigins/build-manifest.json
+            DatabaseOrigins/audit.json
+            DatabaseOrigins/usersdb-smoke.json
+            GeneratedResearch/70-magics-crystal.generated.json
+            GeneratedResearch/crystal-zircon-numeric-projection.json
+            SnapshotOrigins/overlay-report.json
+          if-no-files-found: error
+
+      - name: Publish generated ORIGINS database branch
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf database/generated/origins-system-db
+          mkdir -p database/generated/origins-system-db
+          cp DatabaseOrigins/System.db database/generated/origins-system-db/System.db
+          cp DatabaseOrigins/build-manifest.json database/generated/origins-system-db/build-manifest.json
+          cp DatabaseOrigins/audit.json database/generated/origins-system-db/audit.json
+          cp DatabaseOrigins/usersdb-smoke.json database/generated/origins-system-db/usersdb-smoke.json
+          cp GeneratedResearch/70-magics-crystal.generated.json database/generated/origins-system-db/70-magics-crystal.generated.json
+          cp GeneratedResearch/crystal-zircon-numeric-projection.json database/generated/origins-system-db/crystal-zircon-numeric-projection.json
+          cp SnapshotOrigins/overlay-report.json database/generated/origins-system-db/overlay-report.json
+
+          git config user.name "ORIGINS Database Bot"
+          git config user.email "actions@users.noreply.github.com"
+          git checkout -B generated/origins-system-db
+          git add -f database/generated/origins-system-db
+          git commit -m "generated(db): rebuild ORIGINS System.db" || exit 0
+          git push --force origin HEAD:generated/origins-system-db
