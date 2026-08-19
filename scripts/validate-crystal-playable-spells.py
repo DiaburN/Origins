@@ -20,6 +20,9 @@ EXPECTED_EXTENSION = {
     "Archer": {142:"ElementalBarrier1",143:"DelayedExplosion2",144:"NapalmShot2"},
     "Monk": {161:"JiBenGunFa",162:"LuoHanGunFa",163:"JinGangGunFa",164:"DaMoGunFa",165:"XiangLongGunFa",166:"Taunt",167:"TianLeiZhen",168:"ShiBuYiSha",169:"LuoHanZhen"},
 }
+EXPECTED_SOURCE_STUBS = {
+    ("Wizard", 54, "FastMove", "stub_no_magicinfo_no_server_handler"),
+}
 APPROVED_EXTENSION_COMMIT = "381e589e3d7ee736cdf0583c8315c0d144ab058f"
 
 path = pathlib.Path(sys.argv[1] if len(sys.argv) > 1 else "database/magic/crystal-playable-spells.json")
@@ -52,9 +55,20 @@ for class_name, expected in EXPECTED_EXTENSION.items():
     if rows != expected:
         errors.append(f"Crystal-Monk extension mismatch for {class_name}: {rows}")
 
+source_stubs = {
+    (class_name, int(row["id"]), row["name"], row["sourceStatus"])
+    for class_name in EXPECTED
+    for row in classes.get(class_name, [])
+    if row.get("sourceStatus")
+}
+if source_stubs != EXPECTED_SOURCE_STUBS:
+    errors.append(f"source stub set mismatch: {sorted(source_stubs)}")
+
 scope = data.get("scope", {})
 if scope.get("requiredPlayableSpellCount") != EXPECTED_TOTAL:
     errors.append("scope.requiredPlayableSpellCount must be 128")
+if scope.get("sourceStubCount") != len(EXPECTED_SOURCE_STUBS):
+    errors.append("scope.sourceStubCount must match the verified source-stub set")
 if scope.get("includeMonk") is not True:
     errors.append("scope.includeMonk must be true")
 if scope.get("includeCrystalMonkSecretSkills") is not True:
@@ -75,3 +89,4 @@ print("Crystal playable spell catalogue OK")
 for name, expected_count in EXPECTED.items():
     print(f"- {name}: {expected_count}")
 print(f"- total: {EXPECTED_TOTAL}")
+print("- source stubs: Wizard.FastMove only (upstream enum identity; no MagicInfo/server handler)")
