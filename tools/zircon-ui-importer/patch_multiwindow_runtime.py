@@ -135,9 +135,22 @@ subprocess.run([
 neutralize_handcrafted_desktop()
 
 visual = repo_root / "apps" / "zircon-ui-reference" / "visual-control-runtime.js"
-entries: list[tuple[Path, Path]] = [(visual, Path("visual-control-runtime.js"))]
+magic_runtime = repo_root / "apps" / "zircon-ui-reference" / "zircon-magic-runtime.js"
+entries: list[tuple[Path, Path]] = [
+    (visual, Path("visual-control-runtime.js")),
+    (magic_runtime, Path("zircon-magic-runtime.js")),
+]
 extra_dir = repo_root / "apps" / "zircon-ui-reference" / "extra-runtimes"
 if extra_dir.exists(): entries += [(source, Path("extra-runtimes") / source.name) for source in sorted(extra_dir.glob("*.js"))]
+
+magic_info_source = repo_root / "database" / "generated" / "zircon-system" / "LibraryCore__Library_SystemModels_MagicInfo.json"
+if not magic_info_source.exists():
+    raise SystemExit(f"Canonical Zircon MagicInfo missing: {magic_info_source}")
+magic_rows = json.loads(magic_info_source.read_text(encoding="utf-8"))
+if not isinstance(magic_rows, list) or not magic_rows:
+    raise SystemExit("Canonical Zircon MagicInfo is empty or invalid")
+magic_info_target = build_root / "zircon-magic-info.json"
+shutil.copyfile(magic_info_source, magic_info_target)
 
 index = index_path.read_text(encoding="utf-8")
 anchor = '  <script type="module" src="animated-control-runtime.js"></script>\n'
@@ -145,6 +158,13 @@ if anchor not in index: raise SystemExit("Animated runtime script anchor missing
 for source, relative in entries:
     if not source.exists(): raise SystemExit(f"Fidelity runtime missing: {source}")
     target = build_root / relative; target.parent.mkdir(parents=True, exist_ok=True); shutil.copyfile(source, target)
+    if relative.as_posix() == "zircon-magic-runtime.js":
+        runtime_text = target.read_text(encoding="utf-8")
+        canonical = "../../database/generated/zircon-system/LibraryCore__Library_SystemModels_MagicInfo.json"
+        if canonical not in runtime_text:
+            raise SystemExit("Zircon magic runtime canonical MagicInfo URL marker missing")
+        runtime_text = runtime_text.replace(canonical, "./zircon-magic-info.json", 1)
+        target.write_text(runtime_text, encoding="utf-8")
     subprocess.run(["node", "--check", str(target)], check=True)
     index = index.replace(f'  <script type="module" src="{relative.as_posix()}"></script>\n', "")
 block = anchor + "".join(f'  <script type="module" src="{relative.as_posix()}"></script>\n' for _, relative in entries)
@@ -156,4 +176,5 @@ subprocess.run(["node", "--check", str(animated)], check=True)
 subprocess.run(["node", "--check", str(app_layout_path)], check=True)
 subprocess.run(["node", str(here / "audit_final_overflow.mjs"), str(build_root)], check=True)
 print("Bundled fidelity runtimes:", ", ".join(relative.as_posix() for _, relative in entries))
+print("Bundled Zircon MagicInfo rows:", len(magic_rows))
 print("Final top-level geometry overflow audit: PASS")
