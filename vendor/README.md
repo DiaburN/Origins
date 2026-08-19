@@ -1,4 +1,4 @@
-# Vendor sources
+# Vendor sources — ORIGINS DxR
 
 Vendor source trees are intentionally not committed.
 
@@ -7,25 +7,19 @@ Vendor source trees are intentionally not committed.
 Run `scripts/bootstrap-zircon.sh` or `scripts/bootstrap-zircon.ps1`.
 
 Pinned upstream:
+
 - repository: `Suprcode/Zircon`
 - branch: `master`
 - commit: `cbf1aa919083bc13fc3f23f93772a8ab8370632d`
 - upstream commit date: 2026-08-12
 
-ORIGINS references the current official projects directly:
+The bootstrap performs a source-pure checkout and rejects local modifications. ORIGINS-DxR uses this Zircon revision as the sole runtime/vendor source for the active game foundation.
+
+Referenced projects include:
+
 - `vendor/zircon/LibraryCore/LibraryCore.csproj`
 - `vendor/zircon/ServerLibrary/ServerLibrary.csproj`
 
-## Crystal
+ORIGINS-specific database tooling remains under `src/`, `tools/`, `scripts/` and `database/`, but it must not replace Zircon's combat/magic engine.
 
-Run `scripts/bootstrap-crystal.sh` or `scripts/bootstrap-crystal.ps1`.
-
-Pinned upstream:
-- repository: `Suprcode/Crystal`
-- branch: `master`
-- commit: `0e315fe327192afe52c3d7357ddd1f5b7e26c5b8`
-- upstream commit date: 2026-08-12
-
-Crystal is a **read-only spell-content/behavior reference**. ORIGINS never adopts Crystal's database engine or player persistence.
-
-ORIGINS-specific code remains under `src/`, `tools/`, `scripts/` and `database/`.
+Previous experimental source integrations are preserved only in archived Git branches and are not bootstrapped by `Origins-DxR`.
