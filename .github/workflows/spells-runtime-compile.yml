@@ -1,0 +1,34 @@
+name: Spell Runtime Compile
+
+on:
+  pull_request:
+    paths:
+      - 'patches/zircon/**'
+      - 'overrides/zircon/**'
+      - 'scripts/bootstrap-zircon.sh'
+      - 'scripts/apply-origins-patches.py'
+      - 'scripts/validate-zircon-patches.py'
+      - '.github/workflows/spells-runtime-compile.yml'
+  workflow_dispatch:
+
+concurrency:
+  group: spell-runtime-compile-${{ github.head_ref || github.ref_name }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  compile:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout ORIGINS
+        uses: actions/checkout@v4
+      - name: Install .NET 10
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+      - name: Apply complete ORIGINS magic runtime to pinned Zircon
+        run: bash scripts/bootstrap-zircon.sh
+      - name: Compile LibraryCore and ServerLibrary
+        run: dotnet build vendor/zircon/ServerLibrary/ServerLibrary.csproj --configuration Release
