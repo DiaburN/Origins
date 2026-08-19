@@ -37,6 +37,26 @@ if [ -d "$OVERRIDES" ]; then
 fi
 
 if [ -d "$PATCHES" ]; then
+  # Parse every patch before applying the first one. This catches malformed
+  # unified-diff hunk counts in a single CI run instead of failing one patch
+  # at a time during the sequential context/application pass below.
+  syntax_fail=0
+  while IFS= read -r -d '' patch; do
+    relative="${patch#"$ROOT/"}"
+    err_file="$(mktemp)"
+    if ! git -C "$DEST" apply --numstat "$patch" >/dev/null 2>"$err_file"; then
+      echo "ERROR: malformed ORIGINS Zircon patch: $relative" >&2
+      sed 's/^/  /' "$err_file" >&2
+      syntax_fail=1
+    fi
+    rm -f "$err_file"
+  done < <(find "$PATCHES" -type f -name '*.patch' -print0 | sort -z)
+
+  if [ "$syntax_fail" -ne 0 ]; then
+    echo "ERROR: one or more ORIGINS Zircon patches failed syntax preflight" >&2
+    exit 1
+  fi
+
   while IFS= read -r -d '' patch; do
     relative="${patch#"$ROOT/"}"
     git -C "$DEST" apply --check "$patch"
