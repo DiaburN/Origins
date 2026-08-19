@@ -11,7 +11,7 @@
       "zirconMagicType": "Repulsion",
       "verified": true,
       "executionKind": "ZirconAdapted",
-      "runtimeReady": false,
+      "runtimeReady": true,
       "overlayReady": false,
       "portedBehavior": [
         "500 ms delayed adjacent-cell repel",
@@ -30,7 +30,7 @@
       "zirconMagicType": "ElectricShock",
       "verified": true,
       "executionKind": "ZirconAdapted",
-      "runtimeReady": false,
+      "runtimeReady": true,
       "overlayReady": false,
       "portedBehavior": [
         "500 ms delayed monster tame attempt",
@@ -53,7 +53,7 @@
       "zirconMagicType": "GreatFireBall",
       "verified": true,
       "executionKind": "ZirconAdapted",
-      "runtimeReady": false,
+      "runtimeReady": true,
       "overlayReady": false,
       "createMagicInfo": {
         "Index": 1000,
@@ -79,7 +79,7 @@
       "zirconMagicType": "WizardHellFire",
       "verified": true,
       "executionKind": "CrystalAdapted",
-      "runtimeReady": false,
+      "runtimeReady": true,
       "overlayReady": false,
       "createMagicInfo": {
         "ForceCreate": true,
@@ -108,7 +108,7 @@
       "zirconMagicType": "FireBang",
       "verified": true,
       "executionKind": "CrystalAdapted",
-      "runtimeReady": false,
+      "runtimeReady": true,
       "overlayReady": false,
       "createMagicInfo": {
         "Index": 1002,
