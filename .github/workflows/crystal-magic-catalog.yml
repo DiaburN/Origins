@@ -32,16 +32,16 @@ jobs:
         run: bash scripts/bootstrap-crystal.sh
       - name: Pin Crystal-Monk
         run: bash scripts/bootstrap-crystal-monk.sh
-      - name: Validate 128 playable spells
+      - name: Validate 119 active spells and 9 deferred Monk spells
         run: python3 scripts/validate-crystal-playable-spells.py
-      - name: Verify all 23 Crystal-Monk playable additions exist in pinned source
+      - name: Verify all 23 retained Crystal-Monk additions exist in pinned source
         shell: bash
         run: |
           set -euo pipefail
           for spell in CounterAttack1 ProtectionField1 EntrapSwordSecret ImmortalSkin1 GreateFireBallSecret Bisul StormEscape1 HealingCircle2 Healing2 FlashDash2 MoonMist2 ElementalBarrier1 DelayedExplosion2 NapalmShot2 JiBenGunFa LuoHanGunFa JinGangGunFa DaMoGunFa XiangLongGunFa Taunt TianLeiZhen ShiBuYiSha LuoHanZhen; do
             if ! grep -R -q --exclude-dir=.git "$spell" vendor/crystal-monk; then
-              echo "Missing playable extension spell in pinned Crystal-Monk source: $spell" >&2
+              echo "Missing retained extension spell in pinned Crystal-Monk source: $spell" >&2
               exit 1
             fi
           done
-          echo "Crystal-Monk source contains all 23 required playable additions."
+          echo "Crystal-Monk source contains all 14 active additions and 9 deferred Monk spells."

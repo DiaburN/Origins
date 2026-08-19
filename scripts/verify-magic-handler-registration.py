@@ -1,9 +1,14 @@
 #!/usr/bin/env python3
-"""Verify every runtime-ready Crystal spell resolves to a direct Zircon MagicObject handler.
+"""Verify all routed Crystal spells resolve to registered Zircon MagicObject handlers.
 
-Zircon's SEnvir.CreateMagic() registers only non-abstract classes whose direct
-base type is MagicObject and which carry [MagicType(MagicType.X)]. This check
-mirrors that rule so a compiling but unregistered spell cannot enter System.db.
+ORIGINS extends Zircon registration to accept every non-abstract class assignable
+to MagicObject that carries [MagicType(MagicType.X)]. This check mirrors that
+rule statically, including handler classes that inherit through shared abstract
+bases such as CrystalArcherMagic and CrystalArcherProjectile.
+
+The active catalogue contains 119 spells. Exactly 118 have explicit runtime
+routes (`zirconMagicType`); FastMove is the single retained upstream source stub
+and deliberately has no handler identity.
 """
 from __future__ import annotations
 
@@ -11,6 +16,8 @@ import argparse
 import json
 import pathlib
 import re
+
+EXPECTED_RUNTIME_ROUTES = 118
 
 
 def norm(value: str) -> str:
@@ -20,7 +27,7 @@ def norm(value: str) -> str:
 def load_decisions(path: pathlib.Path) -> list[dict]:
     payload = json.loads(path.read_text(encoding="utf-8"))
     if "includes" not in payload:
-        return payload.get("decisions", [])
+        return payload.get("decisions", payload.get("spells", []))
 
     result: list[dict] = []
     seen: set[str] = set()
@@ -37,21 +44,54 @@ def load_decisions(path: pathlib.Path) -> list[dict]:
     return result
 
 
-def scan_handlers(root: pathlib.Path) -> dict[str, list[tuple[str, str]]]:
-    pattern = re.compile(
-        r"\[MagicType\(MagicType\.(?P<magic>[A-Za-z0-9_]+)\)\]"
-        r"\s*(?:public\s+)?(?:sealed\s+)?class\s+[A-Za-z0-9_]+\s*:\s*(?P<base>[A-Za-z0-9_]+)",
-        re.MULTILINE,
-    )
+CLASS_RE = re.compile(
+    r"\b(?:(?:public|internal|private|protected)\s+)?"
+    r"(?:(?:abstract|sealed|partial)\s+)*"
+    r"class\s+(?P<name>[A-Za-z0-9_]+)\s*:\s*(?P<base>[A-Za-z0-9_]+)",
+    re.MULTILINE,
+)
 
-    handlers: dict[str, list[tuple[str, str]]] = {}
+HANDLER_RE = re.compile(
+    r"\[MagicType\(MagicType\.(?P<magic>[A-Za-z0-9_]+)\)\]"
+    r"\s*(?:(?:public|internal|private|protected)\s+)?"
+    r"(?:(?:sealed|partial)\s+)*"
+    r"class\s+(?P<name>[A-Za-z0-9_]+)\s*:\s*(?P<base>[A-Za-z0-9_]+)",
+    re.MULTILINE,
+)
+
+
+def scan_handlers(root: pathlib.Path) -> tuple[dict[str, list[tuple[str, str, str]]], dict[str, str]]:
+    handlers: dict[str, list[tuple[str, str, str]]] = {}
+    bases: dict[str, str] = {}
+
     for path in root.rglob("*.cs"):
         text = path.read_text(encoding="utf-8-sig", errors="ignore")
-        for match in pattern.finditer(text):
+        relative = str(path.relative_to(root))
+
+        for match in CLASS_RE.finditer(text):
+            bases.setdefault(match.group("name"), match.group("base"))
+
+        for match in HANDLER_RE.finditer(text):
             handlers.setdefault(match.group("magic"), []).append(
-                (match.group("base"), str(path.relative_to(root)))
+                (match.group("name"), match.group("base"), relative)
             )
-    return handlers
+
+    return handlers, bases
+
+
+def derives_from_magic_object(class_name: str, direct_base: str, bases: dict[str, str]) -> bool:
+    if direct_base == "MagicObject":
+        return True
+
+    current = direct_base
+    seen: set[str] = {class_name}
+    while current and current not in seen:
+        if current == "MagicObject":
+            return True
+        seen.add(current)
+        current = bases.get(current)
+
+    return False
 
 
 def main() -> int:
@@ -60,30 +100,45 @@ def main() -> int:
     parser.add_argument("decisions", type=pathlib.Path)
     args = parser.parse_args()
 
-    decisions = [d for d in load_decisions(args.decisions) if d.get("runtimeReady")]
-    handlers = scan_handlers(args.zircon_root / "ServerLibrary" / "Models" / "Magics")
+    all_decisions = load_decisions(args.decisions)
+    decisions = [d for d in all_decisions if d.get("zirconMagicType")]
+    source_stubs = [
+        d for d in all_decisions
+        if not d.get("zirconMagicType") and d.get("executionKind") == "SourceStub"
+    ]
+
+    if len(decisions) != EXPECTED_RUNTIME_ROUTES:
+        raise RuntimeError(
+            f"Expected {EXPECTED_RUNTIME_ROUTES} routed active spells, found {len(decisions)}"
+        )
+    if len(source_stubs) != 1 or norm(source_stubs[0].get("crystalSpell", "")) != "fastmove":
+        raise RuntimeError(
+            f"Expected FastMove as the single unrouted source stub, found "
+            f"{[d.get('crystalSpell') for d in source_stubs]}"
+        )
+
+    handlers, bases = scan_handlers(args.zircon_root / "ServerLibrary" / "Models" / "Magics")
 
     errors: list[str] = []
     verified: list[str] = []
 
     for decision in decisions:
         spell = decision["crystalSpell"]
-        magic_type = decision.get("zirconMagicType")
-        if not magic_type:
-            errors.append(f"{spell}: missing zirconMagicType")
-            continue
-
+        magic_type = decision["zirconMagicType"]
         matches = handlers.get(magic_type, [])
-        direct = [item for item in matches if item[0] == "MagicObject"]
+        registered = [
+            item for item in matches
+            if derives_from_magic_object(item[0], item[1], bases)
+        ]
 
-        if len(direct) != 1:
+        if len(registered) != 1:
             errors.append(
-                f"{spell}: MagicType.{magic_type} must have exactly one direct MagicObject handler; "
-                f"found direct={direct}, all={matches}"
+                f"{spell}: MagicType.{magic_type} must have exactly one registered MagicObject-derived handler; "
+                f"found registered={registered}, all={matches}"
             )
             continue
 
-        verified.append(f"{spell} -> MagicType.{magic_type} -> {direct[0][1]}")
+        verified.append(f"{spell} -> MagicType.{magic_type} -> {registered[0][2]}")
 
     if errors:
         print("Magic handler registration FAILED")
@@ -91,7 +146,10 @@ def main() -> int:
             print(f"- {error}")
         return 1
 
-    print(f"Magic handler registration OK: {len(verified)} runtime-ready Crystal spells")
+    print(
+        f"Magic handler registration OK: {len(verified)}/{EXPECTED_RUNTIME_ROUTES} routed active spells; "
+        "FastMove retained as the single source stub"
+    )
     for item in verified:
         print(f"- {item}")
     return 0

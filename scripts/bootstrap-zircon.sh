@@ -37,12 +37,8 @@ if [ -d "$OVERRIDES" ]; then
 fi
 
 if [ -d "$PATCHES" ]; then
-  while IFS= read -r -d '' patch; do
-    relative="${patch#"$ROOT/"}"
-    git -C "$DEST" apply --check "$patch"
-    git -C "$DEST" apply --whitespace=nowarn "$patch"
-    echo "Applied ORIGINS Zircon patch: $relative"
-  done < <(find "$PATCHES" -type f -name '*.patch' -print0 | sort -z)
+  python3 "$ROOT/scripts/validate-zircon-patches.py" "$PATCHES"
+  python3 "$ROOT/scripts/apply-origins-patches.py" "$DEST" "$PATCHES"
 fi
 
-echo "Official Suprcode/Zircon pinned at $ACTUAL with ORIGINS overrides/patches applied"
+echo "Official Suprcode/Zircon pinned at $ACTUAL with ORIGINS overrides/context patches applied"

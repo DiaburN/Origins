@@ -1,0 +1,10 @@
+diff --git a/ServerLibrary/Envir/SEnvir.cs b/ServerLibrary/Envir/SEnvir.cs
+--- a/ServerLibrary/Envir/SEnvir.cs
++++ b/ServerLibrary/Envir/SEnvir.cs
+@@
+             var types = typeof(MagicObject).Assembly.GetTypes().Where(type =>
+-                type.BaseType != null &&
+                 !type.IsAbstract &&
+-                type.BaseType == typeof(MagicObject) &&
++                typeof(MagicObject).IsAssignableFrom(type) &&
+                 type.IsDefined(typeof(MagicTypeAttribute))).ToList();

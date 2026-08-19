@@ -1,0 +1,139 @@
+diff --git a/LibraryCore/Enum.cs b/LibraryCore/Enum.cs
+--- a/LibraryCore/Enum.cs
++++ b/LibraryCore/Enum.cs
+@@ -291,6 +291,8 @@ namespace Library
+         CrystalHealing = 312,
+         UltimateEnhancer = 313,
+         EnergyShield = 314,
++        Curse = 315,
++        PetEnhancer = 316,
+@@
+     public enum SpellEffect
+     {
+@@
+         MonsterDeathCloud,
+ 
+-        ZombieHole
++        ZombieHole,
++
++        // ORIGINS Crystal Taoist persistent-area runtime. Client art is bound later.
++        CrystalPoisonCloud,
++        CrystalHealingCircle
+     }
+diff --git a/LibraryCore/Stat.cs b/LibraryCore/Stat.cs
+--- a/LibraryCore/Stat.cs
++++ b/LibraryCore/Stat.cs
+@@ -900,6 +900,12 @@ namespace Library
+         [StatDescription(Title = "Incoming Damage Reduction", Format = "{0:+#0%;-#0%;#0%}", Mode = StatType.Percent, ServerOnly = true)]
+         IncomingDamageReductionPercent = 11004,
++
++        [StatDescription(Title = "Energy Shield Proc Chance", Format = "{0:+#0%;-#0%;#0%}", Mode = StatType.Percent, ServerOnly = true)]
++        EnergyShieldPercent = 11005,
++
++        [StatDescription(Title = "Energy Shield HP Gain", Format = "{0:+#0;-#0;#0}", Mode = StatType.Default, ServerOnly = true)]
++        EnergyShieldHPGain = 11006,
+ 
+         [StatDescription(Title = "Duration", Mode = StatType.Time)]
+         Duration = 10000,
+diff --git a/ServerLibrary/Models/PlayerObject.cs b/ServerLibrary/Models/PlayerObject.cs
+--- a/ServerLibrary/Models/PlayerObject.cs
++++ b/ServerLibrary/Models/PlayerObject.cs
+@@
+         public override int Attacked(MapObject attacker, int power, Element element, bool canReflect = true, bool ignoreShield = false, bool canCrit = true, bool canStruck = true)
+         {
+             if (attacker?.Node == null || power == 0 || Dead || attacker.CurrentMap != CurrentMap || !Functions.InRange(attacker.CurrentLocation, CurrentLocation, Config.MaxViewRange) || Stats[Stat.Invincibility] > 0) return 0;
++
++            // Crystal EnergyShield: every incoming hit rolls the buff chance and,
++            // on success, restores the cast-time SC-derived HP amount before damage resolves.
++            if (Stats[Stat.EnergyShieldPercent] > 0 &&
++                SEnvir.Random.Next(100) < Stats[Stat.EnergyShieldPercent])
++            {
++                ChangeHP(Stats[Stat.EnergyShieldHPGain]);
++            }
+ 
+             if (element != Element.None)
+diff --git a/ServerLibrary/Models/MapObject.cs b/ServerLibrary/Models/MapObject.cs
+--- a/ServerLibrary/Models/MapObject.cs
++++ b/ServerLibrary/Models/MapObject.cs
+@@
+                     switch (buff.Type)
+                     {
+                         case BuffType.MagicWeakness:
+                         case BuffType.DefensiveBlow:
++                        case BuffType.Curse:
+                             buffs.Add(buff);
+                             result++;
+                             break;
+diff --git a/ServerLibrary/Models/SpellObject.cs b/ServerLibrary/Models/SpellObject.cs
+--- a/ServerLibrary/Models/SpellObject.cs
++++ b/ServerLibrary/Models/SpellObject.cs
+@@
+         public UserMagic Magic;
+         public int Power;
++        public int CrystalBonusPower;
+@@
+             switch (Effect)
+             {
++                case SpellEffect.CrystalPoisonCloud:
++                    {
++                        if (Owner is not PlayerObject player || ob?.Node == null || ob.Dead || !player.CanAttackTarget(ob)) return;
++
++                        // Crystal stores the direct cloud hit power at cast time.
++                        player.MagicAttack(new List<MagicType> { MagicType.PoisonCloud }, ob, true, null, Power);
++
++                        if (ob.Dead) return;
++
++                        int poisonValue = (player.Stats[Stat.MinSC] + player.Stats[Stat.MaxSC]) / 2 + CrystalBonusPower;
++                        ob.ApplyPoison(new Poison
++                        {
++                            Owner = player,
++                            Type = PoisonType.Green,
++                            Value = poisonValue,
++                            TickCount = 12,
++                            TickFrequency = TimeSpan.FromSeconds(1),
++                        });
++                    }
++                    break;
++                case SpellEffect.CrystalHealingCircle:
++                    {
++                        if (Owner is not PlayerObject player || ob?.Node == null) return;
++
++                        bool friendly = ob == player;
++                        if (!friendly && ob is PlayerObject targetPlayer)
++                            friendly = player.InGroup(targetPlayer);
++                        if (!friendly && ob is MonsterObject pet && pet.PetOwner != null)
++                            friendly = pet.PetOwner == player || player.InGroup(pet.PetOwner);
++
++                        if (friendly)
++                        {
++                            if (ob.Dead || ob.CurrentHP >= ob.Stats[Stat.Health] || ob.Buffs.Any(x => x.Type == BuffType.CrystalHealing)) return;
++
++                            ob.BuffAdd(
++                                BuffType.CrystalHealing,
++                                TimeSpan.MaxValue,
++                                new Stats { [Stat.Healing] = 25 },
++                                false,
++                                false,
++                                TimeSpan.FromMilliseconds(600));
++                            return;
++                        }
++
++                        if (ob.Dead || !player.CanAttackTarget(ob)) return;
++
++                        player.MagicAttack(new List<MagicType> { MagicType.HealingCircle }, ob, true, null, Power);
++
++                        if (!ob.Dead)
++                        {
++                            int duration = ob.Race == ObjectType.Player ? 4 : 5 + SEnvir.Random.Next(5);
++                            ob.ApplyPoison(new Poison
++                            {
++                                Owner = player,
++                                Type = PoisonType.Slow,
++                                TickCount = duration,
++                                TickFrequency = TimeSpan.FromSeconds(1),
++                            });
++                        }
++                    }
++                    break;
+                 case SpellEffect.PoisonousCloud:
+                     if (!Owner.CanHelpTarget(ob)) return;

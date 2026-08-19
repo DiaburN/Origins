@@ -1,0 +1,83 @@
+diff --git a/LibraryCore/Enum.cs b/LibraryCore/Enum.cs
+--- a/LibraryCore/Enum.cs
++++ b/LibraryCore/Enum.cs
+@@
+     public enum MirClass : byte
+     {
+         Warrior = 0,
+         Wizard = 1,
+         Taoist = 2,
+         Assassin = 3,
++        Archer = 4,
+     }
+@@
+     public enum RequiredClass : byte
+     {
+         None = 0,
+         Warrior = 1,
+         Wizard = 2,
+         Taoist = 4,
+         Assassin = 8,
++        Archer = 16,
+@@
+-        All = WarWizTao | Assassin
++        All = WarWizTao | Assassin | Archer
+@@
+         MoonMist2 = 1418,
++
++        // ORIGINS Crystal / Crystal-Monk Archer runtime identities.
++        Focus = 1500,
++        StraightShot = 1501,
++        DoubleShot = 1502,
++        ExplosiveTrap = 1503,
++        DelayedExplosion = 1504,
++        Meditation = 1505,
++        BackStep = 1506,
++        ElementalShot = 1507,
++        ArcherConcentration = 1508,
++        Stonetrap = 1509,
++        ElementalBarrier = 1510,
++        SummonVampire = 1511,
++        VampireShot = 1512,
++        SummonToad = 1513,
++        PoisonShot = 1514,
++        CrippleShot = 1515,
++        SummonSnakes = 1516,
++        NapalmShot = 1517,
++        OneWithNature = 1518,
++        BindingShot = 1519,
++        MentalState = 1520,
++        ElementalBarrier1 = 1521,
++        DelayedExplosion2 = 1522,
++        NapalmShot2 = 1523,
+     }
+diff --git a/LibraryCore/Functions.cs b/LibraryCore/Functions.cs
+--- a/LibraryCore/Functions.cs
++++ b/LibraryCore/Functions.cs
+@@
+                 case MagicType.CrushingWave:
++                case MagicType.Focus:
++                case MagicType.StraightShot:
++                case MagicType.DoubleShot:
++                case MagicType.ExplosiveTrap:
++                case MagicType.DelayedExplosion:
++                case MagicType.Meditation:
++                case MagicType.BackStep:
++                case MagicType.ElementalShot:
++                case MagicType.ArcherConcentration:
++                case MagicType.Stonetrap:
++                case MagicType.ElementalBarrier:
++                case MagicType.SummonVampire:
++                case MagicType.VampireShot:
++                case MagicType.SummonToad:
++                case MagicType.PoisonShot:
++                case MagicType.CrippleShot:
++                case MagicType.SummonSnakes:
++                case MagicType.NapalmShot:
++                case MagicType.OneWithNature:
++                case MagicType.BindingShot:
++                case MagicType.MentalState:
++                case MagicType.ElementalBarrier1:
++                case MagicType.DelayedExplosion2:
++                case MagicType.NapalmShot2:
+                     return MirAnimation.Combat3;

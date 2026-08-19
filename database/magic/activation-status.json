@@ -1,51 +1,106 @@
 {
-  "schemaVersion": 1,
-  "generatedDatabaseBranch": "generated/origins-system-db",
+  "schemaVersion": 4,
+  "branch": "work/spells-final-audit",
+  "validatedHead": "a4e599c3b925c833ffdcd25f68988d23f6dfa6f9",
   "runtime": "pinned Zircon MagicObject with ORIGINS overrides/patches",
-  "dataSource": "Crystal.Database/Jev effective MagicInfo joined to Crystal 2026 by normalized spell name",
-  "numericSpellIdUsedAsJevJoinKey": false,
-  "active": [
+  "catalog": {
+    "activePlayableClasses": 5,
+    "activePlayableSpellCount": 119,
+    "runtimeBehaviorRoutes": 118,
+    "sourceStubs": 1,
+    "deferredMonkSpells": 9
+  },
+  "classes": [
     {
-      "spell": "FireBall",
-      "crystalSourceSpellId": 31,
-      "zirconMagicType": "FireBall",
-      "executionKind": "ZirconAdapted",
-      "runtimeCompiled": true,
-      "systemDbRoundTrip": true,
-      "usersDbLearnedMagicRoundTrip": true,
-      "status": "active_generated_db"
+      "class": "Warrior",
+      "catalogCount": 21,
+      "compiledRuntimeReady": 21,
+      "sourcePortedUncompiled": 0,
+      "sourceStubs": 0
     },
     {
-      "spell": "ThunderBolt",
-      "crystalSourceSpellId": 36,
-      "zirconMagicType": "ThunderBolt",
-      "executionKind": "ZirconAdapted",
-      "runtimeCompiled": true,
-      "systemDbRoundTrip": true,
-      "status": "active_generated_db"
+      "class": "Wizard",
+      "catalogCount": 28,
+      "compiledRuntimeReady": 27,
+      "sourcePortedUncompiled": 0,
+      "sourceStubs": 1,
+      "stubSpells": ["FastMove"]
     },
     {
-      "spell": "IceStorm",
-      "crystalSourceSpellId": 47,
-      "zirconMagicType": "IceStorm",
-      "executionKind": "ZirconAdapted",
-      "runtimeCompiled": true,
-      "systemDbRoundTrip": true,
-      "status": "active_generated_db"
+      "class": "Taoist",
+      "catalogCount": 27,
+      "compiledRuntimeReady": 27,
+      "sourcePortedUncompiled": 0,
+      "sourceStubs": 0
+    },
+    {
+      "class": "Assassin",
+      "catalogCount": 19,
+      "compiledRuntimeReady": 19,
+      "sourcePortedUncompiled": 0,
+      "sourceStubs": 0
+    },
+    {
+      "class": "Archer",
+      "catalogCount": 24,
+      "compiledRuntimeReady": 24,
+      "sourcePortedUncompiled": 0,
+      "sourceStubs": 0
     }
   ],
-  "next": [
-    {
-      "spell": "FireWall",
-      "crystalSourceSpellId": 40,
-      "executionKind": "CrystalAdapted",
-      "status": "runtime_port_required"
-    },
-    {
-      "spell": "MagicShield",
-      "crystalSourceSpellId": 44,
-      "executionKind": "CrystalAdapted",
-      "status": "runtime_port_required"
+  "totals": {
+    "compiledRuntimeReady": 118,
+    "sourcePortedUncompiled": 0,
+    "sourceStub": 1,
+    "catalogued": 119,
+    "pendingRuntime": 0
+  },
+  "compileValidation": {
+    "complete": true,
+    "zirconCommit": "cbf1aa919083bc13fc3f23f93772a8ab8370632d",
+    "handlerRegistration": "118/118 routed active spells",
+    "libraryCoreAndServerLibrary": "pass",
+    "workflow": "Spell Runtime Compile",
+    "note": "Compilation and handler registration are complete for all routed active spells. Full in-game behavioral smoke testing remains a separate gate."
+  },
+  "databaseProjection": {
+    "full119SystemDbProjectionComplete": true,
+    "activeMagicInfoOperations": 119,
+    "runtimeActivatedRoutes": 118,
+    "sourceStubRows": 1,
+    "pendingPlaceholderRows": 0,
+    "nativeMagicInfoRoutesReused": 27,
+    "originsMagicInfoRoutesUsed": 91,
+    "overlayCreatedRows": 90,
+    "overlayUpdatedRows": 29,
+    "overlayDeletedRows": 0,
+    "systemDbPreflightReady": true,
+    "systemDbSha256": "7df0446b804b6d95b1b192ae3d32570bb9f9ecbb3d5cb3827ca288cbee11cdbb",
+    "systemVersion": "2026.08.19.1",
+    "workflow": "ORIGINS System DB",
+    "workflowRunId": 32308650321,
+    "artifact": "origins-system-db"
+  },
+  "usersDbSmoke": {
+    "complete": true,
+    "accountRoundTrip": true,
+    "characterRoundTrip": true,
+    "userMagicRoundTrip": true,
+    "smokeClass": "Wizard",
+    "smokeSpell": "FireBall",
+    "allClassesLearnedMagicRoundTripComplete": false,
+    "note": "The final System.db passed the existing Users.db smoke with FireBall. Learned-magic round-trip coverage across every active class remains a later test-hardening task."
+  },
+  "remainingValidation": {
+    "fullGameplaySmokeComplete": false,
+    "clientVisualBindingComplete": false,
+    "archerSummonDatabaseDependenciesComplete": false
+  },
+  "deferred": {
+    "Monk": {
+      "spellCount": 9,
+      "status": "deferred_incomplete_class_kit",
+      "activeRuntime": false
     }
-  ]
+  }
 }

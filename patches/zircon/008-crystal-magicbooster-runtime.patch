@@ -1,0 +1,95 @@
+diff --git a/LibraryCore/Enum.cs b/LibraryCore/Enum.cs
+--- a/LibraryCore/Enum.cs
++++ b/LibraryCore/Enum.cs
+@@ -280,5 +280,6 @@
+         FrostBite = 205,
+         Tornado = 206,
++        MagicBooster = 207,
+ 
+         //Tao
+         Heal = 300,
+@@ -858,7 +859,10 @@
+         FireBang = 1202,
+         Lightning = 1203,
+         FrostCrunch = 1204,
+         ThunderStorm = 1205,
++        MagicBooster = 1206,
++        Vampirism = 1207,
++        FlameField = 1208,
+     }
+ 
+     public enum MagicProperty
+diff --git a/LibraryCore/Functions.cs b/LibraryCore/Functions.cs
+--- a/LibraryCore/Functions.cs
++++ b/LibraryCore/Functions.cs
+@@ -237,6 +237,9 @@ namespace Library
+                 case MagicType.FireBang:
+                 case MagicType.Lightning:
+                 case MagicType.ThunderStorm:
++                case MagicType.MagicBooster:
++                case MagicType.Vampirism:
++                case MagicType.FlameField:
+                 case MagicType.Repulsion:
+                 case MagicType.ElectricShock:
+                 case MagicType.LightningWave:
+diff --git a/LibraryCore/Stat.cs b/LibraryCore/Stat.cs
+--- a/LibraryCore/Stat.cs
++++ b/LibraryCore/Stat.cs
+@@ -891,5 +891,8 @@
+         Counter2,
+ 
++        [StatDescription(Title = "Mana Cost Penalty", Format = "{0:+#0%;-#0%;#0%}", Mode = StatType.Percent, ServerOnly = true)]
++        ManaPenaltyPercent = 11000,
++
+         [StatDescription(Title = "Duration", Mode = StatType.Time)]
+         Duration = 10000,
+     }
+diff --git a/ServerLibrary/Models/MagicObject.cs b/ServerLibrary/Models/MagicObject.cs
+--- a/ServerLibrary/Models/MagicObject.cs
++++ b/ServerLibrary/Models/MagicObject.cs
+@@ -71,5 +71,13 @@ namespace Server.Models
+             return true;
+         }
+ 
++        public virtual int GetMagicCost()
++        {
++            int cost = Magic.Cost;
++            int penalty = Player.Stats[Stat.ManaPenaltyPercent];
++            if (penalty > 0) cost += cost * penalty / 100;
++            return cost;
++        }
++
+         public virtual bool CheckCost()
+         {
+@@ -79,7 +87,7 @@ namespace Server.Models
+ 
+             if (Magic.Info.School == MagicSchool.Discipline)
+             {
+-                if (Magic.Cost > Player.CurrentFP)
++                if (GetMagicCost() > Player.CurrentFP)
+                 {
+                     return false;
+                 }
+@@ -89,7 +97,7 @@ namespace Server.Models
+                 return true;
+             }
+ 
+-            if (Magic.Cost > Player.CurrentMP)
++            if (GetMagicCost() > Player.CurrentMP)
+             {
+                 return false;
+             }
+@@ -111,11 +119,11 @@ namespace Server.Models
+ 
+             if (Magic.Info.School == MagicSchool.Discipline)
+             {
+-                Player.ChangeFP(-Magic.Cost);
++                Player.ChangeFP(-GetMagicCost());
+                 return;
+             }
+ 
+-            Player.ChangeMP(-Magic.Cost);
++            Player.ChangeMP(-GetMagicCost());
+         }
+ 
+         public virtual void MagicFinalise()

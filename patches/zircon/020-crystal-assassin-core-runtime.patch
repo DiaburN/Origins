@@ -1,0 +1,81 @@
+diff --git a/LibraryCore/Enum.cs b/LibraryCore/Enum.cs
+--- a/LibraryCore/Enum.cs
++++ b/LibraryCore/Enum.cs
+@@
+         CrystalHealing2 = 317,
+         CrystalHealingCircle2 = 318,
++
++        // ORIGINS Crystal Assassin stealth/mobility buffs.
++        Haste = 600,
++        LightBody = 601,
++        SwiftFeet = 602,
++        MoonLight = 603,
++        DarkBody = 604,
++        MoonMist = 605,
+@@
+         HealingCircle2 = 1312,
+         Healing2 = 1313,
++
++        // ORIGINS Crystal / Crystal-Monk Assassin runtime identities.
++        FatalSword = 1400,
++        DoubleSlash = 1401,
++        Haste = 1402,
++        FlashDash = 1403,
++        LightBody = 1404,
++        HeavenlySword = 1405,
++        FireBurst = 1406,
++        Trap = 1407,
++        PoisonSword = 1408,
++        MoonLight = 1409,
++        MPEater = 1410,
++        SwiftFeet = 1411,
++        DarkBody = 1412,
++        CrystalHemorrhage = 1413,
++        CrescentSlash = 1414,
++        MoonMist = 1415,
++        CatTongue = 1416,
++        FlashDash2 = 1417,
++        MoonMist2 = 1418,
+     }
+diff --git a/LibraryCore/Functions.cs b/LibraryCore/Functions.cs
+--- a/LibraryCore/Functions.cs
++++ b/LibraryCore/Functions.cs
+@@
+                 case MagicType.BurningFire:
+                 case MagicType.Chain:
++                case MagicType.FatalSword:
++                case MagicType.DoubleSlash:
++                case MagicType.Haste:
++                case MagicType.FlashDash:
++                case MagicType.LightBody:
++                case MagicType.HeavenlySword:
++                case MagicType.FireBurst:
++                case MagicType.Trap:
++                case MagicType.PoisonSword:
++                case MagicType.MoonLight:
++                case MagicType.MPEater:
++                case MagicType.SwiftFeet:
++                case MagicType.DarkBody:
++                case MagicType.CrystalHemorrhage:
++                case MagicType.CrescentSlash:
++                case MagicType.MoonMist:
++                case MagicType.CatTongue:
++                case MagicType.FlashDash2:
++                case MagicType.MoonMist2:
+                     return MirAnimation.Combat9;
+diff --git a/ServerLibrary/Models/MapObject.cs b/ServerLibrary/Models/MapObject.cs
+--- a/ServerLibrary/Models/MapObject.cs
++++ b/ServerLibrary/Models/MapObject.cs
+@@
+-            if (Buffs.Any(x => x.Type == BuffType.Cloak || x.Type == BuffType.Transparency))
++            if (Buffs.Any(x => x.Type == BuffType.Cloak || x.Type == BuffType.Transparency ||
++                               x.Type == BuffType.MoonLight || x.Type == BuffType.DarkBody || x.Type == BuffType.MoonMist))
+@@
+                 case BuffType.Cloak:
+                 case BuffType.Transparency:
++                case BuffType.MoonLight:
++                case BuffType.DarkBody:
++                case BuffType.MoonMist:
+                     //Much faster than checking nearby cells?
+                     foreach (MapObject mapOb in CurrentMap.Objects)
+                     {

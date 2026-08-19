@@ -1,5 +1,5 @@
 {
-  "schemaVersion": 5,
+  "schemaVersion": 6,
   "source": {
     "base": "Suprcode/Crystal",
     "baseCommit": "0e315fe327192afe52c3d7357ddd1f5b7e26c5b8",
@@ -9,11 +9,13 @@
   "scope": {
     "basePlayableClassSpellCount": 105,
     "crystalMonkExtraNonMonkSpellCount": 14,
-    "monkSpellCount": 9,
-    "requiredPlayableSpellCount": 128,
+    "activePlayableSpellCount": 119,
+    "deferredMonkSpellCount": 9,
+    "sourceCatalogTotalWithDeferredMonk": 128,
     "sourceStubCount": 1,
-    "includeMonk": true,
-    "includeCrystalMonkSecretSkills": true,
+    "includeMonk": false,
+    "monkStatus": "deferred_incomplete_class_kit",
+    "includeCrystalMonkSecretSkillsForActiveClasses": true,
     "includeCustom": false,
     "excludeMapEvents": true
   },
@@ -37,9 +39,14 @@
     "Archer": [
       {"id":121,"name":"Focus"},{"id":122,"name":"StraightShot"},{"id":123,"name":"DoubleShot"},{"id":124,"name":"ExplosiveTrap"},{"id":125,"name":"DelayedExplosion"},{"id":126,"name":"Meditation"},{"id":127,"name":"BackStep"},{"id":128,"name":"ElementalShot"},{"id":129,"name":"Concentration"},{"id":130,"name":"Stonetrap"},{"id":131,"name":"ElementalBarrier"},{"id":132,"name":"SummonVampire"},{"id":133,"name":"VampireShot"},{"id":134,"name":"SummonToad"},{"id":135,"name":"PoisonShot"},{"id":136,"name":"CrippleShot"},{"id":137,"name":"SummonSnakes"},{"id":138,"name":"NapalmShot"},{"id":139,"name":"OneWithNature"},{"id":140,"name":"BindingShot"},{"id":141,"name":"MentalState"},
       {"id":142,"name":"ElementalBarrier1","source":"Crystal-Monk"},{"id":143,"name":"DelayedExplosion2","source":"Crystal-Monk"},{"id":144,"name":"NapalmShot2","source":"Crystal-Monk"}
-    ],
-    "Monk": [
-      {"id":161,"name":"JiBenGunFa","source":"Crystal-Monk"},{"id":162,"name":"LuoHanGunFa","source":"Crystal-Monk"},{"id":163,"name":"JinGangGunFa","source":"Crystal-Monk"},{"id":164,"name":"DaMoGunFa","source":"Crystal-Monk"},{"id":165,"name":"XiangLongGunFa","source":"Crystal-Monk"},{"id":166,"name":"Taunt","source":"Crystal-Monk"},{"id":167,"name":"TianLeiZhen","source":"Crystal-Monk"},{"id":168,"name":"ShiBuYiSha","source":"Crystal-Monk"},{"id":169,"name":"LuoHanZhen","source":"Crystal-Monk"}
     ]
+  },
+  "deferredClasses": {
+    "Monk": {
+      "reason": "Only nine source skills; not a sufficiently complete ORIGINS class compared with the other playable classes.",
+      "spells": [
+        {"id":161,"name":"JiBenGunFa","source":"Crystal-Monk"},{"id":162,"name":"LuoHanGunFa","source":"Crystal-Monk"},{"id":163,"name":"JinGangGunFa","source":"Crystal-Monk"},{"id":164,"name":"DaMoGunFa","source":"Crystal-Monk"},{"id":165,"name":"XiangLongGunFa","source":"Crystal-Monk"},{"id":166,"name":"Taunt","source":"Crystal-Monk"},{"id":167,"name":"TianLeiZhen","source":"Crystal-Monk"},{"id":168,"name":"ShiBuYiSha","source":"Crystal-Monk"},{"id":169,"name":"LuoHanZhen","source":"Crystal-Monk"}
+      ]
+    }
   }
 }

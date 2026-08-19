@@ -1,0 +1,76 @@
+diff --git a/ServerLibrary/Models/MagicObject.cs b/ServerLibrary/Models/MagicObject.cs
+--- a/ServerLibrary/Models/MagicObject.cs
++++ b/ServerLibrary/Models/MagicObject.cs
+@@
+         public virtual bool AttackSkill => false;
+         public virtual bool IgnoreAccuracy => false;
+         public virtual bool IgnorePhysicalDefense => false;
++        // Crystal DoubleSlash changes the primary attack from AC+Agility to MAC+Agility.
++        public virtual bool UseMagicDefenseForPhysicalAttack => false;
+@@
+         public virtual void MagicFinalise()
+         {
+@@
+             Player.BuffRemove(BuffType.Transparency);
++            // Crystal assassin stealth is cancelled by starting a different magic,
++            // but the stealth spell being cast must not remove the buff it just applied.
++            // Base Crystal MoonMist deliberately applies the MoonLight stealth buff.
++            if (Type != MagicType.MoonLight && Type != MagicType.MoonMist)
++                Player.BuffRemove(BuffType.MoonLight);
++            if (Type != MagicType.DarkBody)
++                Player.BuffRemove(BuffType.DarkBody);
++            if (Type != MagicType.MoonMist && Type != MagicType.MoonMist2)
++                Player.BuffRemove(BuffType.MoonMist);
+         }
+diff --git a/ServerLibrary/Models/PlayerObject.cs b/ServerLibrary/Models/PlayerObject.cs
+--- a/ServerLibrary/Models/PlayerObject.cs
++++ b/ServerLibrary/Models/PlayerObject.cs
+@@
+-            bool ignoreAccuracy = false, ignoreDefense = false, hasFlameSplash = false;
++            bool ignoreAccuracy = false, ignoreDefense = false, useMagicDefense = false, hasFlameSplash = false;
+@@
+                     if (magicObject.IgnoreAccuracy) ignoreAccuracy = true;
+                     if (magicObject.IgnorePhysicalDefense) ignoreDefense = true;
++                    if (magicObject.UseMagicDefenseForPhysicalAttack) useMagicDefense = true;
+@@
+-                if (!ignoreDefense)
++                if (!ignoreDefense)
+                 {
+-                    var resistance = ob.GetAC();
++                    // Crystal DoubleSlash primary is MAC+Agility rather than AC+Agility.
++                    var resistance = useMagicDefense ? ob.GetMR() : ob.GetAC();
+@@
+                     power -= resistance;
+ 
+-                    if (ob.Race == ObjectType.Player)
+-                        res = ob.Stats.GetResistanceValue(hasStone ? Equipment[(int)EquipmentSlot.Amulet].Info.Stats.GetAffinityElement() : Element.None);
+-                    else
+-                        res = ob.Stats.GetResistanceValue(Element.None);
+-
+-                    if (res > 0)
+-                        power -= power * res / 10;
+-                    else if (res < 0)
+-                        power -= power * res / 5;
++                    // The old Crystal MACAgility branch did not apply Zircon's extra
++                    // physical-resistance layer after MAC, so keep it only for normal AC attacks.
++                    if (!useMagicDefense)
++                    {
++                        if (ob.Race == ObjectType.Player)
++                            res = ob.Stats.GetResistanceValue(hasStone ? Equipment[(int)EquipmentSlot.Amulet].Info.Stats.GetAffinityElement() : Element.None);
++                        else
++                            res = ob.Stats.GetResistanceValue(Element.None);
++
++                        if (res > 0)
++                            power -= power * res / 10;
++                        else if (res < 0)
++                            power -= power * res / 5;
++                    }
+                 }
+@@
+             if (damage <= 0) return;
++
++            // Crystal MoonLight/DarkBody stealth is broken by a successful physical attack.
++            BuffRemove(BuffType.MoonLight);
++            BuffRemove(BuffType.DarkBody);
+ 
+             CheckBrown(ob);

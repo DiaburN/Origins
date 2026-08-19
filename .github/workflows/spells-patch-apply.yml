@@ -1,0 +1,36 @@
+name: Spell Patch Apply
+
+on:
+  pull_request:
+    paths:
+      - 'patches/zircon/**'
+      - 'overrides/zircon/**'
+      - 'scripts/bootstrap-zircon.sh'
+      - 'scripts/apply-origins-patches.py'
+      - 'scripts/validate-zircon-patches.py'
+      - '.github/workflows/spells-patch-apply.yml'
+  workflow_dispatch:
+
+concurrency:
+  group: spell-patch-apply-${{ github.head_ref || github.ref_name }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  apply-series:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout ORIGINS
+        uses: actions/checkout@v4
+      - name: Validate stored context patches
+        run: python3 scripts/validate-zircon-patches.py patches/zircon
+      - name: Apply complete patch series to pinned Zircon
+        run: bash scripts/bootstrap-zircon.sh
+      - name: Confirm clean pinned base plus ORIGINS edits
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git -C vendor/zircon rev-parse HEAD)" = "cbf1aa919083bc13fc3f23f93772a8ab8370632d"
+          git -C vendor/zircon status --short

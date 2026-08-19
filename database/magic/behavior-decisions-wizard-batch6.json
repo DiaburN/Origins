@@ -1,0 +1,104 @@
+{
+  "schemaVersion": 1,
+  "source": {
+    "crystalMonkCommit": "381e589e3d7ee736cdf0583c8315c0d144ab058f",
+    "zirconCommit": "cbf1aa919083bc13fc3f23f93772a8ab8370632d"
+  },
+  "decisions": [
+    {
+      "crystalSpell": "FastMove",
+      "crystalSourceSpellId": 54,
+      "verified": true,
+      "executionKind": "SourceStub",
+      "runtimeReady": false,
+      "overlayReady": false,
+      "sourceStatus": "stub_no_magicinfo_no_server_handler",
+      "portedBehavior": [
+        "no runtime behavior is invented because the pinned Crystal source contains no MagicInfo and no server handler"
+      ]
+    },
+    {
+      "crystalSpell": "GreateFireBallSecret",
+      "crystalSourceSpellId": 56,
+      "zirconMagicType": "GreateFireBallSecret",
+      "verified": true,
+      "executionKind": "CrystalAdapted",
+      "runtimeReady": false,
+      "overlayReady": false,
+      "crystalSources": [
+        "Server/MirObjects/PlayerObject.cs::Magic",
+        "Server/MirObjects/PlayerObject.cs::GreateFireBallSecret",
+        "Server/MirObjects/PlayerObject.cs::CompleteMagic"
+      ],
+      "portedBehavior": [
+        "single hostile target fire projectile",
+        "requires a clear projectile flight path before cast acceptance",
+        "cast-time MC/power snapshot",
+        "500 ms plus distance-scaled projectile travel",
+        "impact is rejected after despawn, map change or target movement beyond two cells",
+        "skill levels through the successful MAC damage path"
+      ],
+      "zirconSources": [
+        "overrides/zircon/ServerLibrary/Models/Magics/Wizard/GreateFireBallSecret.cs",
+        "patches/zircon/011-crystal-wizard-monk-variants.patch"
+      ]
+    },
+    {
+      "crystalSpell": "Bisul",
+      "crystalSourceSpellId": 57,
+      "zirconMagicType": "Bisul",
+      "verified": true,
+      "executionKind": "CrystalAdapted",
+      "runtimeReady": false,
+      "overlayReady": false,
+      "crystalSources": [
+        "Server/MirObjects/PlayerObject.cs::Magic",
+        "Server/MirObjects/PlayerObject.cs::Bisul",
+        "Server/MirObjects/PlayerObject.cs::CompleteMagic"
+      ],
+      "portedBehavior": [
+        "500 ms delayed self buff",
+        "duration is 10 plus 5 per magic level plus MaxMC divided by 10 seconds",
+        "level 4 forces a 300000 ms cooldown",
+        "while Bisul is active Blizzard and MeteorStrike bypass their Crystal-Monk channel requirement",
+        "skill levels after the buff is applied"
+      ],
+      "zirconSources": [
+        "overrides/zircon/ServerLibrary/Models/Magics/Wizard/Bisul.cs",
+        "overrides/zircon/ServerLibrary/Models/Magics/Wizard/Blizzard.cs",
+        "overrides/zircon/ServerLibrary/Models/Magics/Wizard/MeteorStrike.cs",
+        "patches/zircon/011-crystal-wizard-monk-variants.patch"
+      ]
+    },
+    {
+      "crystalSpell": "StormEscape1",
+      "crystalSourceSpellId": 58,
+      "zirconMagicType": "StormEscape1",
+      "verified": true,
+      "executionKind": "CrystalAdapted",
+      "runtimeReady": false,
+      "overlayReady": false,
+      "crystalSources": [
+        "Server/MirObjects/PlayerObject.cs::Magic",
+        "Server/MirObjects/PlayerObject.cs::StormEscape1",
+        "Server/MirObjects/PlayerObject.cs::CompleteMagic",
+        "Server/MirObjects/MapObject.cs::GetAttackPower"
+      ],
+      "portedBehavior": [
+        "500 ms delayed 5x5 full-damage lightning area centered on the caster",
+        "750 ms teleport phase to the requested location",
+        "NoTeleport maps reject the teleport phase",
+        "teleport success roll uses Random.Next(2) below magic level plus one",
+        "successful teleport applies TemporalFlux for 30 seconds",
+        "TemporalFlux adds 30 percent of maximum MP to Teleportation, StormEscape and StormEscape1 mana cost",
+        "successful teleport also applies a 20 second StormEscape buff that increases DC, MC, SC and combined spell-power rolls by 10 percent",
+        "damage success and teleport success retain separate skill-level opportunities"
+      ],
+      "zirconSources": [
+        "overrides/zircon/ServerLibrary/Models/Magics/Wizard/StormEscape1.cs",
+        "patches/zircon/010-crystal-wizard-batch5-runtime.patch",
+        "patches/zircon/011-crystal-wizard-monk-variants.patch"
+      ]
+    }
+  ]
+}

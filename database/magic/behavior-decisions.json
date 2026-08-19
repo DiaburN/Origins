@@ -1,8 +1,26 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
+  "activePlayableClasses": 5,
+  "activePlayableSpellCount": 119,
+  "runtimeBehaviorRoutes": 118,
+  "sourceStubCount": 1,
+  "deferredMonkSpellCount": 9,
   "includes": [
     "behavior-decisions-wizard-core.json",
     "behavior-decisions-wizard-batch2.json",
-    "behavior-decisions-wizard-batch3.json"
+    "behavior-decisions-wizard-batch3.json",
+    "behavior-decisions-wizard-batch4.json",
+    "behavior-decisions-wizard-batch5.json",
+    "behavior-decisions-wizard-batch6.json",
+    "behavior-decisions-warrior.json",
+    "behavior-decisions-taoist-batch1.json",
+    "behavior-decisions-assassin-batch1.json",
+    "behavior-decisions-archer-batch1.json"
+  ],
+  "deferredClasses": ["Monk"],
+  "notes": [
+    "FastMove is the single active-catalogue source stub and has no invented runtime behavior.",
+    "Crystal-Monk extra/secret skills remain active when they belong to Warrior, Wizard, Taoist, Assassin or Archer.",
+    "Monk is source-retained but excluded from the active runtime because its source kit contains only nine spells."
   ]
 }

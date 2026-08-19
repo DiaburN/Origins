@@ -23,7 +23,7 @@ on:
   workflow_dispatch:
 
 concurrency:
-  group: magic-candidate-${{ github.ref }}
+  group: magic-candidate-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
 permissions:
@@ -35,6 +35,9 @@ jobs:
     steps:
       - name: Checkout ORIGINS
         uses: actions/checkout@v4
+
+      - name: Validate Zircon patch syntax
+        run: python3 scripts/validate-zircon-patches.py patches/zircon
 
       - name: Install .NET 10
         uses: actions/setup-dotnet@v4
@@ -52,16 +55,32 @@ jobs:
       - name: Pin Zircon and apply ORIGINS overrides/patches
         run: bash scripts/bootstrap-zircon.sh
 
-      - name: Pin Crystal
-        run: bash scripts/bootstrap-crystal.sh
-
-      - name: Pin Crystal.Database Jev
-        run: bash scripts/bootstrap-crystal-database.sh
+      - name: Pin Crystal sources
+        run: |
+          bash scripts/bootstrap-crystal.sh
+          bash scripts/bootstrap-crystal-monk.sh
+          bash scripts/bootstrap-crystal-database.sh
 
       - name: Validate Python generators
-        run: python3 -m py_compile scripts/generate-crystal-magic-catalog.py scripts/project-crystal-magic-numerics.py scripts/generate-ready-crystal-magic-overlay.py scripts/verify-magic-handler-registration.py
+        run: |
+          python3 -m py_compile \
+            scripts/generate-crystal-magic-catalog.py \
+            scripts/generate-crystal-magic-catalog-safe.py \
+            scripts/generate-crystal-monk-magic-catalog.py \
+            scripts/project-crystal-magic-numerics.py \
+            scripts/project-crystal-source-magic-numerics.py \
+            scripts/merge-crystal-magic-numerics.py \
+            scripts/generate-ready-crystal-magic-overlay.py \
+            scripts/generate-crystal-playable-magic-overlay.py \
+            scripts/activate-compiled-magic-overlay.py \
+            scripts/validate-crystal-playable-spells.py \
+            scripts/verify-magic-handler-registration.py \
+            scripts/validate-zircon-patches.py
 
-      - name: Verify runtime-ready MagicObject registrations
+      - name: Validate 119 active spells and deferred Monk source
+        run: python3 scripts/validate-crystal-playable-spells.py
+
+      - name: Verify all 118 routed MagicObject registrations
         run: python3 scripts/verify-magic-handler-registration.py ./vendor/zircon ./database/magic/behavior-decisions.json
 
       - name: Compile overridden Zircon runtime
@@ -85,57 +104,76 @@ jobs:
       - name: Export current Zircon snapshot
         run: dotnet run --project tools/Origins.Database.Export/Origins.Database.Export.csproj --configuration Release -- ./Database2026 ./SnapshotBase ./Backup2026
 
-      - name: Read current Crystal/Jev spell values
+      - name: Generate full 119-row compiled runtime candidate
         run: |
-          python3 scripts/generate-crystal-magic-catalog.py ./vendor/crystal ./MagicResearch/crystal-source-catalog.json
+          set -euo pipefail
+          mkdir -p MagicResearch
+
+          python3 scripts/generate-crystal-magic-catalog-safe.py ./vendor/crystal ./MagicResearch/crystal-source-catalog.json
           dotnet run --project tools/Origins.CrystalJevMagic.Export/Origins.CrystalJevMagic.Export.csproj --configuration Release -- ./vendor/crystal-database/Jev/Server.MirDB ./MagicResearch/crystal-jev-effective-magics.json
           python3 scripts/project-crystal-magic-numerics.py ./MagicResearch/crystal-source-catalog.json ./MagicResearch/crystal-jev-effective-magics.json ./MagicResearch/crystal-zircon-numeric-projection.json
 
-      - name: Generate runtime-ready overlay candidate
-        run: python3 scripts/generate-ready-crystal-magic-overlay.py ./MagicResearch/crystal-zircon-numeric-projection.json ./database/magic/behavior-decisions.json ./SnapshotBase/LibraryCore__Library_SystemModels_MagicInfo.json ./MagicResearch/ready-magic-overlay-candidate.json
+          python3 scripts/generate-crystal-monk-magic-catalog.py ./vendor/crystal-monk ./MagicResearch/crystal-monk-source-catalog.json
+          python3 scripts/project-crystal-source-magic-numerics.py ./MagicResearch/crystal-monk-source-catalog.json ./MagicResearch/crystal-monk-zircon-numeric-projection.json
+          python3 scripts/merge-crystal-magic-numerics.py \
+            ./MagicResearch/crystal-zircon-numeric-projection.json \
+            ./MagicResearch/crystal-monk-zircon-numeric-projection.json \
+            ./MagicResearch/crystal-all-zircon-numeric-projection.json
 
-      - name: Validate runtime-ready overlay coverage
+          python3 scripts/generate-ready-crystal-magic-overlay.py \
+            ./MagicResearch/crystal-all-zircon-numeric-projection.json \
+            ./database/magic/behavior-decisions.json \
+            ./SnapshotBase/LibraryCore__Library_SystemModels_MagicInfo.json \
+            ./MagicResearch/ready-magic-overlay-candidate.json
+
+          python3 scripts/generate-crystal-playable-magic-overlay.py \
+            ./MagicResearch/crystal-zircon-numeric-projection.json \
+            ./MagicResearch/crystal-monk-zircon-numeric-projection.json \
+            ./database/magic/crystal-playable-spells.json \
+            ./MagicResearch/ready-magic-overlay-candidate.json \
+            ./SnapshotBase/LibraryCore__Library_SystemModels_MagicInfo.json \
+            ./MagicResearch/full-magic-overlay-pre-activation.json
+
+          python3 scripts/activate-compiled-magic-overlay.py \
+            ./MagicResearch/full-magic-overlay-pre-activation.json \
+            ./database/magic/behavior-decisions.json \
+            ./vendor/zircon/LibraryCore/Enum.cs \
+            ./SnapshotBase/LibraryCore__Library_SystemModels_MagicInfo.json \
+            ./MagicResearch/full-magic-overlay-candidate.json
+
+      - name: Validate final candidate coverage
         shell: bash
         run: |
           python3 - <<'PY'
           import json
           from pathlib import Path
 
-          def load_decisions(path: Path):
-              data = json.loads(path.read_text(encoding='utf-8'))
-              if 'includes' not in data:
-                  return data['decisions']
-              result = []
-              for include in data['includes']:
-                  result.extend(load_decisions(path.parent / include))
-              return result
-
-          decisions = load_decisions(Path('database/magic/behavior-decisions.json'))
-          overlay = json.loads(Path('MagicResearch/ready-magic-overlay-candidate.json').read_text(encoding='utf-8'))
-
-          expected = [d['crystalSpell'] for d in decisions if d.get('runtimeReady')]
-          included = [d['crystalSpell'] for d in overlay['$audit']['included']]
+          overlay = json.loads(Path('MagicResearch/full-magic-overlay-candidate.json').read_text(encoding='utf-8'))
+          audit = overlay['$audit']
           operations = overlay['Operations']
-          indexes = [op['Index'] for op in operations]
-          magic_types = [item['zirconMagic'] for item in overlay['$audit']['included']]
+          indexes = [int(op['Index']) for op in operations]
+          runtime = [s for s in audit['spells'] if s.get('runtimeActivated')]
+          stubs = [s for s in audit['spells'] if s.get('status') == 'catalog_source_stub']
+          magic_types = [int(s['magicType']) for s in runtime]
 
-          if len(operations) != len(expected):
-              raise SystemExit(f'Expected {len(expected)} runtime-ready operations, got {len(operations)}')
-          if set(included) != set(expected):
-              raise SystemExit(f'Overlay coverage mismatch. Expected={sorted(expected)} Included={sorted(included)}')
-          if len(indexes) != len(set(indexes)):
-              raise SystemExit(f'Duplicate Zircon MagicInfo indexes in generated overlay: {indexes}')
-          if len(magic_types) != len(set(magic_types)):
-              raise SystemExit(f'Duplicate MagicType identities in generated overlay: {magic_types}')
-
-          print(f'Runtime-ready overlay coverage OK: {len(operations)} spells -> {sorted(included)}')
+          assert len(operations) == 119, len(operations)
+          assert audit['classCounts'] == {'Warrior':21,'Wizard':28,'Taoist':27,'Assassin':19,'Archer':24}
+          assert audit['deferredMonkSpellsExcluded'] == 9
+          assert audit['runtimeReady'] == 118, audit['runtimeReady']
+          assert audit['catalogPendingRuntime'] == 0, audit['catalogPendingRuntime']
+          assert audit['sourceStubs'] == 1, audit['sourceStubs']
+          assert len(runtime) == 118, len(runtime)
+          assert [s['crystalSpell'] for s in stubs] == ['FastMove'], stubs
+          assert len(indexes) == len(set(indexes)), 'duplicate MagicInfo indexes'
+          assert len(magic_types) == len(set(magic_types)), 'duplicate routed MagicType identities'
+          print('Final candidate coverage OK: 119 rows / 118 compiled routes / FastMove stub / 0 pending')
           PY
 
       - name: Assemble candidate overlay set
         run: |
           mkdir -p CandidateOverlays
           cp database/overlays/*.json CandidateOverlays/
-          cp MagicResearch/ready-magic-overlay-candidate.json CandidateOverlays/70-magics-crystal.json
+          cp MagicResearch/full-magic-overlay-candidate.json CandidateOverlays/70-magics-crystal.json
 
       - name: Apply candidate and rebuild System.db
         run: |
@@ -150,7 +188,11 @@ jobs:
           name: crystal-magic-overlay-candidate
           path: |
             MagicResearch/crystal-zircon-numeric-projection.json
+            MagicResearch/crystal-monk-zircon-numeric-projection.json
+            MagicResearch/crystal-all-zircon-numeric-projection.json
             MagicResearch/ready-magic-overlay-candidate.json
+            MagicResearch/full-magic-overlay-pre-activation.json
+            MagicResearch/full-magic-overlay-candidate.json
             SnapshotCandidate/overlay-report.json
             DatabaseCandidate/import-report.json
           if-no-files-found: warn
