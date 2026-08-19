@@ -4,6 +4,7 @@ using Server.Envir;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 
 namespace Server.Models.Magics
 {
@@ -14,8 +15,8 @@ namespace Server.Models.Magics
 
         private const int SetupDelay = 500;
         private const int FirstPulseDelay = 1300;
-        private const int PulseInterval = 440;
-        private const int PulseCount = 5;
+        private const int PulseInterval = 1000;
+        private const int PulseCount = 3;
 
         public Blizzard(PlayerObject player, UserMagic magic) : base(player, magic)
         {
@@ -27,7 +28,9 @@ namespace Server.Models.Magics
 
             Map castMap = CurrentMap;
             Point center = location;
+            Point casterOrigin = CurrentLocation;
             int castPower = Magic.GetPower() + Player.GetMC();
+            bool channelRequired = !Player.Buffs.Any(x => x.Type == BuffType.Bisul);
 
             foreach (Cell cell in castMap.GetCells(center, 0, 2))
             {
@@ -41,7 +44,9 @@ namespace Server.Models.Magics
                 Type,
                 castMap,
                 center,
+                casterOrigin,
                 castPower,
+                channelRequired,
                 -1));
 
             for (int pulse = 0; pulse < PulseCount; pulse++)
@@ -52,7 +57,9 @@ namespace Server.Models.Magics
                     Type,
                     castMap,
                     center,
+                    casterOrigin,
                     castPower,
+                    channelRequired,
                     pulse));
             }
 
@@ -63,10 +70,15 @@ namespace Server.Models.Magics
         {
             Map castMap = (Map)data[1];
             Point center = (Point)data[2];
-            int castPower = (int)data[3];
-            int pulse = (int)data[4];
+            Point casterOrigin = (Point)data[3];
+            int castPower = (int)data[4];
+            bool channelRequired = (bool)data[5];
+            int pulse = (int)data[6];
 
             if (castMap == null) return;
+
+            if (channelRequired && (Player.Dead || Player.CurrentMap != castMap || Player.CurrentLocation != casterOrigin))
+                return;
 
             if (pulse < 0)
             {
@@ -98,7 +110,7 @@ namespace Server.Models.Magics
                         Owner = Player,
                         Value = 10,
                         TickCount = duration,
-                        TickFrequency = TimeSpan.FromSeconds(1),
+                        TickFrequency = TimeSpan.FromSeconds(2),
                     });
                 }
             }
