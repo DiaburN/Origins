@@ -67,7 +67,6 @@ diff --git a/ServerLibrary/Models/PlayerObject.cs b/ServerLibrary/Models/PlayerO
 +        public void CrystalArcherGatherElement(byte meditationLevel)
 +        {
 +            CrystalArcherElementsLevel = Math.Min(200, CrystalArcherElementsLevel + 50);
-+
 +            int cap = meditationLevel >= 3 ? 200 : 50 * (meditationLevel + 1);
 +            CrystalArcherElementsLevel = Math.Min(CrystalArcherElementsLevel, cap);
 +        }
@@ -82,11 +81,8 @@ diff --git a/ServerLibrary/Models/PlayerObject.cs b/ServerLibrary/Models/PlayerO
 +            {
 +                int reduction = Math.Max(0, archerBarrier.Stats[Stat.CrystalArcherBarrierReductionPercent]);
 +                power -= power * reduction / 100;
-+
-+                // Crystal base ElementalBarrier loses 60 ms per damage point.
 +                archerBarrier.RemainingTime -= TimeSpan.FromMilliseconds(Math.Max(0, power) * 60L);
-+                if (archerBarrier.RemainingTime <= TimeSpan.Zero)
-+                    BuffRemove(archerBarrier);
++                if (archerBarrier.RemainingTime <= TimeSpan.Zero) BuffRemove(archerBarrier);
 +            }
 +
 +            BuffInfo archerBarrier1 = Buffs.FirstOrDefault(x => x.Type == BuffType.CrystalElementalBarrier1);
@@ -94,11 +90,8 @@ diff --git a/ServerLibrary/Models/PlayerObject.cs b/ServerLibrary/Models/PlayerO
 +            {
 +                int reduction = Math.Max(0, archerBarrier1.Stats[Stat.CrystalArcherBarrierReductionPercent]);
 +                power -= power * reduction / 100;
-+
-+                // Jev ElementalBarrier1 loses a flat three seconds per hit.
 +                archerBarrier1.RemainingTime -= TimeSpan.FromSeconds(3);
-+                if (archerBarrier1.RemainingTime <= TimeSpan.Zero)
-+                    BuffRemove(archerBarrier1);
++                if (archerBarrier1.RemainingTime <= TimeSpan.Zero) BuffRemove(archerBarrier1);
 +            }
  
              if (element != Element.None)
@@ -114,54 +107,32 @@ diff --git a/ServerLibrary/Models/MapObject.cs b/ServerLibrary/Models/MapObject.
 +                        buff.TickTime -= ticks;
 +                        if (buff.TickTime > TimeSpan.Zero) continue;
 +
-+                        PlayerObject explosionOwner = CurrentMap?.Objects?
-+                            .OfType<PlayerObject>()
++                        PlayerObject explosionOwner = CurrentMap?.Objects?.OfType<PlayerObject>()
 +                            .FirstOrDefault(x => x.ObjectID == (uint)buff.Extra);
 +
 +                        if (explosionOwner != null && Node != null && !Dead)
 +                        {
 +                            MagicType explosionType = buff.Type == BuffType.CrystalDelayedExplosion2
-+                                ? MagicType.DelayedExplosion2
-+                                : MagicType.DelayedExplosion;
++                                ? MagicType.DelayedExplosion2 : MagicType.DelayedExplosion;
 +
-+                            // Crystal's delayed detonation resolves over the full 3x3
-+                            // square centred on the infected target.
 +                            foreach (Cell cell in CurrentMap.GetCells(CurrentLocation, 0, 1))
 +                            {
 +                                if (cell?.Objects == null) continue;
-+
 +                                foreach (MapObject victim in cell.Objects.ToList())
 +                                {
 +                                    if (victim?.Node == null || victim.Dead || !explosionOwner.CanAttackTarget(victim)) continue;
-+
-+                                    explosionOwner.MagicAttack(
-+                                        new List<MagicType> { explosionType },
-+                                        victim,
-+                                        true,
-+                                        null,
++                                    explosionOwner.MagicAttack(new List<MagicType> { explosionType }, victim, true, null,
 +                                        buff.Stats[Stat.CrystalDelayedExplosionPower]);
 +
 +                                    if (buff.Type != BuffType.CrystalDelayedExplosion2 ||
-+                                        buff.Stats[Stat.CrystalDelayedExplosionInfect] <= 0 ||
-+                                        victim == this ||
++                                        buff.Stats[Stat.CrystalDelayedExplosionInfect] <= 0 || victim == this ||
 +                                        victim.Buffs.Any(x => x.Type == BuffType.CrystalDelayedExplosion2)) continue;
 +
-+                                    // Jev DelayedExplosion2 carries Infect=true. Newly infected
-+                                    // victims receive the six-second / 1500-ms variant but do not
-+                                    // recursively propagate forever.
-+                                    victim.BuffAdd(
-+                                        BuffType.CrystalDelayedExplosion2,
-+                                        TimeSpan.FromSeconds(6),
-+                                        new Stats
-+                                        {
-+                                            [Stat.CrystalDelayedExplosionPower] = buff.Stats[Stat.CrystalDelayedExplosionPower],
-+                                            [Stat.CrystalDelayedExplosionInfect] = 0,
-+                                        },
-+                                        false,
-+                                        false,
-+                                        TimeSpan.FromMilliseconds(1500),
-+                                        false,
-+                                        (int)explosionOwner.ObjectID);
++                                    victim.BuffAdd(BuffType.CrystalDelayedExplosion2, TimeSpan.FromSeconds(6), new Stats
++                                    {
++                                        [Stat.CrystalDelayedExplosionPower] = buff.Stats[Stat.CrystalDelayedExplosionPower],
++                                        [Stat.CrystalDelayedExplosionInfect] = 0,
++                                    }, false, false, TimeSpan.FromMilliseconds(1500), false, (int)explosionOwner.ObjectID);
 +                                }
 +                            }
 +                        }
@@ -187,7 +158,6 @@ diff --git a/ServerLibrary/Models/SpellObject.cs b/ServerLibrary/Models/SpellObj
 +                        CrystalTrapDetonated = true;
 +                        player.MagicAttack(new List<MagicType> { MagicType.ExplosiveTrap }, ob, true, null, Power);
 +
-+                        // Crystal links front/left/right trap pieces by one cast id.
 +                        foreach (SpellObject linked in player.SpellList.ToList())
 +                        {
 +                            if (linked.Effect != SpellEffect.CrystalExplosiveTrap || linked.CrystalTrapGroupId != CrystalTrapGroupId) continue;
@@ -198,3 +168,22 @@ diff --git a/ServerLibrary/Models/SpellObject.cs b/ServerLibrary/Models/SpellObj
 +                    }
 +                    break;
                  case SpellEffect.PoisonousCloud:
+diff --git a/ServerLibrary/Models/MonsterObject.cs b/ServerLibrary/Models/MonsterObject.cs
+--- a/ServerLibrary/Models/MonsterObject.cs
++++ b/ServerLibrary/Models/MonsterObject.cs
+@@
+-        public DateTime SearchTime, RoamTime, EXPOwnerTime, DeadTime, RageTime, TameTime, HallucinationTime;
++        public DateTime SearchTime, RoamTime, EXPOwnerTime, DeadTime, RageTime, TameTime, HallucinationTime, CrystalArcherExpireTime;
+@@
+         public override void Process()
+         {
+             base.Process();
++
++            // Crystal Archer summons and StoneTrap die at their AliveTime/DieTime.
++            if (!Dead && CrystalArcherExpireTime != DateTime.MinValue && SEnvir.Now >= CrystalArcherExpireTime)
++            {
++                Die();
++                return;
++            }
+ 
+             if (Dead)
