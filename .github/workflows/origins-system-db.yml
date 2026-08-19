@@ -184,7 +184,7 @@ jobs:
             "sourceStubSpellCount": 1,
             "pendingRuntimeSpellCount": 0,
             "sourceStubSpell": "FastMove",
-            "crystalJoinKey": "normalized spell name",
+            "crystalJoinKey": "canonical Jev Spell identity with explicit historical spelling aliases; normalized Crystal spell name inside generated overlays",
             "numericSpellIdUsedAsJevJoinKey": false,
             "magicDecisionManifest": "database/magic/behavior-decisions.json",
             "runtimeActivation": "scripts/activate-compiled-magic-overlay.py",
