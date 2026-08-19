@@ -20,26 +20,24 @@ namespace Server.Models.Magics
             return Math.Max(Math.Abs(CurrentLocation.X - point.X), Math.Abs(CurrentLocation.Y - point.Y));
         }
 
-        protected int GetRangeMCPower(int range)
+        // Crystal Archer distance bonus: 1 + min(0.3, max(0, (distance - 1) * 0.5)).
+        // This reaches the 30% cap from distance 2 onward, exactly as the source does.
+        protected int ApplyDistanceBonus(int damage, int distance)
         {
-            int min = Player.Stats[Stat.MinMC];
-            int max = Player.Stats[Stat.MaxMC];
-            range = Math.Max(0, Math.Min(9, range));
-
-            decimal loss = ((decimal)min / 9M) * (9 - range);
-            min -= (int)Math.Floor(loss);
-
-            int roll = min >= max ? max : SEnvir.Random.Next(min, max + 1);
-            return roll;
+            double multiplier = 1.0 + Math.Min(0.3, Math.Max(0, (distance - 1) * 0.5));
+            return (int)(damage * multiplier);
         }
 
         protected int ApplyMentalState(int damage)
         {
+            if (Player.GetMagic(MagicType.MentalState, out MagicObject mentalState))
+                Player.LevelMagic(mentalState.Magic);
+
             switch (Player.CrystalArcherMentalState)
             {
-                case 1: // Crystal Trickshot.
+                case 1: // Trickshot.
                     return damage * (55 + Player.CrystalArcherMentalStateLevel * 5) / 100;
-                case 2: // Crystal group-attack stance.
+                case 2: // Group attack.
                     return damage * 80 / 100;
                 default:
                     return damage;
@@ -50,9 +48,7 @@ namespace Server.Models.Magics
         {
             if (target?.Node == null || !Player.CanAttackTarget(target)) return false;
 
-            // Crystal Trickshot is the only mental state allowed to ignore the
-            // normal CanFly projectile-line check. Zircon's map line-of-sight
-            // remains authoritative for the two normal states.
+            // Crystal Trickshot is the one state that bypasses CanFly.
             if (Player.CrystalArcherMentalState == 1) return true;
             return CurrentMap.LineOfSight(CurrentLocation, target.CurrentLocation);
         }
@@ -67,6 +63,21 @@ namespace Server.Models.Magics
             if (target?.Node == null || target.Dead || target.CurrentMap != CurrentMap || !Player.CanAttackTarget(target)) return false;
             return Functions.InRange(target.CurrentLocation, lockedLocation, 2);
         }
+
+        protected int CrystalMCShotPower(int distance, bool mentalState = true)
+        {
+            int damage = Magic.GetPower() + Player.GetMC();
+            if (mentalState) damage = ApplyMentalState(damage);
+            return damage;
+        }
+
+        protected int CrystalDCShotPower(int distance, bool distanceBonus = true, bool mentalState = true)
+        {
+            int damage = Magic.GetPower() + Player.GetDC();
+            if (distanceBonus) damage = ApplyDistanceBonus(damage, distance);
+            if (mentalState) damage = ApplyMentalState(damage);
+            return damage;
+        }
     }
 
     [MagicType(MagicType.Focus)]
@@ -76,11 +87,10 @@ namespace Server.Models.Magics
 
         public Focus(PlayerObject player, UserMagic magic) : base(player, magic) { }
 
-        public bool TryProc()
+        public override Stats GetPassiveStats()
         {
-            if (SEnvir.Random.Next(5) > Magic.Level) return false;
-            Player.LevelMagic(Magic);
-            return true;
+            // Crystal RefreshStats: Focus contributes Accuracy += magic.Level + 1.
+            return new Stats { [Stat.Accuracy] = Magic.Level + 1 };
         }
     }
 
@@ -98,7 +108,8 @@ namespace Server.Models.Magics
             BuffInfo concentration = Player.Buffs.FirstOrDefault(x => x.Type == BuffType.ArcherConcentration);
             int concentrationChance = concentration == null ? 0 : concentration.Extra + 1;
 
-            if (SEnvir.Random.Next(10) < 8 - Magic.Level - concentrationChance) return;
+            // Crystal GatherElement uses Meditation level and Concentration to improve the roll.
+            if (SEnvir.Random.Next(10) < Math.Max(0, 8 - Magic.Level - concentrationChance)) return;
 
             Player.CrystalArcherGatherElement(Magic.Level);
             Player.LevelMagic(Magic);
@@ -117,11 +128,7 @@ namespace Server.Models.Magics
             Player.CrystalArcherMentalState = (byte)((Player.CrystalArcherMentalState + 1) % 3);
             Player.CrystalArcherMentalStateLevel = Magic.Level;
 
-            return new MagicCast
-            {
-                Ob = Player,
-                Cast = true,
-            };
+            return new MagicCast { Ob = Player, Cast = true };
         }
     }
 
@@ -234,8 +241,9 @@ namespace Server.Models.Magics
                 return response;
             }
 
+            int distance = RangeDistance(target.CurrentLocation);
             int orbCount = Player.CrystalArcherOrbCount;
-            int power = Magic.GetPower() + Player.GetMC() + 4 * orbCount;
+            int power = CrystalDCShotPower(distance, true, false) + 4 * orbCount;
             Point locked = target.CurrentLocation;
 
             response.Targets.Add(target.ObjectID);
@@ -258,7 +266,7 @@ namespace Server.Models.Magics
             int power = (int)data[3];
             int orbCount = (int)data[4];
 
-            // Crystal destroys all elemental orbs even if the target moved.
+            // Crystal destroys all elemental orbs even when the target moved.
             Player.CrystalArcherElementsLevel = 0;
 
             if (!TargetStillLocked(target, locked)) return;
@@ -268,9 +276,8 @@ namespace Server.Models.Magics
 
             Player.LevelMagic(Magic);
 
-            // ORIGINS rule: players never push players. Crystal's knockback
-            // chance/distance is retained for monsters.
-            if (target is not MonsterObject monster) return;
+            // ORIGINS standing rule: players never push players.
+            if (target is not MonsterObject monster || monster.Level >= Player.Level) return;
 
             int chance = 6 + Magic.Level * 3 + orbCount + Player.Level - monster.Level;
             if (SEnvir.Random.Next(20) >= chance) return;
