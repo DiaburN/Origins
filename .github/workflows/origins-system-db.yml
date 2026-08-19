@@ -67,7 +67,7 @@ jobs:
       - name: Validate 119 active spells and deferred Monk source
         run: python3 scripts/validate-crystal-playable-spells.py
 
-      - name: Verify previously activated MagicObject registrations
+      - name: Verify all 118 routed MagicObject registrations
         run: python3 scripts/verify-magic-handler-registration.py ./vendor/zircon ./database/magic/behavior-decisions.json
 
       - name: Compile overridden Zircon runtime
@@ -82,11 +82,13 @@ jobs:
       - name: Export index-preserving base snapshot
         run: dotnet run --project tools/Origins.Database.Export/Origins.Database.Export.csproj --configuration Release -- ./DatabaseBase ./SnapshotBase ./BackupBase
 
-      - name: Generate and validate final 118-handler runtime projection
+      - name: Generate and activate final 118-handler runtime projection
         run: |
           set -euo pipefail
           mkdir -p GeneratedResearch
 
+          # The safe generator masks commented C# placeholders, so FastMove can
+          # never acquire invented numeric data from its unfinished source stub.
           python3 scripts/generate-crystal-magic-catalog-safe.py ./vendor/crystal ./GeneratedResearch/crystal-source-catalog.json
           dotnet run --project tools/Origins.CrystalJevMagic.Export/Origins.CrystalJevMagic.Export.csproj --configuration Release -- ./vendor/crystal-database/Jev/Server.MirDB ./GeneratedResearch/crystal-jev-effective-magics.json
           python3 scripts/project-crystal-magic-numerics.py ./GeneratedResearch/crystal-source-catalog.json ./GeneratedResearch/crystal-jev-effective-magics.json ./GeneratedResearch/crystal-zircon-numeric-projection.json
@@ -94,22 +96,17 @@ jobs:
           python3 scripts/generate-crystal-monk-magic-catalog.py ./vendor/crystal-monk ./GeneratedResearch/crystal-monk-source-catalog.json
           python3 scripts/project-crystal-source-magic-numerics.py ./GeneratedResearch/crystal-monk-source-catalog.json ./GeneratedResearch/crystal-monk-zircon-numeric-projection.json
 
+          # The authored ready overlay remains useful for the 15 historically
+          # activated rows. The finalizer below promotes every other compiled
+          # routed row without rewriting the authored decision history.
           python3 scripts/merge-crystal-magic-numerics.py \
             ./GeneratedResearch/crystal-zircon-numeric-projection.json \
             ./GeneratedResearch/crystal-monk-zircon-numeric-projection.json \
             ./GeneratedResearch/crystal-all-zircon-numeric-projection.json
 
-          python3 scripts/promote-compiled-magic-decisions.py \
-            ./database/magic/behavior-decisions.json \
-            ./GeneratedResearch/behavior-decisions-compiled.json
-
-          python3 scripts/verify-magic-handler-registration.py \
-            ./vendor/zircon \
-            ./GeneratedResearch/behavior-decisions-compiled.json
-
           python3 scripts/generate-ready-crystal-magic-overlay.py \
             ./GeneratedResearch/crystal-all-zircon-numeric-projection.json \
-            ./GeneratedResearch/behavior-decisions-compiled.json \
+            ./database/magic/behavior-decisions.json \
             ./SnapshotBase/LibraryCore__Library_SystemModels_MagicInfo.json \
             ./GeneratedResearch/70-magics-crystal-runtime-ready.generated.json
 
@@ -119,6 +116,12 @@ jobs:
             ./database/magic/crystal-playable-spells.json \
             ./GeneratedResearch/70-magics-crystal-runtime-ready.generated.json \
             ./SnapshotBase/LibraryCore__Library_SystemModels_MagicInfo.json \
+            ./GeneratedResearch/70-magics-crystal.pre-activation.json
+
+          python3 scripts/activate-compiled-magic-overlay.py \
+            ./GeneratedResearch/70-magics-crystal.pre-activation.json \
+            ./database/magic/behavior-decisions.json \
+            ./vendor/zircon/LibraryCore/Enum.cs \
             ./GeneratedResearch/70-magics-crystal.generated.json
 
           python3 - <<'PY'
@@ -130,7 +133,11 @@ jobs:
           assert p['$audit']['runtimeReady'] == 118, p['$audit']['runtimeReady']
           assert p['$audit']['catalogPendingRuntime'] == 0, p['$audit']['catalogPendingRuntime']
           assert p['$audit']['sourceStubs'] == 1, p['$audit']['sourceStubs']
-          print('Final magic overlay validated: 119 active rows / 118 real runtime routes / 1 source stub / 0 pending placeholders')
+          active=[s for s in p['$audit']['spells'] if s.get('runtimeActivated')]
+          stubs=[s for s in p['$audit']['spells'] if s.get('status') == 'catalog_source_stub']
+          assert len(active) == 118, len(active)
+          assert [s['crystalSpell'] for s in stubs] == ['FastMove'], stubs
+          print('Final magic overlay validated: 119 active rows / 118 compiled runtime routes / FastMove source stub / 0 pending placeholders')
           PY
 
       - name: Assemble ORIGINS overlay set
@@ -156,7 +163,7 @@ jobs:
           RUNTIME_READY=$(python3 -c "import json; print(json.load(open('GeneratedResearch/70-magics-crystal.generated.json'))['\$audit']['runtimeReady'])")
           cat > DatabaseOrigins/build-manifest.json <<EOF
           {
-            "schemaVersion": 6,
+            "schemaVersion": 7,
             "zirconCommit": "cbf1aa919083bc13fc3f23f93772a8ab8370632d",
             "crystalCommit": "0e315fe327192afe52c3d7357ddd1f5b7e26c5b8",
             "crystalMonkCommit": "381e589e3d7ee736cdf0583c8315c0d144ab058f",
@@ -175,10 +182,11 @@ jobs:
             "runtimeReadySpellCount": $RUNTIME_READY,
             "sourceStubSpellCount": 1,
             "pendingRuntimeSpellCount": 0,
+            "sourceStubSpell": "FastMove",
             "crystalJoinKey": "normalized spell name",
             "numericSpellIdUsedAsJevJoinKey": false,
-            "compiledDecisionManifest": "GeneratedResearch/behavior-decisions-compiled.json",
             "magicDecisionManifest": "database/magic/behavior-decisions.json",
+            "runtimeActivation": "scripts/activate-compiled-magic-overlay.py",
             "runtime": "Zircon MagicObject with explicit ORIGINS Crystal overrides/patches"
           }
           EOF
@@ -193,8 +201,8 @@ jobs:
             DatabaseOrigins/audit.json
             DatabaseOrigins/usersdb-smoke.json
             GeneratedResearch/70-magics-crystal.generated.json
+            GeneratedResearch/70-magics-crystal.pre-activation.json
             GeneratedResearch/70-magics-crystal-runtime-ready.generated.json
-            GeneratedResearch/behavior-decisions-compiled.json
             GeneratedResearch/crystal-zircon-numeric-projection.json
             GeneratedResearch/crystal-monk-source-catalog.json
             GeneratedResearch/crystal-monk-zircon-numeric-projection.json
@@ -215,7 +223,6 @@ jobs:
           cp DatabaseOrigins/usersdb-smoke.json database/generated/origins-system-db/usersdb-smoke.json
           cp GeneratedResearch/70-magics-crystal.generated.json database/generated/origins-system-db/70-magics-crystal.generated.json
           cp GeneratedResearch/70-magics-crystal-runtime-ready.generated.json database/generated/origins-system-db/70-magics-crystal-runtime-ready.generated.json
-          cp GeneratedResearch/behavior-decisions-compiled.json database/generated/origins-system-db/behavior-decisions-compiled.json
           cp GeneratedResearch/crystal-all-zircon-numeric-projection.json database/generated/origins-system-db/crystal-all-zircon-numeric-projection.json
           cp SnapshotOrigins/overlay-report.json database/generated/origins-system-db/overlay-report.json
 
