@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
-"""Validate unified-diff hunk line counts for every ORIGINS Zircon patch.
+"""Validate the stored ORIGINS context-patch dialect.
 
-This intentionally runs without a Zircon checkout. It catches malformed @@ hunk
-headers before bootstrap-zircon.sh reaches git apply, so a whole patch series can
-be audited in one pass instead of failing one malformed file at a time.
+ORIGINS patches are applied by exact source context. Historical files may carry
+stale unified-diff line counts or use a bare `@@` separator, so those numeric
+headers are advisory rather than authoritative. This validator checks the
+structural rules required by `apply-origins-patches.py` without rejecting valid
+context patches for stale line-number metadata.
 """
 from __future__ import annotations
 
@@ -11,50 +13,56 @@ import pathlib
 import re
 import sys
 
-HUNK = re.compile(
-    r"^@@ -(?:\d+)(?:,(\d+))? \+(?:\d+)(?:,(\d+))? @@(?:.*)$"
-)
+DIFF_RE = re.compile(r"^diff --git a/(.+) b/(.+)$")
+HUNK_RE = re.compile(r"^@@(?: .*)?$")
 
 
-def validate_patch(path: pathlib.Path) -> list[str]:
+def validate_patch(path: pathlib.Path) -> tuple[list[str], int]:
     lines = path.read_text(encoding="utf-8", errors="strict").splitlines()
     errors: list[str] = []
-    i = 0
+    target: str | None = None
     hunks = 0
+    i = 0
 
     while i < len(lines):
         line = lines[i]
-        if not line.startswith("@@ "):
+        diff = DIFF_RE.match(line)
+        if diff:
+            if diff.group(1) != diff.group(2):
+                errors.append(f"{path}:{i + 1}: renames are unsupported")
+            target = diff.group(2)
             i += 1
             continue
 
-        match = HUNK.match(line)
-        if not match:
-            errors.append(f"{path}:{i + 1}: malformed hunk header: {line}")
+        if not line.startswith("@@"):
+            i += 1
+            continue
+
+        if target is None:
+            errors.append(f"{path}:{i + 1}: hunk appears before diff header")
+            i += 1
+            continue
+        if not HUNK_RE.match(line):
+            errors.append(f"{path}:{i + 1}: malformed hunk separator: {line}")
             i += 1
             continue
 
         hunks += 1
-        expected_old = int(match.group(1) or "1")
-        expected_new = int(match.group(2) or "1")
         old_count = 0
         new_count = 0
-        start_line = i + 1
+        start = i + 1
         i += 1
 
         while i < len(lines):
             current = lines[i]
-            if current.startswith("@@ ") or current.startswith("diff --git "):
-                break
-            if current.startswith("--- ") or current.startswith("+++ "):
-                # File headers belong between diffs/hunks, never inside a hunk.
+            if current.startswith("diff --git ") or current.startswith("@@"):
                 break
             if current == r"\ No newline at end of file":
                 i += 1
                 continue
             if not current:
                 errors.append(
-                    f"{path}:{i + 1}: unprefixed empty line inside hunk beginning at line {start_line}"
+                    f"{path}:{i + 1}: unprefixed empty line inside hunk beginning at line {start}"
                 )
                 i += 1
                 continue
@@ -67,22 +75,24 @@ def validate_patch(path: pathlib.Path) -> list[str]:
                 old_count += 1
             elif prefix == "+":
                 new_count += 1
+            elif current.startswith("--- ") or current.startswith("+++ "):
+                break
             else:
                 errors.append(
-                    f"{path}:{i + 1}: invalid hunk line prefix {prefix!r} in hunk beginning at line {start_line}"
+                    f"{path}:{i + 1}: invalid hunk line prefix {prefix!r} in hunk beginning at line {start}"
                 )
             i += 1
 
-        if old_count != expected_old or new_count != expected_new:
+        if old_count == 0:
             errors.append(
-                f"{path}:{start_line}: hunk count mismatch: "
-                f"header old/new={expected_old}/{expected_new}, "
-                f"actual old/new={old_count}/{new_count}"
+                f"{path}:{start}: hunk has no old/context lines; anchorless insertion is unsupported"
             )
+        if new_count == 0:
+            errors.append(f"{path}:{start}: hunk would delete its entire anchored block")
 
     if hunks == 0:
-        errors.append(f"{path}: contains no unified-diff hunks")
-    return errors
+        errors.append(f"{path}: contains no context hunks")
+    return errors, hunks
 
 
 def main() -> int:
@@ -93,16 +103,19 @@ def main() -> int:
         return 1
 
     errors: list[str] = []
+    total_hunks = 0
     for patch in patches:
-        errors.extend(validate_patch(patch))
+        patch_errors, hunks = validate_patch(patch)
+        errors.extend(patch_errors)
+        total_hunks += hunks
 
     if errors:
-        print("Zircon patch syntax FAILED")
+        print("Zircon context-patch syntax FAILED")
         for error in errors:
             print(f"- {error}")
         return 1
 
-    print(f"Zircon patch syntax OK: {len(patches)} patch files")
+    print(f"Zircon context-patch syntax OK: {len(patches)} patch files / {total_hunks} hunks")
     return 0
 
 
