@@ -1,8 +1,12 @@
 #!/usr/bin/env python3
-"""Materialize the complete Crystal + Crystal-Monk playable spell catalogue in Zircon MagicInfo.
+"""Materialize the complete active Crystal + Crystal-Monk spell catalogue in Zircon MagicInfo.
+
+Only the five active ORIGINS classes are projected. The nine Monk source spells
+remain retained under deferredClasses.Monk in the catalogue and are deliberately
+excluded from the active System.db overlay.
 
 Runtime-ready spells reuse the separately validated ready overlay. Every other
-playable spell is present in System.db with a reserved ORIGINS placeholder
+active spell is present in System.db with a reserved ORIGINS placeholder
 MagicType so it cannot accidentally execute unrelated Zircon behaviour before
 its Crystal handler has been reviewed/ported.
 
@@ -22,9 +26,10 @@ import json
 import pathlib
 import re
 
-CLASS_IDS = {"Warrior":0,"Wizard":1,"Taoist":2,"Assassin":3,"Archer":4,"Monk":5}
-EXPECTED_COUNTS = {"Warrior":21,"Wizard":28,"Taoist":27,"Assassin":19,"Archer":24,"Monk":9}
-EXPECTED_TOTAL = 128
+CLASS_IDS = {"Warrior":0,"Wizard":1,"Taoist":2,"Assassin":3,"Archer":4}
+EXPECTED_COUNTS = {"Warrior":21,"Wizard":28,"Taoist":27,"Assassin":19,"Archer":24}
+EXPECTED_TOTAL = 119
+EXPECTED_DEFERRED_MONK = 9
 PENDING_MAGIC_TYPE_BASE = 3000
 PENDING_INDEX_BASE = 3000
 SOURCE_STUB_STATUS = "stub_no_magicinfo_no_server_handler"
@@ -58,6 +63,20 @@ def main() -> int:
     ready = load(args.runtime_ready_overlay)
     zircon_rows = load(args.zircon_magic_snapshot)
 
+    scope = catalog.get("scope", {})
+    if scope.get("includeMonk") is not False:
+        raise RuntimeError("Active overlay generation requires scope.includeMonk=false")
+    if set(catalog.get("classes", {})) != set(CLASS_IDS):
+        raise RuntimeError(
+            f"Active catalogue classes mismatch: expected {sorted(CLASS_IDS)}, "
+            f"found {sorted(catalog.get('classes', {}))}"
+        )
+    deferred_monk = catalog.get("deferredClasses", {}).get("Monk", {}).get("spells", [])
+    if len(deferred_monk) != EXPECTED_DEFERRED_MONK:
+        raise RuntimeError(
+            f"Expected {EXPECTED_DEFERRED_MONK} deferred Monk source spells, found {len(deferred_monk)}"
+        )
+
     ready_operations_by_index = {int(op["Index"]): op for op in ready["Operations"]}
     ready_by_name = {}
     for item in ready.get("$audit", {}).get("included", []):
@@ -80,7 +99,7 @@ def main() -> int:
 
     for class_name, spells in catalog["classes"].items():
         if class_name not in CLASS_IDS:
-            raise RuntimeError(f"Unsupported playable class in catalog: {class_name}")
+            raise RuntimeError(f"Unsupported active playable class in catalog: {class_name}")
         desired_class = CLASS_IDS[class_name]
 
         for spell in spells:
@@ -126,7 +145,7 @@ def main() -> int:
                     source_stub_count += 1
                 else:
                     if projection is None:
-                        raise RuntimeError(f"Missing numeric projection for playable spell {class_name}.{name}")
+                        raise RuntimeError(f"Missing numeric projection for active playable spell {class_name}.{name}")
                     if projection.get("status") not in {"projected_by_name", "projected_from_pinned_source"}:
                         raise RuntimeError(f"Unverified numeric projection for {class_name}.{name}: {projection.get('status')}")
 
@@ -191,7 +210,7 @@ def main() -> int:
                 raise RuntimeError(f"Duplicate MagicInfo target index {index} while materializing {name}")
             used_indices.add(index)
             if magic_type in used_magic_types:
-                raise RuntimeError(f"Duplicate playable MagicType {magic_type} while materializing {name}")
+                raise RuntimeError(f"Duplicate active playable MagicType {magic_type} while materializing {name}")
             used_magic_types.add(magic_type)
             operations.append(op)
             audit.append({
@@ -206,18 +225,19 @@ def main() -> int:
             })
 
     if counts != EXPECTED_COUNTS:
-        raise RuntimeError(f"Playable class counts mismatch: {counts}")
+        raise RuntimeError(f"Active playable class counts mismatch: {counts}")
     if len(operations) != EXPECTED_TOTAL:
-        raise RuntimeError(f"Expected {EXPECTED_TOTAL} playable MagicInfo operations, generated {len(operations)}")
+        raise RuntimeError(f"Expected {EXPECTED_TOTAL} active playable MagicInfo operations, generated {len(operations)}")
 
     payload = {
-        "SchemaVersion": 1,
-        "Name": "Complete Crystal + Crystal-Monk playable spell catalogue for ORIGINS",
+        "SchemaVersion": 2,
+        "Name": "Complete active Crystal + Crystal-Monk spell catalogue for ORIGINS",
         "Operations": operations,
         "$audit": {
-            "generatorSchemaVersion": 8,
-            "requiredPlayableSpells": EXPECTED_TOTAL,
+            "generatorSchemaVersion": 9,
+            "activePlayableSpells": EXPECTED_TOTAL,
             "classCounts": counts,
+            "deferredMonkSpellsExcluded": EXPECTED_DEFERRED_MONK,
             "runtimeReady": runtime_ready_count,
             "catalogPendingRuntime": pending_count,
             "sourceStubs": source_stub_count,
@@ -225,16 +245,16 @@ def main() -> int:
             "rejectedCrossClassNameMatches": rejected_cross_class_name_matches,
             "pendingMagicTypeRange": "3000 + Crystal/Crystal-Monk SpellId",
             "pendingMagicInfoIndexRange": "3000 + SpellId when no same-class legacy row is reused",
-            "policy": "Pending spells exist in System.db but cannot silently execute unrelated Zircon logic. Source stubs preserve identity only and never receive invented numerics. Same-name rows from other classes are never automatically reused.",
+            "policy": "Only five active ORIGINS classes are projected. Deferred Monk source spells are excluded. Pending active spells exist in System.db but cannot silently execute unrelated Zircon logic. Source stubs preserve identity only and never receive invented numerics. Same-name rows from other classes are never automatically reused.",
             "spells": audit,
         },
     }
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(payload, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
     print(
-        f"Playable Crystal magic overlay: {len(operations)}/128 rows; "
+        f"Active Crystal magic overlay: {len(operations)}/{EXPECTED_TOTAL} rows; "
         f"{runtime_ready_count} runtime-ready, {pending_count} pending runtime, "
-        f"{source_stub_count} source stub(s); "
+        f"{source_stub_count} source stub(s); {EXPECTED_DEFERRED_MONK} Monk source spells excluded; "
         f"{len(rejected_cross_class_name_matches)} cross-class name match(es) rejected"
     )
     for class_name in CLASS_IDS:
