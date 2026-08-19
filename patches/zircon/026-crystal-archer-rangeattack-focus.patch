@@ -2,10 +2,10 @@ diff --git a/LibraryCore/Stat.cs b/LibraryCore/Stat.cs
 --- a/LibraryCore/Stat.cs
 +++ b/LibraryCore/Stat.cs
 @@
-         CrystalDelayedExplosionInfect = 11008,
+         CrystalDelayedExplosionInfect = 11010,
 +
 +        [StatDescription(Title = "Poison Attack", Format = "{0:+#0;-#0;#0}", Mode = StatType.Default, ServerOnly = true)]
-+        PoisonAttack = 11009,
++        PoisonAttack = 11011,
  
          [StatDescription(Title = "Duration", Mode = StatType.Time)]
 diff --git a/ServerLibrary/Models/PlayerObject.cs b/ServerLibrary/Models/PlayerObject.cs
