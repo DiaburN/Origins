@@ -1,6 +1,5 @@
 using Library;
 using Server.DBModels;
-using Server.Envir;
 using System;
 using System.Drawing;
 
@@ -21,28 +20,9 @@ namespace Server.Models.Magics
             var response = new MagicCast { Ob = target };
             response.Targets.Add(target.ObjectID);
 
-            // Jev Crystal-Monk Healing2 is not a direct heal: it grants temporary MaxHP.
+            // Jev calls Healing2 directly from the magic switch: there is no 500 ms delayed completion.
             int hpBonus = Magic.GetPower() + Player.GetSC() + Player.Level;
             int durationSeconds = Player.GetSC() + 25 + Magic.Level * 25;
-
-            ActionList.Add(new DelayedAction(
-                SEnvir.Now.AddMilliseconds(500),
-                ActionType.DelayMagic,
-                Type,
-                target,
-                hpBonus,
-                durationSeconds));
-
-            return response;
-        }
-
-        public override void MagicComplete(params object[] data)
-        {
-            MapObject target = (MapObject)data[1];
-            int hpBonus = (int)data[2];
-            int durationSeconds = (int)data[3];
-
-            if (target?.Node == null || !Player.CanHelpTarget(target)) return;
 
             target.BuffAdd(
                 BuffType.CrystalHealing2,
@@ -53,6 +33,12 @@ namespace Server.Models.Magics
                 TimeSpan.Zero);
 
             Player.LevelMagic(Magic);
+            return response;
+        }
+
+        public override void MagicComplete(params object[] data)
+        {
+            // Healing2 is immediate in Crystal-Monk; nothing is scheduled here.
         }
     }
 }
