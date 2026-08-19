@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "class": "Monk",
+  "source": {
+    "extension": "JevLOMCN/Crystal-Monk@381e589e3d7ee736cdf0583c8315c0d144ab058f",
+    "runtime": "Suprcode/Zircon@cbf1aa919083bc13fc3f23f93772a8ab8370632d"
+  },
+  "status": "source-ported-uncompiled",
+  "spells": [
+    {"id":161,"crystalSpell":"JiBenGunFa","zirconMagicType":"JiBenGunFa","mode":"jev-passive-accuracy-ac-attack-mastery","runtimeReady":false,"overlayReady":false},
+    {"id":162,"crystalSpell":"LuoHanGunFa","zirconMagicType":"LuoHanGunFa","mode":"jev-sc-physical-line-attack-port","runtimeReady":false,"overlayReady":false,"note":"Source secondary geometry intentionally reaches distance 2 then distance 4."},
+    {"id":163,"crystalSpell":"JinGangGunFa","zirconMagicType":"JinGangGunFa","mode":"jev-sc-four-cell-mixed-defense-port","runtimeReady":false,"overlayReady":false,"note":"Front ignores defense; remaining cells use MAC+Agility semantics."},
+    {"id":164,"crystalSpell":"DaMoGunFa","zirconMagicType":"DaMoGunFa","mode":"jev-armed-sc-ac-attack-port","runtimeReady":false,"overlayReady":false,"note":"Armed one-shot attack with nine-second re-arm gate."},
+    {"id":165,"crystalSpell":"XiangLongGunFa","zirconMagicType":"XiangLongGunFa","mode":"jev-two-cell-teleport-plus-delayed-ac-hit-port","runtimeReady":false,"overlayReady":false},
+    {"id":166,"crystalSpell":"Taunt","zirconMagicType":"Taunt","mode":"jev-single-monster-target-control-port","runtimeReady":false,"overlayReady":false},
+    {"id":167,"crystalSpell":"TianLeiZhen","zirconMagicType":"TianLeiZhen","mode":"jev-1200ms-toggle-sc-3x3-aura-port","runtimeReady":false,"overlayReady":false,"note":"Consumes MP each tick and disables itself when cost >= current MP."},
+    {"id":168,"crystalSpell":"ShiBuYiSha","zirconMagicType":"ShiBuYiSha","mode":"jev-delayed-target-teleport-plus-5x5-mac-port","runtimeReady":false,"overlayReady":false},
+    {"id":169,"crystalSpell":"LuoHanZhen","zirconMagicType":"LuoHanZhen","mode":"jev-four-diagonal-monk-clone-port","runtimeReady":false,"overlayReady":false}
+  ],
+  "count": 9
+}
