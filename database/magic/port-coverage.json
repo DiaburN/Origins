@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "catalog": "database/magic/crystal-playable-spells.json",
+  "catalogRequiredTotal": 128,
+  "coverage": {
+    "catalogued": 128,
+    "sourceBehaviorPaths": 127,
+    "explicitSourceStubs": 1,
+    "missingSourceDecisions": 0
+  },
+  "classes": {
+    "Warrior": {"catalogued": 21, "decisionCovered": 21},
+    "Wizard": {"catalogued": 28, "decisionCovered": 28, "realBehaviorPaths": 27, "sourceStubs": 1},
+    "Taoist": {"catalogued": 27, "decisionCovered": 27},
+    "Assassin": {"catalogued": 19, "decisionCovered": 19},
+    "Archer": {"catalogued": 24, "decisionCovered": 24},
+    "Monk": {"catalogued": 9, "decisionCovered": 9}
+  },
+  "sourceStub": {
+    "class": "Wizard",
+    "spell": "FastMove",
+    "reason": "stub_no_magicinfo_no_server_handler",
+    "policy": "Do not invent runtime behavior without source evidence."
+  },
+  "runtimeValidation": {
+    "status": "pending-real-patch-apply-and-compile",
+    "newHandlersRuntimeReady": false,
+    "overlayReady": false,
+    "note": "Coverage means every playable catalogue entry has a source-backed decision and every non-stub entry has a runtime/adaptation path. It does not mean the uncompiled override/patch set has passed a real build."
+  },
+  "integrationHead": "work/monk-crystal-batch1",
+  "sources": {
+    "crystal": "Suprcode/Crystal@0e315fe327192afe52c3d7357ddd1f5b7e26c5b8",
+    "crystalMonk": "JevLOMCN/Crystal-Monk@381e589e3d7ee736cdf0583c8315c0d144ab058f",
+    "zircon": "Suprcode/Zircon@cbf1aa919083bc13fc3f23f93772a8ab8370632d"
+  }
+}
