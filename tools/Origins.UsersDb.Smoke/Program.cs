@@ -36,9 +36,10 @@ try
     SEnvir.BuffInfoList = session.GetCollection<BuffInfo>();
 
     var accounts = session.GetCollection<AccountInfo>();
+    var characters = session.GetCollection<CharacterInfo>();
     var currencies = session.GetCollection<CurrencyInfo>();
-    var userCurrencies = session.GetCollection<UserCurrency>();
-    var buffs = session.GetCollection<BuffInfo>();
+    var magics = session.GetCollection<MagicInfo>();
+    var userMagics = session.GetCollection<UserMagic>();
 
     if (accounts.Count != 0)
         throw new InvalidOperationException("Fresh smoke Users.db unexpectedly contains accounts.");
@@ -64,6 +65,28 @@ try
     if (account.Buffs.Count(x => x.Type == BuffType.HuntGold) != 1)
         throw new InvalidOperationException("Account creation did not create exactly one HuntGold buff.");
 
+    var character = characters.CreateNewObject();
+    character.Account = account;
+    character.CharacterName = "ORIGINS_DB_SMOKE";
+    character.Class = MirClass.Wizard;
+    character.Gender = MirGender.Male;
+    character.Level = 1;
+
+    if (account.Characters.Count != 1 || account.Characters[0] != character)
+        throw new InvalidOperationException("Character association was not created on AccountInfo.");
+
+    var fireBall = magics.Binding.FirstOrDefault(x => x.Magic == MagicType.FireBall)
+        ?? throw new InvalidOperationException("System.db does not contain MagicType.FireBall.");
+
+    var learnedMagic = userMagics.CreateNewObject();
+    learnedMagic.Info = fireBall;
+    learnedMagic.Character = character;
+    learnedMagic.Level = 0;
+    learnedMagic.Experience = 0;
+
+    if (character.Magics.Count != 1 || character.Magics[0] != learnedMagic)
+        throw new InvalidOperationException("UserMagic association was not created on CharacterInfo.");
+
     session.Save(commit: true);
 
     var usersDb = Path.Combine(databaseRoot, "Users.db");
@@ -77,14 +100,26 @@ try
     SEnvir.BuffInfoList = reopened.GetCollection<BuffInfo>();
 
     var reopenedAccounts = reopened.GetCollection<AccountInfo>();
-    var persisted = reopenedAccounts.Binding.SingleOrDefault(x => x.EMailAddress == "origins-db-smoke@invalid.local")
+    var persistedAccount = reopenedAccounts.Binding.SingleOrDefault(x => x.EMailAddress == "origins-db-smoke@invalid.local")
         ?? throw new InvalidOperationException("Smoke account was not found after reopening Users.db.");
 
-    if (persisted.Currencies.Count != expectedCurrencyCount)
-        throw new InvalidOperationException($"Persisted account currencies {persisted.Currencies.Count} != expected {expectedCurrencyCount}.");
+    if (persistedAccount.Currencies.Count != expectedCurrencyCount)
+        throw new InvalidOperationException($"Persisted account currencies {persistedAccount.Currencies.Count} != expected {expectedCurrencyCount}.");
 
-    if (persisted.Buffs.Count(x => x.Type == BuffType.HuntGold) != 1)
+    if (persistedAccount.Buffs.Count(x => x.Type == BuffType.HuntGold) != 1)
         throw new InvalidOperationException("Persisted account does not have exactly one HuntGold buff.");
+
+    var persistedCharacter = persistedAccount.Characters.SingleOrDefault(x => x.CharacterName == "ORIGINS_DB_SMOKE")
+        ?? throw new InvalidOperationException("Smoke character was not found through AccountInfo after reopening Users.db.");
+
+    if (persistedCharacter.Class != MirClass.Wizard || persistedCharacter.Gender != MirGender.Male)
+        throw new InvalidOperationException("Persisted character class/gender changed during Users.db round-trip.");
+
+    var persistedMagic = persistedCharacter.Magics.SingleOrDefault()
+        ?? throw new InvalidOperationException("Persisted character has no UserMagic after reopening Users.db.");
+
+    if (persistedMagic.Info?.Magic != MagicType.FireBall)
+        throw new InvalidOperationException("Persisted UserMagic no longer references MagicType.FireBall.");
 
     var report = new
     {
@@ -94,7 +129,8 @@ try
         {
             source = sourceSystemDb,
             systemVersion = reopened.SystemDatabaseVersion,
-            currencyCount = expectedCurrencyCount
+            currencyCount = expectedCurrencyCount,
+            fireBallMagicInfoIndex = fireBall.Index
         },
         usersDb = new
         {
@@ -111,15 +147,19 @@ try
         checks = new
         {
             accountRoundTrip = true,
-            defaultCurrencies = persisted.Currencies.Count,
-            huntGoldBuff = 1
+            defaultCurrencies = persistedAccount.Currencies.Count,
+            huntGoldBuff = 1,
+            characterRoundTrip = true,
+            characterClass = persistedCharacter.Class.ToString(),
+            userMagicRoundTrip = true,
+            userMagic = persistedMagic.Info.Name
         },
         completedUtc = DateTime.UtcNow
     };
 
     Directory.CreateDirectory(Path.GetDirectoryName(reportPath)!);
     File.WriteAllText(reportPath, JsonSerializer.Serialize(report, new JsonSerializerOptions { WriteIndented = true }));
-    Console.WriteLine($"ORIGINS USERS.DB SMOKE: PASS (1 account, {expectedCurrencyCount} currencies, HuntGold buff persisted)");
+    Console.WriteLine($"ORIGINS USERS.DB SMOKE: PASS (account + Wizard + FireBall, {expectedCurrencyCount} currencies, HuntGold buff persisted)");
     return 0;
 }
 catch (Exception ex)
