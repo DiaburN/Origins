@@ -5,10 +5,15 @@ from __future__ import annotations
 import argparse
 import json
 import pathlib
+import re
 
 
 def load(path: pathlib.Path):
     return json.loads(path.read_text(encoding="utf-8"))
+
+
+def norm(value: str) -> str:
+    return re.sub(r"[^a-z0-9]", "", (value or "").lower())
 
 
 def main() -> int:
@@ -27,19 +32,25 @@ def main() -> int:
     comparison = load(args.zircon_comparison)
     implementations = load(args.implementation_index)
 
-    jev_by_id = {m["SpellId"]: m for m in jev["magics"]}
-    diff_by_id = {e["spellId"]: e for e in diffs["entries"]}
-    cmp_by_id = {e["crystal"]["spellId"]: e for e in comparison["entries"]}
-    impl_by_id = {e["crystal"]["spellId"]: e for e in implementations["entries"]}
+    jev_by_name = {norm(m.get("Name") or m.get("Spell") or ""): m for m in jev["magics"]}
+    diff_by_name = {
+        norm(e.get("crystalName") or e.get("jevName") or ""): e
+        for e in diffs["entries"]
+        if e.get("crystalName") or e.get("jevName")
+    }
+    cmp_by_name = {norm(e["crystal"]["name"]): e for e in comparison["entries"]}
+    impl_by_name = {norm(e["crystal"]["name"]): e for e in implementations["entries"]}
 
     queue = []
     for spell in source["spells"]:
-        spell_id = spell["spellId"]
+        spell_name = spell["name"]
+        spell_key = norm(spell_name)
+        source_spell_id = spell["spellId"]
         kind = spell["kind"]
-        cmp = cmp_by_id.get(spell_id, {})
-        impl = impl_by_id.get(spell_id, {})
-        jev_row = jev_by_id.get(spell_id)
-        diff = diff_by_id.get(spell_id)
+        cmp = cmp_by_name.get(spell_key, {})
+        impl = impl_by_name.get(spell_key, {})
+        jev_row = jev_by_name.get(spell_key)
+        diff = diff_by_name.get(spell_key)
 
         if kind == "map_event":
             review_state = "excluded_map_event"
@@ -62,6 +73,7 @@ def main() -> int:
 
         crystal_calls = ((impl.get("crystal") or {}).get("serverCallSites") or [])
         zircon_handlers = impl.get("zirconExactMagicTypeHandlers") or []
+        jev_spell_id = jev_row.get("SpellId") if jev_row else None
 
         queue.append({
             "priority": priority,
@@ -69,46 +81,50 @@ def main() -> int:
             "verified": False,
             "decision": None,
             "crystal": {
-                "name": spell["name"],
-                "spellId": spell_id,
+                "name": spell_name,
+                "sourceSpellId": source_spell_id,
                 "category": spell["category"],
                 "kind": kind,
                 "sourceDefault": (spell.get("defaultMagicInfo") or {}).get("fields"),
                 "updateOverrides": (spell.get("updateOverrides") or {}).get("fields"),
                 "jevEffective": jev_row,
+                "jevSpellId": jev_spell_id,
+                "legacyIdMismatch": jev_spell_id is not None and jev_spell_id != source_spell_id,
                 "jevDifference": diff,
-                "serverCallSites": crystal_calls,
+                "serverCallSites": crystal_calls
             },
             "zircon": {
                 "nameComparisonStatus": cmp.get("status"),
                 "nameMatches": cmp.get("zirconNameMatches", []),
-                "exactMagicTypeHandlers": zircon_handlers,
+                "exactMagicTypeHandlers": zircon_handlers
             },
             "requiredReview": [
                 "Crystal cast/target/cost/cooldown path",
                 "Crystal damage/buff/debuff/summon/teleport behavior",
                 "Zircon MagicObject MagicCast/MagicComplete/passive behavior",
                 "numeric field mapping Crystal -> Zircon",
-                "client animation/effect mapping kept separate from server damage timing",
-            ] if priority < 80 else [],
+                "client animation/effect mapping kept separate from server damage timing"
+            ] if priority < 80 else []
         })
 
-    queue.sort(key=lambda e: (e["priority"], e["crystal"]["category"], e["crystal"]["spellId"]))
+    queue.sort(key=lambda e: (e["priority"], e["crystal"]["category"], e["crystal"]["sourceSpellId"]))
 
     counts = {}
     for entry in queue:
         counts[entry["reviewState"]] = counts.get(entry["reviewState"], 0) + 1
 
     payload = {
-        "schemaVersion": 1,
+        "schemaVersion": 2,
         "policy": {
+            "joinKeyForJev": "normalized spell name",
+            "numericSpellIdUsedAsJevJoinKey": False,
             "automaticVerification": False,
             "automaticOverlayWrites": False,
             "runtime": "Zircon MagicObject",
-            "crystalDatabaseEngineImported": False,
+            "crystalDatabaseEngineImported": False
         },
         "counts": counts,
-        "queue": queue,
+        "queue": queue
     }
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(payload, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
