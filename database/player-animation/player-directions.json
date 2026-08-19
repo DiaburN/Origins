@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "status": "SOURCE_CONFIRMED",
+  "source": {
+    "repository": "Suprcode/Crystal",
+    "commit": "0e315fe327192afe52c3d7357ddd1f5b7e26c5b8",
+    "file": "Shared/Enums.cs",
+    "enum": "MirDirection"
+  },
+  "directionCount": 8,
+  "storageOrder": [
+    {"value": 0, "name": "Up", "deltaX": 0, "deltaY": -1},
+    {"value": 1, "name": "UpRight", "deltaX": 1, "deltaY": -1},
+    {"value": 2, "name": "Right", "deltaX": 1, "deltaY": 0},
+    {"value": 3, "name": "DownRight", "deltaX": 1, "deltaY": 1},
+    {"value": 4, "name": "Down", "deltaX": 0, "deltaY": 1},
+    {"value": 5, "name": "DownLeft", "deltaX": -1, "deltaY": 1},
+    {"value": 6, "name": "Left", "deltaX": -1, "deltaY": 0},
+    {"value": 7, "name": "UpLeft", "deltaX": -1, "deltaY": -1}
+  ],
+  "spriteIndexFormula": {
+    "sourceFile": "Client/MirObjects/PlayerObject.cs",
+    "body": "Frame.Start + (Frame.OffSet * (byte)Direction) + FrameIndex",
+    "bodyDirectionStride": "Frame.Count + Frame.Skip",
+    "effect": "Frame.EffectStart + (Frame.EffectOffSet * (byte)Direction) + EffectFrameIndex",
+    "effectDirectionStride": "Frame.EffectCount + Frame.EffectSkip"
+  },
+  "movementDirection": {
+    "sourceFiles": ["Shared/Functions.cs", "Server/MirObjects/HumanObject.cs"],
+    "note": "Direction is authoritative gameplay state; PointMove/DirectionFromPoint use the same eight-value ordering. Client presentation must not remap this ordering."
+  },
+  "policy": {
+    "allowInventedDirections": false,
+    "allowSpriteDirectionReordering": false,
+    "anchorSource": "MLibrary sprite metadata offsets"
+  }
+}
