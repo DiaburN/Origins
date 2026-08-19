@@ -13,6 +13,7 @@ each change by its exact old-context block. It is strict in the ways that matter
 - ambiguous or missing source context is fatal;
 - no fuzzy/whitespace matching is performed;
 - patches are processed in deterministic filename order;
+- unprefixed blank separator lines terminate the current hunk;
 - --check validates the complete series without writing files.
 
 That makes the stored patches deterministic against the pinned Zircon revision
@@ -74,11 +75,13 @@ def parse_patch(path: pathlib.Path) -> list[Hunk]:
                     i += 1
                     continue
 
+                # Some historical context patches use a raw blank line only to
+                # separate a hunk from the next file diff. It is not source
+                # context because real blank context is stored as a single-space
+                # prefixed line, like a normal unified diff.
                 if not current:
-                    raise RuntimeError(
-                        f"{path}:{i + 1}: unprefixed empty line inside hunk; "
-                        "context/add/remove lines must start with space/+/-"
-                    )
+                    i += 1
+                    break
 
                 prefix, payload = current[0], current[1:]
                 if prefix == " ":
