@@ -30,8 +30,8 @@ namespace Server.Models.Magics
             Point targetLocation = target.CurrentLocation;
             int castPower = Magic.GetPower() + Player.GetMC();
 
-            bool undead = target is MonsterObject monster && monster.MonsterInfo.Undead;
-            if (!undead)
+            // Crystal applies the 1.5x bonus only to living monsters. Players stay at normal power.
+            if (target is MonsterObject monster && !monster.MonsterInfo.Undead)
                 castPower = (int)(castPower * 1.5F);
 
             ActionList.Add(new DelayedAction(
