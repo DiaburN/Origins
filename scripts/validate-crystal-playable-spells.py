@@ -20,8 +20,8 @@ EXPECTED_MONK = {
     165: "XiangLongGunFa",
     166: "Taunt",
     167: "TianLeiZhen",
-    168: "LuoHanZhen",
-    169: "ShiBuYiSha",
+    168: "ShiBuYiSha",
+    169: "LuoHanZhen",
 }
 
 path = pathlib.Path(sys.argv[1] if len(sys.argv) > 1 else "database/magic/crystal-playable-spells.json")
@@ -60,8 +60,8 @@ if scope.get("includeMonk") is not True:
     errors.append("scope.includeMonk must be true")
 if data.get("source", {}).get("monk") != "JevLOMCN/Crystal-Monk":
     errors.append("Crystal-Monk source is not pinned")
-if not data.get("source", {}).get("monkCommit"):
-    errors.append("Crystal-Monk commit is not pinned")
+if data.get("source", {}).get("monkCommit") != "381e589e3d7ee736cdf0583c8315c0d144ab058f":
+    errors.append("Crystal-Monk commit is not pinned to the approved revision")
 
 if errors:
     print("Crystal playable spell catalogue FAILED")
