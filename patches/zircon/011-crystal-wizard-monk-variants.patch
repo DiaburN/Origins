@@ -56,9 +56,8 @@ diff --git a/LibraryCore/Stat.cs b/LibraryCore/Stat.cs
 diff --git a/ServerLibrary/Models/MagicObject.cs b/ServerLibrary/Models/MagicObject.cs
 --- a/ServerLibrary/Models/MagicObject.cs
 +++ b/ServerLibrary/Models/MagicObject.cs
-@@ -78,7 +78,7 @@ namespace Server.Models
-             int penalty = Player.Stats[Stat.ManaPenaltyPercent];
-             if (penalty > 0) cost += cost * penalty / 100;
+@@ -76,7 +76,7 @@ namespace Server.Models
+             int cost = Magic.Cost;
  
 -            if (Type == MagicType.Teleportation || Type == MagicType.StormEscape)
 +            if (Type == MagicType.Teleportation || Type == MagicType.StormEscape || Type == MagicType.StormEscape1)
