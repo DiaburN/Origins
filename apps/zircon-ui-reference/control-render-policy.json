@@ -1,0 +1,28 @@
+{
+  "source": "Suprcode/Zircon Client controls and GameScene views",
+  "purpose": "Explicit rendering policy for every DX control type currently discovered in the complete GameScene UI source manifest.",
+  "policies": {
+    "DXLabel": {"mode": "runtime-text", "visual": "runtime text overlay; not baked into source PNG"},
+    "DXButton": {"mode": "zircon-skin", "visual": "source image when specified; otherwise generated from Interface.Zl button pieces"},
+    "DXImageControl": {"mode": "source-asset", "visual": "exact LibraryFile/Index image"},
+    "DXCheckBox": {"mode": "zircon-skin", "visual": "GameInter 161/162"},
+    "DXItemCell": {"mode": "structural", "visual": "36x36 Zircon item cell; runtime item contents remain dynamic"},
+    "DXItemGrid": {"mode": "structural", "visual": "36x36 cell grid using Zircon cell geometry"},
+    "DXControl": {"mode": "structural", "visual": "draw only when source properties request background/border; otherwise pass-through"},
+    "DXTab": {"mode": "zircon-tab", "visual": "generated SelectedTab/DeselectedTab Interface.Zl pieces"},
+    "DXVScrollBar": {"mode": "zircon-skin", "visual": "Interface 44/45/46, or source-specific indices"},
+    "DXTextBox": {"mode": "runtime-field", "visual": "black field + Zircon primary border; text remains runtime"},
+    "DXAnimatedControl": {"mode": "source-asset", "visual": "source LibraryFile/Index base frame; animation remains runtime"},
+    "DXTabControl": {"mode": "structural-no-draw", "visual": "container only; its DXTab buttons provide visible chrome"},
+    "DXComboBox": {"mode": "zircon-skin", "visual": "bordered field + GameInter 795 arrow; source-declared dropdown rows stay hidden while Showing=false; runtime rows are not invented"},
+    "DXColourControl": {"mode": "runtime-swatch", "visual": "40x15 bordered colour swatch"},
+    "DXConfigTab": {"mode": "zircon-tab", "visual": "same tab chrome policy as DXTab"},
+    "DXNumberBox": {"mode": "runtime-field", "visual": "number field using text-box control treatment"},
+    "DXListBox": {"mode": "structural", "visual": "bordered list area + Zircon vertical scrollbar; source rows are rendered only when source visibility requires them and runtime rows remain neutral"},
+    "DXListBoxItem": {"mode": "source-row-deferred", "visual": "constructor-declared DXListBoxItem retained as a source control; current GameScene usages belong to closed DXComboBox.ListBox dropdowns, so rows are hidden initially and no runtime payload is fabricated"},
+    "DXSoundBar": {"mode": "zircon-skin", "visual": "GameInter 4740-4746 sound icon/bar/slider assets"},
+    "DXKeyBindWindow": {"mode": "dynamic-modal", "visual": "do not draw as an inline child; it is separately opened at runtime"},
+    "DXNumberTextBox": {"mode": "runtime-field", "visual": "numeric text field using text-box control treatment"},
+    "DXTreeControl": {"mode": "structural", "visual": "tree viewport + Interface 59-62 scrollbar; rows remain runtime"}
+  }
+}

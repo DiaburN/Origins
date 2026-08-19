@@ -1,0 +1,205 @@
+name: Visual review Zircon UI reference
+
+on:
+  workflow_dispatch:
+    inputs:
+      source_sha:
+        description: Exact origins-game-v1 SHA to review (blank = current branch HEAD)
+        required: false
+        type: string
+  push:
+    branches: [origins-game-v1]
+    paths:
+      - ".github/workflows/visual-review-zircon-ui-reference.yml"
+      - "apps/zircon-ui-reference/**"
+      - "tools/zircon-ui-importer/**"
+  workflow_run:
+    workflows: ["Browser QA Zircon UI reference"]
+    types: [completed]
+
+permissions:
+  actions: read
+  contents: read
+
+concurrency:
+  group: zircon-ui-visual-review-${{ github.event.workflow_run.head_branch || github.ref_name }}
+  cancel-in-progress: true
+
+jobs:
+  capture-visual-reference:
+    if: >-
+      ${{ github.event_name == 'workflow_dispatch' || github.event_name == 'push' || (github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_branch == 'origins-game-v1') }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - name: Resolve exact reviewed SHA
+        id: revision
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ "${GITHUB_EVENT_NAME}" == "workflow_run" ]]; then
+            sha='${{ github.event.workflow_run.head_sha }}'
+          elif [[ "${GITHUB_EVENT_NAME}" == "push" ]]; then
+            sha="${GITHUB_SHA}"
+          else
+            sha='${{ inputs.source_sha }}'
+            [[ -n "$sha" ]] || sha="$(gh api "repos/${GITHUB_REPOSITORY}/branches/origins-game-v1" --jq '.commit.sha')"
+          fi
+          [[ "$sha" =~ ^[0-9a-f]{40}$ ]] || { echo "Invalid source SHA: $sha"; exit 1; }
+          echo "sha=$sha" >> "$GITHUB_OUTPUT"
+          echo "Visual review source SHA: $sha"
+
+      - name: Checkout exact ORIGINS revision
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ steps.revision.outputs.sha }}
+
+      - name: Wait for successful Browser QA for exact SHA
+        if: github.event_name != 'workflow_run'
+        shell: bash
+        run: |
+          set -euo pipefail
+          sha='${{ steps.revision.outputs.sha }}'
+          for attempt in $(seq 1 100); do
+            payload="$(gh api "repos/${GITHUB_REPOSITORY}/actions/workflows/browser-qa-zircon-ui-reference.yml/runs?head_sha=${sha}&branch=origins-game-v1&per_page=20")"
+            status="$(python3 -c 'import json,sys; d=json.load(sys.stdin); xs=d.get("workflow_runs",[]); print(xs[0].get("status","") if xs else "")' <<<"$payload")"
+            conclusion="$(python3 -c 'import json,sys; d=json.load(sys.stdin); xs=d.get("workflow_runs",[]); print((xs[0].get("conclusion") or "") if xs else "")' <<<"$payload")"
+            run_id="$(python3 -c 'import json,sys; d=json.load(sys.stdin); xs=d.get("workflow_runs",[]); print(xs[0].get("id","") if xs else "")' <<<"$payload")"
+            if [[ -n "$run_id" && "$status" == "completed" ]]; then
+              [[ "$conclusion" == "success" ]] || { echo "Browser QA ${run_id} conclusion=${conclusion}"; exit 1; }
+              echo "Browser QA ${run_id}: PASS for ${sha}"
+              exit 0
+            fi
+            echo "Waiting for Browser QA ${sha} (${attempt}/100; run=${run_id:-none}; status=${status:-none})"
+            sleep 20
+          done
+          echo "Timed out waiting for Browser QA ${sha}"
+          exit 1
+
+      - name: Verify triggering Browser QA exact SHA
+        if: github.event_name == 'workflow_run'
+        shell: bash
+        run: |
+          set -euo pipefail
+          [[ '${{ github.event.workflow_run.conclusion }}' == 'success' ]]
+          [[ '${{ github.event.workflow_run.head_sha }}' == '${{ steps.revision.outputs.sha }}' ]]
+          echo "Trigger Browser QA PASS belongs to exact reviewed SHA."
+
+      - name: Download exact complete viewer artifact
+        shell: bash
+        run: |
+          set -euo pipefail
+          sha='${{ steps.revision.outputs.sha }}'
+          payload="$(gh api "repos/${GITHUB_REPOSITORY}/actions/workflows/build-zircon-ui-reference.yml/runs?head_sha=${sha}&branch=origins-game-v1&status=completed&per_page=20")"
+          run_id="$(python3 -c 'import json,sys; d=json.load(sys.stdin); xs=[x for x in d.get("workflow_runs",[]) if x.get("conclusion")=="success"]; print(xs[0]["id"] if xs else "")' <<<"$payload")"
+          [[ -n "$run_id" ]] || { echo "No successful build for ${sha}"; exit 1; }
+          artifacts="$(gh api "repos/${GITHUB_REPOSITORY}/actions/runs/${run_id}/artifacts")"
+          artifact_id="$(python3 -c 'import json,sys; d=json.load(sys.stdin); xs=[a for a in d.get("artifacts",[]) if a.get("name")=="zircon-ui-reference-complete" and not a.get("expired")]; print(xs[0]["id"] if xs else "")' <<<"$artifacts")"
+          [[ -n "$artifact_id" ]] || { echo "Complete viewer artifact missing for build ${run_id}"; exit 1; }
+          mkdir -p .visual/viewer .visual/screenshots .visual/doms
+          gh api "repos/${GITHUB_REPOSITORY}/actions/artifacts/${artifact_id}/zip" > .visual/viewer.zip
+          unzip -q .visual/viewer.zip -d .visual/viewer
+          test -f .visual/viewer/index.html
+          test -f .visual/viewer/ui-source-spec.json
+          test -f .visual/viewer/extra-runtimes/visual-review-runtime.js
+          node --check .visual/viewer/extra-runtimes/visual-review-runtime.js
+          echo "Exact artifact ${artifact_id} from build ${run_id}"
+
+      - name: Assert source and visual-review contracts before capture
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          spec=json.loads(Path('.visual/viewer/ui-source-spec.json').read_text())
+          windows=[*(spec.get('windows') or []),*(spec.get('nestedWindows') or [])]
+          if len(spec.get('windows') or []) != 65 or len(spec.get('nestedWindows') or []) != 15: raise SystemExit('Unexpected source catalog')
+          ids=[str(item.get('id') or '') for item in windows]
+          if len(ids)!=80 or len(set(ids))!=80 or any(not value for value in ids): raise SystemExit(f'Visual review IDs invalid: {len(ids)}/{len(set(ids))}')
+          controls=sum(len(item.get('controls') or []) for item in spec.get('windows') or [])
+          nested=sum(len(item.get('controls') or []) for item in spec.get('nestedWindows') or [])
+          if controls < 2674 or nested < 149: raise SystemExit(f'Visual review artifact floor regressed: {controls}+{nested}')
+          floor=spec.get('currentSourceControlFloor') or {}
+          pending=controls != 2674 or nested != 149
+          if floor.get('gameScene') != controls or floor.get('nested') != nested: raise SystemExit(f'Current floor does not match artifact: {floor}')
+          if floor.get('browserValidatedGameScene') != 2674 or floor.get('browserValidatedNested') != 149: raise SystemExit(f'Browser validated floor missing: {floor}')
+          if floor.get('browserValidationPending') is not pending: raise SystemExit(f'Browser pending state mismatch: {floor}')
+          review=spec.get('visualReviewHarnessAudit') or {}
+          if review.get('passed') is not True or review.get('expectedWindows') != 80 or review.get('externalToStage') is not True or review.get('writesGameWindowContent') is not False: raise SystemExit(f'Visual review harness contract missing: {review}')
+          final=spec.get('finalSupplementalSourceMatrix') or {}
+          if final.get('passed') is not True or final.get('visualReviewHarnessPassed') is not True: raise SystemExit(f'Final source matrix lacks visual guard: {final}')
+          Path('.visual/window-ids.txt').write_text('\n'.join(ids)+'\n',encoding='utf-8')
+          Path('.visual/source-summary.json').write_text(json.dumps({'sourceSha':'${{ steps.revision.outputs.sha }}','gameSceneWindows':65,'nestedWindows':15,'gameSceneControls':controls,'nestedControls':nested,'browserValidatedGameScene':2674,'browserValidatedNested':149,'ids':ids},indent=2)+'\n',encoding='utf-8')
+          print(f'Visual review source contract: PASS -> 80 windows, {controls}+{nested} controls')
+          PY
+
+      - name: Capture every reconstructed window
+        shell: bash
+        run: |
+          set -euo pipefail
+          chrome="$(command -v google-chrome || command -v google-chrome-stable || command -v chromium || true)"
+          [[ -n "$chrome" ]] || { echo "No Chrome/Chromium available"; exit 1; }
+          "$chrome" --version
+          python3 -m http.server 8766 --bind 127.0.0.1 --directory .visual/viewer > .visual/http-server.log 2>&1 &
+          server_pid=$!
+          trap 'kill "$server_pid" 2>/dev/null || true' EXIT
+          sleep 1
+          index=0
+          while IFS= read -r id; do
+            [[ -n "$id" ]] || continue
+            index=$((index+1))
+            safe="$(printf '%03d_%s' "$index" "$id" | tr -c 'A-Za-z0-9._-' '_')"
+            url="http://127.0.0.1:8766/index.html?review=1&reviewWindow=${id}"
+            "$chrome" --headless=new --no-sandbox --disable-gpu --hide-scrollbars --window-size=1600,1000 --virtual-time-budget=5000 --dump-dom "$url" > ".visual/doms/${safe}.html"
+            python3 - "$id" ".visual/doms/${safe}.html" <<'PY'
+          import html,re,sys
+          from pathlib import Path
+          wanted=sys.argv[1]; text=Path(sys.argv[2]).read_text(encoding='utf-8')
+          if 'id="visual-review-harness"' not in text or 'data-review-ready="true"' not in text: raise SystemExit(f'{wanted}: review harness not ready')
+          match=re.search(r'data-review-window-id="([^"]*)"',text); actual=html.unescape(match.group(1)) if match else ''
+          if actual != wanted: raise SystemExit(f'{wanted}: harness opened {actual!r}')
+          if 'data-visual-review-target="true"' not in text: raise SystemExit(f'{wanted}: reconstructed target not marked ready')
+          PY
+            "$chrome" --headless=new --no-sandbox --disable-gpu --hide-scrollbars --window-size=1600,1000 --virtual-time-budget=5000 --screenshot=".visual/screenshots/${safe}.png" "$url" >/dev/null 2>&1
+            test -s ".visual/screenshots/${safe}.png"
+            echo "Captured ${index}/80 ${id}"
+          done < .visual/window-ids.txt
+          count="$(find .visual/screenshots -maxdepth 1 -name '*.png' | wc -l | tr -d ' ')"
+          [[ "$count" == "80" ]] || { echo "Expected 80 screenshots, got ${count}"; exit 1; }
+
+      - name: Build offline review index
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          import html,json
+          root=Path('.visual'); summary=json.loads((root/'source-summary.json').read_text()); images=sorted((root/'screenshots').glob('*.png'))
+          if len(images)!=80: raise SystemExit(f'Expected 80 screenshots, got {len(images)}')
+          figures=[]
+          for image in images:
+              label=image.stem.split('_',1)[1] if '_' in image.stem else image.stem
+              figures.append(f'<figure><figcaption>{html.escape(label)}</figcaption><img loading="lazy" src="screenshots/{html.escape(image.name)}"></figure>')
+          document='<!doctype html><html><head><meta charset="utf-8"><title>ORIGINS Zircon visual review</title><style>body{font-family:Arial,sans-serif;background:#111;color:#ddd;margin:20px}h1{font-size:20px}.meta{color:#aaa}figure{margin:28px 0;padding:10px;border:1px solid #333;background:#181818}figcaption{margin-bottom:8px;color:#e7c776}img{display:block;max-width:100%;height:auto;border:1px solid #333}</style></head><body>'
+          document+=f'<h1>ORIGINS — Zircon desktop visual review</h1><p class="meta">SHA {html.escape(summary["sourceSha"])} · 80 windows · controls {summary["gameSceneControls"]}+{summary["nestedControls"]}</p>'
+          document+=''.join(figures)+'</body></html>'
+          (root/'index.html').write_text(document,encoding='utf-8')
+          PY
+
+      - name: Upload 80-window visual review evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: zircon-ui-visual-review-${{ steps.revision.outputs.sha }}
+          path: |
+            .visual/index.html
+            .visual/source-summary.json
+            .visual/window-ids.txt
+            .visual/screenshots/
+            .visual/doms/
+            .visual/http-server.log
+          if-no-files-found: warn
+          retention-days: 21

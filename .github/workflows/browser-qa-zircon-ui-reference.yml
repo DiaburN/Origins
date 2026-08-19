@@ -1,0 +1,219 @@
+name: Browser QA Zircon UI reference
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [origins-game-v1]
+    paths:
+      - "apps/zircon-ui-reference/**"
+      - "tools/zircon-ui-importer/**"
+      - ".github/workflows/browser-qa-zircon-ui-reference.yml"
+
+permissions:
+  actions: read
+  contents: read
+
+jobs:
+  browser-qa:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - name: Checkout exact ORIGINS revision
+        uses: actions/checkout@v4
+
+      - name: Wait for complete Zircon UI build for this SHA
+        id: build
+        shell: bash
+        run: |
+          set -euo pipefail
+          for attempt in $(seq 1 90); do
+            payload="$(gh api "repos/${GITHUB_REPOSITORY}/actions/workflows/build-zircon-ui-reference.yml/runs?head_sha=${GITHUB_SHA}&branch=origins-game-v1&per_page=20")"
+            run_id="$(python3 -c 'import json,sys; d=json.load(sys.stdin); xs=d.get("workflow_runs",[]); print(xs[0]["id"] if xs else "")' <<<"$payload")"
+            status="$(python3 -c 'import json,sys; d=json.load(sys.stdin); xs=d.get("workflow_runs",[]); print(xs[0].get("status","") if xs else "")' <<<"$payload")"
+            conclusion="$(python3 -c 'import json,sys; d=json.load(sys.stdin); xs=d.get("workflow_runs",[]); print((xs[0].get("conclusion") or "") if xs else "")' <<<"$payload")"
+            if [[ -n "$run_id" && "$status" == "completed" ]]; then
+              [[ "$conclusion" == "success" ]] || { echo "Source build ${run_id} conclusion=${conclusion}"; exit 1; }
+              echo "run_id=$run_id" >> "$GITHUB_OUTPUT"
+              echo "Using exact source build ${run_id}"
+              exit 0
+            fi
+            echo "Waiting for source build ${GITHUB_SHA} (${attempt}/90; run=${run_id:-none}; status=${status:-none})"
+            sleep 20
+          done
+          echo "Timed out waiting for complete Zircon UI build for ${GITHUB_SHA}"
+          exit 1
+
+      - name: Download exact built viewer artifact
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p .qa/viewer
+          artifacts="$(gh api "repos/${GITHUB_REPOSITORY}/actions/runs/${{ steps.build.outputs.run_id }}/artifacts")"
+          artifact_id="$(python3 -c 'import json,sys; d=json.load(sys.stdin); xs=[a for a in d.get("artifacts",[]) if a.get("name")=="zircon-ui-reference-complete" and not a.get("expired")]; print(xs[0]["id"] if xs else "")' <<<"$artifacts")"
+          [[ -n "$artifact_id" ]] || { echo "zircon-ui-reference-complete artifact not found"; exit 1; }
+          gh api "repos/${GITHUB_REPOSITORY}/actions/artifacts/${artifact_id}/zip" > .qa/viewer.zip
+          unzip -q .qa/viewer.zip -d .qa/viewer
+          test -f .qa/viewer/index.html
+          test -f .qa/viewer/ui-source-spec.json
+          echo "Downloaded artifact ${artifact_id} from build ${{ steps.build.outputs.run_id }}"
+
+      - name: Inject browser QA runtimes into exact artifact
+        shell: bash
+        run: |
+          set -euo pipefail
+          cp apps/zircon-ui-reference/browser-qa-runtime.js .qa/viewer/browser-qa-runtime.js
+          cp apps/zircon-ui-reference/browser-qa-window-runtime.js .qa/viewer/browser-qa-window-runtime.js
+          cp apps/zircon-ui-reference/browser-qa-chat-options-runtime.js .qa/viewer/browser-qa-chat-options-runtime.js
+          node --check .qa/viewer/browser-qa-runtime.js
+          node --check .qa/viewer/browser-qa-window-runtime.js
+          node --check .qa/viewer/browser-qa-chat-options-runtime.js
+          python3 - <<'PY'
+          from pathlib import Path
+          path=Path('.qa/viewer/index.html')
+          text=path.read_text(encoding='utf-8')
+          markers=[
+              '<script type="module" src="browser-qa-runtime.js"></script>',
+              '<script type="module" src="browser-qa-window-runtime.js"></script>',
+              '<script type="module" src="browser-qa-chat-options-runtime.js"></script>',
+          ]
+          if '</body>' not in text: raise SystemExit('Built viewer has no </body> marker')
+          for marker in markers:
+              if marker not in text: text=text.replace('</body>', f'  {marker}\n</body>', 1)
+          path.write_text(text,encoding='utf-8')
+          PY
+
+      - name: Run Chrome against all 80 reconstructed windows
+        shell: bash
+        run: |
+          set -euo pipefail
+          chrome="$(command -v google-chrome || command -v google-chrome-stable || command -v chromium || true)"
+          [[ -n "$chrome" ]] || { echo "No Chrome/Chromium executable available"; exit 1; }
+          echo "$chrome" > .qa/chrome-path
+          "$chrome" --version
+          python3 -m http.server 8765 --bind 127.0.0.1 --directory .qa/viewer > .qa/http-server.log 2>&1 &
+          server_pid=$!
+          trap 'kill "$server_pid" 2>/dev/null || true' EXIT
+          sleep 1
+          "$chrome" --headless=new --no-sandbox --disable-gpu --hide-scrollbars --window-size=1600,1000 --virtual-time-budget=60000 --dump-dom \
+            "http://127.0.0.1:8765/index.html?qa=1" > .qa/browser-qa-dom.html
+          python3 - <<'PY'
+          import html,json,re
+          from pathlib import Path
+          dom=Path('.qa/browser-qa-dom.html').read_text(encoding='utf-8')
+          match=re.search(r'<pre[^>]*id="browser-qa-result"[^>]*>(.*?)</pre>',dom,re.S)
+          if not match:
+              report={'status':'fail','failures':[{'id':'runner','issue':'Browser QA result node missing from rendered DOM'}]}
+          else:
+              report=json.loads(html.unescape(re.sub(r'<[^>]+>','',match.group(1))).strip())
+          Path('.qa/browser-qa-report.json').write_text(json.dumps(report,indent=2)+'\n',encoding='utf-8')
+          ids=[]
+          for failure in report.get('failures',[]):
+              value=str(failure.get('id') or '').strip()
+              if value and value not in {'catalog','manifest','source-status','runner'} and value not in ids: ids.append(value)
+          Path('.qa/failed-window-ids.txt').write_text('\n'.join(ids[:12])+('\n' if ids[:12] else ''),encoding='utf-8')
+          print(json.dumps(report,indent=2))
+          PY
+
+      - name: Run Chrome Chat Options local Add smoke
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p .qa
+          if [[ ! -f .qa/chrome-path ]]; then
+            echo '{"status":"fail","failures":["Chrome path missing after main Browser QA"]}' > .qa/chat-options-browser-qa-report.json
+            exit 0
+          fi
+          chrome="$(cat .qa/chrome-path)"
+          python3 -m http.server 8766 --bind 127.0.0.1 --directory .qa/viewer > .qa/chat-options-http-server.log 2>&1 &
+          server_pid=$!
+          trap 'kill "$server_pid" 2>/dev/null || true' EXIT
+          sleep 1
+          "$chrome" --headless=new --no-sandbox --disable-gpu --hide-scrollbars --window-size=1600,1000 --virtual-time-budget=30000 --dump-dom \
+            "http://127.0.0.1:8766/index.html?qaChatOptions=1" > .qa/chat-options-browser-qa-dom.html
+          python3 - <<'PY'
+          import html,json,re
+          from pathlib import Path
+          dom=Path('.qa/chat-options-browser-qa-dom.html').read_text(encoding='utf-8')
+          match=re.search(r'<pre[^>]*id="chat-options-qa-result"[^>]*>(.*?)</pre>',dom,re.S)
+          report={'status':'fail','failures':['Chat Options QA result node missing from rendered DOM']} if not match else json.loads(html.unescape(re.sub(r'<[^>]+>','',match.group(1))).strip())
+          Path('.qa/chat-options-browser-qa-report.json').write_text(json.dumps(report,indent=2)+'\n',encoding='utf-8')
+          print(json.dumps(report,indent=2))
+          PY
+
+      - name: Capture screenshots for failing windows
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ ! -s .qa/failed-window-ids.txt || ! -f .qa/chrome-path ]]; then echo "No per-window screenshots required"; exit 0; fi
+          chrome="$(cat .qa/chrome-path)"
+          mkdir -p .qa/screenshots
+          python3 -m http.server 8767 --bind 127.0.0.1 --directory .qa/viewer > .qa/screenshot-http-server.log 2>&1 &
+          server_pid=$!
+          trap 'kill "$server_pid" 2>/dev/null || true' EXIT
+          sleep 1
+          while IFS= read -r id; do
+            [[ -n "$id" ]] || continue
+            safe="$(printf '%s' "$id" | tr -c 'A-Za-z0-9._-' '_')"
+            "$chrome" --headless=new --no-sandbox --disable-gpu --hide-scrollbars --window-size=1600,1000 --virtual-time-budget=8000 \
+              --screenshot=".qa/screenshots/${safe}.png" "http://127.0.0.1:8767/index.html?qaWindow=${id}" >/dev/null 2>&1 || true
+          done < .qa/failed-window-ids.txt
+
+      - name: Assert browser QA result
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          report_path=Path('.qa/browser-qa-report.json'); chat_path=Path('.qa/chat-options-browser-qa-report.json'); spec_path=Path('.qa/viewer/ui-source-spec.json')
+          if not report_path.exists(): raise SystemExit('Browser QA report missing')
+          if not chat_path.exists(): raise SystemExit('Chat Options Browser QA report missing')
+          if not spec_path.exists(): raise SystemExit('Exact artifact source spec missing')
+          report=json.loads(report_path.read_text()); chat=json.loads(chat_path.read_text()); spec=json.loads(spec_path.read_text())
+          if report.get('status') != 'pass': raise SystemExit('Browser QA reported failures; see uploaded evidence')
+          if report.get('testedWindows') != 80: raise SystemExit(f"Browser QA covered {report.get('testedWindows')} windows, expected 80")
+          if report.get('browserErrors'): raise SystemExit(f"Browser JS errors: {report['browserErrors']}")
+          game=int(report.get('gameControlCount') or 0); nested=int(report.get('nestedControlCount') or 0)
+          if game < 2674: raise SystemExit(f'GameScene browser floor regressed: {game}')
+          if nested < 149: raise SystemExit(f'Nested browser floor regressed: {nested}')
+          if chat.get('status') != 'pass' or chat.get('browserErrors'): raise SystemExit(f'Chat Options Browser QA failed: {chat}')
+          zero={'listItems':0,'panels':0,'tabControls':0,'chatTabs':0}; one={'listItems':1,'panels':1,'tabControls':1,'chatTabs':1}
+          if chat.get('before') != zero or chat.get('afterAdd') != one or chat.get('afterRemove') != zero: raise SystemExit(f'Chat Options local tree drifted: {chat}')
+          if chat.get('checkboxes') != 16 or chat.get('manifestControlsAdded') != 0 or chat.get('runtimePayloadsInvented') is not False: raise SystemExit(f'Chat Options boundary drifted: {chat}')
+          pending=game != 2674 or nested != 149
+          floor=spec.get('currentSourceControlFloor') or {}
+          expected_floor={'passed':True,'gameScene':game,'nested':nested,'browserValidatedGameScene':2674,'browserValidatedNested':149,'browserValidationPending':pending,'browserValidationEvidenceSha':'40d5140805bede9f1c7c5af8c2fb0cefc284856c','browserValidationEvidenceRun':32175607481}
+          for key,value in expected_floor.items():
+              if floor.get(key) != value: raise SystemExit(f'Current source floor mismatch: {key}={floor.get(key)!r}, expected {value!r}; full={floor}')
+          final=spec.get('finalSupplementalSourceMatrix') or {}
+          expected_final={'passed':True,'minimumGameSceneControls':2674,'minimumNestedControls':149,'latestSourceAuditedGameSceneFloor':game,'latestSourceAuditedNestedFloor':nested,'browserValidatedGameSceneFloor':2674,'browserValidatedNestedFloor':149,'browserValidatedFloorPending':pending,'browserValidationEvidenceSha':'40d5140805bede9f1c7c5af8c2fb0cefc284856c','browserValidationEvidenceRun':32175607481}
+          for key,value in expected_final.items():
+              if final.get(key) != value: raise SystemExit(f'Final matrix mismatch: {key}={final.get(key)!r}, expected {value!r}')
+          bigmap=spec.get('bigMapSidePanelAudit') or {}
+          for key,value in {'passed':True,'deterministicControls':4,'initialSelectedTab':'NPCTab','runtimeGeometryInvented':False,'runtimeMapInfoInvented':False,'runtimeNPCsInvented':False,'runtimeMonstersInvented':False}.items():
+              if bigmap.get(key) != value: raise SystemExit(f'BigMap side-panel drifted: {bigmap}')
+          print(f'Browser QA: PASS (80/80; Chat Options PASS; source {game}+{nested}; validated floor 2674+149; pending={pending})')
+          PY
+
+      - name: Upload browser QA evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: zircon-ui-browser-qa-${{ github.sha }}
+          path: |
+            .qa/browser-qa-report.json
+            .qa/browser-qa-dom.html
+            .qa/http-server.log
+            .qa/chat-options-browser-qa-report.json
+            .qa/chat-options-browser-qa-dom.html
+            .qa/chat-options-http-server.log
+            .qa/failed-window-ids.txt
+            .qa/screenshots/
+            .qa/screenshot-http-server.log
+          if-no-files-found: warn
+          retention-days: 14

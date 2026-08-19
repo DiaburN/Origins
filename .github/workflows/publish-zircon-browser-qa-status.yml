@@ -1,0 +1,130 @@
+name: Publish Zircon QA statuses
+
+on:
+  workflow_dispatch:
+    inputs:
+      source_sha:
+        description: Exact origins-game-v1 SHA to publish (blank = current branch HEAD)
+        required: false
+        type: string
+  push:
+    branches: [origins-game-v1]
+    paths:
+      - "apps/zircon-ui-reference/**"
+      - "tools/zircon-ui-importer/**"
+
+permissions:
+  actions: read
+  contents: read
+  statuses: write
+
+concurrency:
+  group: zircon-qa-status-${{ github.ref_name }}
+  cancel-in-progress: true
+
+jobs:
+  publish-status:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - name: Resolve exact source SHA
+        id: revision
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ "${GITHUB_EVENT_NAME}" == "push" ]]; then
+            sha="${GITHUB_SHA}"
+          else
+            sha='${{ inputs.source_sha }}'
+            if [[ -z "$sha" ]]; then
+              sha="$(gh api "repos/${GITHUB_REPOSITORY}/branches/origins-game-v1" --jq '.commit.sha')"
+            fi
+          fi
+          [[ "$sha" =~ ^[0-9a-f]{40}$ ]] || { echo "Invalid QA source SHA: $sha"; exit 1; }
+          echo "sha=$sha" >> "$GITHUB_OUTPUT"
+          echo "QA status source SHA: $sha"
+
+      - name: Wait for Browser QA and publish exact SHA result
+        shell: bash
+        run: |
+          set -euo pipefail
+          sha='${{ steps.revision.outputs.sha }}'
+          for attempt in $(seq 1 100); do
+            payload="$(gh api "repos/${GITHUB_REPOSITORY}/actions/workflows/browser-qa-zircon-ui-reference.yml/runs?head_sha=${sha}&branch=origins-game-v1&per_page=20")"
+            run_id="$(python3 -c 'import json,sys; d=json.load(sys.stdin); xs=d.get("workflow_runs",[]); print(xs[0].get("id","") if xs else "")' <<<"$payload")"
+            status="$(python3 -c 'import json,sys; d=json.load(sys.stdin); xs=d.get("workflow_runs",[]); print(xs[0].get("status","") if xs else "")' <<<"$payload")"
+            conclusion="$(python3 -c 'import json,sys; d=json.load(sys.stdin); xs=d.get("workflow_runs",[]); print((xs[0].get("conclusion") or "") if xs else "")' <<<"$payload")"
+            if [[ -n "$run_id" && "$status" == "completed" ]]; then
+              if [[ "$conclusion" == "success" ]]; then
+                state="success"
+                description="Zircon Browser QA PASS for exact SHA"
+              else
+                state="failure"
+                description="Zircon Browser QA ${conclusion:-unknown} for exact SHA"
+              fi
+              target_url="${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${run_id}"
+              gh api --method POST "repos/${GITHUB_REPOSITORY}/statuses/${sha}" \
+                -f state="$state" \
+                -f context="origins/zircon-browser-qa" \
+                -f description="$description" \
+                -f target_url="$target_url"
+              echo "Published origins/zircon-browser-qa=${state} for ${sha} from Browser QA run ${run_id}"
+              [[ "$state" == "success" ]] || exit 1
+              break
+            fi
+            echo "Waiting for Browser QA for ${sha} (${attempt}/100; run=${run_id:-none}; status=${status:-none})"
+            sleep 20
+            if [[ "$attempt" == "100" ]]; then
+              description="Zircon Browser QA result unavailable for exact SHA"
+              gh api --method POST "repos/${GITHUB_REPOSITORY}/statuses/${sha}" \
+                -f state="failure" \
+                -f context="origins/zircon-browser-qa" \
+                -f description="$description" \
+                -f target_url="${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions"
+              echo "Timed out waiting for Browser QA for ${sha}; published failure status"
+              exit 1
+            fi
+          done
+
+      - name: Wait for Visual Review and publish exact SHA result
+        shell: bash
+        run: |
+          set -euo pipefail
+          sha='${{ steps.revision.outputs.sha }}'
+          for attempt in $(seq 1 160); do
+            payload="$(gh api "repos/${GITHUB_REPOSITORY}/actions/workflows/visual-review-zircon-ui-reference.yml/runs?head_sha=${sha}&branch=origins-game-v1&per_page=20")"
+            run_id="$(python3 -c 'import json,sys; d=json.load(sys.stdin); xs=d.get("workflow_runs",[]); print(xs[0].get("id","") if xs else "")' <<<"$payload")"
+            status="$(python3 -c 'import json,sys; d=json.load(sys.stdin); xs=d.get("workflow_runs",[]); print(xs[0].get("status","") if xs else "")' <<<"$payload")"
+            conclusion="$(python3 -c 'import json,sys; d=json.load(sys.stdin); xs=d.get("workflow_runs",[]); print((xs[0].get("conclusion") or "") if xs else "")' <<<"$payload")"
+            if [[ -n "$run_id" && "$status" == "completed" ]]; then
+              if [[ "$conclusion" == "success" ]]; then
+                state="success"
+                description="Zircon Visual Review PASS (80/80) for exact SHA"
+              else
+                state="failure"
+                description="Zircon Visual Review ${conclusion:-unknown} for exact SHA"
+              fi
+              target_url="${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${run_id}"
+              gh api --method POST "repos/${GITHUB_REPOSITORY}/statuses/${sha}" \
+                -f state="$state" \
+                -f context="origins/zircon-visual-review" \
+                -f description="$description" \
+                -f target_url="$target_url"
+              echo "Published origins/zircon-visual-review=${state} for ${sha} from Visual Review run ${run_id}"
+              [[ "$state" == "success" ]] || exit 1
+              exit 0
+            fi
+            echo "Waiting for Visual Review for ${sha} (${attempt}/160; run=${run_id:-none}; status=${status:-none})"
+            sleep 20
+          done
+
+          description="Zircon Visual Review result unavailable for exact SHA"
+          gh api --method POST "repos/${GITHUB_REPOSITORY}/statuses/${sha}" \
+            -f state="failure" \
+            -f context="origins/zircon-visual-review" \
+            -f description="$description" \
+            -f target_url="${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions"
+          echo "Timed out waiting for Visual Review for ${sha}; published failure status"
+          exit 1

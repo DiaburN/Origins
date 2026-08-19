@@ -1,0 +1,301 @@
+name: Build complete Zircon UI reference
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [origins-game-v1]
+    paths:
+      - ".github/workflows/build-zircon-ui-reference.yml"
+      - "tools/zircon-ui-importer/**"
+      - "apps/zircon-ui-reference/**"
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Checkout ORIGINS
+        uses: actions/checkout@v4
+
+      - name: Install Pillow
+        run: python3 -m pip install --user Pillow
+
+      - name: Checkout Zircon source of truth
+        run: |
+          set -euo pipefail
+          rm -rf .source/Zircon
+          git clone --depth 1 https://github.com/Suprcode/Zircon.git .source/Zircon
+          echo "Zircon source: $(git -C .source/Zircon rev-parse HEAD)"
+
+      - name: Build source-derived UI manifest
+        run: |
+          set -euo pipefail
+          rm -rf .build/zircon-ui .source/zircon-ui-libraries
+          mkdir -p .build/zircon-ui .source/zircon-ui-libraries
+          python3 tools/zircon-ui-importer/build_ui_source_spec.py \
+            --zircon-root .source/Zircon \
+            --out .build/zircon-ui/ui-source-spec.json
+          python3 tools/zircon-ui-importer/augment_ui_custom_tabs.py \
+            --spec .build/zircon-ui/ui-source-spec.json \
+            --zircon-root .source/Zircon
+          python3 tools/zircon-ui-importer/augment_ui_composites.py \
+            --spec .build/zircon-ui/ui-source-spec.json \
+            --zircon-root .source/Zircon \
+            --max-depth 2
+          python3 tools/zircon-ui-importer/augment_ui_language.py \
+            --spec .build/zircon-ui/ui-source-spec.json \
+            --english-messages .source/Zircon/Client/Envir/Translations/EnglishMessages.cs
+          python3 tools/zircon-ui-importer/augment_ui_symbols.py \
+            --spec .build/zircon-ui/ui-source-spec.json \
+            --zircon-root .source/Zircon
+          python3 tools/zircon-ui-importer/augment_ui_derived_geometry_v2.py \
+            --spec .build/zircon-ui/ui-source-spec.json \
+            --zircon-root .source/Zircon
+          python3 tools/zircon-ui-importer/augment_ui_interactions.py \
+            --spec .build/zircon-ui/ui-source-spec.json \
+            --zircon-root .source/Zircon
+          python3 tools/zircon-ui-importer/augment_npc_dialog_reference.py \
+            --spec .build/zircon-ui/ui-source-spec.json
+
+      - name: Validate source, controls, composites, tabs and interactions
+        run: |
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          spec=json.loads(Path('.build/zircon-ui/ui-source-spec.json').read_text())
+          policy=json.loads(Path('apps/zircon-ui-reference/control-render-policy.json').read_text())
+          if spec['windowCount'] != 65:
+              raise SystemExit(f"Expected 65 GameScene windows, got {spec['windowCount']}")
+          missing=[w['field'] for w in spec['windows'] if w.get('sourceMissing')]
+          if missing:
+              raise SystemExit(f'Missing Zircon source classes: {missing}')
+          nested=spec.get('nestedWindows',[])
+          nested_report=spec.get('nestedWindowInventory',{})
+          if len(nested) != 15 or nested_report.get('reconstructedCount') != 15 or nested_report.get('skipped'):
+              raise SystemExit(f'Nested/transient Zircon reconstruction incomplete: {nested_report}')
+          if not any(c.get('type')=='DXVScrollBar' for w in nested if w.get('sourceClass')=='DXKeyBindWindow' for c in w.get('controls',[])):
+              raise SystemExit('DXKeyBindWindow custom tree scrollbar missing')
+          discovered={c['type'] for w in spec['windows'] for c in w.get('controls',[])}
+          covered=set(policy['policies'])
+          if discovered-covered:
+              raise SystemExit(f'Unmapped DX controls after composite expansion: {sorted(discovered-covered)}')
+          controls=sum(len(w.get('controls',[])) for w in spec['windows'])
+          if controls <= 1026:
+              raise SystemExit(f'Quest composite expansion added no controls: {controls}')
+          language=spec.get('language',{})
+          if language.get('resolvedControlCount',0) < 400 or language.get('unresolvedReferencedKeys'):
+              raise SystemExit('Zircon language resolution regressed')
+
+          custom=spec.get('customTabPass',{})
+          if custom.get('questStaticTabsAdded') != 5 or custom.get('guildStaticTabsAdded') != 7:
+              raise SystemExit(f'Custom tab expansion mismatch: {custom}')
+          if custom.get('magicDynamicTemplates') != 16 or custom.get('dynamicMagicVisibilityInvented') is not False:
+              raise SystemExit(f'Magic dynamic tab contract mismatch: {custom}')
+
+          composite=spec.get('compositePass',{})
+          if composite.get('questChildrenAdded',0) <= 0:
+              raise SystemExit('Quest custom tab child constructors were not expanded')
+          children=composite.get('childrenByTab',{})
+          for tab in ('CurrentTab','AvailableTab','CompletedTab','MilestoneTab'):
+              if children.get(tab,0) <= 0:
+                  raise SystemExit(f'Quest source composite tab has no constructor children: {tab} -> {children}')
+          if children.get('MissionTab') != 0 or composite.get('questRuntimeOnlyTabs') != ['MissionTab']:
+              raise SystemExit(f'MissionTab must remain explicitly runtime-only: {composite}')
+
+          character=next(w for w in spec['windows'] if w['field']=='CharacterBox')
+          if '110' not in str(character.get('root',{}).get('Index')):
+              raise SystemExit('CharacterDialog source index lost')
+          ranking=next(w for w in spec['windows'] if w['field']=='RankingBox')
+          last=next(c for c in ranking['controls'] if c['name']=='LastUpdate')
+          if 'fullRanking' in str(last['properties'].get('Location')):
+              raise SystemExit('Ranking constructor argument unresolved')
+
+          menu={item['control']:(item['action'],item['targetField']) for item in spec.get('interactions',[]) if item['sourceField']=='MenuBox'}
+          expected={
+              'SettingsButton':('toggle','ConfigBox'),'HelpButton':('toggle','HelpBox'),
+              'GuildButton':('toggle','GuildBox'),'StorageButton':('toggle','StorageBox'),
+              'RankingButton':('toggle','RankingBox'),'CompanionButton':('toggle','CompanionBox'),
+              'LeaveButton':('open','ExitBox'),
+          }
+          if menu != expected:
+              raise SystemExit(f'Menu interaction extraction mismatch: {menu}')
+
+          all_controls=[c for w in spec['windows'] for c in w.get('controls',[])]
+          tab_controls=[c for c in all_controls if c['type']=='DXTabControl']
+          tabs=[c for c in all_controls if c['type'] in ('DXTab','DXConfigTab')]
+          if len(tab_controls) < 15 or len(tabs) < 50:
+              raise SystemExit(f'Tab inventory unexpectedly incomplete: {len(tab_controls)} controls / {len(tabs)} tabs')
+
+          def tab_children(field, tab_control):
+              window=next(w for w in spec['windows'] if w['field']==field)
+              return [c for c in window['controls'] if c['type'] in ('DXTab','DXConfigTab') and c.get('properties',{}).get('Parent')==tab_control]
+          if [c['name'] for c in tab_children('ConfigBox','TabControl')] != ['GraphicsTab','SoundTab','GameTab','NetworkTab','UITab']:
+              raise SystemExit('Config tab hierarchy changed')
+          if [c['name'] for c in tab_children('CharacterBox','TabControl')] != ['CharacterTab','DisciplineTab','HermitTab']:
+              raise SystemExit('Character primary tab hierarchy changed')
+          if len(tab_children('CharacterBox','StatsTabControl')) != 7:
+              raise SystemExit('Character stats tab hierarchy changed')
+          if [c['name'] for c in tab_children('StorageBox','TabControl')] != ['StorageTab','PartsTab']:
+              raise SystemExit('Storage tab hierarchy changed')
+
+          quest=tab_children('QuestBox','TabControl')
+          quest_visible=[c['name'] for c in quest if c.get('tabButtonVisible',True)]
+          quest_hidden=[c['name'] for c in quest if not c.get('tabButtonVisible',True)]
+          if quest_visible != ['CurrentTab','AvailableTab','MilestoneTab'] or set(quest_hidden) != {'CompletedTab','MissionTab'}:
+              raise SystemExit(f'Quest source visibility mismatch: visible={quest_visible} hidden={quest_hidden}')
+          guild=tab_children('GuildBox','GuildTabs')
+          if len(guild) != 7 or [c['name'] for c in guild if c.get('tabButtonVisible')] != ['CreateTab']:
+              raise SystemExit('Guild initial noGuild tab state mismatch')
+          magic=next(w for w in spec['windows'] if w['field']=='MagicBox').get('dynamicTabTemplates',{})
+          if not magic.get('doNotAssumeVisibleSchools') or len(magic.get('templates',[])) != 16:
+              raise SystemExit('Magic runtime tab template contract broken')
+
+          npc=next(w for w in spec['windows'] if w['field']=='NPCBox')
+          if npc.get('root',{}).get('Size')!='new Size(380, 204)' or npc.get('root',{}).get('CustomFrame')!='NPCDialog':
+              raise SystemExit(f'NPC custom-frame contract missing: {npc.get("root",{})}')
+          required_npc_assets={380,381,382,385,387}
+          if not required_npc_assets.issubset(set(spec.get('assetRefs',{}).get('GameInter',[]))):
+              raise SystemExit('NPC custom GameInter assets were not promoted before extraction')
+
+          print('Source-backed interactions:',len(spec.get('interactions',[])))
+          print('GameScene windows:',spec['windowCount'])
+          print('Nested/transient windows:',len(nested))
+          print('Nested custom children:',nested_report.get('compositeChildrenAdded'))
+          print('Controls:',controls)
+          print('DX types:',len(discovered))
+          print('English labels:',language.get('resolvedControlCount'))
+          print('NPC custom-frame assets:',sorted(required_npc_assets))
+          PY
+
+      - name: Download and extract exact Zircon artwork
+        run: |
+          python3 tools/zircon-ui-importer/build_full_reference_assets.py \
+            --spec .build/zircon-ui/ui-source-spec.json \
+            --source-dir .source/zircon-ui-libraries \
+            --out .build/zircon-ui
+
+      - name: Assemble complete navigable viewer and promote official manifest
+        run: |
+          cp apps/zircon-ui-reference/index-derived.html .build/zircon-ui/index.html
+          cp apps/zircon-ui-reference/styles.css .build/zircon-ui/styles.css
+          cp apps/zircon-ui-reference/app-layout.js .build/zircon-ui/app-layout.js
+          cp apps/zircon-ui-reference/animated-control-runtime.js .build/zircon-ui/animated-control-runtime.js
+          cp apps/zircon-ui-reference/window-runtime.js .build/zircon-ui/window-runtime.js
+          cp apps/zircon-ui-reference/interaction-runtime.js .build/zircon-ui/interaction-runtime.js
+          cp apps/zircon-ui-reference/nested-variant-runtime.js .build/zircon-ui/nested-variant-runtime.js
+          cp apps/zircon-ui-reference/tab-runtime.js .build/zircon-ui/tab-runtime.js
+          cp apps/zircon-ui-reference/game-scene-windows.js .build/zircon-ui/game-scene-windows.js
+          cp apps/zircon-ui-reference/control-render-policy.json .build/zircon-ui/control-render-policy.json
+          cp apps/zircon-ui-reference/layout-resolver.js .build/zircon-ui/layout-resolver-base.js
+          cp apps/zircon-ui-reference/layout-resolver-derived.js .build/zircon-ui/layout-resolver-derived.js
+          python3 tools/zircon-ui-importer/patch_multiwindow_runtime.py .build/zircon-ui/app-layout.js
+          node --check .build/zircon-ui/app-layout.js
+          node --check .build/zircon-ui/animated-control-runtime.js
+          node --check .build/zircon-ui/window-runtime.js
+          node --check .build/zircon-ui/interaction-runtime.js
+          node --check .build/zircon-ui/nested-variant-runtime.js
+          node --check .build/zircon-ui/tab-runtime.js
+          node --check .build/zircon-ui/layout-resolver-base.js
+          node --check .build/zircon-ui/layout-resolver-derived.js
+          node --check .build/zircon-ui/game-scene-windows.js
+          grep -Fq "existing?.isConnected" .build/zircon-ui/app-layout.js
+          grep -Fq "dataset.controlIndex" .build/zircon-ui/app-layout.js
+          grep -Fq "window-runtime.js" .build/zircon-ui/index.html
+          grep -Fq "interaction-runtime.js" .build/zircon-ui/index.html
+          grep -Fq "nested-variant-runtime.js" .build/zircon-ui/index.html
+          grep -Fq "messagebox-reference-variant" .build/zircon-ui/nested-variant-runtime.js
+
+      - name: Refresh artwork after supplemental manifest promotion
+        run: |
+          set -euo pipefail
+          python3 tools/zircon-ui-importer/build_full_reference_assets.py \
+            --spec .build/zircon-ui/ui-source-spec.json \
+            --source-dir .source/zircon-ui-libraries \
+            --out .build/zircon-ui
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          root=Path('.build/zircon-ui')
+          spec=json.loads((root/'ui-source-spec.json').read_text())
+          asset_build=json.loads((root/'asset-build.json').read_text())
+          literal=spec.get('supplementalLiteralAssetRefPass',{})
+          if literal.get('passed') is not True or literal.get('symbolicRuntimeRefsInvented') is not False:
+              raise SystemExit(f'Supplemental literal asset pass missing/invalid: {literal}')
+          required={'GameInter':{3624,6570},'Interface':{60,61,62}}
+          for library, ids in required.items():
+              promoted=set(int(value) for value in spec.get('assetRefs',{}).get(library,[]))
+              built=set(int(value) for value in (asset_build.get(library) or {}).get('ids',[]))
+              if not ids.issubset(promoted):
+                  raise SystemExit(f'{library} supplemental refs missing from manifest: {sorted(ids-promoted)}')
+              if not ids.issubset(built):
+                  raise SystemExit(f'{library} supplemental refs missing from extracted asset build: {sorted(ids-built)}')
+          print('Supplemental artwork refresh: PASS')
+          PY
+
+      - name: Validate zero-fallback GameScene geometry
+        run: |
+          cat > .build/zircon-ui/validate-final.mjs <<'JS'
+          import fs from 'node:fs';
+          import { pathToFileURL } from 'node:url';
+          const root='.build/zircon-ui';
+          const spec=JSON.parse(fs.readFileSync(`${root}/ui-source-spec.json`,'utf8'));
+          const {buildWindowLayout}=await import(pathToFileURL(`${process.cwd()}/${root}/layout-resolver-derived.js`).href);
+          const bad=[]; let explicit=0;
+          for(const window of spec.windows){
+            const layout=buildWindowLayout(spec,window);
+            for(let i=0;i<(window.controls||[]).length;i++){
+              const control=window.controls[i], props=control.properties||{}, node=layout.nodes[i];
+              if(!('Location' in props)) continue;
+              explicit++;
+              const source=String(props.Location).trim();
+              const explicitZero=/^(Point\.Empty|new Point\(\s*0\s*,\s*0\s*\))$/.test(source);
+              if(node && node.localX===0 && node.localY===0 && !explicitZero)
+                bad.push({window:window.field,control:control.name,source,original:control.sourceLocationExpression||null});
+            }
+          }
+          console.log('Explicit GameScene source Locations:',explicit);
+          console.log('Suspicious GameScene geometry fallbacks:',bad.length);
+          if(bad.length) console.log(JSON.stringify(bad.slice(0,50),null,2));
+          if(explicit < 754) throw new Error(`explicit Location coverage regressed: ${explicit}`);
+          if(bad.length!==0) throw new Error(`zero-fallback contract broken: ${bad.length}`);
+          const main=spec.windows.find(w=>w.field==='MainPanel');
+          const char=main.controls.find(c=>c.name==='CharacterButton');
+          if(char.properties.Location!=='new Point(650, 23)') throw new Error('Character button location changed');
+          const big=spec.windows.find(w=>w.field==='BigMapBox');
+          if(big.controls.find(c=>c.name==='Panel').properties.Location!=='ClientArea.Location') throw new Error('BigMap ClientArea layout unresolved');
+          JS
+          node .build/zircon-ui/validate-final.mjs
+
+      - name: Report final reconstruction
+        run: |
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          root=Path('.build/zircon-ui')
+          spec=json.loads((root/'ui-source-spec.json').read_text())
+          assets=json.loads((root/'asset-build.json').read_text())
+          missing=[k for k,v in assets.items() if v.get('missing')]
+          pngs=list((root/'assets').rglob('*.png'))
+          print(f"Source-resolved GameScene windows: {sum(1 for w in spec['windows'] if w.get('sourcePath'))}/{spec['windowCount']}")
+          print('Nested/transient source windows:',len(spec.get('nestedWindows',[])))
+          print('GameScene parsed/renderable controls:',sum(len(w.get('controls',[])) for w in spec['windows']))
+          print('Nested parsed/renderable controls:',sum(len(w.get('controls',[])) for w in spec.get('nestedWindows',[])))
+          print('Resolved English control labels:',spec.get('language',{}).get('resolvedControlCount'))
+          print('Missing public UI libraries:',missing)
+          print('Extracted PNG files:',len(pngs))
+          if missing:
+              raise SystemExit('A required public Zircon library is missing')
+          if len(pngs) < 454:
+              raise SystemExit(f'Extracted PNG coverage regressed: {len(pngs)}')
+          PY
+
+      - name: Upload complete Zircon GameScene UI reference
+        uses: actions/upload-artifact@v4
+        with:
+          name: zircon-ui-reference-complete
+          path: .build/zircon-ui
+          if-no-files-found: error
+          retention-days: 14

@@ -1,0 +1,119 @@
+name: Audit Zircon supplemental source contracts
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [origins-game-v1]
+    paths:
+      - ".github/workflows/audit-zircon-supplemental-contracts.yml"
+      - "tools/zircon-ui-importer/**"
+      - "apps/zircon-ui-reference/**"
+
+permissions:
+  contents: read
+
+jobs:
+  supplemental-source-contracts:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout ORIGINS
+        uses: actions/checkout@v4
+
+      - name: Checkout current Zircon source
+        run: |
+          set -euo pipefail
+          rm -rf .source/Zircon .build/supplemental
+          git clone --depth 1 https://github.com/Suprcode/Zircon.git .source/Zircon
+          mkdir -p .build/supplemental
+          echo "Zircon source: $(git -C .source/Zircon rev-parse HEAD)"
+
+      - name: Build and run every supplemental source contract
+        run: |
+          set -euo pipefail
+          python3 tools/zircon-ui-importer/build_ui_source_spec.py --zircon-root .source/Zircon --out .build/supplemental/ui-source-spec.json
+          python3 tools/zircon-ui-importer/augment_ui_custom_tabs.py --spec .build/supplemental/ui-source-spec.json --zircon-root .source/Zircon
+          python3 tools/zircon-ui-importer/augment_ui_composites.py --spec .build/supplemental/ui-source-spec.json --zircon-root .source/Zircon --max-depth 2
+          python3 tools/zircon-ui-importer/augment_ui_language.py --spec .build/supplemental/ui-source-spec.json --english-messages .source/Zircon/Client/Envir/Translations/EnglishMessages.cs
+          python3 tools/zircon-ui-importer/augment_ui_symbols.py --spec .build/supplemental/ui-source-spec.json --zircon-root .source/Zircon
+          python3 tools/zircon-ui-importer/augment_ui_derived_geometry_v2.py --spec .build/supplemental/ui-source-spec.json --zircon-root .source/Zircon
+          python3 tools/zircon-ui-importer/augment_ui_interactions.py --spec .build/supplemental/ui-source-spec.json --zircon-root .source/Zircon
+          python3 tools/zircon-ui-importer/augment_npc_dialog_reference.py --spec .build/supplemental/ui-source-spec.json
+          cp apps/zircon-ui-reference/app-layout.js .build/supplemental/app-layout.js
+          cp apps/zircon-ui-reference/animated-control-runtime.js .build/supplemental/animated-control-runtime.js
+          python3 tools/zircon-ui-importer/promote_runtime_manifest_identity.py --spec .build/supplemental/ui-source-spec.json --registry apps/zircon-ui-reference/game-scene-windows.js
+
+      - name: Assert promoted browser/source matrix
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          spec=json.loads(Path('.build/supplemental/ui-source-spec.json').read_text())
+          by={w['field']:w for w in spec['windows']}
+          game=sum(len(w.get('controls',[])) for w in spec['windows'])
+          nested=sum(len(w.get('controls',[])) for w in spec.get('nestedWindows',[]))
+          assert game >= 2674, game
+          assert nested >= 149, nested
+          pending=game != 2674 or nested != 149
+
+          final=spec['finalSupplementalSourceMatrix']
+          assert final['passed'] is True
+          assert final['gameSceneControls']==game and final['nestedControls']==nested
+          assert final['minimumGameSceneControls']==2674 and final['minimumNestedControls']==149
+          assert final['latestSourceAuditedGameSceneFloor']==game and final['latestSourceAuditedNestedFloor']==nested
+          assert final['browserValidatedGameSceneFloor']==2674 and final['browserValidatedNestedFloor']==149
+          assert final['browserValidatedFloorPending'] is pending
+          assert final['browserValidationEvidenceSha']=='40d5140805bede9f1c7c5af8c2fb0cefc284856c'
+          assert final['browserValidationEvidenceRun']==32175607481
+
+          floor=spec['currentSourceControlFloor']
+          assert floor['passed'] is True
+          assert floor['gameScene']==game and floor['nested']==nested
+          assert floor['browserValidatedGameScene']==2674 and floor['browserValidatedNested']==149
+          assert floor['browserValidationPending'] is pending
+
+          ranking=by['RankingBox']['rankingSourceState']
+          assert ranking['fullRanking'] is True and ranking['sourceIndex']==211 and ranking['size']==[576,456]
+          rows=spec['deterministicSourceRowAudit']
+          assert rows['passed'] is True
+          assert (rows['rankingRows'],rows['dungeonRows'],rows['fortuneRows'],rows['bigMapRows'])==(12,9,9,48)
+          bigmap=spec['bigMapSidePanelAudit']
+          assert bigmap['passed'] is True and bigmap['deterministicControls']==4 and bigmap['initialSelectedTab']=='NPCTab'
+          assert bigmap['runtimeGeometryInvented'] is False and bigmap['runtimeMapInfoInvented'] is False and bigmap['runtimeNPCsInvented'] is False and bigmap['runtimeMonstersInvented'] is False
+
+          guild=spec['guildMemberRowAudit']
+          assert guild['passed'] is True and guild['headerRows']==1 and guild['memberRows']==17
+          assert guild['sourceControls']==108 and guild['replacedIncompleteCompositeControls']==0 and guild['netControlsAdded']==108
+          guild_root=spec['guildRootHelperAudit']
+          assert guild_root['passed'] is True and guild_root['deterministicControls']==16 and guild_root['panels']==6 and guild_root['buttons']==10
+
+          assert spec['gameStoreCompositeAudit']['deterministicControls']==215
+          assert spec['communicationReceivedRowAudit']['deterministicControls']==25
+          assert spec['consignmentCompositeAudit']['deterministicControls']==135
+          assert spec['consignmentDeterministicAudit']['deterministicControls']==135
+          assert spec['currencyTreeAudit']['deterministicControls']==2
+          assert spec['companionBonusRowAudit']['deterministicControls']==21
+          assert spec['npcQuestListRowAudit']['deterministicControls']==18
+          assert spec['helpMenuShellAudit']['deterministicControls']==2
+
+          helpers=spec['uiCreationHelperInventory']
+          assert helpers['passed'] is True and helpers['version']==3
+          assert helpers['helperCount']==56 and helpers['deferredHelperCount']==35
+          assert helpers['classificationCounts']=={'runtime-bound':5,'deferred-runtime':13,'deferred-local-state':22,'deterministic-source':16}
+          assert helpers['statusCounts']=={'runtime-bound':4,'audited-deferred-runtime':13,'audited-deferred-local':22,'materialized':17}
+          for flag in ('knownBigMapHelpersMaterialized','chatOptionsAddNewTabDeferredLocal','helpPagesRemainRuntimeBound','magicTabsRemainRuntimeBound','guildConstructorHelpersMaterialized','guildWarRuntimeCastlePanelsRemainNeutral','eventCallbacksExcludedFromCreationClassification','staticGlobalsDoNotImplyRuntimeData','storeCategoryNodesRemainRuntimeBound','communicationBlockRowsRemainRuntimeBound','gameStoreSortItemsLinkedWithoutDuplication','companionEnumFiltersMaterialized','sourceBackedOnly'):
+              assert helpers[flag] is True, flag
+          assert helpers['runtimePayloadsInvented'] is False
+
+          assert spec['browserQaWorkflowAudit']['passed'] is True
+          assert spec['visualReviewWorkflowAudit']['passed'] is True
+          assert spec['browserQaStatusPublisherAudit']['passed'] is True
+          print(f'Supplemental source matrix: PASS ({game}+{nested}; validated 2674+149; pending={pending})')
+          PY
+
+      - name: Check all fidelity runtime syntax
+        run: |
+          set -euo pipefail
+          node --check apps/zircon-ui-reference/browser-qa-runtime.js
+          for file in apps/zircon-ui-reference/extra-runtimes/*.js; do node --check "$file"; done

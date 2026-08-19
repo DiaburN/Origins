@@ -1,0 +1,126 @@
+name: Audit Zircon source contracts
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [origins-game-v1]
+    paths:
+      - ".github/workflows/audit-zircon-source-contracts.yml"
+      - "tools/zircon-ui-importer/**"
+      - "apps/zircon-ui-reference/**"
+
+permissions:
+  contents: read
+
+jobs:
+  source-contracts:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout ORIGINS
+        uses: actions/checkout@v4
+
+      - name: Checkout current Zircon source
+        run: |
+          set -euo pipefail
+          rm -rf .source/Zircon .build/source-contracts
+          git clone --depth 1 https://github.com/Suprcode/Zircon.git .source/Zircon
+          mkdir -p .build/source-contracts
+          echo "Zircon source: $(git -C .source/Zircon rev-parse HEAD)"
+
+      - name: Build and promote exact source manifest
+        run: |
+          set -euo pipefail
+          python3 tools/zircon-ui-importer/build_ui_source_spec.py --zircon-root .source/Zircon --out .build/source-contracts/ui-source-spec.json
+          python3 tools/zircon-ui-importer/augment_ui_custom_tabs.py --spec .build/source-contracts/ui-source-spec.json --zircon-root .source/Zircon
+          python3 tools/zircon-ui-importer/augment_ui_composites.py --spec .build/source-contracts/ui-source-spec.json --zircon-root .source/Zircon --max-depth 2
+          python3 tools/zircon-ui-importer/augment_ui_language.py --spec .build/source-contracts/ui-source-spec.json --english-messages .source/Zircon/Client/Envir/Translations/EnglishMessages.cs
+          python3 tools/zircon-ui-importer/augment_ui_symbols.py --spec .build/source-contracts/ui-source-spec.json --zircon-root .source/Zircon
+          python3 tools/zircon-ui-importer/augment_ui_derived_geometry_v2.py --spec .build/source-contracts/ui-source-spec.json --zircon-root .source/Zircon
+          python3 tools/zircon-ui-importer/augment_ui_interactions.py --spec .build/source-contracts/ui-source-spec.json --zircon-root .source/Zircon
+          python3 tools/zircon-ui-importer/augment_npc_dialog_reference.py --spec .build/source-contracts/ui-source-spec.json
+          cp apps/zircon-ui-reference/app-layout.js .build/source-contracts/app-layout.js
+          cp apps/zircon-ui-reference/animated-control-runtime.js .build/source-contracts/animated-control-runtime.js
+          python3 tools/zircon-ui-importer/promote_runtime_manifest_identity.py --spec .build/source-contracts/ui-source-spec.json --registry apps/zircon-ui-reference/game-scene-windows.js
+
+      - name: Assert exact current source contracts
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          spec=json.loads(Path('.build/source-contracts/ui-source-spec.json').read_text())
+          windows=spec['windows']; nested=spec['nestedWindows']; all_windows=[*windows,*nested]
+          assert len(windows)==65
+          assert len(nested)==15
+          assert len({window['id'] for window in all_windows})==80
+          game_controls=sum(len(window.get('controls',[])) for window in windows)
+          nested_controls=sum(len(window.get('controls',[])) for window in nested)
+          assert game_controls >= 2674, game_controls
+          assert nested_controls >= 149, nested_controls
+
+          interactions=spec.get('interactions',[])
+          actual={(item['sourceField'],item['control'],item['action'],item['targetField']) for item in interactions}
+          expected={
+              ('MainPanel','InventoryButton','toggle','InventoryBox'),
+              ('MainPanel','SpellButton','toggle','MagicBox'),
+              ('MainPanel','QuestButton','toggle','QuestBox'),
+              ('MainPanel','BeltButton','toggle','BeltBox'),
+              ('MainPanel','GroupButton','toggle','GroupBox'),
+              ('MainPanel','MenuButton','toggle','MenuBox'),
+              ('MainPanel','CharacterButton','toggle','CharacterBox'),
+              ('MainPanel','MailButton','toggle','CommunicationBox'),
+              ('MainPanel','CashShopButton','toggle','GameStoreBox'),
+              ('MenuBox','SettingsButton','toggle','ConfigBox'),
+              ('MenuBox','HelpButton','toggle','HelpBox'),
+              ('MenuBox','GuildButton','toggle','GuildBox'),
+              ('MenuBox','StorageButton','toggle','StorageBox'),
+              ('MenuBox','RankingButton','toggle','RankingBox'),
+              ('MenuBox','CompanionButton','toggle','CompanionBox'),
+              ('MenuBox','LeaveButton','open','ExitBox'),
+              ('ConfigBox','HideChatBarCheckBox','open','ChatTextBox'),
+              ('ChatTextBox','OptionsButton','toggle','ChatOptionsBox'),
+              ('NPCQuestBox','StartLabel','open','BigMapBox'),
+              ('NPCQuestBox','EndLabel','open','BigMapBox'),
+              ('MiniMapBox','BigMapButton','toggle','BigMapBox'),
+          }
+          assert len(interactions)==21, interactions
+          assert actual==expected, (actual-expected,expected-actual)
+
+          assert not spec['customDrawAudit']['unclassified'], spec['customDrawAudit']['unclassified']
+          assert spec['renderCoverageAudit']['gameTypeCoverage']=='22/22'
+          assert spec['renderCoverageAudit']['nestedTypeCoverage']=='10/10'
+          assert spec['renderCoverageAudit']['issueCount']==0
+          assert spec['overflowContractPass']['contractCount']==7
+          assert spec['complexActionAudit']['contractCount']==9
+
+          by={window['field']:window for window in windows}
+          assert by['RankingBox']['rankingSourceState']['fullRanking'] is True
+          assert by['RankingBox']['rankingSourceState']['sourceIndex']==211
+          assert by['RankingBox']['rankingSourceState']['size']==[576,456]
+          assert by['AutoPotionBox']['autoPotionSourceLoop']['rowCount']==8
+          assert len([c for c in by['AutoPotionBox']['controls'] if str(c.get('name','')).startswith('AutoPotionRow')])==80
+          assert by['BeltBox']['root']['Size']=='new Size(64, 54)'
+          assert by['MiniMapBox']['root']['Size']=='new Size(200, 200)'
+          assert by['MagicBarBox']['root']['Size']=='new Size(646, 65)'
+          assert by['MagicBarBox']['magicBarSourceLoop']['slots']==24
+          assert by['NPCBox']['root']['CustomFrame']=='NPCDialog'
+
+          floor=spec['currentSourceControlFloor']
+          pending=game_controls != 2674 or nested_controls != 149
+          assert floor['gameScene']==game_controls and floor['nested']==nested_controls
+          assert floor['browserValidatedGameScene']==2674 and floor['browserValidatedNested']==149
+          assert floor['browserValidationPending'] is pending
+          assert floor['browserValidationEvidenceSha']=='40d5140805bede9f1c7c5af8c2fb0cefc284856c'
+          assert floor['browserValidationEvidenceRun']==32175607481
+
+          print(f'Zircon source-contract matrix: PASS ({game_controls}+{nested_controls}; interactions=21; render=22/22+10/10; pending={pending})')
+          PY
+
+      - name: Check source runtime syntax
+        run: |
+          set -euo pipefail
+          node --check apps/zircon-ui-reference/app-layout.js
+          node --check apps/zircon-ui-reference/animated-control-runtime.js
+          node --check apps/zircon-ui-reference/browser-qa-runtime.js
+          for file in apps/zircon-ui-reference/extra-runtimes/*.js; do node --check "$file"; done
