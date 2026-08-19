@@ -12,7 +12,19 @@ namespace Server.Models.Magics
     {
         protected CrystalArcherProjectile(PlayerObject player, UserMagic magic) : base(player, magic) { }
 
-        protected MagicCast QueueSingle(MapObject target, int extraDelay = 0)
+        protected int RangeMCPower(int distance, bool mentalState = true)
+        {
+            int min = Math.Max(0, Player.Stats[Stat.MinMC]);
+            int max = Math.Max(min, Player.Stats[Stat.MaxMC]);
+            int clamped = Math.Max(0, Math.Min(9, distance));
+            decimal x = ((decimal)min / 9M) * (9 - clamped);
+            min -= (int)Math.Floor(x);
+            int roll = min >= max ? max : SEnvir.Random.Next(min, max + 1);
+            int damage = Magic.GetPower() + roll;
+            return mentalState ? ApplyMentalState(damage) : damage;
+        }
+
+        protected MagicCast QueueTarget(MapObject target, int power, int baseDelay = 500)
         {
             var response = new MagicCast { Ob = target };
             if (!CanCrystalProjectile(target))
@@ -22,44 +34,35 @@ namespace Server.Models.Magics
                 return response;
             }
 
-            int distance = RangeDistance(target.CurrentLocation);
-            int power = Magic.GetPower() + GetRangeMCPower(distance);
-            power = ApplyMentalState(power);
             Point locked = target.CurrentLocation;
-
             response.Targets.Add(target.ObjectID);
             ActionList.Add(new DelayedAction(
-                SEnvir.Now.AddMilliseconds(ProjectileDelay(target) + extraDelay),
-                ActionType.DelayMagic,
-                Type,
-                target,
-                locked,
-                power));
+                SEnvir.Now.AddMilliseconds(ProjectileDelay(target, baseDelay)),
+                ActionType.DelayMagic, Type, target, locked, power));
             return response;
         }
 
-        protected int ResolveLockedTarget(MapObject target, Point locked, int power)
+        protected int ResolveTarget(MapObject target, Point locked, int power)
         {
             if (!TargetStillLocked(target, locked)) return 0;
             return Player.MagicAttack(new List<MagicType> { Type }, target, true, null, power);
         }
 
-        public override int ModifyPowerAdditionner(bool primary, int power, MapObject ob, Stats stats = null, int extra = 0)
-        {
-            return extra != 0 ? extra : power;
-        }
+        public override int ModifyPowerAdditionner(bool primary, int power, MapObject ob, Stats stats = null, int extra = 0) => extra;
     }
 
     [MagicType(MagicType.StraightShot)]
     public sealed class StraightShot : CrystalArcherProjectile
     {
         public StraightShot(PlayerObject player, UserMagic magic) : base(player, magic) { }
-
-        public override MagicCast MagicCast(MapObject target, Point location, MirDirection direction) => QueueSingle(target);
-
+        public override MagicCast MagicCast(MapObject target, Point location, MirDirection direction)
+        {
+            int distance = target == null ? 0 : RangeDistance(target.CurrentLocation);
+            return QueueTarget(target, RangeMCPower(distance));
+        }
         public override void MagicComplete(params object[] data)
         {
-            ResolveLockedTarget((MapObject)data[1], (Point)data[2], (int)data[3]);
+            if (ResolveTarget((MapObject)data[1], (Point)data[2], (int)data[3]) > 0) Player.LevelMagic(Magic);
         }
     }
 
@@ -67,58 +70,32 @@ namespace Server.Models.Magics
     public sealed class DoubleShot : CrystalArcherProjectile
     {
         public DoubleShot(PlayerObject player, UserMagic magic) : base(player, magic) { }
-
         public override MagicCast MagicCast(MapObject target, Point location, MirDirection direction)
         {
-            var response = new MagicCast { Ob = target };
-            if (!CanCrystalProjectile(target))
-            {
-                response.Cast = false;
-                response.Ob = null;
-                return response;
-            }
-
-            int distance = RangeDistance(target.CurrentLocation);
-            int power = ApplyMentalState(Magic.GetPower() + GetRangeMCPower(distance));
-            Point locked = target.CurrentLocation;
-            int delay = ProjectileDelay(target);
-
-            response.Targets.Add(target.ObjectID);
-            ActionList.Add(new DelayedAction(SEnvir.Now.AddMilliseconds(delay), ActionType.DelayMagic, Type, target, locked, power));
-            ActionList.Add(new DelayedAction(SEnvir.Now.AddMilliseconds(delay + 50), ActionType.DelayMagic, Type, target, locked, power));
-            return response;
+            int distance = target == null ? 0 : RangeDistance(target.CurrentLocation);
+            return QueueTarget(target, RangeMCPower(distance));
         }
-
         public override void MagicComplete(params object[] data)
         {
-            ResolveLockedTarget((MapObject)data[1], (Point)data[2], (int)data[3]);
+            if (ResolveTarget((MapObject)data[1], (Point)data[2], (int)data[3]) > 0) Player.LevelMagic(Magic);
         }
     }
 
     public abstract class CrystalDelayedExplosionBase : CrystalArcherProjectile
     {
-        protected virtual int ProjectileBaseDelay => 500;
+        protected virtual int FlightBaseDelay => 500;
         protected virtual BuffType ExplosionBuff => BuffType.CrystalDelayedExplosion;
         protected virtual bool Infect => false;
-        protected virtual int ExplosionTickMilliseconds => 4000;
-
         protected CrystalDelayedExplosionBase(PlayerObject player, UserMagic magic) : base(player, magic) { }
 
         public override MagicCast MagicCast(MapObject target, Point location, MirDirection direction)
         {
             var response = new MagicCast { Ob = target };
-            if (!CanCrystalProjectile(target))
-            {
-                response.Cast = false;
-                return response;
-            }
-
+            if (!CanCrystalProjectile(target)) { response.Cast = false; return response; }
             int power = Magic.GetPower() + Player.GetMC();
             Point locked = target.CurrentLocation;
-            int delay = ProjectileBaseDelay + RangeDistance(locked) * 50;
-
             response.Targets.Add(target.ObjectID);
-            ActionList.Add(new DelayedAction(SEnvir.Now.AddMilliseconds(delay), ActionType.DelayMagic, Type, target, locked, power));
+            ActionList.Add(new DelayedAction(SEnvir.Now.AddMilliseconds(ProjectileDelay(target, FlightBaseDelay)), ActionType.DelayMagic, Type, target, locked, power));
             return response;
         }
 
@@ -128,46 +105,15 @@ namespace Server.Models.Magics
             Point locked = (Point)data[2];
             int power = (int)data[3];
             if (!TargetStillLocked(target, locked)) return;
-
             int damage = Player.MagicAttack(new List<MagicType> { Type }, target, true, null, power);
-            if (damage > 0) Player.LevelMagic(Magic);
+            if (damage <= 0) return;
 
-            target.BuffAdd(
-                ExplosionBuff,
-                TimeSpan.FromSeconds(Math.Max(6, (power * 2) + (Magic.Level + 1) * 7)),
-                new Stats
-                {
-                    [Stat.CrystalDelayedExplosionPower] = power,
-                    [Stat.CrystalDelayedExplosionInfect] = Infect ? 1 : 0,
-                },
-                false,
-                false,
-                TimeSpan.FromMilliseconds(ExplosionTickMilliseconds),
-                false,
-                (int)Player.ObjectID);
-
-            // Base Crystal levels this spell again when the delayed state is attached.
-            Player.LevelMagic(Magic);
-        }
-
-        public void Explode(Map map, Point location, int power)
-        {
-            if (map == null || Player.Node == null || Player.Dead) return;
-
-            bool found = false;
-            foreach (Cell cell in map.GetCells(location, 0, 1))
+            target.BuffAdd(ExplosionBuff, TimeSpan.FromSeconds(8), new Stats
             {
-                if (cell.Objects == null) continue;
-
-                foreach (MapObject ob in cell.Objects.ToList())
-                {
-                    if (ob?.Node == null || ob.Dead || !Player.CanAttackTarget(ob)) continue;
-                    Player.MagicAttack(new List<MagicType> { Type }, ob, true, null, power);
-                    found = true;
-                }
-            }
-
-            if (found) Player.LevelMagic(Magic);
+                [Stat.CrystalDelayedExplosionPower] = power,
+                [Stat.CrystalDelayedExplosionInfect] = Infect ? 1 : 0,
+            }, false, false, TimeSpan.FromSeconds(7), false, (int)Player.ObjectID);
+            Player.LevelMagic(Magic);
         }
     }
 
@@ -177,27 +123,35 @@ namespace Server.Models.Magics
         public DelayedExplosion(PlayerObject player, UserMagic magic) : base(player, magic) { }
     }
 
+    [MagicType(MagicType.DelayedExplosion2)]
+    public sealed class DelayedExplosion2 : CrystalDelayedExplosionBase
+    {
+        protected override int FlightBaseDelay => 2600;
+        protected override BuffType ExplosionBuff => BuffType.CrystalDelayedExplosion2;
+        protected override bool Infect => true;
+        public DelayedExplosion2(PlayerObject player, UserMagic magic) : base(player, magic) { }
+    }
+
     public abstract class CrystalSpecialArrow : CrystalArcherProjectile
     {
         protected CrystalSpecialArrow(PlayerObject player, UserMagic magic) : base(player, magic) { }
-
-        public override MagicCast MagicCast(MapObject target, Point location, MirDirection direction) => QueueSingle(target);
-
-        protected void AddGreenPoison(MapObject target, int value, int divisor)
+        protected void ApplyGreenPoison(MapObject target, int power, byte skillLevel)
         {
             if (target?.Node == null || target.Dead) return;
-
-            int poisonBonus = Math.Max(0, Player.Stats[Stat.PoisonAttack]);
-            int poisonRoll = poisonBonus == 0 ? 0 : SEnvir.Random.Next(poisonBonus);
-
+            int bonus = Player.Stats[Stat.PoisonAttack] > 0 ? SEnvir.Random.Next(Player.Stats[Stat.PoisonAttack]) : 0;
+            int durationSeconds = power * 2 + (skillLevel + 1) * 7;
             target.ApplyPoison(new Poison
             {
-                Owner = Player,
-                Type = PoisonType.Green,
-                TickCount = Math.Max(1, (value * 2) + (Magic.Level + 1) * 7),
+                Owner = Player, Type = PoisonType.Green,
+                Value = power / 25 + skillLevel + 1 + bonus,
+                TickCount = Math.Max(1, durationSeconds / 2),
                 TickFrequency = TimeSpan.FromSeconds(2),
-                Value = value / divisor + Magic.Level + 1 + poisonRoll,
             });
+        }
+        protected static void ShortenBuff(PlayerObject player, BuffType type)
+        {
+            BuffInfo buff = player.Buffs.FirstOrDefault(x => x.Type == type);
+            if (buff != null && buff.RemainingTime > TimeSpan.FromSeconds(1)) buff.RemainingTime = TimeSpan.FromSeconds(1);
         }
     }
 
@@ -206,49 +160,32 @@ namespace Server.Models.Magics
     {
         private int _vampAmount;
         private DateTime _vampTime;
-
         public VampireShot(PlayerObject player, UserMagic magic) : base(player, magic) { }
-
-        public override void MagicComplete(params object[] data)
+        public override MagicCast MagicCast(MapObject target, Point location, MirDirection direction)
         {
-            MapObject target = (MapObject)data[1];
-            Point locked = (Point)data[2];
-            int value = (int)data[3];
-            int damage = ResolveLockedTarget(target, locked, value);
-            if (damage <= 0) return;
-
-            AddVamp(value);
-
-            bool hasVamp = Player.Buffs.Any(x => x.Type == BuffType.CrystalVampireShot);
-            bool hasPoison = Player.Buffs.Any(x => x.Type == BuffType.CrystalPoisonShot);
-
-            // Preserve source condition (Random.Next(20) >= 8), regardless of the old 40% comment.
-            if (!hasVamp && !hasPoison && SEnvir.Random.Next(20) >= 8)
-            {
-                Player.BuffAdd(
-                    BuffType.CrystalVampireShot,
-                    TimeSpan.FromSeconds(5 + 5 * Magic.Level),
-                    new Stats(),
-                    true,
-                    false,
-                    TimeSpan.Zero);
-            }
+            int distance = target == null ? 0 : RangeDistance(target.CurrentLocation);
+            return QueueTarget(target, RangeMCPower(distance));
         }
-
-        public void AddVamp(int value)
+        internal void AddVamp(int power, byte skillLevel)
         {
             if (_vampAmount == 0) _vampTime = SEnvir.Now.AddSeconds(1);
-            _vampAmount += (int)(value * (Magic.Level + 1) * 0.25F);
+            _vampAmount += (int)(power * (skillLevel + 1) * 0.25F);
         }
-
+        public override void MagicComplete(params object[] data)
+        {
+            MapObject target = (MapObject)data[1]; Point locked = (Point)data[2]; int power = (int)data[3];
+            if (ResolveTarget(target, locked, power) <= 0) return;
+            bool hasVamp = Player.Buffs.Any(x => x.Type == BuffType.CrystalVampireShot);
+            bool hasPoison = Player.Buffs.Any(x => x.Type == BuffType.CrystalPoisonShot);
+            if (!hasVamp && !hasPoison && SEnvir.Random.Next(20) >= 8)
+                Player.BuffAdd(BuffType.CrystalVampireShot, TimeSpan.FromSeconds(5 + 5 * Magic.Level), new Stats(), true, false, TimeSpan.Zero);
+            AddVamp(power, Magic.Level);
+            Player.LevelMagic(Magic);
+        }
         public override void Process()
         {
-            if (_vampAmount <= 0 || SEnvir.Now < _vampTime || Player.Dead) return;
-
-            int heal = Math.Min(10, _vampAmount);
-            _vampAmount -= heal;
-            Player.ChangeHP(heal);
-            if (_vampAmount > 0) _vampTime = SEnvir.Now.AddMilliseconds(500);
+            if (_vampAmount <= 0 || Player.Dead || SEnvir.Now < _vampTime) return;
+            int heal = Math.Min(10, _vampAmount); _vampAmount -= heal; Player.ChangeHP(heal); _vampTime = SEnvir.Now.AddMilliseconds(500);
         }
     }
 
@@ -256,29 +193,21 @@ namespace Server.Models.Magics
     public sealed class PoisonShot : CrystalSpecialArrow
     {
         public PoisonShot(PlayerObject player, UserMagic magic) : base(player, magic) { }
-
+        public override MagicCast MagicCast(MapObject target, Point location, MirDirection direction)
+        {
+            int distance = target == null ? 0 : RangeDistance(target.CurrentLocation);
+            return QueueTarget(target, RangeMCPower(distance));
+        }
         public override void MagicComplete(params object[] data)
         {
-            MapObject target = (MapObject)data[1];
-            Point locked = (Point)data[2];
-            int value = (int)data[3];
-            int damage = ResolveLockedTarget(target, locked, value);
-            if (damage <= 0) return;
-
-            AddGreenPoison(target, value, 25);
-
+            MapObject target = (MapObject)data[1]; Point locked = (Point)data[2]; int power = (int)data[3];
+            if (ResolveTarget(target, locked, power) <= 0) return;
             bool hasVamp = Player.Buffs.Any(x => x.Type == BuffType.CrystalVampireShot);
             bool hasPoison = Player.Buffs.Any(x => x.Type == BuffType.CrystalPoisonShot);
-            if (!hasPoison && !hasVamp && SEnvir.Random.Next(20) >= 8)
-            {
-                Player.BuffAdd(
-                    BuffType.CrystalPoisonShot,
-                    TimeSpan.FromSeconds(5 + 5 * Magic.Level),
-                    new Stats(),
-                    true,
-                    false,
-                    TimeSpan.Zero);
-            }
+            if (!hasVamp && !hasPoison && SEnvir.Random.Next(20) >= 8)
+                Player.BuffAdd(BuffType.CrystalPoisonShot, TimeSpan.FromSeconds(5 + 5 * Magic.Level), new Stats(), true, false, TimeSpan.Zero);
+            ApplyGreenPoison(target, power, Magic.Level);
+            Player.LevelMagic(Magic);
         }
     }
 
@@ -286,227 +215,155 @@ namespace Server.Models.Magics
     public sealed class CrippleShot : CrystalSpecialArrow
     {
         public CrippleShot(PlayerObject player, UserMagic magic) : base(player, magic) { }
-
+        public override MagicCast MagicCast(MapObject target, Point location, MirDirection direction)
+        {
+            int distance = target == null ? 0 : RangeDistance(target.CurrentLocation);
+            return QueueTarget(target, RangeMCPower(distance));
+        }
         public override void MagicComplete(params object[] data)
         {
-            MapObject target = (MapObject)data[1];
-            Point locked = (Point)data[2];
-            int value = (int)data[3];
-            if (ResolveLockedTarget(target, locked, value) <= 0) return;
-
+            MapObject target = (MapObject)data[1]; Point locked = (Point)data[2]; int power = (int)data[3];
+            if (ResolveTarget(target, locked, power) <= 0) return;
             bool hasVamp = Player.Buffs.Any(x => x.Type == BuffType.CrystalVampireShot);
             bool hasPoison = Player.Buffs.Any(x => x.Type == BuffType.CrystalPoisonShot);
-            if (!hasVamp && !hasPoison) return;
-
-            if (hasVamp) Player.BuffRemove(BuffType.CrystalVampireShot);
-            if (hasPoison) Player.BuffRemove(BuffType.CrystalPoisonShot);
-
-            VampireShot vampire = null;
-            if (hasVamp && Player.GetMagic(MagicType.VampireShot, out MagicObject vampMagic))
-                vampire = vampMagic as VampireShot;
-
-            foreach (Cell cell in CurrentMap.GetCells(target.CurrentLocation, 0, 1))
+            if (hasVamp || hasPoison)
             {
-                if (cell.Objects == null) continue;
-
-                foreach (MapObject areaTarget in cell.Objects.ToList())
+                foreach (Cell cell in CurrentMap.GetCells(target.CurrentLocation, 0, 1))
                 {
-                    if (areaTarget?.Node == null || areaTarget.Dead || !Player.CanAttackTarget(areaTarget)) continue;
-
-                    if (hasVamp)
+                    if (cell?.Objects == null) continue;
+                    foreach (MapObject victim in cell.Objects.ToList())
                     {
-                        // Crystal's implementation deliberately re-hits the original
-                        // target once for every hostile object found in the 3x3.
-                        Player.MagicAttack(new List<MagicType> { Type }, target, true, null, value);
-                        vampire?.AddVamp(value);
+                        if (victim?.Node == null || victim.Dead || !Player.CanAttackTarget(victim)) continue;
+                        if (hasVamp)
+                        {
+                            int dealt = Player.MagicAttack(new List<MagicType> { Type }, victim, true, null, power);
+                            if (dealt > 0 && Player.GetMagic(MagicType.VampireShot, out VampireShot vampire)) vampire.AddVamp(power, Magic.Level);
+                        }
+                        if (hasPoison) ApplyGreenPoison(victim, power, Magic.Level);
                     }
+                }
+                if (hasVamp) ShortenBuff(Player, BuffType.CrystalVampireShot);
+                if (hasPoison) ShortenBuff(Player, BuffType.CrystalPoisonShot);
+            }
+            Player.LevelMagic(Magic);
+        }
+    }
 
-                    if (hasPoison)
-                        AddGreenPoison(areaTarget, value, 25);
+    public abstract class CrystalNapalmBase : CrystalSpecialArrow
+    {
+        protected virtual bool ConsumeSpecialState => false;
+        protected CrystalNapalmBase(PlayerObject player, UserMagic magic) : base(player, magic) { }
+        public override MagicCast MagicCast(MapObject target, Point location, MirDirection direction)
+        {
+            var response = new MagicCast { Ob = target };
+            if (!CanCrystalProjectile(target)) { response.Cast = false; return response; }
+            int distance = RangeDistance(target.CurrentLocation);
+            int power = RangeMCPower(distance);
+            Point impact = target.CurrentLocation;
+            response.Targets.Add(target.ObjectID);
+            ActionList.Add(new DelayedAction(SEnvir.Now.AddMilliseconds(ProjectileDelay(target)), ActionType.DelayMagic, Type, impact, power));
+            return response;
+        }
+        public override void MagicComplete(params object[] data)
+        {
+            Point location = (Point)data[1]; int power = (int)data[2];
+            bool hasVamp = ConsumeSpecialState && Player.Buffs.Any(x => x.Type == BuffType.CrystalVampireShot);
+            bool hasPoison = ConsumeSpecialState && Player.Buffs.Any(x => x.Type == BuffType.CrystalPoisonShot);
+            bool trained = false;
+            foreach (Cell cell in CurrentMap.GetCells(location, 0, 2))
+            {
+                if (cell?.Objects == null) continue;
+                foreach (MapObject victim in cell.Objects.ToList())
+                {
+                    if (victim?.Node == null || victim.Dead || !Player.CanAttackTarget(victim)) continue;
+                    int dealt = Player.MagicAttack(new List<MagicType> { Type }, victim, true, null, power);
+                    if (dealt <= 0) continue;
+                    trained = true;
+                    if (hasVamp && Player.GetMagic(MagicType.VampireShot, out VampireShot vampire)) vampire.AddVamp(power, Magic.Level);
+                    if (hasPoison) ApplyGreenPoison(victim, power, Magic.Level);
                 }
             }
+            if (hasVamp) ShortenBuff(Player, BuffType.CrystalVampireShot);
+            if (hasPoison) ShortenBuff(Player, BuffType.CrystalPoisonShot);
+            if (trained) Player.LevelMagic(Magic);
         }
     }
 
     [MagicType(MagicType.NapalmShot)]
-    public sealed class NapalmShot : CrystalArcherProjectile
+    public sealed class NapalmShot : CrystalNapalmBase { public NapalmShot(PlayerObject player, UserMagic magic) : base(player, magic) { } }
+
+    [MagicType(MagicType.NapalmShot2)]
+    public sealed class NapalmShot2 : CrystalNapalmBase
     {
-        public NapalmShot(PlayerObject player, UserMagic magic) : base(player, magic) { }
-
-        public override MagicCast MagicCast(MapObject target, Point location, MirDirection direction)
-        {
-            var response = new MagicCast { Ob = target };
-            if (!CanCrystalProjectile(target))
-            {
-                response.Cast = false;
-                return response;
-            }
-
-            int distance = RangeDistance(target.CurrentLocation);
-            int power = ApplyMentalState(Magic.GetPower() + GetRangeMCPower(distance));
-            Point impact = target.CurrentLocation;
-            response.Targets.Add(target.ObjectID);
-
-            ActionList.Add(new DelayedAction(
-                SEnvir.Now.AddMilliseconds(ProjectileDelay(target)),
-                ActionType.DelayMagic,
-                Type,
-                CurrentMap,
-                impact,
-                power));
-            return response;
-        }
-
-        public override void MagicComplete(params object[] data)
-        {
-            Map map = (Map)data[1];
-            Point impact = (Point)data[2];
-            int power = (int)data[3];
-            if (map != CurrentMap) return;
-
-            bool train = false;
-            foreach (Cell cell in map.GetCells(impact, 0, 2))
-            {
-                if (cell.Objects == null) continue;
-                foreach (MapObject ob in cell.Objects.ToList())
-                {
-                    if (ob?.Node == null || ob.Dead || !Player.CanAttackTarget(ob)) continue;
-                    Player.MagicAttack(new List<MagicType> { Type }, ob, true, null, power);
-                    train = true;
-                }
-            }
-            if (train) Player.LevelMagic(Magic);
-        }
-
-        public override int ModifyPowerAdditionner(bool primary, int power, MapObject ob, Stats stats = null, int extra = 0) => extra;
+        protected override bool ConsumeSpecialState => true;
+        public NapalmShot2(PlayerObject player, UserMagic magic) : base(player, magic) { }
     }
 
     [MagicType(MagicType.OneWithNature)]
-    public sealed class OneWithNature : CrystalArcherProjectile
+    public sealed class OneWithNature : CrystalSpecialArrow
     {
         public OneWithNature(PlayerObject player, UserMagic magic) : base(player, magic) { }
-
         public override MagicCast MagicCast(MapObject target, Point location, MirDirection direction)
         {
-            var response = new MagicCast { Ob = Player };
             int power = Magic.GetPower() + Player.GetMC();
-            ActionList.Add(new DelayedAction(
-                SEnvir.Now.AddMilliseconds(500),
-                ActionType.DelayMagic,
-                Type,
-                CurrentMap,
-                CurrentLocation,
-                power));
-            return response;
+            ActionList.Add(new DelayedAction(SEnvir.Now.AddMilliseconds(500), ActionType.DelayMagic, Type, Player.CurrentLocation, power));
+            return new MagicCast { Ob = Player };
         }
-
         public override void MagicComplete(params object[] data)
         {
-            Map map = (Map)data[1];
-            Point location = (Point)data[2];
-            int value = (int)data[3];
-            if (map != CurrentMap) return;
-
+            Point location = (Point)data[1]; int power = (int)data[2];
             bool hasVamp = Player.Buffs.Any(x => x.Type == BuffType.CrystalVampireShot);
             bool hasPoison = Player.Buffs.Any(x => x.Type == BuffType.CrystalPoisonShot);
-            VampireShot vampire = null;
-            if (hasVamp && Player.GetMagic(MagicType.VampireShot, out MagicObject vampMagic))
-                vampire = vampMagic as VampireShot;
-
-            bool train = false;
-            foreach (Cell cell in map.GetCells(location, 0, 2))
+            bool trained = false;
+            foreach (Cell cell in CurrentMap.GetCells(location, 0, 2))
             {
-                if (cell.Objects == null) continue;
-                foreach (MapObject ob in cell.Objects.ToList())
+                if (cell?.Objects == null) continue;
+                foreach (MapObject victim in cell.Objects.ToList())
                 {
-                    if (ob?.Node == null || ob.Dead || !Player.CanAttackTarget(ob)) continue;
-
-                    int damage = Player.MagicAttack(new List<MagicType> { Type }, ob, true, null, value);
-                    if (damage <= 0) continue;
-
-                    if (hasVamp) vampire?.AddVamp(value);
-                    if (hasPoison)
-                    {
-                        int poisonBonus = Math.Max(0, Player.Stats[Stat.PoisonAttack]);
-                        int roll = poisonBonus == 0 ? 0 : SEnvir.Random.Next(poisonBonus);
-                        ob.ApplyPoison(new Poison
-                        {
-                            Owner = Player,
-                            Type = PoisonType.Green,
-                            TickCount = Math.Max(1, (value * 2) + (Magic.Level + 1) * 7),
-                            TickFrequency = TimeSpan.FromSeconds(2),
-                            Value = value / 15 + Magic.Level + 1 + roll,
-                        });
-                    }
-                    train = true;
+                    if (victim?.Node == null || victim.Dead || !Player.CanAttackTarget(victim)) continue;
+                    int dealt = Player.MagicAttack(new List<MagicType> { Type }, victim, true, null, power);
+                    if (dealt <= 0) continue;
+                    trained = true;
+                    if (hasVamp && Player.GetMagic(MagicType.VampireShot, out VampireShot vampire)) vampire.AddVamp(power, Magic.Level);
+                    if (hasPoison) ApplyGreenPoison(victim, power, Magic.Level);
                 }
             }
-
-            if (hasVamp)
-            {
-                BuffInfo buff = Player.Buffs.FirstOrDefault(x => x.Type == BuffType.CrystalVampireShot);
-                if (buff != null) buff.RemainingTime = TimeSpan.FromSeconds(1);
-            }
-            if (hasPoison)
-            {
-                BuffInfo buff = Player.Buffs.FirstOrDefault(x => x.Type == BuffType.CrystalPoisonShot);
-                if (buff != null) buff.RemainingTime = TimeSpan.FromSeconds(1);
-            }
-
-            if (train) Player.LevelMagic(Magic);
+            if (hasVamp) ShortenBuff(Player, BuffType.CrystalVampireShot);
+            if (hasPoison) ShortenBuff(Player, BuffType.CrystalPoisonShot);
+            if (trained) Player.LevelMagic(Magic);
         }
-
-        public override int ModifyPowerAdditionner(bool primary, int power, MapObject ob, Stats stats = null, int extra = 0) => extra;
     }
 
     [MagicType(MagicType.BindingShot)]
     public sealed class BindingShot : CrystalArcherProjectile
     {
         public BindingShot(PlayerObject player, UserMagic magic) : base(player, magic) { }
-
         public override MagicCast MagicCast(MapObject target, Point location, MirDirection direction)
         {
             var response = new MagicCast { Ob = target };
-            if (target is not MonsterObject monster || !Player.CanAttackTarget(monster) || monster.Level > Player.Level + 2 || SEnvir.Now < monster.ShockTime || !CanCrystalProjectile(monster))
-            {
-                response.Cast = false;
-                return response;
-            }
-
+            if (target is not MonsterObject monster || !Player.CanAttackTarget(monster) || monster.Level > Player.Level + 2 || monster.ShockTime > SEnvir.Now || !CanCrystalProjectile(monster))
+            { response.Cast = false; return response; }
             int durationMs = (Magic.Level * 5 + 10) * 1000;
-            Point locked = target.CurrentLocation;
-            response.Targets.Add(target.ObjectID);
-            ActionList.Add(new DelayedAction(
-                SEnvir.Now.AddMilliseconds(ProjectileDelay(target)),
-                ActionType.DelayMagic,
-                Type,
-                target,
-                locked,
-                durationMs));
+            Point locked = monster.CurrentLocation;
+            response.Targets.Add(monster.ObjectID);
+            ActionList.Add(new DelayedAction(SEnvir.Now.AddMilliseconds(ProjectileDelay(monster)), ActionType.DelayMagic, Type, monster, locked, durationMs));
             return response;
         }
-
         public override void MagicComplete(params object[] data)
         {
-            MapObject target = (MapObject)data[1];
-            Point locked = (Point)data[2];
-            int durationMs = (int)data[3];
-            if (!TargetStillLocked(target, locked) || target is not MonsterObject center || SEnvir.Now < center.ShockTime) return;
-
-            bool train = false;
-            foreach (Cell cell in CurrentMap.GetCells(center.CurrentLocation, 0, 1))
+            MonsterObject target = (MonsterObject)data[1]; Point locked = (Point)data[2]; int durationMs = (int)data[3];
+            if (!TargetStillLocked(target, locked) || target.ShockTime > SEnvir.Now) return;
+            bool trained = false;
+            foreach (Cell cell in CurrentMap.GetCells(target.CurrentLocation, 0, 1))
             {
-                if (cell.Objects == null) continue;
+                if (cell?.Objects == null) continue;
                 foreach (MapObject ob in cell.Objects.ToList())
                 {
                     if (ob is not MonsterObject monster || monster.Node == null || !Player.CanAttackTarget(monster) || monster.Level > Player.Level + 2) continue;
-                    monster.ShockTime = SEnvir.Now.AddMilliseconds(durationMs);
-                    monster.Target = null;
-                    train = true;
+                    monster.ShockTime = SEnvir.Now.AddMilliseconds(durationMs); monster.Target = null; trained = true;
                 }
             }
-
-            if (train) Player.LevelMagic(Magic);
+            if (trained) Player.LevelMagic(Magic);
         }
     }
 }
