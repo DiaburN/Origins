@@ -38,7 +38,7 @@ diff --git a/ServerLibrary/Models/PlayerObject.cs b/ServerLibrary/Models/PlayerO
 --- a/ServerLibrary/Models/PlayerObject.cs
 +++ b/ServerLibrary/Models/PlayerObject.cs
 @@
-     public sealed partial class PlayerObject : MapObject
+     public partial class PlayerObject : MapObject
      {
 +        // Crystal Archer runtime state. The original persists MentalState and
 +        // element progress on CharacterInfo; ORIGINS keeps it runtime-only
