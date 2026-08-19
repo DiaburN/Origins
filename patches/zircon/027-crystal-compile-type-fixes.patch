@@ -1,0 +1,53 @@
+diff --git a/ServerLibrary/Models/PlayerObject.cs b/ServerLibrary/Models/PlayerObject.cs
+--- a/ServerLibrary/Models/PlayerObject.cs
++++ b/ServerLibrary/Models/PlayerObject.cs
+@@
+         public byte CrystalArcherMentalState;
+-        public byte CrystalArcherMentalStateLevel;
++        public int CrystalArcherMentalStateLevel;
+         public int CrystalArcherElementsLevel;
+@@
+-        public void CrystalArcherSeedElement(byte meditationLevel)
++        public void CrystalArcherSeedElement(int meditationLevel)
+         {
+             if (CrystalArcherElementsLevel <= 0)
+                 CrystalArcherElementsLevel = meditationLevel >= 3 ? 100 : 50;
+         }
+@@
+-        public void CrystalArcherGatherElement(byte meditationLevel)
++        public void CrystalArcherGatherElement(int meditationLevel)
+         {
+             CrystalArcherElementsLevel = Math.Min(200, CrystalArcherElementsLevel + 50);
+             int cap = meditationLevel >= 3 ? 200 : 50 * (meditationLevel + 1);
+             CrystalArcherElementsLevel = Math.Min(CrystalArcherElementsLevel, cap);
+         }
+diff --git a/ServerLibrary/Models/Magics/Archer/ArcherProjectiles.cs b/ServerLibrary/Models/Magics/Archer/ArcherProjectiles.cs
+--- a/ServerLibrary/Models/Magics/Archer/ArcherProjectiles.cs
++++ b/ServerLibrary/Models/Magics/Archer/ArcherProjectiles.cs
+@@
+-        protected void ApplyGreenPoison(MapObject target, int power, byte skillLevel)
++        protected void ApplyGreenPoison(MapObject target, int power, int skillLevel)
+         {
+             if (target?.Node == null || target.Dead) return;
+@@
+-        internal void AddVamp(int power, byte skillLevel)
++        internal void AddVamp(int power, int skillLevel)
+         {
+             if (_vampAmount == 0) _vampTime = SEnvir.Now.AddSeconds(1);
+diff --git a/ServerLibrary/Models/Magics/Taoist/MagicResistance.cs b/ServerLibrary/Models/Magics/Taoist/MagicResistance.cs
+--- a/ServerLibrary/Models/Magics/Taoist/MagicResistance.cs
++++ b/ServerLibrary/Models/Magics/Taoist/MagicResistance.cs
+@@
+                 Stats stats = new Stats
+                 {
+-                    [Stat.MaxMAC] = ob.Level / 7 + 4
++                    [Stat.MaxMR] = ob.Level / 7 + 4
+                 };
+diff --git a/ServerLibrary/Models/Magics/Assassin/MoonMist.cs b/ServerLibrary/Models/Magics/Assassin/MoonMist.cs
+--- a/ServerLibrary/Models/Magics/Assassin/MoonMist.cs
++++ b/ServerLibrary/Models/Magics/Assassin/MoonMist.cs
+@@
+-                    if (dealt <= 0 && ob.Undead)
++                    if (dealt <= 0 && ob is MonsterObject undeadMonster && undeadMonster.MonsterInfo.Undead)
+                     {
+                         ob.ApplyPoison(new Poison
