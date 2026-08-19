@@ -1,25 +1,58 @@
-# ORIGINS magic source workflow
+# ORIGINS DxR magic workflow
 
-ORIGINS does **not** import the Crystal database engine.
+ORIGINS-DxR uses **Zircon only** for active player magic.
 
-Magic research uses three distinct sources:
+## Active classes
 
-1. **Zircon current runtime/database** — authoritative ORIGINS schema and execution engine.
-2. **Crystal current source** — `Spell` enum, default `MagicInfo` values and server call paths.
-3. **Crystal.Database/Jev** — optional configured spell-value source; read only and never used as the ORIGINS DB format.
+- Warrior
+- Wizard
+- Taoist
+- Assassin
 
-Generated source catalog:
+Archer and Monk are not part of the current runtime or database scope.
+
+## Authoritative sources
+
+Pinned source: `Suprcode/Zircon@cbf1aa919083bc13fc3f23f93772a8ab8370632d`.
+
+The active spell chain is:
 
 ```text
-Suprcode/Crystal @ pinned commit
- -> Shared/Enums.cs::Spell
- -> Envir.FillMagicInfoList()
- -> Envir.UpdateMagicInfo()
- -> crystal-source-catalog.json
+LibraryCore/Enum.cs::MagicType
+        ↓
+System.db::MagicInfo
+        ↓
+ServerLibrary MagicObject registration/execution
+        ↓
+UserMagic player state
+        ↓
+Zircon client spell/action/effect presentation
 ```
 
-The comparison against Zircon is deliberately conservative. An identical spell name produces only `name_match_needs_behavior_check`; it is **not** automatically marked compatible. Unmatched Crystal names are not automatically added to `MagicInfo`.
+There is no Crystal translation layer and no Crystal magic overlay.
 
-Player map-event spell IDs are excluded from MagicDialog. Archer spells remain catalogued but deferred because current Zircon exposes only Warrior, Wizard, Taoist and Assassin player classes. Crystal custom spells are retained as candidates and reviewed one by one.
+## Catalog
 
-Only after a spell has a verified behavior decision may `database/overlays/70-magics-crystal.json` be changed.
+`zircon-four-class-magic-types.json` contains the 195 player-class enum entries in the pinned Zircon source.
+
+Statuses are deliberately conservative:
+
+- `ENUM_DEFINED`
+- `DB_PRESENT`
+- `RUNTIME_HANDLER_PRESENT`
+- `PLAYABLE`
+- `UPSTREAM_NOT_CODED`
+- `UPSTREAM_UNUSED`
+
+Do not mark a spell `PLAYABLE` merely because it appears in the enum. Its canonical Zircon `System.db` row and runtime path must also exist.
+
+## Upstream incomplete entries
+
+The pinned source explicitly marks these as incomplete/unused and ORIGINS-DxR will not silently invent implementations for them:
+
+- Warrior: `FlameArt`
+- Wizard: `Storm`, `Tornado`, `UnityWithNature`
+- Taoist: `SupremeHealing`
+- Assassin: `Unused`, `ManaBurn`
+
+The first objective is a faithful four-class Zircon game. Custom ORIGINS balancing/content comes later and must remain native to the Zircon architecture.
