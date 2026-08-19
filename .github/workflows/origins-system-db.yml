@@ -122,6 +122,7 @@ jobs:
             ./GeneratedResearch/70-magics-crystal.pre-activation.json \
             ./database/magic/behavior-decisions.json \
             ./vendor/zircon/LibraryCore/Enum.cs \
+            ./SnapshotBase/LibraryCore__Library_SystemModels_MagicInfo.json \
             ./GeneratedResearch/70-magics-crystal.generated.json
 
           python3 - <<'PY'
