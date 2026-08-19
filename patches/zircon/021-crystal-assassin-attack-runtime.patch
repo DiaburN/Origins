@@ -14,7 +14,8 @@ diff --git a/ServerLibrary/Models/MagicObject.cs b/ServerLibrary/Models/MagicObj
              Player.BuffRemove(BuffType.Transparency);
 +            // Crystal assassin stealth is cancelled by starting a different magic,
 +            // but the stealth spell being cast must not remove the buff it just applied.
-+            if (Type != MagicType.MoonLight)
++            // Base Crystal MoonMist deliberately applies the MoonLight stealth buff.
++            if (Type != MagicType.MoonLight && Type != MagicType.MoonMist)
 +                Player.BuffRemove(BuffType.MoonLight);
 +            if (Type != MagicType.DarkBody)
 +                Player.BuffRemove(BuffType.DarkBody);
