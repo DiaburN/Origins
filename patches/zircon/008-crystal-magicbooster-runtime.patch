@@ -8,25 +8,27 @@ diff --git a/LibraryCore/Enum.cs b/LibraryCore/Enum.cs
  
          //Tao
          Heal = 300,
-@@ -858,7 +859,9 @@
+@@ -858,7 +859,10 @@
          FireBang = 1202,
          Lightning = 1203,
          FrostCrunch = 1204,
          ThunderStorm = 1205,
 +        MagicBooster = 1206,
 +        Vampirism = 1207,
++        FlameField = 1208,
      }
  
      public enum MagicProperty
 diff --git a/LibraryCore/Functions.cs b/LibraryCore/Functions.cs
 --- a/LibraryCore/Functions.cs
 +++ b/LibraryCore/Functions.cs
-@@ -237,6 +237,8 @@ namespace Library
+@@ -237,6 +237,9 @@ namespace Library
                  case MagicType.FireBang:
                  case MagicType.Lightning:
                  case MagicType.ThunderStorm:
 +                case MagicType.MagicBooster:
 +                case MagicType.Vampirism:
++                case MagicType.FlameField:
                  case MagicType.Repulsion:
                  case MagicType.ElectricShock:
                  case MagicType.LightningWave:
