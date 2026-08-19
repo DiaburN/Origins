@@ -10,6 +10,7 @@ namespace Server.Models.Magics
     {
         protected override Element Element => Element.None;
         public override bool UpdateCombatTime => false;
+        public override bool AttackSkill => true;
 
         public MoonLight(PlayerObject player, UserMagic magic) : base(player, magic) { }
 
@@ -31,6 +32,23 @@ namespace Server.Models.Magics
 
             Player.LevelMagic(Magic);
             return response;
+        }
+
+        public override AttackCast AttackCast(MagicType attackType)
+        {
+            var response = new AttackCast();
+            BuffInfo buff = Player.Buffs.Find(x => x.Type == BuffType.MoonLight);
+            if (buff == null) return response;
+
+            // Crystal expires stealth at attack initiation; the same attack receives MoonLight power.
+            Player.BuffRemove(buff);
+            response.Magics.Add(Type);
+            return response;
+        }
+
+        public override int ModifyPowerAdditionner(bool primary, int power, MapObject ob, Stats stats = null, int extra = 0)
+        {
+            return power + Magic.GetPower();
         }
     }
 }
