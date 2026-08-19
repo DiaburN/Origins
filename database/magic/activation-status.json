@@ -1,51 +1,69 @@
 {
-  "schemaVersion": 1,
-  "generatedDatabaseBranch": "generated/origins-system-db",
+  "schemaVersion": 2,
+  "branch": "work/spells-final-audit",
   "runtime": "pinned Zircon MagicObject with ORIGINS overrides/patches",
-  "dataSource": "Crystal.Database/Jev effective MagicInfo joined to Crystal 2026 by normalized spell name",
-  "numericSpellIdUsedAsJevJoinKey": false,
-  "active": [
+  "catalog": {
+    "activePlayableClasses": 5,
+    "activePlayableSpellCount": 119,
+    "runtimeBehaviorRoutes": 118,
+    "sourceStubs": 1,
+    "deferredMonkSpells": 9
+  },
+  "classes": [
     {
-      "spell": "FireBall",
-      "crystalSourceSpellId": 31,
-      "zirconMagicType": "FireBall",
-      "executionKind": "ZirconAdapted",
-      "runtimeCompiled": true,
-      "systemDbRoundTrip": true,
-      "usersDbLearnedMagicRoundTrip": true,
-      "status": "active_generated_db"
+      "class": "Warrior",
+      "catalogCount": 21,
+      "sourcePortedUncompiled": 21,
+      "compiledRuntimeReady": 0,
+      "sourceStubs": 0
     },
     {
-      "spell": "ThunderBolt",
-      "crystalSourceSpellId": 36,
-      "zirconMagicType": "ThunderBolt",
-      "executionKind": "ZirconAdapted",
-      "runtimeCompiled": true,
-      "systemDbRoundTrip": true,
-      "status": "active_generated_db"
+      "class": "Wizard",
+      "catalogCount": 28,
+      "sourcePortedUncompiled": 12,
+      "compiledRuntimeReady": 15,
+      "sourceStubs": 1,
+      "stubSpells": ["FastMove"],
+      "overlayBound": 5
     },
     {
-      "spell": "IceStorm",
-      "crystalSourceSpellId": 47,
-      "zirconMagicType": "IceStorm",
-      "executionKind": "ZirconAdapted",
-      "runtimeCompiled": true,
-      "systemDbRoundTrip": true,
-      "status": "active_generated_db"
+      "class": "Taoist",
+      "catalogCount": 27,
+      "sourcePortedUncompiled": 27,
+      "compiledRuntimeReady": 0,
+      "sourceStubs": 0
+    },
+    {
+      "class": "Assassin",
+      "catalogCount": 19,
+      "sourcePortedUncompiled": 19,
+      "compiledRuntimeReady": 0,
+      "sourceStubs": 0
+    },
+    {
+      "class": "Archer",
+      "catalogCount": 24,
+      "sourcePortedUncompiled": 24,
+      "compiledRuntimeReady": 0,
+      "sourceStubs": 0
     }
   ],
-  "next": [
-    {
-      "spell": "FireWall",
-      "crystalSourceSpellId": 40,
-      "executionKind": "CrystalAdapted",
-      "status": "runtime_port_required"
-    },
-    {
-      "spell": "MagicShield",
-      "crystalSourceSpellId": 44,
-      "executionKind": "CrystalAdapted",
-      "status": "runtime_port_required"
+  "totals": {
+    "compiledRuntimeReady": 15,
+    "sourcePortedUncompiled": 103,
+    "sourceStub": 1,
+    "catalogued": 119
+  },
+  "databaseProjection": {
+    "fullSystemDbOverlayWritten": false,
+    "overlayFile": "database/overlays/70-magics-crystal.json",
+    "reason": "Full numeric projection remains gated behind runtime patch application/compile audit; do not write unvalidated handler identities into System.db."
+  },
+  "deferred": {
+    "Monk": {
+      "spellCount": 9,
+      "status": "deferred_incomplete_class_kit",
+      "activeRuntime": false
     }
-  ]
+  }
 }
