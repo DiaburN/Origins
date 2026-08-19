@@ -1,7 +1,7 @@
 diff --git a/LibraryCore/Network/ClientPackets.cs b/LibraryCore/Network/ClientPackets.cs
 --- a/LibraryCore/Network/ClientPackets.cs
 +++ b/LibraryCore/Network/ClientPackets.cs
-@@
+@@ -1,3 +1,7 @@
      public sealed class TownRevive : Packet { }
 +
 +    // Crystal Reincarnation response packets are deliberately payload-free.
@@ -9,11 +9,10 @@ diff --git a/LibraryCore/Network/ClientPackets.cs b/LibraryCore/Network/ClientPa
 +    public sealed class ReincarnationCancel : Packet { }
  
      public sealed class Turn : Packet
-
 diff --git a/LibraryCore/Network/ServerPackets.cs b/LibraryCore/Network/ServerPackets.cs
 --- a/LibraryCore/Network/ServerPackets.cs
 +++ b/LibraryCore/Network/ServerPackets.cs
-@@
+@@ -1,7 +1,11 @@
      public sealed class MapChanged : Packet
      {
          public int MapIndex { get; set; }
@@ -25,18 +24,17 @@ diff --git a/LibraryCore/Network/ServerPackets.cs b/LibraryCore/Network/ServerPa
 +    public sealed class ReincarnationRequest : Packet { }
 +
      public sealed class UserLocation : Packet
-
 diff --git a/ServerLibrary/Models/PlayerObject.cs b/ServerLibrary/Models/PlayerObject.cs
 --- a/ServerLibrary/Models/PlayerObject.cs
 +++ b/ServerLibrary/Models/PlayerObject.cs
-@@
+@@ -1,1 +1,6 @@
          public List<MonsterObject> Pets = new List<MonsterObject>();
 +
 +        // Crystal Taoist Reincarnation channel/accept state.
 +        public bool ActiveReincarnation, ReincarnationReady;
 +        public PlayerObject ReincarnationTarget, ReincarnationHost;
 +        public DateTime ReincarnationExpireTime;
-@@
+@@ -1,5 +1,24 @@
          public override void Process()
          {
              base.Process();
@@ -61,16 +59,10 @@ diff --git a/ServerLibrary/Models/PlayerObject.cs b/ServerLibrary/Models/PlayerO
 +            }
  
              // if (LastHitter != null && LastHitter.Node == null) LastHitter = null;
-
 diff --git a/ServerLibrary/Envir/SConnection.cs b/ServerLibrary/Envir/SConnection.cs
 --- a/ServerLibrary/Envir/SConnection.cs
 +++ b/ServerLibrary/Envir/SConnection.cs
-@@
-         public void Process(C.TownRevive p)
-         {
-             if (Stage != GameStage.Game) return;
- 
-             Player.TownRevive();
+@@ -1,2 +1,42 @@
          }
 +
 +        public void Process(C.ReincarnationAccept p)
