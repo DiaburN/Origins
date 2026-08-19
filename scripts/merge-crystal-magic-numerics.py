@@ -1,21 +1,17 @@
 #!/usr/bin/env python3
-"""Merge verified Crystal and Crystal-Monk numeric projections for activation.
+"""Merge verified playable Crystal and Crystal-Monk numeric projections.
 
-The base Jev projection can contain two kinds of historical rows that must not
-enter the active ORIGINS projection:
+The base Jev database contains more than ORIGINS' five-class playable catalogue:
+legacy rows, map-event effects and Crystal custom spell candidates are also
+present. Some non-playable rows even have historical duplicate aliases (Blink,
+Portal). Those rows are useful audit evidence but must never participate in the
+119-spell runtime projection.
 
-1. legacy DB rows whose normalized names no longer exist in pinned Crystal;
-2. legacy aliases whose display name now belongs to a newer spell identity.
-
-The latter is visible in Jev for Blink and Portal: an old row shares the modern
-display name, while a second row has the current Crystal SpellId. When a name is
-duplicated we therefore select exactly one row whose `jevSpellId` equals the
-current `sourceSpellId`; every rejected sibling must be explicitly marked as a
-legacy ID mismatch. Nothing is selected by file order.
-
-Crystal-Monk extension rows are projected directly from the pinned fork. All
-accepted rows are normalized to status=projected_by_name while original status
-and skipped historical evidence remain available for audit.
+Activation therefore accepts only named projections with `kind == player`.
+Unnamed legacy rows and named non-player rows are retained separately in the
+output. If an eligible playable name is duplicated, the duplicate is resolved
+only when exactly one row has the current Crystal SpellId; selection by input
+order is never allowed.
 """
 from __future__ import annotations
 
@@ -53,8 +49,10 @@ def main() -> int:
     extension = load(args.extension_projection)
     merged: list[dict] = []
     skipped_legacy_unknown: list[dict] = []
+    skipped_non_playable_named: list[dict] = []
     skipped_historical_duplicates: list[dict] = []
     seen: dict[str, str] = {}
+    playable_by_source = {"Crystal/Jev": 0, "Crystal-Monk pinned source": 0}
 
     for source_name, payload in (("Crystal/Jev", base), ("Crystal-Monk pinned source", extension)):
         named_groups: dict[str, list[dict]] = {}
@@ -73,6 +71,17 @@ def main() -> int:
                 raise RuntimeError(
                     f"Unnamed projection is not an approved legacy-unknown row in {source_name}: {row}"
                 )
+
+            # ORIGINS activates only the player catalogue. Crystal custom spells
+            # such as Blink/Portal and map-event effects are intentionally outside
+            # the 119 active spell scope and cannot block or enter this merge.
+            if row.get("kind") != "player":
+                skipped_non_playable_named.append({
+                    **row,
+                    "numericSource": source_name,
+                    "skipReason": "non_playable_kind_excluded_from_runtime_merge",
+                })
+                continue
 
             if key not in named_groups:
                 named_groups[key] = []
@@ -98,7 +107,7 @@ def main() -> int:
                         for row in candidates
                     ]
                     raise RuntimeError(
-                        f"Duplicate projection group in {source_name} cannot be resolved by current SpellId: {summary}"
+                        f"Duplicate playable projection group in {source_name} cannot be resolved by current SpellId: {summary}"
                     )
 
                 chosen = exact[0]
@@ -107,7 +116,7 @@ def main() -> int:
                         continue
                     if not rejected.get("legacyIdMismatch"):
                         raise RuntimeError(
-                            f"Rejected duplicate for {chosen.get('crystalName')} is not marked as a legacy ID mismatch: "
+                            f"Rejected playable duplicate for {chosen.get('crystalName')} is not marked as a legacy ID mismatch: "
                             f"{rejected}"
                         )
                     skipped_historical_duplicates.append({
@@ -121,16 +130,17 @@ def main() -> int:
             name = chosen.get("crystalName")
             status = chosen.get("status")
             if status not in {"projected_by_name", "projected_from_pinned_source"}:
-                raise RuntimeError(f"Unverified numeric projection for {name}: {status}")
+                raise RuntimeError(f"Unverified playable numeric projection for {name}: {status}")
 
             if key in seen:
-                raise RuntimeError(f"Duplicate numeric projection for {name}: {seen[key]} and {source_name}")
+                raise RuntimeError(f"Duplicate playable numeric projection for {name}: {seen[key]} and {source_name}")
 
             chosen["sourceProjectionStatus"] = status
             chosen["status"] = "projected_by_name"
             chosen["numericSource"] = source_name
             seen[key] = source_name
             merged.append(chosen)
+            playable_by_source[source_name] += 1
 
     expected_unknown = int(base.get("counts", {}).get("legacyUnknownNames", 0))
     if len(skipped_legacy_unknown) != expected_unknown:
@@ -139,19 +149,40 @@ def main() -> int:
             f"merge skipped {len(skipped_legacy_unknown)}"
         )
 
+    # Base Crystal exposes 105 playable identities; FastMove is the sole source
+    # stub without MagicInfo numerics, so 104 base player projections must exist.
+    if playable_by_source["Crystal/Jev"] != 104:
+        raise RuntimeError(
+            "Playable Crystal/Jev numeric coverage changed: expected 104 "
+            f"(105 base spells minus FastMove), found {playable_by_source['Crystal/Jev']}"
+        )
+
+    # Crystal-Monk contributes 14 non-Monk variants plus 9 deferred Monk spells.
+    # All 23 retain source numerics; the later active catalogue excludes Monk.
+    if playable_by_source["Crystal-Monk pinned source"] != 23:
+        raise RuntimeError(
+            "Crystal-Monk playable numeric coverage changed: expected 23, found "
+            f"{playable_by_source['Crystal-Monk pinned source']}"
+        )
+
     payload = {
-        "schemaVersion": 3,
+        "schemaVersion": 4,
         "baseProjection": str(args.base_projection),
         "extensionProjection": str(args.extension_projection),
         "projectionCount": len(merged),
+        "playableProjectionCountBySource": playable_by_source,
         "skippedLegacyUnknownCount": len(skipped_legacy_unknown),
         "skippedLegacyUnknown": skipped_legacy_unknown,
+        "skippedNonPlayableNamedCount": len(skipped_non_playable_named),
+        "skippedNonPlayableNamed": skipped_non_playable_named,
         "skippedHistoricalDuplicateCount": len(skipped_historical_duplicates),
         "skippedHistoricalDuplicates": skipped_historical_duplicates,
         "policy": {
             "joinKey": "normalized spell name",
+            "eligibleKind": "player",
             "legacyUnknownRowsEnterActiveOverlay": False,
-            "duplicateNameResolution": "require exactly one row where jevSpellId equals current sourceSpellId",
+            "customAndMapEventRowsEnterActiveOverlay": False,
+            "playableDuplicateResolution": "require exactly one row where jevSpellId equals current sourceSpellId",
             "selectionByInputOrder": False,
         },
         "projections": merged,
@@ -159,9 +190,12 @@ def main() -> int:
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(payload, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
     print(
-        f"Merged verified magic numeric projections: {len(merged)}; "
-        f"skipped legacy unknown rows: {len(skipped_legacy_unknown)}; "
-        f"skipped historical duplicate aliases: {len(skipped_historical_duplicates)}"
+        f"Merged playable magic numeric projections: {len(merged)} "
+        f"(Crystal/Jev={playable_by_source['Crystal/Jev']}, "
+        f"Crystal-Monk={playable_by_source['Crystal-Monk pinned source']}); "
+        f"skipped legacy unknown={len(skipped_legacy_unknown)}, "
+        f"non-playable named={len(skipped_non_playable_named)}, "
+        f"playable historical duplicates={len(skipped_historical_duplicates)}"
     )
     return 0
 
