@@ -26,7 +26,7 @@ namespace Server.Models.Magics
                 return response;
             }
 
-            counter += SEnvir.Random.Next(1, 2 + Magic.Level * 2);
+            counter += SEnvir.Random.Next(1, 1 + Magic.Level * 2);
 
             // Crystal crossing 55 arms the bleed for the next attack.
             if (counter >= 55)
