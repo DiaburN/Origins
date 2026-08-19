@@ -1,0 +1,175 @@
+{
+  "schemaVersion": 1,
+  "source": {
+    "crystalCommit": "0e315fe327192afe52c3d7357ddd1f5b7e26c5b8",
+    "zirconCommit": "cbf1aa919083bc13fc3f23f93772a8ab8370632d"
+  },
+  "decisions": [
+    {
+      "crystalSpell": "Blizzard",
+      "crystalSourceSpellId": 50,
+      "zirconMagicType": "Blizzard",
+      "verified": true,
+      "executionKind": "CrystalAdapted",
+      "runtimeReady": false,
+      "overlayReady": false,
+      "crystalSources": [
+        "Server/MirObjects/HumanObject.cs::Magic",
+        "Server/MirObjects/HumanObject.cs::Blizzard",
+        "Server/MirEnvir/Map.cs::CompleteMagic",
+        "Server/MirObjects/SpellObject.cs::ProcessSpell"
+      ],
+      "portedBehavior": [
+        "5x5 field centered on the selected location",
+        "field creation begins after 500 ms",
+        "Crystal delayed field start and 440 ms tick cadence are represented by five delayed area pulses beginning at 1300 ms",
+        "cast-time MC/power snapshot is reused across all pulses",
+        "full MAC damage to hostile players and monsters on every pulse",
+        "successful hits have Crystal 1-in-8 Slow chance",
+        "Slow duration follows 5 plus caster Freezing roll",
+        "skill levels when the field is created rather than once per pulse or target"
+      ],
+      "zirconSources": [
+        "overrides/zircon/ServerLibrary/Models/Magics/Wizard/Blizzard.cs",
+        "patches/zircon/010-crystal-wizard-batch5-runtime.patch"
+      ]
+    },
+    {
+      "crystalSpell": "MeteorStrike",
+      "crystalSourceSpellId": 52,
+      "zirconMagicType": "MeteorStrike",
+      "verified": true,
+      "executionKind": "CrystalAdapted",
+      "runtimeReady": false,
+      "overlayReady": false,
+      "crystalSources": [
+        "Server/MirObjects/HumanObject.cs::Magic",
+        "Server/MirObjects/HumanObject.cs::MeteorStrike",
+        "Server/MirEnvir/Map.cs::CompleteMagic",
+        "Server/MirObjects/SpellObject.cs::ProcessSpell"
+      ],
+      "portedBehavior": [
+        "5x5 field centered on the selected location",
+        "field creation begins after 500 ms",
+        "Crystal delayed field start and 440 ms tick cadence are represented by five delayed area pulses beginning at 1300 ms",
+        "cast-time MC/power snapshot is reused across all pulses",
+        "full Fire MAC damage to hostile players and monsters on every pulse",
+        "unlike Blizzard no Slow status is applied",
+        "skill levels when the field is created rather than once per pulse or target"
+      ],
+      "zirconSources": [
+        "overrides/zircon/ServerLibrary/Models/Magics/Wizard/MeteorStrike.cs",
+        "patches/zircon/010-crystal-wizard-batch5-runtime.patch"
+      ]
+    },
+    {
+      "crystalSpell": "IceThrust",
+      "crystalSourceSpellId": 53,
+      "zirconMagicType": "IceThrust",
+      "verified": true,
+      "executionKind": "CrystalAdapted",
+      "runtimeReady": false,
+      "overlayReady": false,
+      "crystalSources": [
+        "Server/MirObjects/HumanObject.cs::Magic",
+        "Server/MirObjects/HumanObject.cs::IceThrust",
+        "Server/MirEnvir/Map.cs::CompleteMagic"
+      ],
+      "portedBehavior": [
+        "1500 ms delayed three-column by three-row frontal attack",
+        "cast-time MC/power snapshot with Crystal Luck critical roll that doubles the base damage",
+        "first two rows use full damage and the far row uses 60 percent damage",
+        "Slow and Frozen rolls use Crystal player-versus-monster level allowances and denominators",
+        "player Slow duration is 4 seconds and monster Slow duration is 5 to 9 seconds",
+        "player Frozen duration is 2 seconds and monster Frozen duration is 5 plus caster Freezing roll",
+        "skill levels once when at least one hostile target is damaged"
+      ],
+      "zirconSources": [
+        "overrides/zircon/ServerLibrary/Models/Magics/Wizard/IceThrust.cs",
+        "patches/zircon/010-crystal-wizard-batch5-runtime.patch"
+      ]
+    },
+    {
+      "crystalSpell": "StormEscape",
+      "crystalSourceSpellId": 55,
+      "zirconMagicType": "StormEscape",
+      "verified": true,
+      "executionKind": "CrystalAdapted",
+      "runtimeReady": false,
+      "overlayReady": false,
+      "crystalSources": [
+        "Server/MirObjects/HumanObject.cs::Magic",
+        "Server/MirObjects/HumanObject.cs::ThunderStorm",
+        "Server/MirObjects/HumanObject.cs::CompleteMagic",
+        "Server/MirEnvir/Map.cs::CompleteMagic"
+      ],
+      "portedBehavior": [
+        "500 ms delayed 5x5 full-damage lightning area centered on the caster",
+        "StormEscape does not inherit ThunderStorm's 10 percent non-undead damage reduction",
+        "teleport attempt starts after 750 ms at the requested location",
+        "NoTeleport maps reject the teleport phase",
+        "teleport success roll is Random.Next(4) below magic level plus one",
+        "successful teleport applies TemporalFlux for 30 seconds",
+        "TemporalFlux adds 30 percent mana cost to Teleportation and StormEscape while the general MagicBooster mana penalty remains independently stackable",
+        "damage success and teleport success retain Crystal's separate skill-level opportunities"
+      ],
+      "zirconSources": [
+        "overrides/zircon/ServerLibrary/Models/Magics/Wizard/StormEscape.cs",
+        "patches/zircon/010-crystal-wizard-batch5-runtime.patch"
+      ]
+    },
+    {
+      "crystalSpell": "FlameDisruptor",
+      "crystalSourceSpellId": 47,
+      "zirconMagicType": "FlameDisruptor",
+      "verified": true,
+      "executionKind": "CrystalAdapted",
+      "runtimeReady": false,
+      "overlayReady": false,
+      "crystalSources": [
+        "Server/MirObjects/HumanObject.cs::Magic",
+        "Server/MirObjects/HumanObject.cs::FlameDisruptor",
+        "Server/MirObjects/HumanObject.cs::CompleteMagic"
+      ],
+      "portedBehavior": [
+        "single hostile player or monster target",
+        "500 ms delayed MAC impact",
+        "cast-time target location and MC/power snapshot",
+        "non-undead targets receive Crystal's 1.5x damage multiplier",
+        "impact is rejected after despawn, map change or target movement beyond two cells from its cast-time location",
+        "skill levels through the successful single-target MagicAttack path"
+      ],
+      "zirconSources": [
+        "overrides/zircon/ServerLibrary/Models/Magics/Wizard/FlameDisruptor.cs",
+        "patches/zircon/010-crystal-wizard-batch5-runtime.patch"
+      ]
+    },
+    {
+      "crystalSpell": "Mirroring",
+      "crystalSourceSpellId": 48,
+      "zirconMagicType": "Mirroring",
+      "verified": true,
+      "executionKind": "CrystalAdapted",
+      "runtimeReady": false,
+      "overlayReady": false,
+      "crystalSources": [
+        "Server/MirObjects/HumanObject.cs::Magic",
+        "Server/MirObjects/HumanObject.cs::Mirroring",
+        "Server/MirEnvir/Map.cs::CompleteMagic"
+      ],
+      "portedBehavior": [
+        "NoPets map restriction",
+        "first cast requests one clone and levels the skill before its delayed spawn",
+        "clone spawns after 500 ms in front of the caster with cast-origin fallback",
+        "recasting while a living clone exists kills that clone after 500 ms instead of summoning another",
+        "reuses Zircon MirrorImage monster infrastructure without Zircon's DarkStone element requirement",
+        "removes Zircon MirrorImage's short forced explosion duration from the Crystal mapping"
+      ],
+      "zirconSources": [
+        "overrides/zircon/ServerLibrary/Models/Magics/Wizard/Mirroring.cs",
+        "patches/zircon/005-crystal-pet-map-policy.patch",
+        "patches/zircon/010-crystal-wizard-batch5-runtime.patch"
+      ]
+    }
+  ]
+}
