@@ -1,0 +1,59 @@
+diff --git a/LibraryCore/Enum.cs b/LibraryCore/Enum.cs
+--- a/LibraryCore/Enum.cs
++++ b/LibraryCore/Enum.cs
+@@
+     public enum MirClass : byte
+     {
+         Warrior = 0,
+         Wizard = 1,
+         Taoist = 2,
+         Assassin = 3,
+         Archer = 4,
++        Monk = 5,
+     }
+@@
+     public enum RequiredClass : byte
+     {
+         None = 0,
+         Warrior = 1,
+         Wizard = 2,
+         Taoist = 4,
+         Assassin = 8,
+         Archer = 16,
++        Monk = 32,
+@@
+-        All = WarWizTao | Assassin | Archer
++        All = WarWizTao | Assassin | Archer | Monk
+@@
+     public enum MagicType
+     {
+@@
+         NapalmShot2 = 1523,
++
++        // ORIGINS Crystal-Monk playable class. Keep the fork identities
++        // separate from Zircon's modern skills even where primitives overlap.
++        JiBenGunFa = 1600,
++        LuoHanGunFa = 1601,
++        JinGangGunFa = 1602,
++        DaMoGunFa = 1603,
++        XiangLongGunFa = 1604,
++        Taunt = 1605,
++        TianLeiZhen = 1606,
++        ShiBuYiSha = 1607,
++        LuoHanZhen = 1608,
+     }
+diff --git a/LibraryCore/Functions.cs b/LibraryCore/Functions.cs
+--- a/LibraryCore/Functions.cs
++++ b/LibraryCore/Functions.cs
+@@
+                 case MagicType.NapalmShot2:
++                case MagicType.JiBenGunFa:
++                case MagicType.LuoHanGunFa:
++                case MagicType.JinGangGunFa:
++                case MagicType.DaMoGunFa:
++                case MagicType.XiangLongGunFa:
++                case MagicType.Taunt:
++                case MagicType.TianLeiZhen:
++                case MagicType.ShiBuYiSha:
++                case MagicType.LuoHanZhen:
+                     return MirAnimation.Combat3;
