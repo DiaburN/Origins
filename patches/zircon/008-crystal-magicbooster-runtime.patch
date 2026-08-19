@@ -32,7 +32,7 @@ diff --git a/LibraryCore/Stat.cs b/LibraryCore/Stat.cs
 diff --git a/ServerLibrary/Models/MagicObject.cs b/ServerLibrary/Models/MagicObject.cs
 --- a/ServerLibrary/Models/MagicObject.cs
 +++ b/ServerLibrary/Models/MagicObject.cs
-@@ -71,6 +71,14 @@ namespace Server.Models
+@@ -71,5 +71,13 @@ namespace Server.Models
              return true;
          }
  
@@ -46,7 +46,6 @@ diff --git a/ServerLibrary/Models/MagicObject.cs b/ServerLibrary/Models/MagicObj
 +
          public virtual bool CheckCost()
          {
-             if (Player.Superman)
 @@ -79,7 +87,7 @@ namespace Server.Models
  
              if (Magic.Info.School == MagicSchool.Discipline)
