@@ -52,10 +52,10 @@ diff --git a/ServerLibrary/Models/MapObject.cs b/ServerLibrary/Models/MapObject.
 @@ -57,6 +57,7 @@ namespace Server.Models
          public DateTime ActionTime, MoveTime, RegenTime, AttackTime, MagicTime, CellTime, StruckTime, BuffTime, ShockTime, DisplayHPMPTime, ItemReviveTime;
 +        public DateTime CrystalRevelationTime;
-@@ -443,6 +444,25 @@ namespace Server.Models
-                     case BuffType.Heal:
-                         buff.TickTime -= ticks;
 @@
+                         else
+                             expiredBuffs.Add(buff);
+ 
                          break;
 +                    case BuffType.CrystalHealing:
 +                        // Crystal stores healing as a pool and consumes it every 600 ms.
@@ -78,6 +78,8 @@ diff --git a/ServerLibrary/Models/MapObject.cs b/ServerLibrary/Models/MapObject.
 +                        if (buff.Stats[Stat.Healing] <= 0 || CurrentHP >= Stats[Stat.Health])
 +                            expiredBuffs.Add(buff);
 +                        break;
+                     case BuffType.Cloak:
+                         buff.TickTime -= ticks;
 diff --git a/ServerLibrary/Models/MonsterObject.cs b/ServerLibrary/Models/MonsterObject.cs
 --- a/ServerLibrary/Models/MonsterObject.cs
 +++ b/ServerLibrary/Models/MonsterObject.cs
