@@ -80,7 +80,7 @@ diff --git a/ServerLibrary/Models/MagicObject.cs b/ServerLibrary/Models/MagicObj
 +            if (Type == MagicType.Teleportation || Type == MagicType.StormEscape)
 +            {
 +                int teleportPenalty = Player.Stats[Stat.TeleportManaPenaltyPercent];
-+                if (teleportPenalty > 0) cost += cost * teleportPenalty / 100;
++                if (teleportPenalty > 0) cost += Player.Stats[Stat.Mana] * teleportPenalty / 100;
 +            }
 +
              return cost;
