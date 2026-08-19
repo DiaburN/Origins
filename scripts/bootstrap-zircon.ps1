@@ -5,8 +5,6 @@ $Commit = "cbf1aa919083bc13fc3f23f93772a8ab8370632d"
 $Root = (Resolve-Path (Join-Path $PSScriptRoot "..")).Path
 $Vendor = Join-Path $Root "vendor"
 $Dest = Join-Path $Vendor "zircon"
-$Overrides = Join-Path $Root "overrides\zircon"
-$Patches = Join-Path $Root "patches\zircon"
 
 New-Item -ItemType Directory -Force -Path $Vendor | Out-Null
 
@@ -18,32 +16,16 @@ if (-not (Test-Path (Join-Path $Dest ".git"))) {
 git -C $Dest remote set-url origin $Repo
 git -C $Dest fetch --depth=1 origin $Commit
 git -C $Dest checkout --detach --force $Commit
-git -C $Dest clean -fd
+git -C $Dest clean -fdx
 
 $Head = (git -C $Dest rev-parse HEAD).Trim()
 if ($Head -ne $Commit) {
     throw "Zircon revision mismatch. Expected $Commit, got $Head"
 }
 
-if (Test-Path $Overrides) {
-    Get-ChildItem -Path $Overrides -Recurse -File | Where-Object { $_.Name -ne "README.md" } | Sort-Object FullName | ForEach-Object {
-        $Relative = [System.IO.Path]::GetRelativePath($Overrides, $_.FullName)
-        $Target = Join-Path $Dest $Relative
-        New-Item -ItemType Directory -Force -Path (Split-Path $Target -Parent) | Out-Null
-        Copy-Item -Force $_.FullName $Target
-        Write-Host "Applied ORIGINS Zircon override: $Relative"
-    }
+$Status = (git -C $Dest status --porcelain) -join "`n"
+if (-not [string]::IsNullOrWhiteSpace($Status)) {
+    throw "Zircon checkout contains local modifications after bootstrap:`n$Status"
 }
 
-if (Test-Path $Patches) {
-    Get-ChildItem -Path $Patches -File -Filter *.patch | Sort-Object Name | ForEach-Object {
-        git -C $Dest apply --check $_.FullName
-        if ($LASTEXITCODE -ne 0) { throw "Zircon patch check failed: $($_.FullName)" }
-        git -C $Dest apply --whitespace=nowarn $_.FullName
-        if ($LASTEXITCODE -ne 0) { throw "Zircon patch apply failed: $($_.FullName)" }
-        $Relative = [System.IO.Path]::GetRelativePath($Root, $_.FullName)
-        Write-Host "Applied ORIGINS Zircon patch: $Relative"
-    }
-}
-
-Write-Host "Official Suprcode/Zircon pinned at $Head with ORIGINS overrides/patches applied"
+Write-Host "Official Suprcode/Zircon pinned source-pure at $Head"
