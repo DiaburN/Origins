@@ -6,7 +6,6 @@ on:
     paths:
       - 'database/**'
       - 'scripts/bootstrap-zircon.*'
-      - 'scripts/fetch-zircon-system-db.*'
       - 'scripts/verify-zircon-four-class-magics.py'
       - 'scripts/audit-zircon-four-class-db.py'
       - 'scripts/audit-zircon-four-class-runtime.py'
@@ -17,7 +16,6 @@ on:
     paths:
       - 'database/**'
       - 'scripts/bootstrap-zircon.*'
-      - 'scripts/fetch-zircon-system-db.*'
       - 'scripts/verify-zircon-four-class-magics.py'
       - 'scripts/audit-zircon-four-class-db.py'
       - 'scripts/audit-zircon-four-class-runtime.py'
@@ -41,9 +39,6 @@ jobs:
         with:
           dotnet-version: '10.0.x'
 
-      - name: Install 7-Zip
-        run: sudo apt-get update && sudo apt-get install -y p7zip-full
-
       - name: Checkout pinned source-pure Zircon
         run: bash scripts/bootstrap-zircon.sh
 
@@ -53,44 +48,54 @@ jobs:
       - name: Build pinned Zircon ServerLibrary
         run: dotnet build vendor/zircon/ServerLibrary/ServerLibrary.csproj --configuration Release
 
-      - name: Build ORIGINS database verifier
-        run: dotnet build tools/Origins.Database.Verify/Origins.Database.Verify.csproj --configuration Release
+      - name: Build ORIGINS database tools
+        run: |
+          dotnet build tools/Origins.Database.Import/Origins.Database.Import.csproj --configuration Release
+          dotnet build tools/Origins.Database.Verify/Origins.Database.Verify.csproj --configuration Release
+          dotnet build tools/Origins.Database.Export/Origins.Database.Export.csproj --configuration Release
 
-      - name: Build ORIGINS database exporter
-        run: dotnet build tools/Origins.Database.Export/Origins.Database.Export.csproj --configuration Release
+      - name: Rebuild runtime System.db from committed clean Zircon snapshot
+        run: |
+          rm -rf Database Backup SnapshotRebuilt ZirconMagicAudit
+          mkdir -p Database Backup
+          dotnet run --project tools/Origins.Database.Import/Origins.Database.Import.csproj --configuration Release -- \
+            database/generated/zircon-system \
+            Database \
+            Backup
 
-      - name: Fetch canonical Zircon System.db
-        run: bash scripts/fetch-zircon-system-db.sh
-
-      - name: Verify canonical Zircon System.db
+      - name: Verify rebuilt Zircon System.db
         run: dotnet run --project tools/Origins.Database.Verify/Origins.Database.Verify.csproj --configuration Release -- ./Database ./Backup
 
-      - name: Export canonical Zircon System.db to JSON for inspection
-        run: dotnet run --project tools/Origins.Database.Export/Origins.Database.Export.csproj --configuration Release -- ./Database ./SnapshotZircon ./Backup
+      - name: Export rebuilt System.db for deterministic round-trip inspection
+        run: dotnet run --project tools/Origins.Database.Export/Origins.Database.Export.csproj --configuration Release -- ./Database ./SnapshotRebuilt ./Backup
+
+      - name: Confirm rebuilt MagicInfo is byte-identical to committed Zircon snapshot
+        run: cmp database/generated/zircon-system/LibraryCore__Library_SystemModels_MagicInfo.json SnapshotRebuilt/LibraryCore__Library_SystemModels_MagicInfo.json
 
       - name: Audit four-class MagicInfo rows
         run: >-
           python3 scripts/audit-zircon-four-class-db.py
           --catalog database/magic/zircon-four-class-magic-types.json
-          --magic-info SnapshotZircon/LibraryCore__Library_SystemModels_MagicInfo.json
+          --magic-info database/generated/zircon-system/LibraryCore__Library_SystemModels_MagicInfo.json
           --output ZirconMagicAudit/four-class-magic-db-report.json
 
       - name: Audit four-class runtime handlers and playable coverage
         run: >-
           python3 scripts/audit-zircon-four-class-runtime.py
           --catalog database/magic/zircon-four-class-magic-types.json
-          --magic-info SnapshotZircon/LibraryCore__Library_SystemModels_MagicInfo.json
+          --magic-info database/generated/zircon-system/LibraryCore__Library_SystemModels_MagicInfo.json
           --magics-root vendor/zircon/ServerLibrary/Models/Magics
           --output ZirconMagicAudit/four-class-magic-runtime-report.json
 
-      - name: Publish canonical Zircon database snapshot
+      - name: Publish Origins DxR Zircon runtime database
         if: success()
         uses: actions/upload-artifact@v4
         with:
           name: origins-dxr-zircon-system
           path: |
             Database/System.db
-            SnapshotZircon/
+            Database/import-report.json
+            SnapshotRebuilt/
             ZirconMagicAudit/four-class-magic-db-report.json
             ZirconMagicAudit/four-class-magic-runtime-report.json
           if-no-files-found: error
