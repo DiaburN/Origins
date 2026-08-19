@@ -1,0 +1,81 @@
+{
+  "schemaVersion": 1,
+  "status": "RUNTIME_MAPPED",
+  "sources": {
+    "crystal": {
+      "repository": "Suprcode/Crystal",
+      "commit": "0e315fe327192afe52c3d7357ddd1f5b7e26c5b8",
+      "server": ["Server/MirObjects/HumanObject.cs", "Shared/Functions/Functions.cs"],
+      "client": ["Client/MirObjects/PlayerObject.cs", "Client/MirObjects/MapObject.cs"]
+    },
+    "zircon": {
+      "repository": "Suprcode/Zircon",
+      "commit": "cbf1aa919083bc13fc3f23f93772a8ab8370632d",
+      "server": "ServerLibrary/Models/PlayerObject.cs"
+    }
+  },
+  "serverAuthority": {
+    "positionOwner": "server",
+    "illegalMovementCorrection": "UserLocation authoritative correction",
+    "walk": {
+      "distanceCells": 1,
+      "crystalMoveDelayMs": 600,
+      "restrictions": ["not Dead", "ActionTime reached", "not InTrapRock", "not Paralysis", "not LRParalysis", "not Frozen"]
+    },
+    "run": {
+      "normalDistanceCells": 2,
+      "mountDistanceCells": 3,
+      "swiftFeetDistanceCells": 3,
+      "swiftFeetRequiresNotSneaking": true,
+      "restrictions": ["not Dead", "ActionTime reached", "run step eligibility", "bag weight <= BagWeight", "not Paralysis", "not LRParalysis", "not Frozen"]
+    },
+    "crystalSpecialMovement": {
+      "ShoulderDash": "skill-driven displacement; audited in spell-player-actions.json",
+      "FlashDash": "skill-driven forward displacement using JumpDistance when valid",
+      "BackStep": "skill-driven reverse displacement using JumpDistance",
+      "Teleport": "instant relocation remains runtime/server-authoritative; no client-only position mutation"
+    }
+  },
+  "clientPresentation": {
+    "logicalActions": ["Walking","Running","MountWalking","MountRunning","Pushed","DashL","DashR","Sneek","Jump","DashAttack"],
+    "interpolation": {
+      "source": "Client/MirObjects/PlayerObject.cs OffSetMove",
+      "normalCells": 1,
+      "runningCells": 2,
+      "sprintRunningCells": 3,
+      "mountRunningCells": 3,
+      "gridBasis": ["MapControl.CellWidth", "MapControl.CellHeight"],
+      "directional": true,
+      "evenPixelRounding": true,
+      "remoteObjectsCompensateAgainstUserOffset": true
+    },
+    "spriteAnchor": "BodyLibrary.GetOffSet(DrawFrame); library metadata is authoritative for draw offset",
+    "doNot": ["advance authoritative map position from animation alone", "eyeball sprite offsets", "invent movement distances"]
+  },
+  "crystalToZirconDecisions": [
+    {
+      "id": "walk-run-authority",
+      "decision": "A",
+      "result": "Reuse Zircon Move authority, collision and UserLocation correction structure."
+    },
+    {
+      "id": "swiftfeet-three-cell-unmounted-run",
+      "decision": "B",
+      "difference": "Pinned Zircon rejects distance 3 whenever Horse == None; pinned Crystal permits 3 cells for ActiveSwiftFeet when not Sneaking.",
+      "implementation": "patches/zircon/029-crystal-player-movement-authority.patch",
+      "result": "Zircon remains authoritative and admits only the demonstrated Crystal exception."
+    },
+    {
+      "id": "client-interpolation",
+      "decision": "B",
+      "difference": "Zircon and Crystal use different player sprite/frame layouts.",
+      "result": "Preserve Zircon action/network authority but reproduce Crystal visual interpolation and Crystal frame layout in the presentation layer."
+    }
+  ],
+  "validation": {
+    "source": "SOURCE_CONFIRMED",
+    "runtime": "RUNTIME_MAPPED",
+    "assets": "needs_client_asset_evidence",
+    "fullClientReady": false
+  }
+}
