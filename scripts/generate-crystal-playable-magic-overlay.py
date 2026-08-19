@@ -10,6 +10,10 @@ A source enum can legitimately contain an unfinished spell with no MagicInfo
 record and no server handler (currently Crystal FastMove). Such a spell is still
 materialized as an identity-only, disabled catalogue row. No costs, levels,
 power, delay, icon, school or property are invented for that source stub.
+
+Pending automatic reuse is deliberately stricter than a normalized-name match:
+the existing Zircon MagicInfo must also belong to the same MirClass. Same-name
+spells in another class are never silently repurposed.
 """
 from __future__ import annotations
 
@@ -72,10 +76,13 @@ def main() -> int:
     used_indices, used_magic_types = set(), set()
     counts = {name:0 for name in CLASS_IDS}
     runtime_ready_count = pending_count = source_stub_count = 0
+    rejected_cross_class_name_matches = []
 
     for class_name, spells in catalog["classes"].items():
         if class_name not in CLASS_IDS:
             raise RuntimeError(f"Unsupported playable class in catalog: {class_name}")
+        desired_class = CLASS_IDS[class_name]
+
         for spell in spells:
             counts[class_name] += 1
             source_id = int(spell["id"])
@@ -86,7 +93,7 @@ def main() -> int:
             if ready_op is not None:
                 op = json.loads(json.dumps(ready_op))
                 op.setdefault("Set", {})["Name"] = name
-                op["Set"]["Class"] = CLASS_IDS[class_name]
+                op["Set"]["Class"] = desired_class
                 index = int(op["Index"])
                 existing = next((r for r in zircon_rows if int(r["Index"]) == index), None)
                 magic_type = int(op["Set"].get("Magic", existing["Magic"] if existing else 0))
@@ -97,16 +104,12 @@ def main() -> int:
                 projection = base_numeric.get(key) or extension_numeric.get(key)
 
                 if projection is None and spell.get("sourceStatus") == SOURCE_STUB_STATUS:
-                    # The upstream source itself has no MagicInfo values to copy.
-                    # Keep only the stable identity/class. All omitted MagicInfo
-                    # fields retain Zircon defaults and the reserved MagicType has
-                    # no registered handler, so the stub cannot execute.
                     magic_type = PENDING_MAGIC_TYPE_BASE + source_id
                     index = PENDING_INDEX_BASE + source_id
                     fields = {
                         "Name": name,
                         "Magic": magic_type,
-                        "Class": CLASS_IDS[class_name],
+                        "Class": desired_class,
                         "School": 0,
                         "Property": 0,
                         "Description": "",
@@ -130,14 +133,37 @@ def main() -> int:
                     fields = dict(projection["directFieldProjection"])
                     fields["LevelDelayReduction"] = int(projection.get("proof", {}).get("crystalDelayReduction", 0))
                     fields["Name"] = name
-                    fields["Class"] = CLASS_IDS[class_name]
+                    fields["Class"] = desired_class
                     magic_type = PENDING_MAGIC_TYPE_BASE + source_id
                     fields["Magic"] = magic_type
 
-                    matches = zircon_by_name.get(key, [])
-                    available_matches = [r for r in matches if int(r["Index"]) not in used_indices]
+                    all_name_matches = zircon_by_name.get(key, [])
+                    same_class_matches = [
+                        r for r in all_name_matches
+                        if int(r.get("Class", -1)) == desired_class
+                    ]
+                    cross_class_matches = [
+                        r for r in all_name_matches
+                        if int(r.get("Class", -1)) != desired_class
+                    ]
+                    for row in cross_class_matches:
+                        rejected_cross_class_name_matches.append({
+                            "crystalClass": class_name,
+                            "crystalSpell": name,
+                            "zirconIndex": int(row["Index"]),
+                            "zirconClass": int(row.get("Class", -1)),
+                            "zirconName": row.get("Name"),
+                        })
+
+                    available_matches = [
+                        r for r in same_class_matches
+                        if int(r["Index"]) not in used_indices
+                    ]
                     if len(available_matches) > 1:
-                        raise RuntimeError(f"Ambiguous Zircon normalized-name match for {name}: {len(available_matches)} rows")
+                        raise RuntimeError(
+                            f"Ambiguous same-class Zircon normalized-name match for {class_name}.{name}: "
+                            f"{len(available_matches)} rows"
+                        )
                     if len(available_matches) == 1:
                         target = available_matches[0]
                         index = int(target["Index"])
@@ -150,7 +176,13 @@ def main() -> int:
                         fields["Property"] = 0
                         fields["Description"] = ""
 
-                    op = {"Action":"upsert","AssemblyName":"LibraryCore","TypeName":"Library.SystemModels.MagicInfo","Index":index,"Set":fields}
+                    op = {
+                        "Action":"upsert",
+                        "AssemblyName":"LibraryCore",
+                        "TypeName":"Library.SystemModels.MagicInfo",
+                        "Index":index,
+                        "Set":fields,
+                    }
                     status = "catalog_pending_runtime"
                     pending_count += 1
                     numeric_source = "Crystal-Monk pinned source" if key in extension_numeric else "Crystal Jev effective MagicInfo"
@@ -179,7 +211,7 @@ def main() -> int:
         raise RuntimeError(f"Expected {EXPECTED_TOTAL} playable MagicInfo operations, generated {len(operations)}")
 
     payload = {
-        "SchemaVersion": 7,
+        "SchemaVersion": 8,
         "Name": "Complete Crystal + Crystal-Monk playable spell catalogue for ORIGINS",
         "Operations": operations,
         "$audit": {
@@ -188,15 +220,22 @@ def main() -> int:
             "runtimeReady": runtime_ready_count,
             "catalogPendingRuntime": pending_count,
             "sourceStubs": source_stub_count,
+            "automaticLegacyReuseRequiresSameClass": True,
+            "rejectedCrossClassNameMatches": rejected_cross_class_name_matches,
             "pendingMagicTypeRange": "3000 + Crystal/Crystal-Monk SpellId",
-            "pendingMagicInfoIndexRange": "3000 + SpellId when no legacy row is reused",
-            "policy": "Pending spells exist in System.db but cannot silently execute unrelated Zircon logic. Source stubs preserve identity only and never receive invented numerics.",
+            "pendingMagicInfoIndexRange": "3000 + SpellId when no same-class legacy row is reused",
+            "policy": "Pending spells exist in System.db but cannot silently execute unrelated Zircon logic. Source stubs preserve identity only and never receive invented numerics. Same-name rows from other classes are never automatically reused.",
             "spells": audit,
         },
     }
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(payload, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
-    print(f"Playable Crystal magic overlay: {len(operations)}/128 rows; {runtime_ready_count} runtime-ready, {pending_count} pending runtime, {source_stub_count} source stub(s)")
+    print(
+        f"Playable Crystal magic overlay: {len(operations)}/128 rows; "
+        f"{runtime_ready_count} runtime-ready, {pending_count} pending runtime, "
+        f"{source_stub_count} source stub(s); "
+        f"{len(rejected_cross_class_name_matches)} cross-class name match(es) rejected"
+    )
     for class_name in CLASS_IDS:
         print(f"- {class_name}: {counts[class_name]}")
     return 0
