@@ -1,6 +1,6 @@
-# ORIGINS DxR magic workflow
+# ORIGINS DxR — Magic
 
-ORIGINS-DxR uses **Zircon only** for active player magic.
+The active magic system is Zircon-only.
 
 ## Active classes
 
@@ -9,50 +9,49 @@ ORIGINS-DxR uses **Zircon only** for active player magic.
 - Taoist
 - Assassin
 
-Archer and Monk are not part of the current runtime or database scope.
+No Archer, Monk or Crystal runtime participates in this branch.
 
-## Authoritative sources
+## Canonical inputs
 
-Pinned source: `Suprcode/Zircon@cbf1aa919083bc13fc3f23f93772a8ab8370632d`.
+1. `database/magic/zircon-four-class-magic-types.json`
+   - exact `MagicType` inventory from pinned Zircon source
+   - 38 Warrior enum entries
+   - 47 Wizard enum entries
+   - 52 Taoist enum entries
+   - 58 Assassin enum entries
+   - 195 enum entries total
 
-The active spell chain is:
+2. `database/generated/zircon-system/LibraryCore__Library_SystemModels_MagicInfo.json`
+   - exact clean Zircon `MagicInfo` rows from the validated System.db snapshot
+   - source for name, icon, description, class, level requirements, experience, costs, delay, power, school and property
 
-```text
-LibraryCore/Enum.cs::MagicType
-        ↓
-System.db::MagicInfo
-        ↓
-ServerLibrary MagicObject registration/execution
-        ↓
-UserMagic player state
-        ↓
-Zircon client spell/action/effect presentation
-```
+3. `ServerLibrary/Models/Magics/**` from pinned Zircon
+   - runtime behavior and handlers
 
-There is no Crystal translation layer and no Crystal magic overlay.
+4. `UserMagic`
+   - per-player learned spell state
 
-## Catalog
+## Activation rule
 
-`zircon-four-class-magic-types.json` contains the 195 player-class enum entries in the pinned Zircon source.
+A spell is considered active/playable only when all of the following are true:
 
-Statuses are deliberately conservative:
+- it belongs to Warrior, Wizard, Taoist or Assassin;
+- its `MagicType` exists in pinned Zircon;
+- a corresponding `MagicInfo` row exists in the clean Zircon snapshot;
+- Zircon runtime registers a real handler for that `MagicType`.
 
-- `ENUM_DEFINED`
-- `DB_PRESENT`
-- `RUNTIME_HANDLER_PRESENT`
-- `PLAYABLE`
-- `UPSTREAM_NOT_CODED`
-- `UPSTREAM_UNUSED`
+Enum-only entries explicitly marked by upstream as `NOT CODED` or `UNUSED` remain catalogued but are not fabricated or replaced.
 
-Do not mark a spell `PLAYABLE` merely because it appears in the enum. Its canonical Zircon `System.db` row and runtime path must also exist.
+## UI rule
 
-## Upstream incomplete entries
+Use only the restored closed Zircon interface under `apps/zircon-ui-reference/`.
 
-The pinned source explicitly marks these as incomplete/unused and ORIGINS-DxR will not silently invent implementations for them:
+The Magic window keeps its existing Zircon visual behavior and receives its real cells/tabs from runtime `MagicInfo` + `UserMagic`. There is no second spell engine in HTML/JS and there are no Crystal magic trees, Crystal IDs or Crystal spell data.
 
-- Warrior: `FlameArt`
-- Wizard: `Storm`, `Tornado`, `UnityWithNature`
-- Taoist: `SupremeHealing`
-- Assassin: `Unused`, `ManaBurn`
+## Verification
 
-The first objective is a faithful four-class Zircon game. Custom ORIGINS balancing/content comes later and must remain native to the Zircon architecture.
+CI must cross-check:
+
+`MagicType -> MagicInfo -> registered MagicObject handler`
+
+and emit the four-class DB/runtime reports before the runtime `System.db` is accepted.
