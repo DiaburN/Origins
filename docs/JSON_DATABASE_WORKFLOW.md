@@ -1,10 +1,10 @@
-# Zircon JSON vs ORIGINS database snapshots
+# Zircon JSON vs ORIGINS-DxR database snapshots
 
 Current Zircon includes its own JSON exporter/import converters (`Server/Helpers/JsonExporter.cs` and `ServerLibrary/Converter/DBObjectConverter.cs`). Those tools are useful for editing individual tables through the server UI and resolve DBObject references through identity fields.
 
-ORIGINS keeps that capability, but uses a separate **full database snapshot format** for automated rebuilds.
+ORIGINS-DxR keeps that capability, but uses a separate **full database snapshot format** for deterministic inspection and index-preserving rebuilds.
 
-## Why ORIGINS uses a second JSON shape
+## Why ORIGINS-DxR uses a second JSON shape
 
 The ORIGINS pipeline must prove that a complete `System.db` can be rebuilt without shifting object indices. Some Zircon systems and configuration values refer to explicit database indices, so a content migration must preserve them.
 
@@ -27,17 +27,17 @@ This is mandatory because some system models execute default creation logic. For
 
 After all objects are instantiated with their original indices, references and scalar values are restored, the database is saved through the real Zircon `Session`, reopened, and validated.
 
-## Editing ORIGINS
+## Editing ORIGINS-DxR
 
-Never hand-edit the generated base snapshot. Put game changes in `database/overlays/`.
+Never hand-edit the generated Zircon base snapshot. Put deliberate ORIGINS content changes in `database/overlays/`.
 
 ```text
-SnapshotBase
- + ordered ORIGINS overlays
+SnapshotZircon
+ + optional ordered ORIGINS overlays
  = SnapshotOrigins
- -> import
+ -> Zircon-compatible import
  -> System.db
  -> reopen/preflight/index validation
 ```
 
-Crystal spell catalogue changes belong to the magic overlay, but spell execution remains implemented by Zircon `MagicObject` classes.
+The initial four-class magic set is **not** supplied by an ORIGINS overlay. Its source is the canonical Zircon `MagicInfo` collection and native `MagicObject` runtime.
