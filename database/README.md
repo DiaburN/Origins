@@ -1,52 +1,67 @@
 # ORIGINS DxR Database
 
-ORIGINS-DxR uses the **official pinned Suprcode/Zircon runtime and MirDB model as its only functional database foundation**.
+ORIGINS-DxR uses Zircon as the only database/runtime foundation.
 
-## Authoritative runtime
+## Active source
 
-Pinned upstream commit: `cbf1aa919083bc13fc3f23f93772a8ab8370632d`.
+The committed canonical snapshot is:
 
-Zircon initializes one `MirDB.Session` with two assemblies:
+`database/generated/zircon-system/`
 
-1. `LibraryCore` — MirDB engine + static/game definitions.
-2. `ServerLibrary` — persistent player/server definitions and runtime models.
+It is the clean Zircon `System.db` export validated by round-trip import on 2026-08-19:
 
-Runtime layout:
+- system version: `2026.08.19.1`
+- collections: `77`
+- objects: `26348`
+- snapshot SHA-256: `2E465FE3018A8E25588452C9525487CDB617DC189E1FD31EF17ADC47C30C331F`
+- import result: success
 
-```text
-LibraryCore/MirDB            -> DB engine
-LibraryCore/SystemModels     -> static definitions -> System.db
-ServerLibrary/DBModels       -> persistent definitions -> Users.db
-ServerLibrary/Envir/SEnvir   -> server collection wiring
+The runtime binary is regenerated from that snapshot with `Origins.Database.Import`; it is not rebuilt from any Crystal overlay.
+
+## Active classes
+
+Only these classes are active for the current game phase:
+
+- Warrior
+- Wizard
+- Taoist
+- Assassin
+
+Archer and Monk are out of scope for this branch.
+
+## Magic source
+
+Magic data comes only from native Zircon:
+
+- `LibraryCore/Enum.cs` -> `MagicType`
+- `Library.SystemModels.MagicInfo` -> names, levels, cost, cooldown, power, school, property, icon and description
+- `ServerLibrary/Models/Magics/**` -> runtime handlers
+- `UserMagic` -> learned spell state
+
+The clean `MagicInfo` collection is committed at:
+
+`database/generated/zircon-system/LibraryCore__Library_SystemModels_MagicInfo.json`
+
+No Crystal magic overlay, Crystal handler, Crystal numeric projection or Crystal database migration is permitted in Origins-DxR.
+
+## Build runtime System.db
+
+After bootstrapping the pinned Zircon source:
+
+```bash
+dotnet run --project tools/Origins.Database.Import/Origins.Database.Import.csproj -- \
+  database/generated/zircon-system \
+  Database
 ```
 
-## ORIGINS-DxR rules
+Then verify it:
 
-- Zircon is the single DB engine.
-- Zircon is the single server/combat foundation.
-- Zircon `System.db` is the canonical starting database.
-- Zircon `MagicInfo` is the only active spell-definition model.
-- Zircon `UserMagic` is the only persistent player-spell state.
-- Zircon `MagicObject` / `[MagicType(...)]` is the only spell execution architecture.
-- Active classes are exactly `Warrior`, `Wizard`, `Taoist`, `Assassin`.
-- Crystal and Crystal-Monk data, handlers, enums, overlays and database formats are not active in this branch.
-- No Archer or Monk rows are introduced while the four-class scope is active.
-
-## Database bootstrap
-
-Use the canonical Zircon database fetchers:
-
-```text
-scripts/fetch-zircon-system-db.sh
-scripts/fetch-zircon-system-db.ps1
+```bash
+dotnet run --project tools/Origins.Database.Verify/Origins.Database.Verify.csproj -- ./Database ./Backup
 ```
 
-They install the candidate Zircon `System.db` without rewriting it. Validate it before ORIGINS-specific changes.
+The generated runtime file is `Database/System.db`.
 
-## Magic catalog
+## Editing policy
 
-`magic/zircon-four-class-magic-types.json` is the source catalog extracted from the pinned Zircon `MagicType` enum. Enum presence alone does not prove a spell is playable; the DB and runtime are verified separately.
-
-## ORIGINS content
-
-Non-magic ORIGINS data may be layered later only through deliberate Zircon-compatible changes. Magic behavior is not replaced by a parallel ORIGINS or Crystal dispatcher.
+Do not edit the canonical Zircon snapshot in place just to change game content. Future ORIGINS-native changes belong in explicit ORIGINS overlays or later native code/database changes, while the clean snapshot remains the recovery baseline.
