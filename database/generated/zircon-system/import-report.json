@@ -1,0 +1,11 @@
+{
+  "schemaVersion": 1,
+  "success": true,
+  "sourceSnapshotSha256": "2E465FE3018A8E25588452C9525487CDB617DC189E1FD31EF17ADC47C30C331F",
+  "sourceSystemVersion": "2026.08.19.1",
+  "outputSystemVersion": "2026.08.19.1",
+  "collectionCount": 77,
+  "objectCount": 26348,
+  "errors": [],
+  "completedUtc": "2026-08-19T14:04:23.2603212Z"
+}

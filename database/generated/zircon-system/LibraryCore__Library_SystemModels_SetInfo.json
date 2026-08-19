@@ -1,0 +1,182 @@
+[
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.SetInfo",
+    "Index": 1,
+    "SetName": "Spirit Caller"
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.SetInfo",
+    "Index": 2,
+    "SetName": "Vigor"
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.SetInfo",
+    "Index": 3,
+    "SetName": "Life Stealing"
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.SetInfo",
+    "Index": 4,
+    "SetName": "Ancient Kingdom"
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.SetInfo",
+    "Index": 5,
+    "SetName": "Summoning"
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.SetInfo",
+    "Index": 6,
+    "SetName": "Numa"
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.SetInfo",
+    "Index": 7,
+    "SetName": "Gale Set"
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.SetInfo",
+    "Index": 8,
+    "SetName": "Carnage"
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.SetInfo",
+    "Index": 9,
+    "SetName": "Stars"
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.SetInfo",
+    "Index": 10,
+    "SetName": "Serenity"
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.SetInfo",
+    "Index": 11,
+    "SetName": "Dragon Lord"
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.SetInfo",
+    "Index": 12,
+    "SetName": "Earth"
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.SetInfo",
+    "Index": 13,
+    "SetName": "Purity"
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.SetInfo",
+    "Index": 14,
+    "SetName": "Crescent"
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.SetInfo",
+    "Index": 15,
+    "SetName": "Abyss"
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.SetInfo",
+    "Index": 16,
+    "SetName": "Garnet"
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.SetInfo",
+    "Index": 17,
+    "SetName": "Lapis Lazuli"
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.SetInfo",
+    "Index": 18,
+    "SetName": "Malachite"
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.SetInfo",
+    "Index": 19,
+    "SetName": "Obsidian"
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.SetInfo",
+    "Index": 20,
+    "SetName": "Sapphire"
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.SetInfo",
+    "Index": 21,
+    "SetName": "Alexandrite"
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.SetInfo",
+    "Index": 22,
+    "SetName": "new war set"
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.SetInfo",
+    "Index": 23,
+    "SetName": "new sin set"
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.SetInfo",
+    "Index": 24,
+    "SetName": "new tao set"
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.SetInfo",
+    "Index": 25,
+    "SetName": "new wiz set"
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.SetInfo",
+    "Index": 26,
+    "SetName": "new boot"
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.SetInfo",
+    "Index": 27,
+    "SetName": "OdynSin"
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.SetInfo",
+    "Index": 28,
+    "SetName": "OdynSon"
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.SetInfo",
+    "Index": 29,
+    "SetName": "OdynMythical"
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.SetInfo",
+    "Index": 30,
+    "SetName": "OdynElemental"
+  }
+]

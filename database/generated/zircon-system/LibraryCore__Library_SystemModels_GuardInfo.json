@@ -1,0 +1,1226 @@
+[
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.GuardInfo",
+    "Direction": 4,
+    "Index": 4,
+    "Map": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 1
+    },
+    "Monster": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MonsterInfo",
+      "Index": 1
+    },
+    "X": 122,
+    "Y": 230
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.GuardInfo",
+    "Direction": 4,
+    "Index": 5,
+    "Map": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 1
+    },
+    "Monster": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MonsterInfo",
+      "Index": 1
+    },
+    "X": 128,
+    "Y": 241
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.GuardInfo",
+    "Direction": 7,
+    "Index": 6,
+    "Map": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 1
+    },
+    "Monster": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MonsterInfo",
+      "Index": 1
+    },
+    "X": 135,
+    "Y": 215
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.GuardInfo",
+    "Direction": 1,
+    "Index": 7,
+    "Map": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 1
+    },
+    "Monster": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MonsterInfo",
+      "Index": 1
+    },
+    "X": 143,
+    "Y": 204
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.GuardInfo",
+    "Direction": 4,
+    "Index": 8,
+    "Map": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 1
+    },
+    "Monster": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MonsterInfo",
+      "Index": 1
+    },
+    "X": 144,
+    "Y": 246
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.GuardInfo",
+    "Direction": 5,
+    "Index": 9,
+    "Map": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 1
+    },
+    "Monster": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MonsterInfo",
+      "Index": 1
+    },
+    "X": 147,
+    "Y": 259
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.GuardInfo",
+    "Direction": 5,
+    "Index": 10,
+    "Map": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 1
+    },
+    "Monster": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MonsterInfo",
+      "Index": 1
+    },
+    "X": 153,
+    "Y": 206
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.GuardInfo",
+    "Direction": 4,
+    "Index": 11,
+    "Map": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 1
+    },
+    "Monster": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MonsterInfo",
+      "Index": 1
+    },
+    "X": 157,
+    "Y": 270
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.GuardInfo",
+    "Direction": 5,
+    "Index": 12,
+    "Map": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 1
+    },
+    "Monster": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MonsterInfo",
+      "Index": 1
+    },
+    "X": 164,
+    "Y": 223
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.GuardInfo",
+    "Direction": 5,
+    "Index": 13,
+    "Map": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 1
+    },
+    "Monster": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MonsterInfo",
+      "Index": 1
+    },
+    "X": 167,
+    "Y": 226
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.GuardInfo",
+    "Direction": 3,
+    "Index": 14,
+    "Map": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 1
+    },
+    "Monster": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MonsterInfo",
+      "Index": 1
+    },
+    "X": 168,
+    "Y": 259
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.GuardInfo",
+    "Direction": 5,
+    "Index": 15,
+    "Map": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 1
+    },
+    "Monster": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MonsterInfo",
+      "Index": 1
+    },
+    "X": 177,
+    "Y": 206
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.GuardInfo",
+    "Direction": 5,
+    "Index": 16,
+    "Map": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 1
+    },
+    "Monster": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MonsterInfo",
+      "Index": 1
+    },
+    "X": 178,
+    "Y": 235
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.GuardInfo",
+    "Direction": 1,
+    "Index": 17,
+    "Map": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 1
+    },
+    "Monster": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MonsterInfo",
+      "Index": 1
+    },
+    "X": 180,
+    "Y": 246
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.GuardInfo",
+    "Direction": 5,
+    "Index": 18,
+    "Map": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 1
+    },
+    "Monster": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MonsterInfo",
+      "Index": 1
+    },
+    "X": 182,
+    "Y": 211
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.GuardInfo",
+    "Direction": 3,
+    "Index": 19,
+    "Map": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 1
+    },
+    "Monster": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MonsterInfo",
+      "Index": 1
+    },
+    "X": 183,
+    "Y": 258
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.GuardInfo",
+    "Direction": 1,
+    "Index": 20,
+    "Map": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 1
+    },
+    "Monster": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MonsterInfo",
+      "Index": 1
+    },
+    "X": 203,
+    "Y": 181
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.GuardInfo",
+    "Direction": 1,
+    "Index": 21,
+    "Map": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 1
+    },
+    "Monster": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MonsterInfo",
+      "Index": 1
+    },
+    "X": 207,
+    "Y": 185
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.GuardInfo",
+    "Direction": 3,
+    "Index": 22,
+    "Map": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 1
+    },
+    "Monster": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MonsterInfo",
+      "Index": 1
+    },
+    "X": 195,
+    "Y": 245
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.GuardInfo",
+    "Direction": 4,
+    "Index": 24,
+    "Map": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 5
+    },
+    "Monster": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MonsterInfo",
+      "Index": 1
+    },
+    "X": 145,
+    "Y": 175
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.GuardInfo",
+    "Direction": 7,
+    "Index": 25,
+    "Map": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 5
+    },
+    "Monster": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MonsterInfo",
+      "Index": 1
+    },
+    "X": 145,
+    "Y": 192
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.GuardInfo",
+    "Direction": 3,
+    "Index": 26,
+    "Map": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 5
+    },
+    "Monster": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MonsterInfo",
+      "Index": 1
+    },
+    "X": 161,
+    "Y": 220
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.GuardInfo",
+    "Direction": 4,
+    "Index": 27,
+    "Map": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 5
+    },
+    "Monster": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MonsterInfo",
+      "Index": 1
+    },
+    "X": 163,
+    "Y": 194
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.GuardInfo",
+    "Direction": 7,
+    "Index": 28,
+    "Map": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 5
+    },
+    "Monster": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MonsterInfo",
+      "Index": 1
+    },
+    "X": 164,
+    "Y": 157
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.GuardInfo",
+    "Direction": 4,
+    "Index": 29,
+    "Map": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 5
+    },
+    "Monster": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MonsterInfo",
+      "Index": 1
+    },
+    "X": 173,
+    "Y": 216
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.GuardInfo",
+    "Direction": 3,
+    "Index": 30,
+    "Map": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 5
+    },
+    "Monster": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MonsterInfo",
+      "Index": 1
+    },
+    "X": 177,
+    "Y": 167
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.GuardInfo",
+    "Direction": 1,
+    "Index": 31,
+    "Map": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 5
+    },
+    "Monster": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MonsterInfo",
+      "Index": 1
+    },
+    "X": 184,
+    "Y": 201
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.GuardInfo",
+    "Direction": 7,
+    "Index": 32,
+    "Map": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 5
+    },
+    "Monster": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MonsterInfo",
+      "Index": 1
+    },
+    "X": 185,
+    "Y": 170
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.GuardInfo",
+    "Direction": 4,
+    "Index": 33,
+    "Map": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 5
+    },
+    "Monster": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MonsterInfo",
+      "Index": 1
+    },
+    "X": 190,
+    "Y": 220
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.GuardInfo",
+    "Direction": 3,
+    "Index": 34,
+    "Map": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 5
+    },
+    "Monster": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MonsterInfo",
+      "Index": 1
+    },
+    "X": 194,
+    "Y": 208
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.GuardInfo",
+    "Direction": 3,
+    "Index": 35,
+    "Map": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 5
+    },
+    "Monster": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MonsterInfo",
+      "Index": 1
+    },
+    "X": 202,
+    "Y": 176
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.GuardInfo",
+    "Direction": 3,
+    "Index": 36,
+    "Map": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 5
+    },
+    "Monster": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MonsterInfo",
+      "Index": 1
+    },
+    "X": 203,
+    "Y": 191
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.GuardInfo",
+    "Direction": 5,
+    "Index": 37,
+    "Map": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 6
+    },
+    "Monster": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MonsterInfo",
+      "Index": 1
+    },
+    "X": 132,
+    "Y": 159
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.GuardInfo",
+    "Direction": 5,
+    "Index": 38,
+    "Map": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 6
+    },
+    "Monster": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MonsterInfo",
+      "Index": 1
+    },
+    "X": 135,
+    "Y": 166
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.GuardInfo",
+    "Direction": 7,
+    "Index": 39,
+    "Map": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 6
+    },
+    "Monster": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MonsterInfo",
+      "Index": 1
+    },
+    "X": 141,
+    "Y": 147
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.GuardInfo",
+    "Direction": 5,
+    "Index": 40,
+    "Map": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 6
+    },
+    "Monster": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MonsterInfo",
+      "Index": 1
+    },
+    "X": 146,
+    "Y": 180
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.GuardInfo",
+    "Direction": 7,
+    "Index": 41,
+    "Map": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 6
+    },
+    "Monster": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MonsterInfo",
+      "Index": 1
+    },
+    "X": 154,
+    "Y": 142
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.GuardInfo",
+    "Direction": 3,
+    "Index": 42,
+    "Map": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 6
+    },
+    "Monster": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MonsterInfo",
+      "Index": 1
+    },
+    "X": 158,
+    "Y": 181
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.GuardInfo",
+    "Direction": 1,
+    "Index": 43,
+    "Map": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 6
+    },
+    "Monster": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MonsterInfo",
+      "Index": 1
+    },
+    "X": 166,
+    "Y": 139
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.GuardInfo",
+    "Direction": 1,
+    "Index": 44,
+    "Map": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 6
+    },
+    "Monster": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MonsterInfo",
+      "Index": 1
+    },
+    "X": 170,
+    "Y": 169
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.GuardInfo",
+    "Direction": 5,
+    "Index": 45,
+    "Map": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 259
+    },
+    "Monster": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MonsterInfo",
+      "Index": 1
+    },
+    "X": 267,
+    "Y": 315
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.GuardInfo",
+    "Direction": 3,
+    "Index": 46,
+    "Map": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 259
+    },
+    "Monster": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MonsterInfo",
+      "Index": 1
+    },
+    "X": 271,
+    "Y": 237
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.GuardInfo",
+    "Direction": 5,
+    "Index": 47,
+    "Map": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 259
+    },
+    "Monster": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MonsterInfo",
+      "Index": 1
+    },
+    "X": 271,
+    "Y": 319
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.GuardInfo",
+    "Direction": 3,
+    "Index": 48,
+    "Map": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 259
+    },
+    "Monster": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MonsterInfo",
+      "Index": 1
+    },
+    "X": 274,
+    "Y": 234
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.GuardInfo",
+    "Direction": 5,
+    "Index": 49,
+    "Map": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 259
+    },
+    "Monster": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MonsterInfo",
+      "Index": 1
+    },
+    "X": 349,
+    "Y": 233
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.GuardInfo",
+    "Direction": 3,
+    "Index": 50,
+    "Map": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 259
+    },
+    "Monster": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MonsterInfo",
+      "Index": 1
+    },
+    "X": 351,
+    "Y": 322
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.GuardInfo",
+    "Direction": 5,
+    "Index": 51,
+    "Map": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 259
+    },
+    "Monster": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MonsterInfo",
+      "Index": 1
+    },
+    "X": 354,
+    "Y": 237
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.GuardInfo",
+    "Direction": 3,
+    "Index": 52,
+    "Map": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 259
+    },
+    "Monster": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MonsterInfo",
+      "Index": 1
+    },
+    "X": 355,
+    "Y": 318
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.GuardInfo",
+    "Direction": 7,
+    "Index": 53,
+    "Map": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 291
+    },
+    "Monster": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MonsterInfo",
+      "Index": 1
+    },
+    "X": 294,
+    "Y": 145
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.GuardInfo",
+    "Direction": 5,
+    "Index": 54,
+    "Map": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 291
+    },
+    "Monster": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MonsterInfo",
+      "Index": 1
+    },
+    "X": 296,
+    "Y": 189
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.GuardInfo",
+    "Direction": 7,
+    "Index": 55,
+    "Map": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 291
+    },
+    "Monster": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MonsterInfo",
+      "Index": 1
+    },
+    "X": 298,
+    "Y": 141
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.GuardInfo",
+    "Direction": 5,
+    "Index": 56,
+    "Map": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 291
+    },
+    "Monster": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MonsterInfo",
+      "Index": 1
+    },
+    "X": 300,
+    "Y": 193
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.GuardInfo",
+    "Direction": 5,
+    "Index": 57,
+    "Map": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 291
+    },
+    "Monster": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MonsterInfo",
+      "Index": 1
+    },
+    "X": 338,
+    "Y": 145
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.GuardInfo",
+    "Direction": 3,
+    "Index": 58,
+    "Map": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 291
+    },
+    "Monster": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MonsterInfo",
+      "Index": 1
+    },
+    "X": 340,
+    "Y": 197
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.GuardInfo",
+    "Direction": 5,
+    "Index": 59,
+    "Map": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 291
+    },
+    "Monster": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MonsterInfo",
+      "Index": 1
+    },
+    "X": 342,
+    "Y": 149
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.GuardInfo",
+    "Direction": 3,
+    "Index": 60,
+    "Map": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 291
+    },
+    "Monster": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MonsterInfo",
+      "Index": 1
+    },
+    "X": 344,
+    "Y": 193
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.GuardInfo",
+    "Direction": 1,
+    "Index": 61,
+    "Map": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 292
+    },
+    "Monster": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MonsterInfo",
+      "Index": 1
+    },
+    "X": 122,
+    "Y": 287
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.GuardInfo",
+    "Direction": 1,
+    "Index": 62,
+    "Map": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 292
+    },
+    "Monster": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MonsterInfo",
+      "Index": 1
+    },
+    "X": 140,
+    "Y": 225
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.GuardInfo",
+    "Direction": 3,
+    "Index": 63,
+    "Map": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 292
+    },
+    "Monster": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MonsterInfo",
+      "Index": 1
+    },
+    "X": 150,
+    "Y": 302
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.GuardInfo",
+    "Direction": 1,
+    "Index": 64,
+    "Map": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 292
+    },
+    "Monster": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MonsterInfo",
+      "Index": 1
+    },
+    "X": 152,
+    "Y": 232
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.GuardInfo",
+    "Direction": 3,
+    "Index": 65,
+    "Map": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 292
+    },
+    "Monster": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MonsterInfo",
+      "Index": 1
+    },
+    "X": 165,
+    "Y": 270
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.GuardInfo",
+    "Direction": 3,
+    "Index": 80,
+    "Map": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 8
+    },
+    "Monster": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MonsterInfo",
+      "Index": 1
+    },
+    "X": 191,
+    "Y": 131
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.GuardInfo",
+    "Direction": 1,
+    "Index": 81,
+    "Map": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 8
+    },
+    "Monster": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MonsterInfo",
+      "Index": 1
+    },
+    "X": 187,
+    "Y": 164
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.GuardInfo",
+    "Direction": 6,
+    "Index": 82,
+    "Map": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 8
+    },
+    "Monster": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MonsterInfo",
+      "Index": 1
+    },
+    "X": 171,
+    "Y": 173
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.GuardInfo",
+    "Direction": 5,
+    "Index": 83,
+    "Map": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 8
+    },
+    "Monster": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MonsterInfo",
+      "Index": 1
+    },
+    "X": 142,
+    "Y": 160
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.GuardInfo",
+    "Direction": 4,
+    "Index": 84,
+    "Map": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 8
+    },
+    "Monster": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MonsterInfo",
+      "Index": 1
+    },
+    "X": 137,
+    "Y": 144
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.GuardInfo",
+    "Direction": 6,
+    "Index": 85,
+    "Map": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 8
+    },
+    "Monster": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MonsterInfo",
+      "Index": 1
+    },
+    "X": 157,
+    "Y": 119
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.GuardInfo",
+    "Direction": 2,
+    "Index": 86,
+    "Map": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 8
+    },
+    "Monster": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MonsterInfo",
+      "Index": 1
+    },
+    "X": 174,
+    "Y": 119
+  }
+]

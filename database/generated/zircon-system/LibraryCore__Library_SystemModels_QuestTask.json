@@ -1,0 +1,684 @@
+[
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestTask",
+    "Amount": 10,
+    "Index": 14,
+    "ItemParameter": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 803
+    },
+    "MobDescription": "",
+    "Quest": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 9
+    },
+    "RegionParameter": null,
+    "Task": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestTask",
+    "Amount": 30,
+    "Index": 15,
+    "ItemParameter": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 804
+    },
+    "MobDescription": "Spiders in Phantom Forest",
+    "Quest": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 10
+    },
+    "RegionParameter": null,
+    "Task": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestTask",
+    "Amount": 20,
+    "Index": 16,
+    "ItemParameter": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 805
+    },
+    "MobDescription": "",
+    "Quest": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 11
+    },
+    "RegionParameter": null,
+    "Task": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestTask",
+    "Amount": 1,
+    "Index": 17,
+    "ItemParameter": null,
+    "MobDescription": "",
+    "Quest": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 14
+    },
+    "RegionParameter": null,
+    "Task": 0
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestTask",
+    "Amount": 50,
+    "Index": 19,
+    "ItemParameter": null,
+    "MobDescription": "",
+    "Quest": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 16
+    },
+    "RegionParameter": null,
+    "Task": 0
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestTask",
+    "Amount": 50,
+    "Index": 20,
+    "ItemParameter": null,
+    "MobDescription": "",
+    "Quest": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 17
+    },
+    "RegionParameter": null,
+    "Task": 0
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestTask",
+    "Amount": 50,
+    "Index": 21,
+    "ItemParameter": null,
+    "MobDescription": "",
+    "Quest": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 17
+    },
+    "RegionParameter": null,
+    "Task": 0
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestTask",
+    "Amount": 50,
+    "Index": 22,
+    "ItemParameter": null,
+    "MobDescription": "",
+    "Quest": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 17
+    },
+    "RegionParameter": null,
+    "Task": 0
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestTask",
+    "Amount": 1,
+    "Index": 23,
+    "ItemParameter": null,
+    "MobDescription": "",
+    "Quest": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 17
+    },
+    "RegionParameter": null,
+    "Task": 0
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestTask",
+    "Amount": 0,
+    "Index": 35,
+    "ItemParameter": null,
+    "MobDescription": "",
+    "Quest": null,
+    "RegionParameter": null,
+    "Task": 0
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestTask",
+    "Amount": 50,
+    "Index": 41,
+    "ItemParameter": null,
+    "MobDescription": "",
+    "Quest": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 34
+    },
+    "RegionParameter": null,
+    "Task": 0
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestTask",
+    "Amount": 50,
+    "Index": 42,
+    "ItemParameter": null,
+    "MobDescription": "",
+    "Quest": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 34
+    },
+    "RegionParameter": null,
+    "Task": 0
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestTask",
+    "Amount": 50,
+    "Index": 43,
+    "ItemParameter": null,
+    "MobDescription": "",
+    "Quest": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 35
+    },
+    "RegionParameter": null,
+    "Task": 0
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestTask",
+    "Amount": 50,
+    "Index": 44,
+    "ItemParameter": null,
+    "MobDescription": "",
+    "Quest": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 35
+    },
+    "RegionParameter": null,
+    "Task": 0
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestTask",
+    "Amount": 2,
+    "Index": 45,
+    "ItemParameter": null,
+    "MobDescription": "",
+    "Quest": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 36
+    },
+    "RegionParameter": null,
+    "Task": 0
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestTask",
+    "Amount": 20,
+    "Index": 46,
+    "ItemParameter": null,
+    "MobDescription": "",
+    "Quest": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 36
+    },
+    "RegionParameter": null,
+    "Task": 0
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestTask",
+    "Amount": 1,
+    "Index": 47,
+    "ItemParameter": null,
+    "MobDescription": "",
+    "Quest": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 37
+    },
+    "RegionParameter": null,
+    "Task": 0
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestTask",
+    "Amount": 50,
+    "Index": 49,
+    "ItemParameter": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 807
+    },
+    "MobDescription": "Skeletons",
+    "Quest": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 39
+    },
+    "RegionParameter": null,
+    "Task": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestTask",
+    "Amount": 1,
+    "Index": 50,
+    "ItemParameter": null,
+    "MobDescription": "",
+    "Quest": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 40
+    },
+    "RegionParameter": null,
+    "Task": 0
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestTask",
+    "Amount": 1,
+    "Index": 52,
+    "ItemParameter": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 809
+    },
+    "MobDescription": "",
+    "Quest": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 42
+    },
+    "RegionParameter": null,
+    "Task": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestTask",
+    "Amount": 1,
+    "Index": 53,
+    "ItemParameter": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 810
+    },
+    "MobDescription": "",
+    "Quest": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 43
+    },
+    "RegionParameter": null,
+    "Task": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestTask",
+    "Amount": 1,
+    "Index": 54,
+    "ItemParameter": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 811
+    },
+    "MobDescription": "",
+    "Quest": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 44
+    },
+    "RegionParameter": null,
+    "Task": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestTask",
+    "Amount": 50,
+    "Index": 55,
+    "ItemParameter": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 812
+    },
+    "MobDescription": "Zombies",
+    "Quest": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 45
+    },
+    "RegionParameter": null,
+    "Task": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestTask",
+    "Amount": 1,
+    "Index": 56,
+    "ItemParameter": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 813
+    },
+    "MobDescription": "",
+    "Quest": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 46
+    },
+    "RegionParameter": null,
+    "Task": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestTask",
+    "Amount": 1,
+    "Index": 57,
+    "ItemParameter": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 814
+    },
+    "MobDescription": "",
+    "Quest": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 47
+    },
+    "RegionParameter": null,
+    "Task": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestTask",
+    "Amount": 1,
+    "Index": 58,
+    "ItemParameter": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 808
+    },
+    "MobDescription": "",
+    "Quest": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 48
+    },
+    "RegionParameter": null,
+    "Task": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestTask",
+    "Amount": 30,
+    "Index": 59,
+    "ItemParameter": null,
+    "MobDescription": "",
+    "Quest": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 50
+    },
+    "RegionParameter": null,
+    "Task": 0
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestTask",
+    "Amount": 30,
+    "Index": 60,
+    "ItemParameter": null,
+    "MobDescription": "",
+    "Quest": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 51
+    },
+    "RegionParameter": null,
+    "Task": 0
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestTask",
+    "Amount": 30,
+    "Index": 61,
+    "ItemParameter": null,
+    "MobDescription": "",
+    "Quest": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 52
+    },
+    "RegionParameter": null,
+    "Task": 0
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestTask",
+    "Amount": 25,
+    "Index": 62,
+    "ItemParameter": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 806
+    },
+    "MobDescription": "",
+    "Quest": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 53
+    },
+    "RegionParameter": null,
+    "Task": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestTask",
+    "Amount": 25,
+    "Index": 63,
+    "ItemParameter": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 806
+    },
+    "MobDescription": "",
+    "Quest": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 54
+    },
+    "RegionParameter": null,
+    "Task": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestTask",
+    "Amount": 25,
+    "Index": 64,
+    "ItemParameter": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 806
+    },
+    "MobDescription": "",
+    "Quest": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 55
+    },
+    "RegionParameter": null,
+    "Task": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestTask",
+    "Amount": 40,
+    "Index": 65,
+    "ItemParameter": null,
+    "MobDescription": "",
+    "Quest": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 56
+    },
+    "RegionParameter": null,
+    "Task": 0
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestTask",
+    "Amount": 40,
+    "Index": 66,
+    "ItemParameter": null,
+    "MobDescription": "",
+    "Quest": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 56
+    },
+    "RegionParameter": null,
+    "Task": 0
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestTask",
+    "Amount": 50,
+    "Index": 67,
+    "ItemParameter": null,
+    "MobDescription": "",
+    "Quest": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 57
+    },
+    "RegionParameter": null,
+    "Task": 0
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestTask",
+    "Amount": 30,
+    "Index": 68,
+    "ItemParameter": null,
+    "MobDescription": "",
+    "Quest": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 57
+    },
+    "RegionParameter": null,
+    "Task": 0
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestTask",
+    "Amount": 200,
+    "Index": 69,
+    "ItemParameter": null,
+    "MobDescription": "Bone Monsters",
+    "Quest": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 58
+    },
+    "RegionParameter": null,
+    "Task": 0
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestTask",
+    "Amount": 1,
+    "Index": 70,
+    "ItemParameter": null,
+    "MobDescription": "",
+    "Quest": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 58
+    },
+    "RegionParameter": null,
+    "Task": 0
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestTask",
+    "Amount": 1,
+    "Index": 71,
+    "ItemParameter": null,
+    "MobDescription": "",
+    "Quest": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 59
+    },
+    "RegionParameter": null,
+    "Task": 0
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestTask",
+    "Amount": 30,
+    "Index": 72,
+    "ItemParameter": null,
+    "MobDescription": "",
+    "Quest": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 60
+    },
+    "RegionParameter": null,
+    "Task": 0
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestTask",
+    "Amount": 30,
+    "Index": 73,
+    "ItemParameter": null,
+    "MobDescription": "",
+    "Quest": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 61
+    },
+    "RegionParameter": null,
+    "Task": 0
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestTask",
+    "Amount": 30,
+    "Index": 74,
+    "ItemParameter": null,
+    "MobDescription": "",
+    "Quest": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 62
+    },
+    "RegionParameter": null,
+    "Task": 0
+  }
+]

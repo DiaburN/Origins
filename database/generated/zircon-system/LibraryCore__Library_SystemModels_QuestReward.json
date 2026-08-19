@@ -1,0 +1,682 @@
+[
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestReward",
+    "Amount": 352,
+    "Bound": false,
+    "Choice": false,
+    "Class": 15,
+    "Duration": 0,
+    "Index": 30,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 801
+    },
+    "Quest": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 9
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestReward",
+    "Amount": 26100,
+    "Bound": false,
+    "Choice": false,
+    "Class": 15,
+    "Duration": 0,
+    "Index": 32,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 801
+    },
+    "Quest": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 10
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestReward",
+    "Amount": 10400,
+    "Bound": false,
+    "Choice": false,
+    "Class": 15,
+    "Duration": 0,
+    "Index": 34,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 801
+    },
+    "Quest": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 11
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestReward",
+    "Amount": 1000,
+    "Bound": false,
+    "Choice": false,
+    "Class": 15,
+    "Duration": 0,
+    "Index": 36,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 801
+    },
+    "Quest": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 12
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestReward",
+    "Amount": 1000,
+    "Bound": false,
+    "Choice": false,
+    "Class": 15,
+    "Duration": 0,
+    "Index": 38,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 801
+    },
+    "Quest": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 13
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestReward",
+    "Amount": 28000,
+    "Bound": false,
+    "Choice": false,
+    "Class": 15,
+    "Duration": 0,
+    "Index": 40,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 801
+    },
+    "Quest": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 14
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestReward",
+    "Amount": 160000,
+    "Bound": false,
+    "Choice": false,
+    "Class": 15,
+    "Duration": 0,
+    "Index": 44,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 801
+    },
+    "Quest": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 16
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestReward",
+    "Amount": 54800,
+    "Bound": false,
+    "Choice": false,
+    "Class": 15,
+    "Duration": 0,
+    "Index": 46,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 801
+    },
+    "Quest": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 17
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestReward",
+    "Amount": 36800,
+    "Bound": false,
+    "Choice": false,
+    "Class": 15,
+    "Duration": 0,
+    "Index": 80,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 801
+    },
+    "Quest": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 34
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestReward",
+    "Amount": 54000,
+    "Bound": false,
+    "Choice": false,
+    "Class": 15,
+    "Duration": 0,
+    "Index": 82,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 801
+    },
+    "Quest": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 35
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestReward",
+    "Amount": 51200,
+    "Bound": false,
+    "Choice": false,
+    "Class": 15,
+    "Duration": 0,
+    "Index": 84,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 801
+    },
+    "Quest": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 36
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestReward",
+    "Amount": 136000,
+    "Bound": false,
+    "Choice": false,
+    "Class": 15,
+    "Duration": 0,
+    "Index": 86,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 801
+    },
+    "Quest": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 37
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestReward",
+    "Amount": 13700,
+    "Bound": false,
+    "Choice": false,
+    "Class": 15,
+    "Duration": 0,
+    "Index": 90,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 801
+    },
+    "Quest": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 39
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestReward",
+    "Amount": 8000,
+    "Bound": false,
+    "Choice": false,
+    "Class": 15,
+    "Duration": 0,
+    "Index": 92,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 801
+    },
+    "Quest": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 40
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestReward",
+    "Amount": 288,
+    "Bound": false,
+    "Choice": false,
+    "Class": 15,
+    "Duration": 0,
+    "Index": 96,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 801
+    },
+    "Quest": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 42
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestReward",
+    "Amount": 750,
+    "Bound": false,
+    "Choice": false,
+    "Class": 15,
+    "Duration": 0,
+    "Index": 100,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 801
+    },
+    "Quest": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 43
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestReward",
+    "Amount": 288,
+    "Bound": false,
+    "Choice": false,
+    "Class": 15,
+    "Duration": 0,
+    "Index": 104,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 801
+    },
+    "Quest": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 44
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestReward",
+    "Amount": 28640,
+    "Bound": false,
+    "Choice": false,
+    "Class": 15,
+    "Duration": 0,
+    "Index": 108,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 801
+    },
+    "Quest": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 45
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestReward",
+    "Amount": 320,
+    "Bound": false,
+    "Choice": false,
+    "Class": 15,
+    "Duration": 0,
+    "Index": 110,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 801
+    },
+    "Quest": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 46
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestReward",
+    "Amount": 320,
+    "Bound": false,
+    "Choice": false,
+    "Class": 15,
+    "Duration": 0,
+    "Index": 112,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 801
+    },
+    "Quest": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 47
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestReward",
+    "Amount": 320,
+    "Bound": false,
+    "Choice": false,
+    "Class": 15,
+    "Duration": 0,
+    "Index": 114,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 801
+    },
+    "Quest": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 48
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestReward",
+    "Amount": 960,
+    "Bound": false,
+    "Choice": false,
+    "Class": 15,
+    "Duration": 0,
+    "Index": 116,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 801
+    },
+    "Quest": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 50
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestReward",
+    "Amount": 960,
+    "Bound": false,
+    "Choice": false,
+    "Class": 15,
+    "Duration": 0,
+    "Index": 118,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 801
+    },
+    "Quest": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 51
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestReward",
+    "Amount": 960,
+    "Bound": false,
+    "Choice": false,
+    "Class": 15,
+    "Duration": 0,
+    "Index": 120,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 801
+    },
+    "Quest": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 52
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestReward",
+    "Amount": 200,
+    "Bound": false,
+    "Choice": false,
+    "Class": 15,
+    "Duration": 0,
+    "Index": 122,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 801
+    },
+    "Quest": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 53
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestReward",
+    "Amount": 200,
+    "Bound": false,
+    "Choice": false,
+    "Class": 15,
+    "Duration": 0,
+    "Index": 124,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 801
+    },
+    "Quest": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 54
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestReward",
+    "Amount": 200,
+    "Bound": false,
+    "Choice": false,
+    "Class": 15,
+    "Duration": 0,
+    "Index": 126,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 801
+    },
+    "Quest": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 55
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestReward",
+    "Amount": 49600,
+    "Bound": false,
+    "Choice": false,
+    "Class": 15,
+    "Duration": 0,
+    "Index": 128,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 801
+    },
+    "Quest": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 56
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestReward",
+    "Amount": 59200,
+    "Bound": false,
+    "Choice": false,
+    "Class": 15,
+    "Duration": 0,
+    "Index": 130,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 801
+    },
+    "Quest": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 57
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestReward",
+    "Amount": 158800,
+    "Bound": false,
+    "Choice": false,
+    "Class": 15,
+    "Duration": 0,
+    "Index": 132,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 801
+    },
+    "Quest": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 58
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestReward",
+    "Amount": 152000,
+    "Bound": false,
+    "Choice": false,
+    "Class": 15,
+    "Duration": 0,
+    "Index": 134,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 801
+    },
+    "Quest": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 59
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestReward",
+    "Amount": 1680,
+    "Bound": false,
+    "Choice": false,
+    "Class": 15,
+    "Duration": 0,
+    "Index": 136,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 801
+    },
+    "Quest": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 60
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestReward",
+    "Amount": 1680,
+    "Bound": false,
+    "Choice": false,
+    "Class": 15,
+    "Duration": 0,
+    "Index": 138,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 801
+    },
+    "Quest": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 61
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestReward",
+    "Amount": 1680,
+    "Bound": false,
+    "Choice": false,
+    "Class": 15,
+    "Duration": 0,
+    "Index": 140,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 801
+    },
+    "Quest": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestInfo",
+      "Index": 62
+    }
+  }
+]

@@ -1,0 +1,1382 @@
+[
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.StoreInfo",
+    "Available": true,
+    "Duration": 0,
+    "Filter": "Torch, Temporary, Warrior, Assassin",
+    "HuntGoldPrice": 0,
+    "Index": 30,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 709
+    },
+    "Price": 200
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.StoreInfo",
+    "Available": true,
+    "Duration": 0,
+    "Filter": "Torch, Temporary, Wizard",
+    "HuntGoldPrice": 0,
+    "Index": 31,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 710
+    },
+    "Price": 200
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.StoreInfo",
+    "Available": true,
+    "Duration": 0,
+    "Filter": "Torch, Temporary, Taoist",
+    "HuntGoldPrice": 0,
+    "Index": 32,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 711
+    },
+    "Price": 200
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.StoreInfo",
+    "Available": true,
+    "Duration": 0,
+    "Filter": "Torch, Temporary, Warrior, Wizard, Taoist, Assassin",
+    "HuntGoldPrice": 0,
+    "Index": 33,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 712
+    },
+    "Price": 200
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.StoreInfo",
+    "Available": true,
+    "Duration": 0,
+    "Filter": "Torch, Temporary, Warrior, Wizard, Taoist, Assassin",
+    "HuntGoldPrice": 0,
+    "Index": 34,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 713
+    },
+    "Price": 200
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.StoreInfo",
+    "Available": true,
+    "Duration": 0,
+    "Filter": "Torch, Temporary, Warrior, Wizard, Taoist, Assassin",
+    "HuntGoldPrice": 0,
+    "Index": 35,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 714
+    },
+    "Price": 200
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.StoreInfo",
+    "Available": true,
+    "Duration": 0,
+    "Filter": "Torch, Temporary, Warrior, Wizard, Taoist, Assassin",
+    "HuntGoldPrice": 0,
+    "Index": 36,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 715
+    },
+    "Price": 200
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.StoreInfo",
+    "Available": true,
+    "Duration": 0,
+    "Filter": "Torch, Temporary, Warrior, Wizard, Taoist, Assassin",
+    "HuntGoldPrice": 0,
+    "Index": 37,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 716
+    },
+    "Price": 200
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.StoreInfo",
+    "Available": true,
+    "Duration": 0,
+    "Filter": "Torch, Temporary, Warrior, Wizard, Taoist, Assassin",
+    "HuntGoldPrice": 0,
+    "Index": 38,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 717
+    },
+    "Price": 200
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.StoreInfo",
+    "Available": true,
+    "Duration": 0,
+    "Filter": "Torch, Temporary, Warrior, Wizard, Taoist, Assassin",
+    "HuntGoldPrice": 0,
+    "Index": 39,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 718
+    },
+    "Price": 200
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.StoreInfo",
+    "Available": true,
+    "Duration": 0,
+    "Filter": "Torch, Permanent, Warrior, Assassin",
+    "HuntGoldPrice": 0,
+    "Index": 40,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 719
+    },
+    "Price": 1000
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.StoreInfo",
+    "Available": true,
+    "Duration": 0,
+    "Filter": "Torch, Permanent, Wizard",
+    "HuntGoldPrice": 0,
+    "Index": 41,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 720
+    },
+    "Price": 1000
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.StoreInfo",
+    "Available": true,
+    "Duration": 0,
+    "Filter": "Torch, Permanent, Taoist",
+    "HuntGoldPrice": 0,
+    "Index": 42,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 721
+    },
+    "Price": 1000
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.StoreInfo",
+    "Available": true,
+    "Duration": 0,
+    "Filter": "Torch, Permanent, Warrior, Wizard, Taoist, Assassin",
+    "HuntGoldPrice": 0,
+    "Index": 43,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 722
+    },
+    "Price": 1000
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.StoreInfo",
+    "Available": true,
+    "Duration": 0,
+    "Filter": "Torch, Permanent, Warrior, Wizard, Taoist, Assassin",
+    "HuntGoldPrice": 0,
+    "Index": 44,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 723
+    },
+    "Price": 1000
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.StoreInfo",
+    "Available": true,
+    "Duration": 0,
+    "Filter": "Torch, Permanent, Warrior, Wizard, Taoist, Assassin",
+    "HuntGoldPrice": 0,
+    "Index": 45,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 724
+    },
+    "Price": 1000
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.StoreInfo",
+    "Available": true,
+    "Duration": 0,
+    "Filter": "Torch, Permanent, Warrior, Wizard, Taoist, Assassin",
+    "HuntGoldPrice": 0,
+    "Index": 46,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 725
+    },
+    "Price": 1000
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.StoreInfo",
+    "Available": true,
+    "Duration": 0,
+    "Filter": "Torch, Permanent, Warrior, Wizard, Taoist, Assassin",
+    "HuntGoldPrice": 0,
+    "Index": 47,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 726
+    },
+    "Price": 1000
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.StoreInfo",
+    "Available": true,
+    "Duration": 0,
+    "Filter": "Torch, Permanent, Warrior, Wizard, Taoist, Assassin",
+    "HuntGoldPrice": 0,
+    "Index": 48,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 727
+    },
+    "Price": 1000
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.StoreInfo",
+    "Available": true,
+    "Duration": 0,
+    "Filter": "Torch, Permanent, Warrior, Wizard, Taoist, Assassin",
+    "HuntGoldPrice": 0,
+    "Index": 49,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 728
+    },
+    "Price": 1000
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.StoreInfo",
+    "Available": true,
+    "Duration": 0,
+    "Filter": "Consumable, Temporary, Warrior, Wizard, Taoist, Assassin",
+    "HuntGoldPrice": 0,
+    "Index": 50,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 729
+    },
+    "Price": 700
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.StoreInfo",
+    "Available": true,
+    "Duration": 0,
+    "Filter": "Consumable, Temporary, Warrior, Wizard, Taoist, Assassin",
+    "HuntGoldPrice": 0,
+    "Index": 51,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 730
+    },
+    "Price": 100
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.StoreInfo",
+    "Available": true,
+    "Duration": 0,
+    "Filter": "Consumable, Temporary, Warrior, Wizard, Taoist, Assassin",
+    "HuntGoldPrice": 0,
+    "Index": 52,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 731
+    },
+    "Price": 100
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.StoreInfo",
+    "Available": true,
+    "Duration": 0,
+    "Filter": "Consumable, Temporary, Warrior, Wizard, Taoist, Assassin",
+    "HuntGoldPrice": 0,
+    "Index": 53,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 732
+    },
+    "Price": 100
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.StoreInfo",
+    "Available": true,
+    "Duration": 0,
+    "Filter": "Consumable, Temporary, Warrior, Wizard, Taoist, Assassin",
+    "HuntGoldPrice": 0,
+    "Index": 54,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 733
+    },
+    "Price": 100
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.StoreInfo",
+    "Available": true,
+    "Duration": 0,
+    "Filter": "Consumable, Temporary, Warrior, Assassin",
+    "HuntGoldPrice": 0,
+    "Index": 55,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 734
+    },
+    "Price": 100
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.StoreInfo",
+    "Available": true,
+    "Duration": 0,
+    "Filter": "Consumable, Temporary, Wizard",
+    "HuntGoldPrice": 0,
+    "Index": 56,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 735
+    },
+    "Price": 100
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.StoreInfo",
+    "Available": true,
+    "Duration": 0,
+    "Filter": "Consumable, Temporary, Taoist",
+    "HuntGoldPrice": 0,
+    "Index": 57,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 736
+    },
+    "Price": 100
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.StoreInfo",
+    "Available": true,
+    "Duration": 0,
+    "Filter": "Consumable, Temporary, Warrior, Wizard, Taoist, Assassin",
+    "HuntGoldPrice": 0,
+    "Index": 58,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 737
+    },
+    "Price": 100
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.StoreInfo",
+    "Available": true,
+    "Duration": 0,
+    "Filter": "Consumable, Temporary, Warrior, Wizard, Taoist, Assassin",
+    "HuntGoldPrice": 0,
+    "Index": 59,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 738
+    },
+    "Price": 100
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.StoreInfo",
+    "Available": true,
+    "Duration": 0,
+    "Filter": "Consumable, Temporary, Warrior, Assassin",
+    "HuntGoldPrice": 0,
+    "Index": 60,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 739
+    },
+    "Price": 100
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.StoreInfo",
+    "Available": true,
+    "Duration": 0,
+    "Filter": "Consumable, Temporary, Warrior, Assassin",
+    "HuntGoldPrice": 0,
+    "Index": 61,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 740
+    },
+    "Price": 100
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.StoreInfo",
+    "Available": true,
+    "Duration": 0,
+    "Filter": "Consumable, Temporary, Warrior, Wizard, Taoist, Assassin",
+    "HuntGoldPrice": 0,
+    "Index": 62,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 741
+    },
+    "Price": 100
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.StoreInfo",
+    "Available": true,
+    "Duration": 0,
+    "Filter": "Consumable, Temporary, Warrior, Wizard, Taoist, Assassin",
+    "HuntGoldPrice": 0,
+    "Index": 63,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 742
+    },
+    "Price": 500
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.StoreInfo",
+    "Available": true,
+    "Duration": 0,
+    "Filter": "Consumable, Permanent, Warrior, Wizard, Taoist, Assassin",
+    "HuntGoldPrice": 0,
+    "Index": 64,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 743
+    },
+    "Price": 1400
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.StoreInfo",
+    "Available": true,
+    "Duration": 0,
+    "Filter": "Consumable, Permanent, Warrior, Wizard, Taoist, Assassin",
+    "HuntGoldPrice": 0,
+    "Index": 65,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 744
+    },
+    "Price": 300
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.StoreInfo",
+    "Available": true,
+    "Duration": 0,
+    "Filter": "Consumable, Permanent, Warrior, Wizard, Taoist, Assassin",
+    "HuntGoldPrice": 0,
+    "Index": 66,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 745
+    },
+    "Price": 300
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.StoreInfo",
+    "Available": true,
+    "Duration": 0,
+    "Filter": "Consumable, Permanent, Warrior, Wizard, Taoist, Assassin",
+    "HuntGoldPrice": 0,
+    "Index": 67,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 746
+    },
+    "Price": 300
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.StoreInfo",
+    "Available": true,
+    "Duration": 0,
+    "Filter": "Consumable, Permanent, Warrior, Wizard, Taoist, Assassin",
+    "HuntGoldPrice": 0,
+    "Index": 68,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 747
+    },
+    "Price": 300
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.StoreInfo",
+    "Available": true,
+    "Duration": 0,
+    "Filter": "Consumable, Permanent, Warrior, Assassin",
+    "HuntGoldPrice": 0,
+    "Index": 69,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 748
+    },
+    "Price": 300
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.StoreInfo",
+    "Available": true,
+    "Duration": 0,
+    "Filter": "Consumable, Permanent, Wizard",
+    "HuntGoldPrice": 0,
+    "Index": 70,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 749
+    },
+    "Price": 300
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.StoreInfo",
+    "Available": true,
+    "Duration": 0,
+    "Filter": "Consumable, Permanent, Taoist",
+    "HuntGoldPrice": 0,
+    "Index": 71,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 750
+    },
+    "Price": 300
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.StoreInfo",
+    "Available": true,
+    "Duration": 0,
+    "Filter": "Consumable, Permanent, Warrior, Wizard, Taoist, Assassin",
+    "HuntGoldPrice": 0,
+    "Index": 72,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 751
+    },
+    "Price": 300
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.StoreInfo",
+    "Available": true,
+    "Duration": 0,
+    "Filter": "Consumable, Permanent, Warrior, Wizard, Taoist, Assassin",
+    "HuntGoldPrice": 0,
+    "Index": 73,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 752
+    },
+    "Price": 300
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.StoreInfo",
+    "Available": true,
+    "Duration": 0,
+    "Filter": "Consumable, Permanent, Warrior, Assassin",
+    "HuntGoldPrice": 0,
+    "Index": 74,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 753
+    },
+    "Price": 300
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.StoreInfo",
+    "Available": true,
+    "Duration": 0,
+    "Filter": "Consumable, Permanent, Warrior, Assassin",
+    "HuntGoldPrice": 0,
+    "Index": 75,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 754
+    },
+    "Price": 300
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.StoreInfo",
+    "Available": true,
+    "Duration": 0,
+    "Filter": "Consumable, Permanent, Warrior, Wizard, Taoist, Assassin",
+    "HuntGoldPrice": 0,
+    "Index": 76,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 755
+    },
+    "Price": 300
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.StoreInfo",
+    "Available": true,
+    "Duration": 0,
+    "Filter": "Function, Permanent",
+    "HuntGoldPrice": 0,
+    "Index": 77,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 756
+    },
+    "Price": 300
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.StoreInfo",
+    "Available": true,
+    "Duration": 0,
+    "Filter": "Function, Consumable",
+    "HuntGoldPrice": 0,
+    "Index": 79,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 758
+    },
+    "Price": 250
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.StoreInfo",
+    "Available": true,
+    "Duration": 0,
+    "Filter": "Function, Companion",
+    "HuntGoldPrice": 0,
+    "Index": 88,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 767
+    },
+    "Price": 125
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.StoreInfo",
+    "Available": true,
+    "Duration": 0,
+    "Filter": "Function, Companion",
+    "HuntGoldPrice": 0,
+    "Index": 89,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 768
+    },
+    "Price": 125
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.StoreInfo",
+    "Available": true,
+    "Duration": 0,
+    "Filter": "Function, Companion",
+    "HuntGoldPrice": 0,
+    "Index": 90,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 769
+    },
+    "Price": 125
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.StoreInfo",
+    "Available": true,
+    "Duration": 0,
+    "Filter": "Function, Companion",
+    "HuntGoldPrice": 0,
+    "Index": 91,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 770
+    },
+    "Price": 125
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.StoreInfo",
+    "Available": true,
+    "Duration": 0,
+    "Filter": "Function, Companion",
+    "HuntGoldPrice": 0,
+    "Index": 93,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 775
+    },
+    "Price": 50
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.StoreInfo",
+    "Available": true,
+    "Duration": 0,
+    "Filter": "Function, Companion",
+    "HuntGoldPrice": 0,
+    "Index": 94,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 777
+    },
+    "Price": 500
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.StoreInfo",
+    "Available": true,
+    "Duration": 0,
+    "Filter": "Function, Companion",
+    "HuntGoldPrice": 0,
+    "Index": 95,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 778
+    },
+    "Price": 1000
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.StoreInfo",
+    "Available": true,
+    "Duration": 0,
+    "Filter": "Function, Companion",
+    "HuntGoldPrice": 0,
+    "Index": 96,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 779
+    },
+    "Price": 250
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.StoreInfo",
+    "Available": true,
+    "Duration": 0,
+    "Filter": "Function, Companion",
+    "HuntGoldPrice": 0,
+    "Index": 97,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 780
+    },
+    "Price": 250
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.StoreInfo",
+    "Available": true,
+    "Duration": 0,
+    "Filter": "Function, Companion",
+    "HuntGoldPrice": 0,
+    "Index": 98,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 781
+    },
+    "Price": 250
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.StoreInfo",
+    "Available": true,
+    "Duration": 0,
+    "Filter": "Function, Refine",
+    "HuntGoldPrice": 0,
+    "Index": 99,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 782
+    },
+    "Price": 300
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.StoreInfo",
+    "Available": true,
+    "Duration": 0,
+    "Filter": "Consumable, Function",
+    "HuntGoldPrice": 0,
+    "Index": 104,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 787
+    },
+    "Price": 200
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.StoreInfo",
+    "Available": true,
+    "Duration": 0,
+    "Filter": "Consumable, Function",
+    "HuntGoldPrice": 0,
+    "Index": 105,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 788
+    },
+    "Price": 150
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.StoreInfo",
+    "Available": true,
+    "Duration": 0,
+    "Filter": "Consumable, Function",
+    "HuntGoldPrice": 0,
+    "Index": 106,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 789
+    },
+    "Price": 100
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.StoreInfo",
+    "Available": true,
+    "Duration": 0,
+    "Filter": "Consumable, Function",
+    "HuntGoldPrice": 0,
+    "Index": 107,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 790
+    },
+    "Price": 400
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.StoreInfo",
+    "Available": true,
+    "Duration": 0,
+    "Filter": "Consumable, Function",
+    "HuntGoldPrice": 0,
+    "Index": 108,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 791
+    },
+    "Price": 5
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.StoreInfo",
+    "Available": true,
+    "Duration": 0,
+    "Filter": "Consumable, Function",
+    "HuntGoldPrice": 0,
+    "Index": 109,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 792
+    },
+    "Price": 150
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.StoreInfo",
+    "Available": true,
+    "Duration": 302400,
+    "Filter": "Rose",
+    "HuntGoldPrice": 0,
+    "Index": 110,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 793
+    },
+    "Price": 750
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.StoreInfo",
+    "Available": true,
+    "Duration": 302400,
+    "Filter": "Rose",
+    "HuntGoldPrice": 0,
+    "Index": 111,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 794
+    },
+    "Price": 1500
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.StoreInfo",
+    "Available": true,
+    "Duration": 604800,
+    "Filter": "Mount, Temporary",
+    "HuntGoldPrice": 0,
+    "Index": 112,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 795
+    },
+    "Price": 500
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.StoreInfo",
+    "Available": true,
+    "Duration": 604800,
+    "Filter": "Mount, Temporary",
+    "HuntGoldPrice": 0,
+    "Index": 113,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 796
+    },
+    "Price": 800
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.StoreInfo",
+    "Available": true,
+    "Duration": 604800,
+    "Filter": "Mount, Temporary",
+    "HuntGoldPrice": 0,
+    "Index": 114,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 797
+    },
+    "Price": 1100
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.StoreInfo",
+    "Available": true,
+    "Duration": 604800,
+    "Filter": "Mount, Temporary",
+    "HuntGoldPrice": 0,
+    "Index": 115,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 798
+    },
+    "Price": 1400
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.StoreInfo",
+    "Available": true,
+    "Duration": 604800,
+    "Filter": "Mount, Temporary",
+    "HuntGoldPrice": 0,
+    "Index": 116,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 799
+    },
+    "Price": 1700
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.StoreInfo",
+    "Available": true,
+    "Duration": 0,
+    "Filter": "Consumable, Companion",
+    "HuntGoldPrice": 0,
+    "Index": 118,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 815
+    },
+    "Price": 1000
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.StoreInfo",
+    "Available": true,
+    "Duration": 0,
+    "Filter": "Consumable, Lazy",
+    "HuntGoldPrice": 0,
+    "Index": 119,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 156
+    },
+    "Price": 10
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.StoreInfo",
+    "Available": true,
+    "Duration": 0,
+    "Filter": "Function, Refine",
+    "HuntGoldPrice": 0,
+    "Index": 120,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 786
+    },
+    "Price": 350
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.StoreInfo",
+    "Available": true,
+    "Duration": 0,
+    "Filter": "Permanent, Consumable, Storage, Function",
+    "HuntGoldPrice": 0,
+    "Index": 121,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 760
+    },
+    "Price": 250
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.StoreInfo",
+    "Available": true,
+    "Duration": 0,
+    "Filter": "Function, Consumable",
+    "HuntGoldPrice": 0,
+    "Index": 122,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 634
+    },
+    "Price": 50
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.StoreInfo",
+    "Available": true,
+    "Duration": 0,
+    "Filter": "Function, Consumable",
+    "HuntGoldPrice": 0,
+    "Index": 123,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 757
+    },
+    "Price": 100
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.StoreInfo",
+    "Available": true,
+    "Duration": 0,
+    "Filter": "Function, Consumable",
+    "HuntGoldPrice": 0,
+    "Index": 124,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 759
+    },
+    "Price": 50
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.StoreInfo",
+    "Available": true,
+    "Duration": 0,
+    "Filter": "Function, Consumable",
+    "HuntGoldPrice": 0,
+    "Index": 125,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 762
+    },
+    "Price": 1500
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.StoreInfo",
+    "Available": true,
+    "Duration": 0,
+    "Filter": "Function, Consumable",
+    "HuntGoldPrice": 0,
+    "Index": 126,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 932
+    },
+    "Price": 25
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.StoreInfo",
+    "Available": true,
+    "Duration": 0,
+    "Filter": "Consumable, Temporary, Warrior, Wizard, Taoist, Assassin",
+    "HuntGoldPrice": 0,
+    "Index": 127,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 934
+    },
+    "Price": 500
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.StoreInfo",
+    "Available": true,
+    "Duration": 0,
+    "Filter": "Consumable, Temporary, Warrior, Wizard, Taoist, Assassin",
+    "HuntGoldPrice": 0,
+    "Index": 128,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 991
+    },
+    "Price": 25
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.StoreInfo",
+    "Available": true,
+    "Duration": 0,
+    "Filter": "Function, Refine",
+    "HuntGoldPrice": 0,
+    "Index": 129,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 784
+    },
+    "Price": 350
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.StoreInfo",
+    "Available": true,
+    "Duration": 0,
+    "Filter": "Consumable, Temporary, Function, Companion",
+    "HuntGoldPrice": 0,
+    "Index": 130,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 1066
+    },
+    "Price": 500
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.StoreInfo",
+    "Available": true,
+    "Duration": 0,
+    "Filter": "Consumable, Function, Refine",
+    "HuntGoldPrice": 0,
+    "Index": 131,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 1092
+    },
+    "Price": 500
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.StoreInfo",
+    "Available": true,
+    "Duration": 0,
+    "Filter": "Function, Companion",
+    "HuntGoldPrice": 0,
+    "Index": 132,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 1094
+    },
+    "Price": 125
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.StoreInfo",
+    "Available": true,
+    "Duration": 0,
+    "Filter": "Function, Companion",
+    "HuntGoldPrice": 0,
+    "Index": 133,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 1095
+    },
+    "Price": 125
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.StoreInfo",
+    "Available": true,
+    "Duration": 0,
+    "Filter": "Function, Companion",
+    "HuntGoldPrice": 0,
+    "Index": 134,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 1096
+    },
+    "Price": 125
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.StoreInfo",
+    "Available": true,
+    "Duration": 0,
+    "Filter": "Consumable, Function, Refine",
+    "HuntGoldPrice": 0,
+    "Index": 135,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 1110
+    },
+    "Price": 500
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.StoreInfo",
+    "Available": true,
+    "Duration": 0,
+    "Filter": "Consumable, Temporary, Companion",
+    "HuntGoldPrice": 0,
+    "Index": 136,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 1126
+    },
+    "Price": 300
+  }
+]

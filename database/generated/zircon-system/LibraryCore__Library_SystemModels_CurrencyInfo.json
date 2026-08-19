@@ -1,0 +1,69 @@
+[
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.CurrencyInfo",
+    "Abbreviation": "Gold",
+    "Category": 0,
+    "DropItem": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 1
+    },
+    "ExchangeRate": 1,
+    "Index": 1,
+    "Name": "Gold",
+    "Type": 0
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.CurrencyInfo",
+    "Abbreviation": "GG",
+    "Category": 0,
+    "DropItem": null,
+    "ExchangeRate": 1,
+    "Index": 2,
+    "Name": "Game Gold",
+    "Type": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.CurrencyInfo",
+    "Abbreviation": "HG",
+    "Category": 0,
+    "DropItem": null,
+    "ExchangeRate": 1,
+    "Index": 3,
+    "Name": "Hunt Gold",
+    "Type": 2
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.CurrencyInfo",
+    "Abbreviation": "FP",
+    "Category": 0,
+    "DropItem": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 1127
+    },
+    "ExchangeRate": 1,
+    "Index": 4,
+    "Name": "Fame Point",
+    "Type": 4
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.CurrencyInfo",
+    "Abbreviation": "CP",
+    "Category": 0,
+    "DropItem": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 1128
+    },
+    "ExchangeRate": 1,
+    "Index": 5,
+    "Name": "Contribution Point",
+    "Type": 5
+  }
+]

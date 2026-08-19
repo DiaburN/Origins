@@ -1,0 +1,6630 @@
+[
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 0,
+    "Index": 2,
+    "InstanceParameter1": null,
+    "IntParameter1": 0,
+    "IntParameter2": 0,
+    "ItemParameter1": null,
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 459
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 25
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 0,
+    "Index": 11,
+    "InstanceParameter1": null,
+    "IntParameter1": 197,
+    "IntParameter2": 162,
+    "ItemParameter1": null,
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 6
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 34
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 0,
+    "Index": 12,
+    "InstanceParameter1": null,
+    "IntParameter1": 55,
+    "IntParameter2": 220,
+    "ItemParameter1": null,
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 7
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 33
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 0,
+    "Index": 13,
+    "InstanceParameter1": null,
+    "IntParameter1": 135,
+    "IntParameter2": 210,
+    "ItemParameter1": null,
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 5
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 32
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 0,
+    "Index": 14,
+    "InstanceParameter1": null,
+    "IntParameter1": 140,
+    "IntParameter2": 265,
+    "ItemParameter1": null,
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 1
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 31
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 0,
+    "Index": 15,
+    "InstanceParameter1": null,
+    "IntParameter1": 205,
+    "IntParameter2": 155,
+    "ItemParameter1": null,
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 8
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 37
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 0,
+    "Index": 16,
+    "InstanceParameter1": null,
+    "IntParameter1": 70,
+    "IntParameter2": 200,
+    "ItemParameter1": null,
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 9
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 35
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 0,
+    "Index": 17,
+    "InstanceParameter1": null,
+    "IntParameter1": 175,
+    "IntParameter2": 280,
+    "ItemParameter1": null,
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 292
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 36
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 2,
+    "Index": 21,
+    "InstanceParameter1": null,
+    "IntParameter1": 10000,
+    "IntParameter2": 0,
+    "ItemParameter1": null,
+    "MapParameter1": null,
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 66
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 2,
+    "Index": 22,
+    "InstanceParameter1": null,
+    "IntParameter1": 10000,
+    "IntParameter2": 0,
+    "ItemParameter1": null,
+    "MapParameter1": null,
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 63
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 2,
+    "Index": 23,
+    "InstanceParameter1": null,
+    "IntParameter1": 10000,
+    "IntParameter2": 0,
+    "ItemParameter1": null,
+    "MapParameter1": null,
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 60
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 2,
+    "Index": 24,
+    "InstanceParameter1": null,
+    "IntParameter1": 10000,
+    "IntParameter2": 0,
+    "ItemParameter1": null,
+    "MapParameter1": null,
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 57
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 2,
+    "Index": 25,
+    "InstanceParameter1": null,
+    "IntParameter1": 10000,
+    "IntParameter2": 0,
+    "ItemParameter1": null,
+    "MapParameter1": null,
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 50
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 2,
+    "Index": 26,
+    "InstanceParameter1": null,
+    "IntParameter1": 5000,
+    "IntParameter2": 0,
+    "ItemParameter1": null,
+    "MapParameter1": null,
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 51
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 2,
+    "Index": 27,
+    "InstanceParameter1": null,
+    "IntParameter1": 5000,
+    "IntParameter2": 0,
+    "ItemParameter1": null,
+    "MapParameter1": null,
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 53
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 2,
+    "Index": 28,
+    "InstanceParameter1": null,
+    "IntParameter1": 5000,
+    "IntParameter2": 0,
+    "ItemParameter1": null,
+    "MapParameter1": null,
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 55
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 2,
+    "Index": 29,
+    "InstanceParameter1": null,
+    "IntParameter1": 5000,
+    "IntParameter2": 0,
+    "ItemParameter1": null,
+    "MapParameter1": null,
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 58
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 2,
+    "Index": 30,
+    "InstanceParameter1": null,
+    "IntParameter1": 5000,
+    "IntParameter2": 0,
+    "ItemParameter1": null,
+    "MapParameter1": null,
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 61
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 2,
+    "Index": 31,
+    "InstanceParameter1": null,
+    "IntParameter1": 5000,
+    "IntParameter2": 0,
+    "ItemParameter1": null,
+    "MapParameter1": null,
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 64
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 2,
+    "Index": 32,
+    "InstanceParameter1": null,
+    "IntParameter1": 3000,
+    "IntParameter2": 0,
+    "ItemParameter1": null,
+    "MapParameter1": null,
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 52
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 2,
+    "Index": 33,
+    "InstanceParameter1": null,
+    "IntParameter1": 3000,
+    "IntParameter2": 0,
+    "ItemParameter1": null,
+    "MapParameter1": null,
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 65
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 2,
+    "Index": 34,
+    "InstanceParameter1": null,
+    "IntParameter1": 3000,
+    "IntParameter2": 0,
+    "ItemParameter1": null,
+    "MapParameter1": null,
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 62
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 2,
+    "Index": 35,
+    "InstanceParameter1": null,
+    "IntParameter1": 3000,
+    "IntParameter2": 0,
+    "ItemParameter1": null,
+    "MapParameter1": null,
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 59
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 2,
+    "Index": 36,
+    "InstanceParameter1": null,
+    "IntParameter1": 3000,
+    "IntParameter2": 0,
+    "ItemParameter1": null,
+    "MapParameter1": null,
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 56
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 2,
+    "Index": 37,
+    "InstanceParameter1": null,
+    "IntParameter1": 3000,
+    "IntParameter2": 0,
+    "ItemParameter1": null,
+    "MapParameter1": null,
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 54
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 0,
+    "Index": 38,
+    "InstanceParameter1": null,
+    "IntParameter1": 0,
+    "IntParameter2": 0,
+    "ItemParameter1": null,
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 22
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 70
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 5,
+    "Index": 39,
+    "InstanceParameter1": null,
+    "IntParameter1": 1,
+    "IntParameter2": 0,
+    "ItemParameter1": null,
+    "MapParameter1": null,
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 75
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 2,
+    "Index": 40,
+    "InstanceParameter1": null,
+    "IntParameter1": 100000,
+    "IntParameter2": 0,
+    "ItemParameter1": null,
+    "MapParameter1": null,
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 75
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 5,
+    "Index": 41,
+    "InstanceParameter1": null,
+    "IntParameter1": 2,
+    "IntParameter2": 0,
+    "ItemParameter1": null,
+    "MapParameter1": null,
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 78
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 2,
+    "Index": 42,
+    "InstanceParameter1": null,
+    "IntParameter1": 100000,
+    "IntParameter2": 0,
+    "ItemParameter1": null,
+    "MapParameter1": null,
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 78
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 5,
+    "Index": 43,
+    "InstanceParameter1": null,
+    "IntParameter1": 3,
+    "IntParameter2": 0,
+    "ItemParameter1": null,
+    "MapParameter1": null,
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 79
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 2,
+    "Index": 44,
+    "InstanceParameter1": null,
+    "IntParameter1": 100000,
+    "IntParameter2": 0,
+    "ItemParameter1": null,
+    "MapParameter1": null,
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 79
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 5,
+    "Index": 45,
+    "InstanceParameter1": null,
+    "IntParameter1": 4,
+    "IntParameter2": 0,
+    "ItemParameter1": null,
+    "MapParameter1": null,
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 80
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 2,
+    "Index": 46,
+    "InstanceParameter1": null,
+    "IntParameter1": 100000,
+    "IntParameter2": 0,
+    "ItemParameter1": null,
+    "MapParameter1": null,
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 80
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 5,
+    "Index": 47,
+    "InstanceParameter1": null,
+    "IntParameter1": 5,
+    "IntParameter2": 0,
+    "ItemParameter1": null,
+    "MapParameter1": null,
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 81
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 2,
+    "Index": 48,
+    "InstanceParameter1": null,
+    "IntParameter1": 100000,
+    "IntParameter2": 0,
+    "ItemParameter1": null,
+    "MapParameter1": null,
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 81
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 5,
+    "Index": 49,
+    "InstanceParameter1": null,
+    "IntParameter1": 7,
+    "IntParameter2": 0,
+    "ItemParameter1": null,
+    "MapParameter1": null,
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 83
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 2,
+    "Index": 50,
+    "InstanceParameter1": null,
+    "IntParameter1": 100000,
+    "IntParameter2": 0,
+    "ItemParameter1": null,
+    "MapParameter1": null,
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 83
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 5,
+    "Index": 51,
+    "InstanceParameter1": null,
+    "IntParameter1": 6,
+    "IntParameter2": 0,
+    "ItemParameter1": null,
+    "MapParameter1": null,
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 82
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 2,
+    "Index": 52,
+    "InstanceParameter1": null,
+    "IntParameter1": 100000,
+    "IntParameter2": 0,
+    "ItemParameter1": null,
+    "MapParameter1": null,
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 82
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 2,
+    "Index": 53,
+    "InstanceParameter1": null,
+    "IntParameter1": 1000,
+    "IntParameter2": 0,
+    "ItemParameter1": null,
+    "MapParameter1": null,
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 105
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 2,
+    "Index": 54,
+    "InstanceParameter1": null,
+    "IntParameter1": 50000,
+    "IntParameter2": 0,
+    "ItemParameter1": null,
+    "MapParameter1": null,
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 106
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 0,
+    "Index": 55,
+    "InstanceParameter1": null,
+    "IntParameter1": 34,
+    "IntParameter2": 159,
+    "ItemParameter1": null,
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 11
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 107
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 2,
+    "Index": 56,
+    "InstanceParameter1": null,
+    "IntParameter1": 1000,
+    "IntParameter2": 0,
+    "ItemParameter1": null,
+    "MapParameter1": null,
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 115
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 2,
+    "Index": 57,
+    "InstanceParameter1": null,
+    "IntParameter1": 1000,
+    "IntParameter2": 0,
+    "ItemParameter1": null,
+    "MapParameter1": null,
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 117
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 0,
+    "Index": 58,
+    "InstanceParameter1": null,
+    "IntParameter1": 223,
+    "IntParameter2": 120,
+    "ItemParameter1": null,
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 7
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 116
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 0,
+    "Index": 59,
+    "InstanceParameter1": null,
+    "IntParameter1": 228,
+    "IntParameter2": 129,
+    "ItemParameter1": null,
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 9
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 118
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 6,
+    "Index": 60,
+    "InstanceParameter1": null,
+    "IntParameter1": 1,
+    "IntParameter2": 0,
+    "ItemParameter1": null,
+    "MapParameter1": null,
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 120
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 6,
+    "Index": 61,
+    "InstanceParameter1": null,
+    "IntParameter1": 2,
+    "IntParameter2": 0,
+    "ItemParameter1": null,
+    "MapParameter1": null,
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 125
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 6,
+    "Index": 62,
+    "InstanceParameter1": null,
+    "IntParameter1": 4,
+    "IntParameter2": 0,
+    "ItemParameter1": null,
+    "MapParameter1": null,
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 127
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 6,
+    "Index": 63,
+    "InstanceParameter1": null,
+    "IntParameter1": 3,
+    "IntParameter2": 0,
+    "ItemParameter1": null,
+    "MapParameter1": null,
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 126
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 7,
+    "Index": 66,
+    "InstanceParameter1": null,
+    "IntParameter1": 0,
+    "IntParameter2": 0,
+    "ItemParameter1": null,
+    "MapParameter1": null,
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 127
+    },
+    "StatParameter1": 0,
+    "StringParameter1": "[Username] is now the proud owner of a new Black Horse"
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 1,
+    "Index": 67,
+    "InstanceParameter1": null,
+    "IntParameter1": 250000,
+    "IntParameter2": 0,
+    "ItemParameter1": null,
+    "MapParameter1": null,
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 140
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 6,
+    "Index": 68,
+    "InstanceParameter1": null,
+    "IntParameter1": 0,
+    "IntParameter2": 0,
+    "ItemParameter1": null,
+    "MapParameter1": null,
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 140
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 1,
+    "Index": 69,
+    "InstanceParameter1": null,
+    "IntParameter1": 10000000,
+    "IntParameter2": 0,
+    "ItemParameter1": null,
+    "MapParameter1": null,
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 142
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 6,
+    "Index": 70,
+    "InstanceParameter1": null,
+    "IntParameter1": 0,
+    "IntParameter2": 0,
+    "ItemParameter1": null,
+    "MapParameter1": null,
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 142
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 1,
+    "Index": 71,
+    "InstanceParameter1": null,
+    "IntParameter1": 50000000,
+    "IntParameter2": 0,
+    "ItemParameter1": null,
+    "MapParameter1": null,
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 143
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 6,
+    "Index": 72,
+    "InstanceParameter1": null,
+    "IntParameter1": 0,
+    "IntParameter2": 0,
+    "ItemParameter1": null,
+    "MapParameter1": null,
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 143
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 1,
+    "Index": 73,
+    "InstanceParameter1": null,
+    "IntParameter1": 300000000,
+    "IntParameter2": 0,
+    "ItemParameter1": null,
+    "MapParameter1": null,
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 144
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 6,
+    "Index": 74,
+    "InstanceParameter1": null,
+    "IntParameter1": 0,
+    "IntParameter2": 0,
+    "ItemParameter1": null,
+    "MapParameter1": null,
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 144
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 2,
+    "Index": 75,
+    "InstanceParameter1": null,
+    "IntParameter1": 500000,
+    "IntParameter2": 0,
+    "ItemParameter1": null,
+    "MapParameter1": null,
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 120
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 2,
+    "Index": 76,
+    "InstanceParameter1": null,
+    "IntParameter1": 20000000,
+    "IntParameter2": 0,
+    "ItemParameter1": null,
+    "MapParameter1": null,
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 125
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 2,
+    "Index": 77,
+    "InstanceParameter1": null,
+    "IntParameter1": 100000000,
+    "IntParameter2": 0,
+    "ItemParameter1": null,
+    "MapParameter1": null,
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 126
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 2,
+    "Index": 78,
+    "InstanceParameter1": null,
+    "IntParameter1": 600000000,
+    "IntParameter2": 0,
+    "ItemParameter1": null,
+    "MapParameter1": null,
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 127
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 8,
+    "Index": 80,
+    "InstanceParameter1": null,
+    "IntParameter1": 0,
+    "IntParameter2": 0,
+    "ItemParameter1": null,
+    "MapParameter1": null,
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 156
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 9,
+    "Index": 82,
+    "InstanceParameter1": null,
+    "IntParameter1": 0,
+    "IntParameter2": 0,
+    "ItemParameter1": null,
+    "MapParameter1": null,
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 160
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 2,
+    "Index": 83,
+    "InstanceParameter1": null,
+    "IntParameter1": 200000,
+    "IntParameter2": 0,
+    "ItemParameter1": null,
+    "MapParameter1": null,
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 161
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 10,
+    "Index": 84,
+    "InstanceParameter1": null,
+    "IntParameter1": 0,
+    "IntParameter2": 0,
+    "ItemParameter1": null,
+    "MapParameter1": null,
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 161
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 2,
+    "Index": 85,
+    "InstanceParameter1": null,
+    "IntParameter1": 1000000,
+    "IntParameter2": 0,
+    "ItemParameter1": null,
+    "MapParameter1": null,
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 160
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 2,
+    "Index": 86,
+    "InstanceParameter1": null,
+    "IntParameter1": 20000,
+    "IntParameter2": 0,
+    "ItemParameter1": null,
+    "MapParameter1": null,
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 172
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 4,
+    "Index": 87,
+    "InstanceParameter1": null,
+    "IntParameter1": 100,
+    "IntParameter2": 0,
+    "ItemParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 829
+    },
+    "MapParameter1": null,
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 172
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 3,
+    "Index": 88,
+    "InstanceParameter1": null,
+    "IntParameter1": 1,
+    "IntParameter2": 0,
+    "ItemParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 830
+    },
+    "MapParameter1": null,
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 172
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 3,
+    "Index": 89,
+    "InstanceParameter1": null,
+    "IntParameter1": 1,
+    "IntParameter2": 0,
+    "ItemParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 831
+    },
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 173
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 2,
+    "Index": 90,
+    "InstanceParameter1": null,
+    "IntParameter1": 50000,
+    "IntParameter2": 0,
+    "ItemParameter1": null,
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 173
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 4,
+    "Index": 91,
+    "InstanceParameter1": null,
+    "IntParameter1": 25,
+    "IntParameter2": 0,
+    "ItemParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 830
+    },
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 173
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 2,
+    "Index": 92,
+    "InstanceParameter1": null,
+    "IntParameter1": 1000000,
+    "IntParameter2": 0,
+    "ItemParameter1": null,
+    "MapParameter1": null,
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 178
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 4,
+    "Index": 93,
+    "InstanceParameter1": null,
+    "IntParameter1": 1,
+    "IntParameter2": 0,
+    "ItemParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 828
+    },
+    "MapParameter1": null,
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 178
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 11,
+    "Index": 94,
+    "InstanceParameter1": null,
+    "IntParameter1": 0,
+    "IntParameter2": 0,
+    "ItemParameter1": null,
+    "MapParameter1": null,
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 178
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 0,
+    "Index": 95,
+    "InstanceParameter1": null,
+    "IntParameter1": 280,
+    "IntParameter2": 190,
+    "ItemParameter1": null,
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 291
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 184
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 2,
+    "Index": 96,
+    "InstanceParameter1": null,
+    "IntParameter1": 10000,
+    "IntParameter2": 0,
+    "ItemParameter1": null,
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 183
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 0,
+    "Index": 97,
+    "InstanceParameter1": null,
+    "IntParameter1": 240,
+    "IntParameter2": 165,
+    "ItemParameter1": null,
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 241
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 189
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 2,
+    "Index": 98,
+    "InstanceParameter1": null,
+    "IntParameter1": 20000,
+    "IntParameter2": 0,
+    "ItemParameter1": null,
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 186
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 2,
+    "Index": 99,
+    "InstanceParameter1": null,
+    "IntParameter1": 20000,
+    "IntParameter2": 0,
+    "ItemParameter1": null,
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 187
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 2,
+    "Index": 100,
+    "InstanceParameter1": null,
+    "IntParameter1": 10000,
+    "IntParameter2": 0,
+    "ItemParameter1": null,
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 193
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 0,
+    "Index": 101,
+    "InstanceParameter1": null,
+    "IntParameter1": 350,
+    "IntParameter2": 340,
+    "ItemParameter1": null,
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 259
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 192
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 4,
+    "Index": 103,
+    "InstanceParameter1": null,
+    "IntParameter1": 1,
+    "IntParameter2": 0,
+    "ItemParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 640
+    },
+    "MapParameter1": null,
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 201
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 2,
+    "Index": 104,
+    "InstanceParameter1": null,
+    "IntParameter1": 1000000,
+    "IntParameter2": 0,
+    "ItemParameter1": null,
+    "MapParameter1": null,
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 201
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 12,
+    "Index": 105,
+    "InstanceParameter1": null,
+    "IntParameter1": 1,
+    "IntParameter2": 8155,
+    "ItemParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 658
+    },
+    "MapParameter1": null,
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 202
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 4,
+    "Index": 106,
+    "InstanceParameter1": null,
+    "IntParameter1": 1,
+    "IntParameter2": 0,
+    "ItemParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 641
+    },
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 207
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 2,
+    "Index": 107,
+    "InstanceParameter1": null,
+    "IntParameter1": 1000000,
+    "IntParameter2": 0,
+    "ItemParameter1": null,
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 207
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 12,
+    "Index": 108,
+    "InstanceParameter1": null,
+    "IntParameter1": 1,
+    "IntParameter2": 8155,
+    "ItemParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 659
+    },
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 208
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 12,
+    "Index": 109,
+    "InstanceParameter1": null,
+    "IntParameter1": 1,
+    "IntParameter2": 8155,
+    "ItemParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 660
+    },
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 210
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 4,
+    "Index": 110,
+    "InstanceParameter1": null,
+    "IntParameter1": 1,
+    "IntParameter2": 0,
+    "ItemParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 642
+    },
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 209
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 2,
+    "Index": 111,
+    "InstanceParameter1": null,
+    "IntParameter1": 1000000,
+    "IntParameter2": 0,
+    "ItemParameter1": null,
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 209
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 4,
+    "Index": 112,
+    "InstanceParameter1": null,
+    "IntParameter1": 1,
+    "IntParameter2": 0,
+    "ItemParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 643
+    },
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 211
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 2,
+    "Index": 113,
+    "InstanceParameter1": null,
+    "IntParameter1": 1000000,
+    "IntParameter2": 0,
+    "ItemParameter1": null,
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 211
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 12,
+    "Index": 114,
+    "InstanceParameter1": null,
+    "IntParameter1": 1,
+    "IntParameter2": 8155,
+    "ItemParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 661
+    },
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 212
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 4,
+    "Index": 115,
+    "InstanceParameter1": null,
+    "IntParameter1": 1,
+    "IntParameter2": 0,
+    "ItemParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 644
+    },
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 213
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 2,
+    "Index": 116,
+    "InstanceParameter1": null,
+    "IntParameter1": 1000000,
+    "IntParameter2": 0,
+    "ItemParameter1": null,
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 213
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 12,
+    "Index": 117,
+    "InstanceParameter1": null,
+    "IntParameter1": 1,
+    "IntParameter2": 8155,
+    "ItemParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 662
+    },
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 214
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 4,
+    "Index": 118,
+    "InstanceParameter1": null,
+    "IntParameter1": 1,
+    "IntParameter2": 0,
+    "ItemParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 645
+    },
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 220
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 2,
+    "Index": 119,
+    "InstanceParameter1": null,
+    "IntParameter1": 1000000,
+    "IntParameter2": 0,
+    "ItemParameter1": null,
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 220
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 12,
+    "Index": 120,
+    "InstanceParameter1": null,
+    "IntParameter1": 1,
+    "IntParameter2": 8155,
+    "ItemParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 663
+    },
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 221
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 4,
+    "Index": 121,
+    "InstanceParameter1": null,
+    "IntParameter1": 1,
+    "IntParameter2": 0,
+    "ItemParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 646
+    },
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 222
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 2,
+    "Index": 122,
+    "InstanceParameter1": null,
+    "IntParameter1": 1000000,
+    "IntParameter2": 0,
+    "ItemParameter1": null,
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 222
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 12,
+    "Index": 123,
+    "InstanceParameter1": null,
+    "IntParameter1": 1,
+    "IntParameter2": 8155,
+    "ItemParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 664
+    },
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 223
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 4,
+    "Index": 124,
+    "InstanceParameter1": null,
+    "IntParameter1": 1,
+    "IntParameter2": 0,
+    "ItemParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 648
+    },
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 226
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 2,
+    "Index": 125,
+    "InstanceParameter1": null,
+    "IntParameter1": 1000000,
+    "IntParameter2": 0,
+    "ItemParameter1": null,
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 226
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 4,
+    "Index": 126,
+    "InstanceParameter1": null,
+    "IntParameter1": 1,
+    "IntParameter2": 0,
+    "ItemParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 647
+    },
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 224
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 2,
+    "Index": 127,
+    "InstanceParameter1": null,
+    "IntParameter1": 1000000,
+    "IntParameter2": 0,
+    "ItemParameter1": null,
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 224
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 12,
+    "Index": 128,
+    "InstanceParameter1": null,
+    "IntParameter1": 1,
+    "IntParameter2": 8155,
+    "ItemParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 665
+    },
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 225
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 12,
+    "Index": 129,
+    "InstanceParameter1": null,
+    "IntParameter1": 1,
+    "IntParameter2": 8155,
+    "ItemParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 666
+    },
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 227
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 2,
+    "Index": 130,
+    "InstanceParameter1": null,
+    "IntParameter1": 30000,
+    "IntParameter2": 0,
+    "ItemParameter1": null,
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 229
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 0,
+    "Index": 131,
+    "InstanceParameter1": null,
+    "IntParameter1": 104,
+    "IntParameter2": 116,
+    "ItemParameter1": null,
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 280
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 230
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 4,
+    "Index": 132,
+    "InstanceParameter1": null,
+    "IntParameter1": 1,
+    "IntParameter2": 0,
+    "ItemParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 483
+    },
+    "MapParameter1": null,
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 231
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 0,
+    "Index": 133,
+    "InstanceParameter1": null,
+    "IntParameter1": 42,
+    "IntParameter2": 65,
+    "ItemParameter1": null,
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 68
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 232
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 0,
+    "Index": 134,
+    "InstanceParameter1": null,
+    "IntParameter1": 30,
+    "IntParameter2": 22,
+    "ItemParameter1": null,
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 332
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 234
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 4,
+    "Index": 135,
+    "InstanceParameter1": null,
+    "IntParameter1": 1,
+    "IntParameter2": 0,
+    "ItemParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 483
+    },
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 233
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 4,
+    "Index": 136,
+    "InstanceParameter1": null,
+    "IntParameter1": 1,
+    "IntParameter2": 0,
+    "ItemParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 483
+    },
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 235
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 0,
+    "Index": 137,
+    "InstanceParameter1": null,
+    "IntParameter1": 163,
+    "IntParameter2": 204,
+    "ItemParameter1": null,
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 301
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 236
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 4,
+    "Index": 138,
+    "InstanceParameter1": null,
+    "IntParameter1": 1,
+    "IntParameter2": 0,
+    "ItemParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 868
+    },
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 246
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 4,
+    "Index": 140,
+    "InstanceParameter1": null,
+    "IntParameter1": 1,
+    "IntParameter2": 0,
+    "ItemParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 869
+    },
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 246
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 4,
+    "Index": 141,
+    "InstanceParameter1": null,
+    "IntParameter1": 1,
+    "IntParameter2": 0,
+    "ItemParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 870
+    },
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 246
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 12,
+    "Index": 142,
+    "InstanceParameter1": null,
+    "IntParameter1": 1,
+    "IntParameter2": 455,
+    "ItemParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 923
+    },
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 247
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 2,
+    "Index": 143,
+    "InstanceParameter1": null,
+    "IntParameter1": 2000000,
+    "IntParameter2": 0,
+    "ItemParameter1": null,
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 246
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 4,
+    "Index": 144,
+    "InstanceParameter1": null,
+    "IntParameter1": 1,
+    "IntParameter2": 0,
+    "ItemParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 871
+    },
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 248
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 4,
+    "Index": 145,
+    "InstanceParameter1": null,
+    "IntParameter1": 1,
+    "IntParameter2": 0,
+    "ItemParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 872
+    },
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 248
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 4,
+    "Index": 146,
+    "InstanceParameter1": null,
+    "IntParameter1": 1,
+    "IntParameter2": 0,
+    "ItemParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 873
+    },
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 248
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 4,
+    "Index": 147,
+    "InstanceParameter1": null,
+    "IntParameter1": 1,
+    "IntParameter2": 0,
+    "ItemParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 874
+    },
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 248
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 2,
+    "Index": 148,
+    "InstanceParameter1": null,
+    "IntParameter1": 2000000,
+    "IntParameter2": 0,
+    "ItemParameter1": null,
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 248
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 12,
+    "Index": 149,
+    "InstanceParameter1": null,
+    "IntParameter1": 1,
+    "IntParameter2": 455,
+    "ItemParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 924
+    },
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 249
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 4,
+    "Index": 150,
+    "InstanceParameter1": null,
+    "IntParameter1": 1,
+    "IntParameter2": 0,
+    "ItemParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 875
+    },
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 251
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 4,
+    "Index": 151,
+    "InstanceParameter1": null,
+    "IntParameter1": 1,
+    "IntParameter2": 0,
+    "ItemParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 876
+    },
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 251
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 4,
+    "Index": 152,
+    "InstanceParameter1": null,
+    "IntParameter1": 1,
+    "IntParameter2": 0,
+    "ItemParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 877
+    },
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 251
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 2,
+    "Index": 153,
+    "InstanceParameter1": null,
+    "IntParameter1": 2000000,
+    "IntParameter2": 0,
+    "ItemParameter1": null,
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 251
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 12,
+    "Index": 154,
+    "InstanceParameter1": null,
+    "IntParameter1": 1,
+    "IntParameter2": 455,
+    "ItemParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 925
+    },
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 252
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 4,
+    "Index": 155,
+    "InstanceParameter1": null,
+    "IntParameter1": 1,
+    "IntParameter2": 0,
+    "ItemParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 888
+    },
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 254
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 4,
+    "Index": 156,
+    "InstanceParameter1": null,
+    "IntParameter1": 1,
+    "IntParameter2": 0,
+    "ItemParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 889
+    },
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 254
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 4,
+    "Index": 157,
+    "InstanceParameter1": null,
+    "IntParameter1": 1,
+    "IntParameter2": 0,
+    "ItemParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 890
+    },
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 254
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 2,
+    "Index": 158,
+    "InstanceParameter1": null,
+    "IntParameter1": 2000000,
+    "IntParameter2": 0,
+    "ItemParameter1": null,
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 254
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 12,
+    "Index": 159,
+    "InstanceParameter1": null,
+    "IntParameter1": 1,
+    "IntParameter2": 455,
+    "ItemParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 926
+    },
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 255
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 4,
+    "Index": 160,
+    "InstanceParameter1": null,
+    "IntParameter1": 1,
+    "IntParameter2": 0,
+    "ItemParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 891
+    },
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 256
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 4,
+    "Index": 161,
+    "InstanceParameter1": null,
+    "IntParameter1": 1,
+    "IntParameter2": 0,
+    "ItemParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 892
+    },
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 256
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 4,
+    "Index": 162,
+    "InstanceParameter1": null,
+    "IntParameter1": 1,
+    "IntParameter2": 0,
+    "ItemParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 893
+    },
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 256
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 4,
+    "Index": 163,
+    "InstanceParameter1": null,
+    "IntParameter1": 1,
+    "IntParameter2": 0,
+    "ItemParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 894
+    },
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 256
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 2,
+    "Index": 164,
+    "InstanceParameter1": null,
+    "IntParameter1": 2000000,
+    "IntParameter2": 0,
+    "ItemParameter1": null,
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 256
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 12,
+    "Index": 165,
+    "InstanceParameter1": null,
+    "IntParameter1": 1,
+    "IntParameter2": 455,
+    "ItemParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 927
+    },
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 257
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 4,
+    "Index": 166,
+    "InstanceParameter1": null,
+    "IntParameter1": 1,
+    "IntParameter2": 0,
+    "ItemParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 895
+    },
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 258
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 4,
+    "Index": 167,
+    "InstanceParameter1": null,
+    "IntParameter1": 1,
+    "IntParameter2": 0,
+    "ItemParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 896
+    },
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 258
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 4,
+    "Index": 168,
+    "InstanceParameter1": null,
+    "IntParameter1": 1,
+    "IntParameter2": 0,
+    "ItemParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 897
+    },
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 258
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 2,
+    "Index": 169,
+    "InstanceParameter1": null,
+    "IntParameter1": 2000000,
+    "IntParameter2": 0,
+    "ItemParameter1": null,
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 258
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 12,
+    "Index": 170,
+    "InstanceParameter1": null,
+    "IntParameter1": 1,
+    "IntParameter2": 455,
+    "ItemParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 928
+    },
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 259
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 4,
+    "Index": 171,
+    "InstanceParameter1": null,
+    "IntParameter1": 1,
+    "IntParameter2": 0,
+    "ItemParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 878
+    },
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 260
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 4,
+    "Index": 172,
+    "InstanceParameter1": null,
+    "IntParameter1": 1,
+    "IntParameter2": 0,
+    "ItemParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 879
+    },
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 260
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 4,
+    "Index": 173,
+    "InstanceParameter1": null,
+    "IntParameter1": 1,
+    "IntParameter2": 0,
+    "ItemParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 880
+    },
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 260
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 2,
+    "Index": 174,
+    "InstanceParameter1": null,
+    "IntParameter1": 2000000,
+    "IntParameter2": 0,
+    "ItemParameter1": null,
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 260
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 12,
+    "Index": 175,
+    "InstanceParameter1": null,
+    "IntParameter1": 1,
+    "IntParameter2": 455,
+    "ItemParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 929
+    },
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 261
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 4,
+    "Index": 176,
+    "InstanceParameter1": null,
+    "IntParameter1": 1,
+    "IntParameter2": 0,
+    "ItemParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 881
+    },
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 262
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 4,
+    "Index": 177,
+    "InstanceParameter1": null,
+    "IntParameter1": 1,
+    "IntParameter2": 0,
+    "ItemParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 882
+    },
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 262
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 4,
+    "Index": 178,
+    "InstanceParameter1": null,
+    "IntParameter1": 1,
+    "IntParameter2": 0,
+    "ItemParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 883
+    },
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 262
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 4,
+    "Index": 179,
+    "InstanceParameter1": null,
+    "IntParameter1": 1,
+    "IntParameter2": 0,
+    "ItemParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 884
+    },
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 262
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 2,
+    "Index": 180,
+    "InstanceParameter1": null,
+    "IntParameter1": 2000000,
+    "IntParameter2": 0,
+    "ItemParameter1": null,
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 262
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 12,
+    "Index": 181,
+    "InstanceParameter1": null,
+    "IntParameter1": 1,
+    "IntParameter2": 455,
+    "ItemParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 930
+    },
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 263
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 4,
+    "Index": 182,
+    "InstanceParameter1": null,
+    "IntParameter1": 1,
+    "IntParameter2": 0,
+    "ItemParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 885
+    },
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 264
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 4,
+    "Index": 183,
+    "InstanceParameter1": null,
+    "IntParameter1": 1,
+    "IntParameter2": 0,
+    "ItemParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 886
+    },
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 264
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 4,
+    "Index": 184,
+    "InstanceParameter1": null,
+    "IntParameter1": 1,
+    "IntParameter2": 0,
+    "ItemParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 887
+    },
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 264
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 2,
+    "Index": 185,
+    "InstanceParameter1": null,
+    "IntParameter1": 2000000,
+    "IntParameter2": 0,
+    "ItemParameter1": null,
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 264
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 12,
+    "Index": 186,
+    "InstanceParameter1": null,
+    "IntParameter1": 1,
+    "IntParameter2": 455,
+    "ItemParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 931
+    },
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 265
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 4,
+    "Index": 187,
+    "InstanceParameter1": null,
+    "IntParameter1": 100,
+    "IntParameter2": 0,
+    "ItemParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 978
+    },
+    "MapParameter1": null,
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 274
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 2,
+    "Index": 188,
+    "InstanceParameter1": null,
+    "IntParameter1": 100000,
+    "IntParameter2": 0,
+    "ItemParameter1": null,
+    "MapParameter1": null,
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 274
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 3,
+    "Index": 189,
+    "InstanceParameter1": null,
+    "IntParameter1": 1,
+    "IntParameter2": 0,
+    "ItemParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 984
+    },
+    "MapParameter1": null,
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 274
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 4,
+    "Index": 190,
+    "InstanceParameter1": null,
+    "IntParameter1": 100,
+    "IntParameter2": 0,
+    "ItemParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 983
+    },
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 284
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 2,
+    "Index": 191,
+    "InstanceParameter1": null,
+    "IntParameter1": 100000,
+    "IntParameter2": 0,
+    "ItemParameter1": null,
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 284
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 3,
+    "Index": 192,
+    "InstanceParameter1": null,
+    "IntParameter1": 1,
+    "IntParameter2": 0,
+    "ItemParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 989
+    },
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 284
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 4,
+    "Index": 193,
+    "InstanceParameter1": null,
+    "IntParameter1": 100,
+    "IntParameter2": 0,
+    "ItemParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 982
+    },
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 282
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 2,
+    "Index": 194,
+    "InstanceParameter1": null,
+    "IntParameter1": 100000,
+    "IntParameter2": 0,
+    "ItemParameter1": null,
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 282
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 3,
+    "Index": 195,
+    "InstanceParameter1": null,
+    "IntParameter1": 1,
+    "IntParameter2": 0,
+    "ItemParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 988
+    },
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 282
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 4,
+    "Index": 196,
+    "InstanceParameter1": null,
+    "IntParameter1": 100,
+    "IntParameter2": 0,
+    "ItemParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 981
+    },
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 280
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 2,
+    "Index": 197,
+    "InstanceParameter1": null,
+    "IntParameter1": 100000,
+    "IntParameter2": 0,
+    "ItemParameter1": null,
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 280
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 3,
+    "Index": 198,
+    "InstanceParameter1": null,
+    "IntParameter1": 1,
+    "IntParameter2": 0,
+    "ItemParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 987
+    },
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 280
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 4,
+    "Index": 199,
+    "InstanceParameter1": null,
+    "IntParameter1": 100,
+    "IntParameter2": 0,
+    "ItemParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 980
+    },
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 278
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 2,
+    "Index": 200,
+    "InstanceParameter1": null,
+    "IntParameter1": 100000,
+    "IntParameter2": 0,
+    "ItemParameter1": null,
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 278
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 3,
+    "Index": 201,
+    "InstanceParameter1": null,
+    "IntParameter1": 1,
+    "IntParameter2": 0,
+    "ItemParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 986
+    },
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 278
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 4,
+    "Index": 202,
+    "InstanceParameter1": null,
+    "IntParameter1": 100,
+    "IntParameter2": 0,
+    "ItemParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 979
+    },
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 276
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 2,
+    "Index": 203,
+    "InstanceParameter1": null,
+    "IntParameter1": 100000,
+    "IntParameter2": 0,
+    "ItemParameter1": null,
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 276
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 3,
+    "Index": 204,
+    "InstanceParameter1": null,
+    "IntParameter1": 1,
+    "IntParameter2": 0,
+    "ItemParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 985
+    },
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 276
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 4,
+    "Index": 205,
+    "InstanceParameter1": null,
+    "IntParameter1": 100,
+    "IntParameter2": 0,
+    "ItemParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 989
+    },
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 285
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 2,
+    "Index": 206,
+    "InstanceParameter1": null,
+    "IntParameter1": 100000,
+    "IntParameter2": 0,
+    "ItemParameter1": null,
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 285
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 3,
+    "Index": 207,
+    "InstanceParameter1": null,
+    "IntParameter1": 1,
+    "IntParameter2": 0,
+    "ItemParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 977
+    },
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 285
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 4,
+    "Index": 208,
+    "InstanceParameter1": null,
+    "IntParameter1": 100,
+    "IntParameter2": 0,
+    "ItemParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 988
+    },
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 283
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 2,
+    "Index": 209,
+    "InstanceParameter1": null,
+    "IntParameter1": 100000,
+    "IntParameter2": 0,
+    "ItemParameter1": null,
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 283
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 3,
+    "Index": 210,
+    "InstanceParameter1": null,
+    "IntParameter1": 1,
+    "IntParameter2": 0,
+    "ItemParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 976
+    },
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 283
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 4,
+    "Index": 211,
+    "InstanceParameter1": null,
+    "IntParameter1": 100,
+    "IntParameter2": 0,
+    "ItemParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 987
+    },
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 281
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 2,
+    "Index": 212,
+    "InstanceParameter1": null,
+    "IntParameter1": 100000,
+    "IntParameter2": 0,
+    "ItemParameter1": null,
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 281
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 3,
+    "Index": 213,
+    "InstanceParameter1": null,
+    "IntParameter1": 1,
+    "IntParameter2": 0,
+    "ItemParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 975
+    },
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 281
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 4,
+    "Index": 214,
+    "InstanceParameter1": null,
+    "IntParameter1": 100,
+    "IntParameter2": 0,
+    "ItemParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 986
+    },
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 279
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 2,
+    "Index": 215,
+    "InstanceParameter1": null,
+    "IntParameter1": 100000,
+    "IntParameter2": 0,
+    "ItemParameter1": null,
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 279
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 3,
+    "Index": 216,
+    "InstanceParameter1": null,
+    "IntParameter1": 1,
+    "IntParameter2": 0,
+    "ItemParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 974
+    },
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 279
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 4,
+    "Index": 217,
+    "InstanceParameter1": null,
+    "IntParameter1": 100,
+    "IntParameter2": 0,
+    "ItemParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 985
+    },
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 277
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 2,
+    "Index": 218,
+    "InstanceParameter1": null,
+    "IntParameter1": 100000,
+    "IntParameter2": 0,
+    "ItemParameter1": null,
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 277
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 3,
+    "Index": 219,
+    "InstanceParameter1": null,
+    "IntParameter1": 1,
+    "IntParameter2": 0,
+    "ItemParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 973
+    },
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 277
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 4,
+    "Index": 220,
+    "InstanceParameter1": null,
+    "IntParameter1": 100,
+    "IntParameter2": 0,
+    "ItemParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 984
+    },
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 275
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 2,
+    "Index": 221,
+    "InstanceParameter1": null,
+    "IntParameter1": 100000,
+    "IntParameter2": 0,
+    "ItemParameter1": null,
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 275
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 3,
+    "Index": 222,
+    "InstanceParameter1": null,
+    "IntParameter1": 1,
+    "IntParameter2": 0,
+    "ItemParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 972
+    },
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 275
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 2,
+    "Index": 223,
+    "InstanceParameter1": null,
+    "IntParameter1": 30000,
+    "IntParameter2": 0,
+    "ItemParameter1": null,
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 287
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 0,
+    "Index": 224,
+    "InstanceParameter1": null,
+    "IntParameter1": 111,
+    "IntParameter2": 359,
+    "ItemParameter1": null,
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 605
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 288
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 4,
+    "Index": 225,
+    "InstanceParameter1": null,
+    "IntParameter1": 30,
+    "IntParameter2": 0,
+    "ItemParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 327
+    },
+    "MapParameter1": null,
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 296
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 4,
+    "Index": 226,
+    "InstanceParameter1": null,
+    "IntParameter1": 1,
+    "IntParameter2": 0,
+    "ItemParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 297
+    },
+    "MapParameter1": null,
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 296
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 4,
+    "Index": 227,
+    "InstanceParameter1": null,
+    "IntParameter1": 1,
+    "IntParameter2": 0,
+    "ItemParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 298
+    },
+    "MapParameter1": null,
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 296
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 4,
+    "Index": 228,
+    "InstanceParameter1": null,
+    "IntParameter1": 30,
+    "IntParameter2": 0,
+    "ItemParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 831
+    },
+    "MapParameter1": null,
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 296
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 13,
+    "Index": 229,
+    "InstanceParameter1": null,
+    "IntParameter1": 75,
+    "IntParameter2": 0,
+    "ItemParameter1": null,
+    "MapParameter1": null,
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 296
+    },
+    "StatParameter1": 2,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 4,
+    "Index": 230,
+    "InstanceParameter1": null,
+    "IntParameter1": 30,
+    "IntParameter2": 0,
+    "ItemParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 327
+    },
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 298
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 4,
+    "Index": 231,
+    "InstanceParameter1": null,
+    "IntParameter1": 1,
+    "IntParameter2": 0,
+    "ItemParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 297
+    },
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 298
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 4,
+    "Index": 232,
+    "InstanceParameter1": null,
+    "IntParameter1": 1,
+    "IntParameter2": 0,
+    "ItemParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 298
+    },
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 298
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 4,
+    "Index": 233,
+    "InstanceParameter1": null,
+    "IntParameter1": 30,
+    "IntParameter2": 0,
+    "ItemParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 831
+    },
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 298
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 13,
+    "Index": 234,
+    "InstanceParameter1": null,
+    "IntParameter1": 40,
+    "IntParameter2": 0,
+    "ItemParameter1": null,
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 298
+    },
+    "StatParameter1": 3,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 4,
+    "Index": 235,
+    "InstanceParameter1": null,
+    "IntParameter1": 30,
+    "IntParameter2": 0,
+    "ItemParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 327
+    },
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 301
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 4,
+    "Index": 236,
+    "InstanceParameter1": null,
+    "IntParameter1": 1,
+    "IntParameter2": 0,
+    "ItemParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 297
+    },
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 301
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 4,
+    "Index": 237,
+    "InstanceParameter1": null,
+    "IntParameter1": 1,
+    "IntParameter2": 0,
+    "ItemParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 298
+    },
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 301
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 4,
+    "Index": 238,
+    "InstanceParameter1": null,
+    "IntParameter1": 30,
+    "IntParameter2": 0,
+    "ItemParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 831
+    },
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 301
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 13,
+    "Index": 239,
+    "InstanceParameter1": null,
+    "IntParameter1": 3,
+    "IntParameter2": 0,
+    "ItemParameter1": null,
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 301
+    },
+    "StatParameter1": 14,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 4,
+    "Index": 240,
+    "InstanceParameter1": null,
+    "IntParameter1": 30,
+    "IntParameter2": 0,
+    "ItemParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 327
+    },
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 303
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 4,
+    "Index": 241,
+    "InstanceParameter1": null,
+    "IntParameter1": 1,
+    "IntParameter2": 0,
+    "ItemParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 297
+    },
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 303
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 4,
+    "Index": 242,
+    "InstanceParameter1": null,
+    "IntParameter1": 1,
+    "IntParameter2": 0,
+    "ItemParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 298
+    },
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 303
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 4,
+    "Index": 243,
+    "InstanceParameter1": null,
+    "IntParameter1": 30,
+    "IntParameter2": 0,
+    "ItemParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 831
+    },
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 303
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 13,
+    "Index": 244,
+    "InstanceParameter1": null,
+    "IntParameter1": 3,
+    "IntParameter2": 0,
+    "ItemParameter1": null,
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 303
+    },
+    "StatParameter1": 15,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 4,
+    "Index": 245,
+    "InstanceParameter1": null,
+    "IntParameter1": 30,
+    "IntParameter2": 0,
+    "ItemParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 327
+    },
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 305
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 4,
+    "Index": 246,
+    "InstanceParameter1": null,
+    "IntParameter1": 1,
+    "IntParameter2": 0,
+    "ItemParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 297
+    },
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 305
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 4,
+    "Index": 247,
+    "InstanceParameter1": null,
+    "IntParameter1": 1,
+    "IntParameter2": 0,
+    "ItemParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 298
+    },
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 305
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 4,
+    "Index": 248,
+    "InstanceParameter1": null,
+    "IntParameter1": 30,
+    "IntParameter2": 0,
+    "ItemParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 831
+    },
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 305
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 13,
+    "Index": 249,
+    "InstanceParameter1": null,
+    "IntParameter1": 5,
+    "IntParameter2": 0,
+    "ItemParameter1": null,
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 305
+    },
+    "StatParameter1": 5,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 4,
+    "Index": 250,
+    "InstanceParameter1": null,
+    "IntParameter1": 30,
+    "IntParameter2": 0,
+    "ItemParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 327
+    },
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 307
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 4,
+    "Index": 251,
+    "InstanceParameter1": null,
+    "IntParameter1": 1,
+    "IntParameter2": 0,
+    "ItemParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 297
+    },
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 307
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 4,
+    "Index": 252,
+    "InstanceParameter1": null,
+    "IntParameter1": 1,
+    "IntParameter2": 0,
+    "ItemParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 298
+    },
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 307
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 4,
+    "Index": 253,
+    "InstanceParameter1": null,
+    "IntParameter1": 30,
+    "IntParameter2": 0,
+    "ItemParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 831
+    },
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 307
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 13,
+    "Index": 254,
+    "InstanceParameter1": null,
+    "IntParameter1": 5,
+    "IntParameter2": 0,
+    "ItemParameter1": null,
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 307
+    },
+    "StatParameter1": 7,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 4,
+    "Index": 255,
+    "InstanceParameter1": null,
+    "IntParameter1": 50,
+    "IntParameter2": 0,
+    "ItemParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 327
+    },
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 310
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 4,
+    "Index": 256,
+    "InstanceParameter1": null,
+    "IntParameter1": 1,
+    "IntParameter2": 0,
+    "ItemParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 297
+    },
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 310
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 4,
+    "Index": 257,
+    "InstanceParameter1": null,
+    "IntParameter1": 1,
+    "IntParameter2": 0,
+    "ItemParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 298
+    },
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 310
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 4,
+    "Index": 258,
+    "InstanceParameter1": null,
+    "IntParameter1": 60,
+    "IntParameter2": 0,
+    "ItemParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 831
+    },
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 310
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 13,
+    "Index": 259,
+    "InstanceParameter1": null,
+    "IntParameter1": 1,
+    "IntParameter2": 0,
+    "ItemParameter1": null,
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 310
+    },
+    "StatParameter1": 55,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 4,
+    "Index": 260,
+    "InstanceParameter1": null,
+    "IntParameter1": 50,
+    "IntParameter2": 0,
+    "ItemParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 327
+    },
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 312
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 4,
+    "Index": 261,
+    "InstanceParameter1": null,
+    "IntParameter1": 1,
+    "IntParameter2": 0,
+    "ItemParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 297
+    },
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 312
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 4,
+    "Index": 262,
+    "InstanceParameter1": null,
+    "IntParameter1": 1,
+    "IntParameter2": 0,
+    "ItemParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 298
+    },
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 312
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 4,
+    "Index": 263,
+    "InstanceParameter1": null,
+    "IntParameter1": 60,
+    "IntParameter2": 0,
+    "ItemParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 831
+    },
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 312
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 13,
+    "Index": 264,
+    "InstanceParameter1": null,
+    "IntParameter1": 5,
+    "IntParameter2": 0,
+    "ItemParameter1": null,
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 312
+    },
+    "StatParameter1": 115,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 4,
+    "Index": 265,
+    "InstanceParameter1": null,
+    "IntParameter1": 50,
+    "IntParameter2": 0,
+    "ItemParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 327
+    },
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 314
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 4,
+    "Index": 266,
+    "InstanceParameter1": null,
+    "IntParameter1": 1,
+    "IntParameter2": 0,
+    "ItemParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 297
+    },
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 314
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 4,
+    "Index": 267,
+    "InstanceParameter1": null,
+    "IntParameter1": 1,
+    "IntParameter2": 0,
+    "ItemParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 298
+    },
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 314
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 4,
+    "Index": 268,
+    "InstanceParameter1": null,
+    "IntParameter1": 60,
+    "IntParameter2": 0,
+    "ItemParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 831
+    },
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 314
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 13,
+    "Index": 269,
+    "InstanceParameter1": null,
+    "IntParameter1": 3,
+    "IntParameter2": 0,
+    "ItemParameter1": null,
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 314
+    },
+    "StatParameter1": 16,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 4,
+    "Index": 270,
+    "InstanceParameter1": null,
+    "IntParameter1": 50,
+    "IntParameter2": 0,
+    "ItemParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 327
+    },
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 316
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 4,
+    "Index": 271,
+    "InstanceParameter1": null,
+    "IntParameter1": 1,
+    "IntParameter2": 0,
+    "ItemParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 297
+    },
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 316
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 4,
+    "Index": 272,
+    "InstanceParameter1": null,
+    "IntParameter1": 1,
+    "IntParameter2": 0,
+    "ItemParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 298
+    },
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 316
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 4,
+    "Index": 273,
+    "InstanceParameter1": null,
+    "IntParameter1": 60,
+    "IntParameter2": 0,
+    "ItemParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 831
+    },
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 316
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 13,
+    "Index": 274,
+    "InstanceParameter1": null,
+    "IntParameter1": 3,
+    "IntParameter2": 0,
+    "ItemParameter1": null,
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 316
+    },
+    "StatParameter1": 35,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 4,
+    "Index": 275,
+    "InstanceParameter1": null,
+    "IntParameter1": 50,
+    "IntParameter2": 0,
+    "ItemParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 327
+    },
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 318
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 4,
+    "Index": 276,
+    "InstanceParameter1": null,
+    "IntParameter1": 1,
+    "IntParameter2": 0,
+    "ItemParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 297
+    },
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 318
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 4,
+    "Index": 277,
+    "InstanceParameter1": null,
+    "IntParameter1": 1,
+    "IntParameter2": 0,
+    "ItemParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 298
+    },
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 318
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 4,
+    "Index": 278,
+    "InstanceParameter1": null,
+    "IntParameter1": 100,
+    "IntParameter2": 0,
+    "ItemParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 831
+    },
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 318
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 13,
+    "Index": 279,
+    "InstanceParameter1": null,
+    "IntParameter1": 1,
+    "IntParameter2": 0,
+    "ItemParameter1": null,
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 318
+    },
+    "StatParameter1": 122,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 4,
+    "Index": 280,
+    "InstanceParameter1": null,
+    "IntParameter1": 50,
+    "IntParameter2": 0,
+    "ItemParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 327
+    },
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 320
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 4,
+    "Index": 281,
+    "InstanceParameter1": null,
+    "IntParameter1": 1,
+    "IntParameter2": 0,
+    "ItemParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 297
+    },
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 320
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 4,
+    "Index": 282,
+    "InstanceParameter1": null,
+    "IntParameter1": 1,
+    "IntParameter2": 0,
+    "ItemParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 298
+    },
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 320
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 4,
+    "Index": 283,
+    "InstanceParameter1": null,
+    "IntParameter1": 100,
+    "IntParameter2": 0,
+    "ItemParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 831
+    },
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 320
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 13,
+    "Index": 284,
+    "InstanceParameter1": null,
+    "IntParameter1": 1,
+    "IntParameter2": 0,
+    "ItemParameter1": null,
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 320
+    },
+    "StatParameter1": 123,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 4,
+    "Index": 285,
+    "InstanceParameter1": null,
+    "IntParameter1": 50,
+    "IntParameter2": 0,
+    "ItemParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 327
+    },
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 322
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 4,
+    "Index": 286,
+    "InstanceParameter1": null,
+    "IntParameter1": 1,
+    "IntParameter2": 0,
+    "ItemParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 297
+    },
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 322
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 4,
+    "Index": 287,
+    "InstanceParameter1": null,
+    "IntParameter1": 1,
+    "IntParameter2": 0,
+    "ItemParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 298
+    },
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 322
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 4,
+    "Index": 288,
+    "InstanceParameter1": null,
+    "IntParameter1": 100,
+    "IntParameter2": 0,
+    "ItemParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 831
+    },
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 322
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 13,
+    "Index": 289,
+    "InstanceParameter1": null,
+    "IntParameter1": 1,
+    "IntParameter2": 0,
+    "ItemParameter1": null,
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 322
+    },
+    "StatParameter1": 124,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 4,
+    "Index": 290,
+    "InstanceParameter1": null,
+    "IntParameter1": 50,
+    "IntParameter2": 0,
+    "ItemParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 327
+    },
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 324
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 4,
+    "Index": 291,
+    "InstanceParameter1": null,
+    "IntParameter1": 1,
+    "IntParameter2": 0,
+    "ItemParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 297
+    },
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 324
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 4,
+    "Index": 292,
+    "InstanceParameter1": null,
+    "IntParameter1": 1,
+    "IntParameter2": 0,
+    "ItemParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 298
+    },
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 324
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 4,
+    "Index": 293,
+    "InstanceParameter1": null,
+    "IntParameter1": 100,
+    "IntParameter2": 0,
+    "ItemParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 831
+    },
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 324
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 13,
+    "Index": 294,
+    "InstanceParameter1": null,
+    "IntParameter1": 1,
+    "IntParameter2": 0,
+    "ItemParameter1": null,
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 324
+    },
+    "StatParameter1": 125,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 4,
+    "Index": 295,
+    "InstanceParameter1": null,
+    "IntParameter1": 50,
+    "IntParameter2": 0,
+    "ItemParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 327
+    },
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 326
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 4,
+    "Index": 296,
+    "InstanceParameter1": null,
+    "IntParameter1": 1,
+    "IntParameter2": 0,
+    "ItemParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 297
+    },
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 326
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 4,
+    "Index": 297,
+    "InstanceParameter1": null,
+    "IntParameter1": 1,
+    "IntParameter2": 0,
+    "ItemParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 298
+    },
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 326
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 4,
+    "Index": 298,
+    "InstanceParameter1": null,
+    "IntParameter1": 100,
+    "IntParameter2": 0,
+    "ItemParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 831
+    },
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 326
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 13,
+    "Index": 299,
+    "InstanceParameter1": null,
+    "IntParameter1": 1,
+    "IntParameter2": 0,
+    "ItemParameter1": null,
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 326
+    },
+    "StatParameter1": 126,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 0,
+    "Index": 300,
+    "InstanceParameter1": null,
+    "IntParameter1": 228,
+    "IntParameter2": 768,
+    "ItemParameter1": null,
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 567
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 330
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 0,
+    "Index": 301,
+    "InstanceParameter1": null,
+    "IntParameter1": 63,
+    "IntParameter2": 178,
+    "ItemParameter1": null,
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 572
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 331
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 2,
+    "Index": 302,
+    "InstanceParameter1": null,
+    "IntParameter1": 5000000,
+    "IntParameter2": 0,
+    "ItemParameter1": null,
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 328
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 2,
+    "Index": 303,
+    "InstanceParameter1": null,
+    "IntParameter1": 5000000,
+    "IntParameter2": 0,
+    "ItemParameter1": null,
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 329
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 4,
+    "Index": 304,
+    "InstanceParameter1": null,
+    "IntParameter1": 1,
+    "IntParameter2": 0,
+    "ItemParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 483
+    },
+    "MapParameter1": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 563
+    },
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 329
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 14,
+    "Index": 305,
+    "InstanceParameter1": null,
+    "IntParameter1": 0,
+    "IntParameter2": 0,
+    "ItemParameter1": null,
+    "MapParameter1": null,
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 333
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.NPCAction",
+    "ActionType": 22,
+    "Index": 306,
+    "InstanceParameter1": null,
+    "IntParameter1": 0,
+    "IntParameter2": 0,
+    "ItemParameter1": null,
+    "MapParameter1": null,
+    "Page": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.NPCPage",
+      "Index": 336
+    },
+    "StatParameter1": 0,
+    "StringParameter1": ""
+  }
+]

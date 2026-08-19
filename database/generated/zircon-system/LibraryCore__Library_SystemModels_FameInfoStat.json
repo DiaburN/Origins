@@ -1,0 +1,530 @@
+[
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.FameInfoStat",
+    "Amount": 2,
+    "Fame": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.FameInfo",
+      "Index": 1
+    },
+    "Index": 1,
+    "Stat": 8
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.FameInfoStat",
+    "Amount": 2,
+    "Fame": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.FameInfo",
+      "Index": 1
+    },
+    "Index": 2,
+    "Stat": 9
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.FameInfoStat",
+    "Amount": 2,
+    "Fame": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.FameInfo",
+      "Index": 1
+    },
+    "Index": 3,
+    "Stat": 10
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.FameInfoStat",
+    "Amount": 2,
+    "Fame": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.FameInfo",
+      "Index": 1
+    },
+    "Index": 4,
+    "Stat": 11
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.FameInfoStat",
+    "Amount": 2,
+    "Fame": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.FameInfo",
+      "Index": 1
+    },
+    "Index": 5,
+    "Stat": 12
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.FameInfoStat",
+    "Amount": 2,
+    "Fame": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.FameInfo",
+      "Index": 1
+    },
+    "Index": 6,
+    "Stat": 13
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.FameInfoStat",
+    "Amount": 3,
+    "Fame": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.FameInfo",
+      "Index": 2
+    },
+    "Index": 7,
+    "Stat": 8
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.FameInfoStat",
+    "Amount": 3,
+    "Fame": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.FameInfo",
+      "Index": 2
+    },
+    "Index": 8,
+    "Stat": 9
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.FameInfoStat",
+    "Amount": 3,
+    "Fame": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.FameInfo",
+      "Index": 2
+    },
+    "Index": 9,
+    "Stat": 10
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.FameInfoStat",
+    "Amount": 3,
+    "Fame": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.FameInfo",
+      "Index": 2
+    },
+    "Index": 10,
+    "Stat": 11
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.FameInfoStat",
+    "Amount": 3,
+    "Fame": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.FameInfo",
+      "Index": 2
+    },
+    "Index": 11,
+    "Stat": 12
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.FameInfoStat",
+    "Amount": 3,
+    "Fame": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.FameInfo",
+      "Index": 2
+    },
+    "Index": 12,
+    "Stat": 13
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.FameInfoStat",
+    "Amount": 2,
+    "Fame": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.FameInfo",
+      "Index": 3
+    },
+    "Index": 13,
+    "Stat": 4
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.FameInfoStat",
+    "Amount": 2,
+    "Fame": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.FameInfo",
+      "Index": 3
+    },
+    "Index": 14,
+    "Stat": 5
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.FameInfoStat",
+    "Amount": 2,
+    "Fame": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.FameInfo",
+      "Index": 3
+    },
+    "Index": 15,
+    "Stat": 6
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.FameInfoStat",
+    "Amount": 2,
+    "Fame": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.FameInfo",
+      "Index": 3
+    },
+    "Index": 16,
+    "Stat": 7
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.FameInfoStat",
+    "Amount": 3,
+    "Fame": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.FameInfo",
+      "Index": 4
+    },
+    "Index": 17,
+    "Stat": 4
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.FameInfoStat",
+    "Amount": 3,
+    "Fame": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.FameInfo",
+      "Index": 4
+    },
+    "Index": 18,
+    "Stat": 5
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.FameInfoStat",
+    "Amount": 3,
+    "Fame": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.FameInfo",
+      "Index": 4
+    },
+    "Index": 19,
+    "Stat": 6
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.FameInfoStat",
+    "Amount": 3,
+    "Fame": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.FameInfo",
+      "Index": 4
+    },
+    "Index": 20,
+    "Stat": 7
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.FameInfoStat",
+    "Amount": 2,
+    "Fame": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.FameInfo",
+      "Index": 5
+    },
+    "Index": 21,
+    "Stat": 4
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.FameInfoStat",
+    "Amount": 2,
+    "Fame": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.FameInfo",
+      "Index": 5
+    },
+    "Index": 22,
+    "Stat": 5
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.FameInfoStat",
+    "Amount": 2,
+    "Fame": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.FameInfo",
+      "Index": 5
+    },
+    "Index": 23,
+    "Stat": 6
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.FameInfoStat",
+    "Amount": 2,
+    "Fame": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.FameInfo",
+      "Index": 5
+    },
+    "Index": 24,
+    "Stat": 7
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.FameInfoStat",
+    "Amount": 2,
+    "Fame": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.FameInfo",
+      "Index": 5
+    },
+    "Index": 25,
+    "Stat": 8
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.FameInfoStat",
+    "Amount": 2,
+    "Fame": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.FameInfo",
+      "Index": 5
+    },
+    "Index": 26,
+    "Stat": 9
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.FameInfoStat",
+    "Amount": 2,
+    "Fame": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.FameInfo",
+      "Index": 6
+    },
+    "Index": 27,
+    "Stat": 4
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.FameInfoStat",
+    "Amount": 2,
+    "Fame": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.FameInfo",
+      "Index": 6
+    },
+    "Index": 28,
+    "Stat": 5
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.FameInfoStat",
+    "Amount": 2,
+    "Fame": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.FameInfo",
+      "Index": 6
+    },
+    "Index": 29,
+    "Stat": 6
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.FameInfoStat",
+    "Amount": 2,
+    "Fame": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.FameInfo",
+      "Index": 6
+    },
+    "Index": 30,
+    "Stat": 7
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.FameInfoStat",
+    "Amount": 3,
+    "Fame": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.FameInfo",
+      "Index": 7
+    },
+    "Index": 31,
+    "Stat": 8
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.FameInfoStat",
+    "Amount": 3,
+    "Fame": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.FameInfo",
+      "Index": 7
+    },
+    "Index": 32,
+    "Stat": 9
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.FameInfoStat",
+    "Amount": 3,
+    "Fame": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.FameInfo",
+      "Index": 7
+    },
+    "Index": 33,
+    "Stat": 10
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.FameInfoStat",
+    "Amount": 3,
+    "Fame": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.FameInfo",
+      "Index": 7
+    },
+    "Index": 34,
+    "Stat": 11
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.FameInfoStat",
+    "Amount": 3,
+    "Fame": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.FameInfo",
+      "Index": 7
+    },
+    "Index": 35,
+    "Stat": 12
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.FameInfoStat",
+    "Amount": 3,
+    "Fame": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.FameInfo",
+      "Index": 7
+    },
+    "Index": 36,
+    "Stat": 13
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.FameInfoStat",
+    "Amount": 3,
+    "Fame": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.FameInfo",
+      "Index": 8
+    },
+    "Index": 37,
+    "Stat": 4
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.FameInfoStat",
+    "Amount": 3,
+    "Fame": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.FameInfo",
+      "Index": 8
+    },
+    "Index": 38,
+    "Stat": 5
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.FameInfoStat",
+    "Amount": 3,
+    "Fame": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.FameInfo",
+      "Index": 9
+    },
+    "Index": 39,
+    "Stat": 8
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.FameInfoStat",
+    "Amount": 3,
+    "Fame": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.FameInfo",
+      "Index": 9
+    },
+    "Index": 40,
+    "Stat": 9
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.FameInfoStat",
+    "Amount": 3,
+    "Fame": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.FameInfo",
+      "Index": 9
+    },
+    "Index": 41,
+    "Stat": 10
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.FameInfoStat",
+    "Amount": 3,
+    "Fame": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.FameInfo",
+      "Index": 9
+    },
+    "Index": 42,
+    "Stat": 11
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.FameInfoStat",
+    "Amount": 3,
+    "Fame": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.FameInfo",
+      "Index": 9
+    },
+    "Index": 43,
+    "Stat": 12
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.FameInfoStat",
+    "Amount": 3,
+    "Fame": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.FameInfo",
+      "Index": 9
+    },
+    "Index": 44,
+    "Stat": 13
+  }
+]

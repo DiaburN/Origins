@@ -1,0 +1,1102 @@
+[
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.WeaponCraftStatInfo",
+    "Index": 2,
+    "MaxValue": 150,
+    "MinValue": 50,
+    "RequiredClass": 15,
+    "Stat": 2,
+    "Weight": 50
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.WeaponCraftStatInfo",
+    "Index": 3,
+    "MaxValue": 250,
+    "MinValue": 100,
+    "RequiredClass": 15,
+    "Stat": 2,
+    "Weight": 20
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.WeaponCraftStatInfo",
+    "Index": 4,
+    "MaxValue": 400,
+    "MinValue": 150,
+    "RequiredClass": 15,
+    "Stat": 2,
+    "Weight": 10
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.WeaponCraftStatInfo",
+    "Index": 5,
+    "MaxValue": 600,
+    "MinValue": 200,
+    "RequiredClass": 15,
+    "Stat": 2,
+    "Weight": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.WeaponCraftStatInfo",
+    "Index": 7,
+    "MaxValue": 150,
+    "MinValue": 50,
+    "RequiredClass": 15,
+    "Stat": 3,
+    "Weight": 50
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.WeaponCraftStatInfo",
+    "Index": 8,
+    "MaxValue": 250,
+    "MinValue": 100,
+    "RequiredClass": 15,
+    "Stat": 3,
+    "Weight": 20
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.WeaponCraftStatInfo",
+    "Index": 9,
+    "MaxValue": 400,
+    "MinValue": 150,
+    "RequiredClass": 15,
+    "Stat": 3,
+    "Weight": 10
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.WeaponCraftStatInfo",
+    "Index": 10,
+    "MaxValue": 600,
+    "MinValue": 200,
+    "RequiredClass": 15,
+    "Stat": 3,
+    "Weight": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.WeaponCraftStatInfo",
+    "Index": 12,
+    "MaxValue": 2,
+    "MinValue": 1,
+    "RequiredClass": 15,
+    "Stat": 54,
+    "Weight": 50
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.WeaponCraftStatInfo",
+    "Index": 13,
+    "MaxValue": 3,
+    "MinValue": 1,
+    "RequiredClass": 15,
+    "Stat": 54,
+    "Weight": 20
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.WeaponCraftStatInfo",
+    "Index": 14,
+    "MaxValue": 5,
+    "MinValue": 1,
+    "RequiredClass": 15,
+    "Stat": 54,
+    "Weight": 10
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.WeaponCraftStatInfo",
+    "Index": 15,
+    "MaxValue": 7,
+    "MinValue": 3,
+    "RequiredClass": 15,
+    "Stat": 54,
+    "Weight": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.WeaponCraftStatInfo",
+    "Index": 17,
+    "MaxValue": 2,
+    "MinValue": 1,
+    "RequiredClass": 15,
+    "Stat": 94,
+    "Weight": 50
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.WeaponCraftStatInfo",
+    "Index": 18,
+    "MaxValue": 3,
+    "MinValue": 1,
+    "RequiredClass": 15,
+    "Stat": 94,
+    "Weight": 20
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.WeaponCraftStatInfo",
+    "Index": 19,
+    "MaxValue": 5,
+    "MinValue": 1,
+    "RequiredClass": 15,
+    "Stat": 94,
+    "Weight": 10
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.WeaponCraftStatInfo",
+    "Index": 20,
+    "MaxValue": 7,
+    "MinValue": 3,
+    "RequiredClass": 15,
+    "Stat": 94,
+    "Weight": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.WeaponCraftStatInfo",
+    "Index": 22,
+    "MaxValue": 15,
+    "MinValue": 10,
+    "RequiredClass": 9,
+    "Stat": 9,
+    "Weight": 50
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.WeaponCraftStatInfo",
+    "Index": 23,
+    "MaxValue": 20,
+    "MinValue": 15,
+    "RequiredClass": 9,
+    "Stat": 9,
+    "Weight": 20
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.WeaponCraftStatInfo",
+    "Index": 24,
+    "MaxValue": 25,
+    "MinValue": 15,
+    "RequiredClass": 9,
+    "Stat": 9,
+    "Weight": 10
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.WeaponCraftStatInfo",
+    "Index": 25,
+    "MaxValue": 30,
+    "MinValue": 20,
+    "RequiredClass": 9,
+    "Stat": 9,
+    "Weight": 2
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.WeaponCraftStatInfo",
+    "Index": 27,
+    "MaxValue": 2,
+    "MinValue": 1,
+    "RequiredClass": 9,
+    "Stat": 84,
+    "Weight": 50
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.WeaponCraftStatInfo",
+    "Index": 28,
+    "MaxValue": 3,
+    "MinValue": 1,
+    "RequiredClass": 9,
+    "Stat": 84,
+    "Weight": 20
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.WeaponCraftStatInfo",
+    "Index": 29,
+    "MaxValue": 5,
+    "MinValue": 1,
+    "RequiredClass": 9,
+    "Stat": 84,
+    "Weight": 10
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.WeaponCraftStatInfo",
+    "Index": 30,
+    "MaxValue": 7,
+    "MinValue": 3,
+    "RequiredClass": 9,
+    "Stat": 84,
+    "Weight": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.WeaponCraftStatInfo",
+    "Index": 32,
+    "MaxValue": 15,
+    "MinValue": 10,
+    "RequiredClass": 2,
+    "Stat": 11,
+    "Weight": 50
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.WeaponCraftStatInfo",
+    "Index": 33,
+    "MaxValue": 20,
+    "MinValue": 15,
+    "RequiredClass": 2,
+    "Stat": 11,
+    "Weight": 20
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.WeaponCraftStatInfo",
+    "Index": 34,
+    "MaxValue": 25,
+    "MinValue": 15,
+    "RequiredClass": 2,
+    "Stat": 11,
+    "Weight": 10
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.WeaponCraftStatInfo",
+    "Index": 35,
+    "MaxValue": 30,
+    "MinValue": 20,
+    "RequiredClass": 2,
+    "Stat": 11,
+    "Weight": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.WeaponCraftStatInfo",
+    "Index": 37,
+    "MaxValue": 2,
+    "MinValue": 1,
+    "RequiredClass": 2,
+    "Stat": 67,
+    "Weight": 50
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.WeaponCraftStatInfo",
+    "Index": 38,
+    "MaxValue": 3,
+    "MinValue": 1,
+    "RequiredClass": 2,
+    "Stat": 67,
+    "Weight": 20
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.WeaponCraftStatInfo",
+    "Index": 39,
+    "MaxValue": 5,
+    "MinValue": 1,
+    "RequiredClass": 2,
+    "Stat": 67,
+    "Weight": 10
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.WeaponCraftStatInfo",
+    "Index": 40,
+    "MaxValue": 7,
+    "MinValue": 3,
+    "RequiredClass": 2,
+    "Stat": 67,
+    "Weight": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.WeaponCraftStatInfo",
+    "Index": 42,
+    "MaxValue": 15,
+    "MinValue": 10,
+    "RequiredClass": 4,
+    "Stat": 13,
+    "Weight": 50
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.WeaponCraftStatInfo",
+    "Index": 43,
+    "MaxValue": 20,
+    "MinValue": 15,
+    "RequiredClass": 4,
+    "Stat": 13,
+    "Weight": 20
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.WeaponCraftStatInfo",
+    "Index": 44,
+    "MaxValue": 25,
+    "MinValue": 15,
+    "RequiredClass": 4,
+    "Stat": 13,
+    "Weight": 10
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.WeaponCraftStatInfo",
+    "Index": 45,
+    "MaxValue": 30,
+    "MinValue": 20,
+    "RequiredClass": 4,
+    "Stat": 13,
+    "Weight": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.WeaponCraftStatInfo",
+    "Index": 47,
+    "MaxValue": 2,
+    "MinValue": 1,
+    "RequiredClass": 4,
+    "Stat": 85,
+    "Weight": 50
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.WeaponCraftStatInfo",
+    "Index": 48,
+    "MaxValue": 3,
+    "MinValue": 1,
+    "RequiredClass": 4,
+    "Stat": 85,
+    "Weight": 20
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.WeaponCraftStatInfo",
+    "Index": 49,
+    "MaxValue": 5,
+    "MinValue": 1,
+    "RequiredClass": 4,
+    "Stat": 85,
+    "Weight": 10
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.WeaponCraftStatInfo",
+    "Index": 50,
+    "MaxValue": 7,
+    "MinValue": 3,
+    "RequiredClass": 4,
+    "Stat": 85,
+    "Weight": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.WeaponCraftStatInfo",
+    "Index": 52,
+    "MaxValue": 4,
+    "MinValue": 1,
+    "RequiredClass": 15,
+    "Stat": 55,
+    "Weight": 50
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.WeaponCraftStatInfo",
+    "Index": 53,
+    "MaxValue": 6,
+    "MinValue": 2,
+    "RequiredClass": 15,
+    "Stat": 55,
+    "Weight": 20
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.WeaponCraftStatInfo",
+    "Index": 54,
+    "MaxValue": 8,
+    "MinValue": 3,
+    "RequiredClass": 15,
+    "Stat": 55,
+    "Weight": 10
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.WeaponCraftStatInfo",
+    "Index": 55,
+    "MaxValue": 10,
+    "MinValue": 4,
+    "RequiredClass": 15,
+    "Stat": 55,
+    "Weight": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.WeaponCraftStatInfo",
+    "Index": 57,
+    "MaxValue": 30,
+    "MinValue": 10,
+    "RequiredClass": 15,
+    "Stat": 115,
+    "Weight": 50
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.WeaponCraftStatInfo",
+    "Index": 58,
+    "MaxValue": 40,
+    "MinValue": 10,
+    "RequiredClass": 15,
+    "Stat": 115,
+    "Weight": 20
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.WeaponCraftStatInfo",
+    "Index": 59,
+    "MaxValue": 50,
+    "MinValue": 25,
+    "RequiredClass": 15,
+    "Stat": 115,
+    "Weight": 10
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.WeaponCraftStatInfo",
+    "Index": 60,
+    "MaxValue": 100,
+    "MinValue": 30,
+    "RequiredClass": 15,
+    "Stat": 115,
+    "Weight": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.WeaponCraftStatInfo",
+    "Index": 62,
+    "MaxValue": 2,
+    "MinValue": 1,
+    "RequiredClass": 9,
+    "Stat": 16,
+    "Weight": 50
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.WeaponCraftStatInfo",
+    "Index": 63,
+    "MaxValue": 3,
+    "MinValue": 1,
+    "RequiredClass": 9,
+    "Stat": 16,
+    "Weight": 20
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.WeaponCraftStatInfo",
+    "Index": 64,
+    "MaxValue": 3,
+    "MinValue": 2,
+    "RequiredClass": 9,
+    "Stat": 16,
+    "Weight": 10
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.WeaponCraftStatInfo",
+    "Index": 65,
+    "MaxValue": 4,
+    "MinValue": 2,
+    "RequiredClass": 9,
+    "Stat": 16,
+    "Weight": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.WeaponCraftStatInfo",
+    "Index": 67,
+    "MaxValue": 4,
+    "MinValue": 1,
+    "RequiredClass": 9,
+    "Stat": 14,
+    "Weight": 50
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.WeaponCraftStatInfo",
+    "Index": 68,
+    "MaxValue": 5,
+    "MinValue": 2,
+    "RequiredClass": 9,
+    "Stat": 14,
+    "Weight": 20
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.WeaponCraftStatInfo",
+    "Index": 69,
+    "MaxValue": 6,
+    "MinValue": 3,
+    "RequiredClass": 9,
+    "Stat": 14,
+    "Weight": 10
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.WeaponCraftStatInfo",
+    "Index": 70,
+    "MaxValue": 8,
+    "MinValue": 3,
+    "RequiredClass": 9,
+    "Stat": 14,
+    "Weight": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.WeaponCraftStatInfo",
+    "Index": 72,
+    "MaxValue": 2,
+    "MinValue": 1,
+    "RequiredClass": 15,
+    "Stat": 18,
+    "Weight": 50
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.WeaponCraftStatInfo",
+    "Index": 73,
+    "MaxValue": 2,
+    "MinValue": 2,
+    "RequiredClass": 15,
+    "Stat": 18,
+    "Weight": 20
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.WeaponCraftStatInfo",
+    "Index": 74,
+    "MaxValue": 3,
+    "MinValue": 2,
+    "RequiredClass": 15,
+    "Stat": 18,
+    "Weight": 10
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.WeaponCraftStatInfo",
+    "Index": 75,
+    "MaxValue": 4,
+    "MinValue": 2,
+    "RequiredClass": 15,
+    "Stat": 18,
+    "Weight": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.WeaponCraftStatInfo",
+    "Index": 77,
+    "MaxValue": 3,
+    "MinValue": 3,
+    "RequiredClass": 15,
+    "Stat": 19,
+    "Weight": 50
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.WeaponCraftStatInfo",
+    "Index": 78,
+    "MaxValue": 3,
+    "MinValue": 3,
+    "RequiredClass": 15,
+    "Stat": 19,
+    "Weight": 20
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.WeaponCraftStatInfo",
+    "Index": 79,
+    "MaxValue": 3,
+    "MinValue": 3,
+    "RequiredClass": 15,
+    "Stat": 19,
+    "Weight": 10
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.WeaponCraftStatInfo",
+    "Index": 80,
+    "MaxValue": 4,
+    "MinValue": 3,
+    "RequiredClass": 15,
+    "Stat": 19,
+    "Weight": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.WeaponCraftStatInfo",
+    "Index": 82,
+    "MaxValue": 4,
+    "MinValue": 4,
+    "RequiredClass": 9,
+    "Stat": 35,
+    "Weight": 50
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.WeaponCraftStatInfo",
+    "Index": 83,
+    "MaxValue": 4,
+    "MinValue": 4,
+    "RequiredClass": 9,
+    "Stat": 35,
+    "Weight": 20
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.WeaponCraftStatInfo",
+    "Index": 84,
+    "MaxValue": 4,
+    "MinValue": 4,
+    "RequiredClass": 9,
+    "Stat": 35,
+    "Weight": 10
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.WeaponCraftStatInfo",
+    "Index": 85,
+    "MaxValue": 10,
+    "MinValue": 1,
+    "RequiredClass": 9,
+    "Stat": 35,
+    "Weight": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.WeaponCraftStatInfo",
+    "Index": 97,
+    "MaxValue": 6,
+    "MinValue": 2,
+    "RequiredClass": 2,
+    "Stat": 20,
+    "Weight": 50
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.WeaponCraftStatInfo",
+    "Index": 98,
+    "MaxValue": 8,
+    "MinValue": 3,
+    "RequiredClass": 2,
+    "Stat": 20,
+    "Weight": 20
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.WeaponCraftStatInfo",
+    "Index": 99,
+    "MaxValue": 10,
+    "MinValue": 4,
+    "RequiredClass": 2,
+    "Stat": 20,
+    "Weight": 10
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.WeaponCraftStatInfo",
+    "Index": 100,
+    "MaxValue": 15,
+    "MinValue": 5,
+    "RequiredClass": 2,
+    "Stat": 20,
+    "Weight": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.WeaponCraftStatInfo",
+    "Index": 102,
+    "MaxValue": 6,
+    "MinValue": 2,
+    "RequiredClass": 4,
+    "Stat": 28,
+    "Weight": 50
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.WeaponCraftStatInfo",
+    "Index": 103,
+    "MaxValue": 8,
+    "MinValue": 3,
+    "RequiredClass": 4,
+    "Stat": 28,
+    "Weight": 20
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.WeaponCraftStatInfo",
+    "Index": 104,
+    "MaxValue": 10,
+    "MinValue": 4,
+    "RequiredClass": 4,
+    "Stat": 28,
+    "Weight": 10
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.WeaponCraftStatInfo",
+    "Index": 105,
+    "MaxValue": 15,
+    "MinValue": 5,
+    "RequiredClass": 4,
+    "Stat": 28,
+    "Weight": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.WeaponCraftStatInfo",
+    "Index": 107,
+    "MaxValue": 15,
+    "MinValue": 10,
+    "RequiredClass": 15,
+    "Stat": 36,
+    "Weight": 50
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.WeaponCraftStatInfo",
+    "Index": 108,
+    "MaxValue": 20,
+    "MinValue": 15,
+    "RequiredClass": 15,
+    "Stat": 36,
+    "Weight": 20
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.WeaponCraftStatInfo",
+    "Index": 109,
+    "MaxValue": 25,
+    "MinValue": 20,
+    "RequiredClass": 15,
+    "Stat": 36,
+    "Weight": 10
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.WeaponCraftStatInfo",
+    "Index": 110,
+    "MaxValue": 30,
+    "MinValue": 25,
+    "RequiredClass": 15,
+    "Stat": 36,
+    "Weight": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.WeaponCraftStatInfo",
+    "Index": 112,
+    "MaxValue": 15,
+    "MinValue": 10,
+    "RequiredClass": 15,
+    "Stat": 37,
+    "Weight": 50
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.WeaponCraftStatInfo",
+    "Index": 113,
+    "MaxValue": 20,
+    "MinValue": 15,
+    "RequiredClass": 15,
+    "Stat": 37,
+    "Weight": 20
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.WeaponCraftStatInfo",
+    "Index": 114,
+    "MaxValue": 25,
+    "MinValue": 20,
+    "RequiredClass": 15,
+    "Stat": 37,
+    "Weight": 10
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.WeaponCraftStatInfo",
+    "Index": 115,
+    "MaxValue": 30,
+    "MinValue": 25,
+    "RequiredClass": 15,
+    "Stat": 37,
+    "Weight": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.WeaponCraftStatInfo",
+    "Index": 117,
+    "MaxValue": 15,
+    "MinValue": 10,
+    "RequiredClass": 15,
+    "Stat": 76,
+    "Weight": 50
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.WeaponCraftStatInfo",
+    "Index": 118,
+    "MaxValue": 20,
+    "MinValue": 15,
+    "RequiredClass": 15,
+    "Stat": 76,
+    "Weight": 20
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.WeaponCraftStatInfo",
+    "Index": 119,
+    "MaxValue": 25,
+    "MinValue": 20,
+    "RequiredClass": 15,
+    "Stat": 76,
+    "Weight": 10
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.WeaponCraftStatInfo",
+    "Index": 120,
+    "MaxValue": 30,
+    "MinValue": 25,
+    "RequiredClass": 15,
+    "Stat": 76,
+    "Weight": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.WeaponCraftStatInfo",
+    "Index": 121,
+    "MaxValue": 50,
+    "MinValue": 10,
+    "RequiredClass": 15,
+    "Stat": 2,
+    "Weight": 100
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.WeaponCraftStatInfo",
+    "Index": 122,
+    "MaxValue": 50,
+    "MinValue": 10,
+    "RequiredClass": 15,
+    "Stat": 3,
+    "Weight": 100
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.WeaponCraftStatInfo",
+    "Index": 123,
+    "MaxValue": 1,
+    "MinValue": 1,
+    "RequiredClass": 15,
+    "Stat": 54,
+    "Weight": 100
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.WeaponCraftStatInfo",
+    "Index": 124,
+    "MaxValue": 1,
+    "MinValue": 1,
+    "RequiredClass": 15,
+    "Stat": 94,
+    "Weight": 100
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.WeaponCraftStatInfo",
+    "Index": 125,
+    "MaxValue": 10,
+    "MinValue": 5,
+    "RequiredClass": 9,
+    "Stat": 9,
+    "Weight": 100
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.WeaponCraftStatInfo",
+    "Index": 126,
+    "MaxValue": 1,
+    "MinValue": 1,
+    "RequiredClass": 9,
+    "Stat": 84,
+    "Weight": 100
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.WeaponCraftStatInfo",
+    "Index": 127,
+    "MaxValue": 10,
+    "MinValue": 5,
+    "RequiredClass": 2,
+    "Stat": 11,
+    "Weight": 100
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.WeaponCraftStatInfo",
+    "Index": 128,
+    "MaxValue": 1,
+    "MinValue": 1,
+    "RequiredClass": 2,
+    "Stat": 67,
+    "Weight": 100
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.WeaponCraftStatInfo",
+    "Index": 129,
+    "MaxValue": 10,
+    "MinValue": 5,
+    "RequiredClass": 4,
+    "Stat": 13,
+    "Weight": 100
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.WeaponCraftStatInfo",
+    "Index": 130,
+    "MaxValue": 1,
+    "MinValue": 1,
+    "RequiredClass": 4,
+    "Stat": 85,
+    "Weight": 100
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.WeaponCraftStatInfo",
+    "Index": 131,
+    "MaxValue": 2,
+    "MinValue": 1,
+    "RequiredClass": 15,
+    "Stat": 55,
+    "Weight": 100
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.WeaponCraftStatInfo",
+    "Index": 132,
+    "MaxValue": 20,
+    "MinValue": 10,
+    "RequiredClass": 15,
+    "Stat": 115,
+    "Weight": 100
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.WeaponCraftStatInfo",
+    "Index": 133,
+    "MaxValue": 1,
+    "MinValue": 1,
+    "RequiredClass": 9,
+    "Stat": 16,
+    "Weight": 100
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.WeaponCraftStatInfo",
+    "Index": 134,
+    "MaxValue": 2,
+    "MinValue": 1,
+    "RequiredClass": 9,
+    "Stat": 14,
+    "Weight": 100
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.WeaponCraftStatInfo",
+    "Index": 135,
+    "MaxValue": 1,
+    "MinValue": 1,
+    "RequiredClass": 15,
+    "Stat": 18,
+    "Weight": 100
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.WeaponCraftStatInfo",
+    "Index": 136,
+    "MaxValue": 1,
+    "MinValue": 1,
+    "RequiredClass": 15,
+    "Stat": 19,
+    "Weight": 100
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.WeaponCraftStatInfo",
+    "Index": 137,
+    "MaxValue": 1,
+    "MinValue": 1,
+    "RequiredClass": 9,
+    "Stat": 35,
+    "Weight": 100
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.WeaponCraftStatInfo",
+    "Index": 138,
+    "MaxValue": 4,
+    "MinValue": 1,
+    "RequiredClass": 2,
+    "Stat": 20,
+    "Weight": 100
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.WeaponCraftStatInfo",
+    "Index": 139,
+    "MaxValue": 4,
+    "MinValue": 1,
+    "RequiredClass": 4,
+    "Stat": 28,
+    "Weight": 100
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.WeaponCraftStatInfo",
+    "Index": 140,
+    "MaxValue": 2,
+    "MinValue": 1,
+    "RequiredClass": 15,
+    "Stat": 36,
+    "Weight": 100
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.WeaponCraftStatInfo",
+    "Index": 141,
+    "MaxValue": 2,
+    "MinValue": 1,
+    "RequiredClass": 15,
+    "Stat": 37,
+    "Weight": 100
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.WeaponCraftStatInfo",
+    "Index": 142,
+    "MaxValue": 2,
+    "MinValue": 1,
+    "RequiredClass": 15,
+    "Stat": 76,
+    "Weight": 100
+  }
+]

@@ -1,0 +1,98 @@
+[
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.CurrencyInfoImage",
+    "Amount": 0,
+    "Currency": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.CurrencyInfo",
+      "Index": 1
+    },
+    "Image": 120,
+    "Index": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.CurrencyInfoImage",
+    "Amount": 100,
+    "Currency": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.CurrencyInfo",
+      "Index": 1
+    },
+    "Image": 121,
+    "Index": 2
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.CurrencyInfoImage",
+    "Amount": 200,
+    "Currency": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.CurrencyInfo",
+      "Index": 1
+    },
+    "Image": 122,
+    "Index": 3
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.CurrencyInfoImage",
+    "Amount": 500,
+    "Currency": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.CurrencyInfo",
+      "Index": 1
+    },
+    "Image": 123,
+    "Index": 4
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.CurrencyInfoImage",
+    "Amount": 1000,
+    "Currency": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.CurrencyInfo",
+      "Index": 1
+    },
+    "Image": 124,
+    "Index": 5
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.CurrencyInfoImage",
+    "Amount": 1000000,
+    "Currency": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.CurrencyInfo",
+      "Index": 1
+    },
+    "Image": 125,
+    "Index": 6
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.CurrencyInfoImage",
+    "Amount": 5000000,
+    "Currency": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.CurrencyInfo",
+      "Index": 1
+    },
+    "Image": 126,
+    "Index": 7
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.CurrencyInfoImage",
+    "Amount": 10000000,
+    "Currency": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.CurrencyInfo",
+      "Index": 1
+    },
+    "Image": 127,
+    "Index": 8
+  }
+]

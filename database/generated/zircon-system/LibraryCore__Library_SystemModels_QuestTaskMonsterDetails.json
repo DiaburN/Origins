@@ -1,0 +1,1108 @@
+[
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestTaskMonsterDetails",
+    "Amount": 1,
+    "Chance": 2,
+    "DropSet": 0,
+    "Index": 24,
+    "Map": null,
+    "Monster": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MonsterInfo",
+      "Index": 20
+    },
+    "Task": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestTask",
+      "Index": 14
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestTaskMonsterDetails",
+    "Amount": 2,
+    "Chance": 3,
+    "DropSet": 0,
+    "Index": 25,
+    "Map": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 12
+    },
+    "Monster": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MonsterInfo",
+      "Index": 72
+    },
+    "Task": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestTask",
+      "Index": 15
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestTaskMonsterDetails",
+    "Amount": 2,
+    "Chance": 3,
+    "DropSet": 0,
+    "Index": 26,
+    "Map": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 12
+    },
+    "Monster": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MonsterInfo",
+      "Index": 71
+    },
+    "Task": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestTask",
+      "Index": 15
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestTaskMonsterDetails",
+    "Amount": 2,
+    "Chance": 2,
+    "DropSet": 0,
+    "Index": 27,
+    "Map": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 12
+    },
+    "Monster": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MonsterInfo",
+      "Index": 66
+    },
+    "Task": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestTask",
+      "Index": 16
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestTaskMonsterDetails",
+    "Amount": 1,
+    "Chance": 1,
+    "DropSet": 0,
+    "Index": 28,
+    "Map": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 12
+    },
+    "Monster": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MonsterInfo",
+      "Index": 73
+    },
+    "Task": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestTask",
+      "Index": 17
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestTaskMonsterDetails",
+    "Amount": 1,
+    "Chance": 1,
+    "DropSet": 0,
+    "Index": 30,
+    "Map": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 14
+    },
+    "Monster": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MonsterInfo",
+      "Index": 85
+    },
+    "Task": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestTask",
+      "Index": 19
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestTaskMonsterDetails",
+    "Amount": 1,
+    "Chance": 1,
+    "DropSet": 0,
+    "Index": 31,
+    "Map": null,
+    "Monster": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MonsterInfo",
+      "Index": 46
+    },
+    "Task": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestTask",
+      "Index": 20
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestTaskMonsterDetails",
+    "Amount": 1,
+    "Chance": 1,
+    "DropSet": 0,
+    "Index": 32,
+    "Map": null,
+    "Monster": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MonsterInfo",
+      "Index": 49
+    },
+    "Task": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestTask",
+      "Index": 23
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestTaskMonsterDetails",
+    "Amount": 1,
+    "Chance": 1,
+    "DropSet": 0,
+    "Index": 33,
+    "Map": null,
+    "Monster": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MonsterInfo",
+      "Index": 47
+    },
+    "Task": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestTask",
+      "Index": 22
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestTaskMonsterDetails",
+    "Amount": 1,
+    "Chance": 1,
+    "DropSet": 0,
+    "Index": 34,
+    "Map": null,
+    "Monster": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MonsterInfo",
+      "Index": 48
+    },
+    "Task": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestTask",
+      "Index": 21
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestTaskMonsterDetails",
+    "Amount": 1,
+    "Chance": 1,
+    "DropSet": 0,
+    "Index": 51,
+    "Map": null,
+    "Monster": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MonsterInfo",
+      "Index": 125
+    },
+    "Task": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestTask",
+      "Index": 42
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestTaskMonsterDetails",
+    "Amount": 1,
+    "Chance": 1,
+    "DropSet": 0,
+    "Index": 52,
+    "Map": null,
+    "Monster": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MonsterInfo",
+      "Index": 127
+    },
+    "Task": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestTask",
+      "Index": 41
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestTaskMonsterDetails",
+    "Amount": 1,
+    "Chance": 1,
+    "DropSet": 0,
+    "Index": 53,
+    "Map": null,
+    "Monster": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MonsterInfo",
+      "Index": 124
+    },
+    "Task": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestTask",
+      "Index": 44
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestTaskMonsterDetails",
+    "Amount": 1,
+    "Chance": 1,
+    "DropSet": 0,
+    "Index": 54,
+    "Map": null,
+    "Monster": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MonsterInfo",
+      "Index": 126
+    },
+    "Task": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestTask",
+      "Index": 43
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestTaskMonsterDetails",
+    "Amount": 1,
+    "Chance": 1,
+    "DropSet": 0,
+    "Index": 55,
+    "Map": null,
+    "Monster": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MonsterInfo",
+      "Index": 128
+    },
+    "Task": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestTask",
+      "Index": 45
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestTaskMonsterDetails",
+    "Amount": 1,
+    "Chance": 1,
+    "DropSet": 0,
+    "Index": 56,
+    "Map": null,
+    "Monster": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MonsterInfo",
+      "Index": 122
+    },
+    "Task": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestTask",
+      "Index": 46
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestTaskMonsterDetails",
+    "Amount": 1,
+    "Chance": 1,
+    "DropSet": 0,
+    "Index": 57,
+    "Map": null,
+    "Monster": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MonsterInfo",
+      "Index": 129
+    },
+    "Task": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestTask",
+      "Index": 47
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestTaskMonsterDetails",
+    "Amount": 1,
+    "Chance": 2,
+    "DropSet": 0,
+    "Index": 59,
+    "Map": null,
+    "Monster": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MonsterInfo",
+      "Index": 27
+    },
+    "Task": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestTask",
+      "Index": 49
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestTaskMonsterDetails",
+    "Amount": 1,
+    "Chance": 2,
+    "DropSet": 0,
+    "Index": 60,
+    "Map": null,
+    "Monster": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MonsterInfo",
+      "Index": 28
+    },
+    "Task": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestTask",
+      "Index": 49
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestTaskMonsterDetails",
+    "Amount": 1,
+    "Chance": 2,
+    "DropSet": 0,
+    "Index": 61,
+    "Map": null,
+    "Monster": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MonsterInfo",
+      "Index": 29
+    },
+    "Task": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestTask",
+      "Index": 49
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestTaskMonsterDetails",
+    "Amount": 1,
+    "Chance": 2,
+    "DropSet": 0,
+    "Index": 62,
+    "Map": null,
+    "Monster": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MonsterInfo",
+      "Index": 26
+    },
+    "Task": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestTask",
+      "Index": 49
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestTaskMonsterDetails",
+    "Amount": 1,
+    "Chance": 1,
+    "DropSet": 0,
+    "Index": 63,
+    "Map": null,
+    "Monster": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MonsterInfo",
+      "Index": 30
+    },
+    "Task": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestTask",
+      "Index": 50
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestTaskMonsterDetails",
+    "Amount": 1,
+    "Chance": 20,
+    "DropSet": 0,
+    "Index": 65,
+    "Map": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 1
+    },
+    "Monster": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MonsterInfo",
+      "Index": 21
+    },
+    "Task": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestTask",
+      "Index": 52
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestTaskMonsterDetails",
+    "Amount": 1,
+    "Chance": 20,
+    "DropSet": 0,
+    "Index": 66,
+    "Map": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 5
+    },
+    "Monster": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MonsterInfo",
+      "Index": 21
+    },
+    "Task": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestTask",
+      "Index": 53
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestTaskMonsterDetails",
+    "Amount": 1,
+    "Chance": 20,
+    "DropSet": 0,
+    "Index": 67,
+    "Map": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 6
+    },
+    "Monster": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MonsterInfo",
+      "Index": 21
+    },
+    "Task": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestTask",
+      "Index": 54
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestTaskMonsterDetails",
+    "Amount": 1,
+    "Chance": 2,
+    "DropSet": 0,
+    "Index": 68,
+    "Map": null,
+    "Monster": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MonsterInfo",
+      "Index": 32
+    },
+    "Task": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestTask",
+      "Index": 55
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestTaskMonsterDetails",
+    "Amount": 1,
+    "Chance": 2,
+    "DropSet": 0,
+    "Index": 69,
+    "Map": null,
+    "Monster": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MonsterInfo",
+      "Index": 33
+    },
+    "Task": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestTask",
+      "Index": 55
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestTaskMonsterDetails",
+    "Amount": 1,
+    "Chance": 2,
+    "DropSet": 0,
+    "Index": 70,
+    "Map": null,
+    "Monster": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MonsterInfo",
+      "Index": 34
+    },
+    "Task": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestTask",
+      "Index": 55
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestTaskMonsterDetails",
+    "Amount": 1,
+    "Chance": 2,
+    "DropSet": 0,
+    "Index": 71,
+    "Map": null,
+    "Monster": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MonsterInfo",
+      "Index": 35
+    },
+    "Task": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestTask",
+      "Index": 55
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestTaskMonsterDetails",
+    "Amount": 1,
+    "Chance": 2,
+    "DropSet": 0,
+    "Index": 72,
+    "Map": null,
+    "Monster": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MonsterInfo",
+      "Index": 36
+    },
+    "Task": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestTask",
+      "Index": 55
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestTaskMonsterDetails",
+    "Amount": 5,
+    "Chance": 1,
+    "DropSet": 0,
+    "Index": 73,
+    "Map": null,
+    "Monster": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MonsterInfo",
+      "Index": 37
+    },
+    "Task": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestTask",
+      "Index": 55
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestTaskMonsterDetails",
+    "Amount": 1,
+    "Chance": 20,
+    "DropSet": 0,
+    "Index": 74,
+    "Map": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 5
+    },
+    "Monster": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MonsterInfo",
+      "Index": 13
+    },
+    "Task": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestTask",
+      "Index": 56
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestTaskMonsterDetails",
+    "Amount": 1,
+    "Chance": 20,
+    "DropSet": 0,
+    "Index": 75,
+    "Map": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 1
+    },
+    "Monster": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MonsterInfo",
+      "Index": 13
+    },
+    "Task": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestTask",
+      "Index": 57
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestTaskMonsterDetails",
+    "Amount": 1,
+    "Chance": 20,
+    "DropSet": 0,
+    "Index": 76,
+    "Map": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 6
+    },
+    "Monster": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MonsterInfo",
+      "Index": 13
+    },
+    "Task": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestTask",
+      "Index": 58
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestTaskMonsterDetails",
+    "Amount": 1,
+    "Chance": 1,
+    "DropSet": 0,
+    "Index": 77,
+    "Map": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 1
+    },
+    "Monster": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MonsterInfo",
+      "Index": 15
+    },
+    "Task": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestTask",
+      "Index": 59
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestTaskMonsterDetails",
+    "Amount": 1,
+    "Chance": 1,
+    "DropSet": 0,
+    "Index": 78,
+    "Map": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 6
+    },
+    "Monster": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MonsterInfo",
+      "Index": 15
+    },
+    "Task": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestTask",
+      "Index": 60
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestTaskMonsterDetails",
+    "Amount": 1,
+    "Chance": 1,
+    "DropSet": 0,
+    "Index": 79,
+    "Map": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 5
+    },
+    "Monster": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MonsterInfo",
+      "Index": 15
+    },
+    "Task": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestTask",
+      "Index": 61
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestTaskMonsterDetails",
+    "Amount": 2,
+    "Chance": 1,
+    "DropSet": 0,
+    "Index": 80,
+    "Map": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 1
+    },
+    "Monster": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MonsterInfo",
+      "Index": 16
+    },
+    "Task": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestTask",
+      "Index": 62
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestTaskMonsterDetails",
+    "Amount": 2,
+    "Chance": 1,
+    "DropSet": 0,
+    "Index": 81,
+    "Map": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 6
+    },
+    "Monster": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MonsterInfo",
+      "Index": 16
+    },
+    "Task": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestTask",
+      "Index": 63
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestTaskMonsterDetails",
+    "Amount": 2,
+    "Chance": 1,
+    "DropSet": 0,
+    "Index": 82,
+    "Map": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 5
+    },
+    "Monster": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MonsterInfo",
+      "Index": 16
+    },
+    "Task": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestTask",
+      "Index": 64
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestTaskMonsterDetails",
+    "Amount": 1,
+    "Chance": 1,
+    "DropSet": 0,
+    "Index": 83,
+    "Map": null,
+    "Monster": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MonsterInfo",
+      "Index": 117
+    },
+    "Task": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestTask",
+      "Index": 65
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestTaskMonsterDetails",
+    "Amount": 1,
+    "Chance": 1,
+    "DropSet": 0,
+    "Index": 85,
+    "Map": null,
+    "Monster": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MonsterInfo",
+      "Index": 119
+    },
+    "Task": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestTask",
+      "Index": 66
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestTaskMonsterDetails",
+    "Amount": 1,
+    "Chance": 1,
+    "DropSet": 0,
+    "Index": 86,
+    "Map": null,
+    "Monster": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MonsterInfo",
+      "Index": 116
+    },
+    "Task": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestTask",
+      "Index": 68
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestTaskMonsterDetails",
+    "Amount": 1,
+    "Chance": 1,
+    "DropSet": 0,
+    "Index": 87,
+    "Map": null,
+    "Monster": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MonsterInfo",
+      "Index": 118
+    },
+    "Task": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestTask",
+      "Index": 67
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestTaskMonsterDetails",
+    "Amount": 1,
+    "Chance": 1,
+    "DropSet": 0,
+    "Index": 88,
+    "Map": null,
+    "Monster": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MonsterInfo",
+      "Index": 118
+    },
+    "Task": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestTask",
+      "Index": 69
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestTaskMonsterDetails",
+    "Amount": 1,
+    "Chance": 1,
+    "DropSet": 0,
+    "Index": 89,
+    "Map": null,
+    "Monster": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MonsterInfo",
+      "Index": 116
+    },
+    "Task": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestTask",
+      "Index": 69
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestTaskMonsterDetails",
+    "Amount": 1,
+    "Chance": 1,
+    "DropSet": 0,
+    "Index": 90,
+    "Map": null,
+    "Monster": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MonsterInfo",
+      "Index": 117
+    },
+    "Task": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestTask",
+      "Index": 69
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestTaskMonsterDetails",
+    "Amount": 1,
+    "Chance": 1,
+    "DropSet": 0,
+    "Index": 91,
+    "Map": null,
+    "Monster": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MonsterInfo",
+      "Index": 119
+    },
+    "Task": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestTask",
+      "Index": 69
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestTaskMonsterDetails",
+    "Amount": 1,
+    "Chance": 1,
+    "DropSet": 0,
+    "Index": 92,
+    "Map": null,
+    "Monster": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MonsterInfo",
+      "Index": 120
+    },
+    "Task": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestTask",
+      "Index": 69
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestTaskMonsterDetails",
+    "Amount": 1,
+    "Chance": 1,
+    "DropSet": 0,
+    "Index": 93,
+    "Map": null,
+    "Monster": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MonsterInfo",
+      "Index": 120
+    },
+    "Task": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestTask",
+      "Index": 70
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestTaskMonsterDetails",
+    "Amount": 1,
+    "Chance": 1,
+    "DropSet": 0,
+    "Index": 94,
+    "Map": null,
+    "Monster": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MonsterInfo",
+      "Index": 121
+    },
+    "Task": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestTask",
+      "Index": 71
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestTaskMonsterDetails",
+    "Amount": 1,
+    "Chance": 1,
+    "DropSet": 0,
+    "Index": 95,
+    "Map": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 5
+    },
+    "Monster": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MonsterInfo",
+      "Index": 14
+    },
+    "Task": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestTask",
+      "Index": 72
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestTaskMonsterDetails",
+    "Amount": 1,
+    "Chance": 1,
+    "DropSet": 0,
+    "Index": 96,
+    "Map": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 1
+    },
+    "Monster": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MonsterInfo",
+      "Index": 14
+    },
+    "Task": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestTask",
+      "Index": 73
+    }
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.QuestTaskMonsterDetails",
+    "Amount": 1,
+    "Chance": 1,
+    "DropSet": 0,
+    "Index": 97,
+    "Map": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 6
+    },
+    "Monster": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MonsterInfo",
+      "Index": 14
+    },
+    "Task": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.QuestTask",
+      "Index": 74
+    }
+  }
+]

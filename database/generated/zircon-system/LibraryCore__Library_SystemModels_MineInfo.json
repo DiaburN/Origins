@@ -1,0 +1,382 @@
+[
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.MineInfo",
+    "Chance": 50,
+    "Index": 1,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 537
+    },
+    "Map": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 136
+    },
+    "Quantity": -1,
+    "Region": null,
+    "RestockTimeInMinutes": -1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.MineInfo",
+    "Chance": 140,
+    "Index": 2,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 538
+    },
+    "Map": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 136
+    },
+    "Quantity": -1,
+    "Region": null,
+    "RestockTimeInMinutes": -1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.MineInfo",
+    "Chance": 140,
+    "Index": 3,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 541
+    },
+    "Map": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 136
+    },
+    "Quantity": -1,
+    "Region": null,
+    "RestockTimeInMinutes": -1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.MineInfo",
+    "Chance": 280,
+    "Index": 4,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 539
+    },
+    "Map": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 136
+    },
+    "Quantity": -1,
+    "Region": null,
+    "RestockTimeInMinutes": -1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.MineInfo",
+    "Chance": 550,
+    "Index": 5,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 540
+    },
+    "Map": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 136
+    },
+    "Quantity": -1,
+    "Region": null,
+    "RestockTimeInMinutes": -1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.MineInfo",
+    "Chance": 50,
+    "Index": 6,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 542
+    },
+    "Map": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 137
+    },
+    "Quantity": -1,
+    "Region": null,
+    "RestockTimeInMinutes": -1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.MineInfo",
+    "Chance": 140,
+    "Index": 7,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 543
+    },
+    "Map": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 137
+    },
+    "Quantity": -1,
+    "Region": null,
+    "RestockTimeInMinutes": -1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.MineInfo",
+    "Chance": 280,
+    "Index": 8,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 544
+    },
+    "Map": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 137
+    },
+    "Quantity": -1,
+    "Region": null,
+    "RestockTimeInMinutes": -1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.MineInfo",
+    "Chance": 550,
+    "Index": 9,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 545
+    },
+    "Map": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 137
+    },
+    "Quantity": -1,
+    "Region": null,
+    "RestockTimeInMinutes": -1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.MineInfo",
+    "Chance": 300,
+    "Index": 10,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 827
+    },
+    "Map": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 593
+    },
+    "Quantity": -1,
+    "Region": null,
+    "RestockTimeInMinutes": -1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.MineInfo",
+    "Chance": 750,
+    "Index": 11,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 827
+    },
+    "Map": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 594
+    },
+    "Quantity": -1,
+    "Region": null,
+    "RestockTimeInMinutes": -1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.MineInfo",
+    "Chance": 500,
+    "Index": 12,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 954
+    },
+    "Map": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 601
+    },
+    "Quantity": -1,
+    "Region": null,
+    "RestockTimeInMinutes": -1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.MineInfo",
+    "Chance": 500,
+    "Index": 13,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 954
+    },
+    "Map": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 603
+    },
+    "Quantity": -1,
+    "Region": null,
+    "RestockTimeInMinutes": -1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.MineInfo",
+    "Chance": 500,
+    "Index": 14,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 954
+    },
+    "Map": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 604
+    },
+    "Quantity": -1,
+    "Region": null,
+    "RestockTimeInMinutes": -1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.MineInfo",
+    "Chance": 500,
+    "Index": 15,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 954
+    },
+    "Map": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 602
+    },
+    "Quantity": -1,
+    "Region": null,
+    "RestockTimeInMinutes": -1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.MineInfo",
+    "Chance": 1000000,
+    "Index": 16,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 935
+    },
+    "Map": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 480
+    },
+    "Quantity": -1,
+    "Region": null,
+    "RestockTimeInMinutes": -1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.MineInfo",
+    "Chance": 1000000,
+    "Index": 17,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 938
+    },
+    "Map": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 480
+    },
+    "Quantity": -1,
+    "Region": null,
+    "RestockTimeInMinutes": -1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.MineInfo",
+    "Chance": 1000000,
+    "Index": 18,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 939
+    },
+    "Map": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 480
+    },
+    "Quantity": -1,
+    "Region": null,
+    "RestockTimeInMinutes": -1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.MineInfo",
+    "Chance": 1000000,
+    "Index": 19,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 940
+    },
+    "Map": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 480
+    },
+    "Quantity": -1,
+    "Region": null,
+    "RestockTimeInMinutes": -1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.MineInfo",
+    "Chance": 1000000,
+    "Index": 20,
+    "Item": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.ItemInfo",
+      "Index": 941
+    },
+    "Map": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapInfo",
+      "Index": 480
+    },
+    "Quantity": -1,
+    "Region": null,
+    "RestockTimeInMinutes": -1
+  }
+]

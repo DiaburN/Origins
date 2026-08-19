@@ -1,0 +1,236 @@
+[
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.SafeZoneInfo",
+    "BindRegion": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapRegion",
+      "Index": 21
+    },
+    "Border": false,
+    "Index": 29,
+    "RedZone": false,
+    "Region": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapRegion",
+      "Index": 21
+    },
+    "StartClass": 1
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.SafeZoneInfo",
+    "BindRegion": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapRegion",
+      "Index": 106
+    },
+    "Border": false,
+    "Index": 30,
+    "RedZone": false,
+    "Region": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapRegion",
+      "Index": 106
+    },
+    "StartClass": 2
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.SafeZoneInfo",
+    "BindRegion": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapRegion",
+      "Index": 72
+    },
+    "Border": false,
+    "Index": 31,
+    "RedZone": false,
+    "Region": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapRegion",
+      "Index": 72
+    },
+    "StartClass": 4
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.SafeZoneInfo",
+    "BindRegion": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapRegion",
+      "Index": 163
+    },
+    "Border": false,
+    "Index": 32,
+    "RedZone": false,
+    "Region": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapRegion",
+      "Index": 163
+    },
+    "StartClass": 0
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.SafeZoneInfo",
+    "BindRegion": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapRegion",
+      "Index": 138
+    },
+    "Border": false,
+    "Index": 33,
+    "RedZone": false,
+    "Region": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapRegion",
+      "Index": 138
+    },
+    "StartClass": 0
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.SafeZoneInfo",
+    "BindRegion": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapRegion",
+      "Index": 188
+    },
+    "Border": false,
+    "Index": 34,
+    "RedZone": false,
+    "Region": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapRegion",
+      "Index": 188
+    },
+    "StartClass": 0
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.SafeZoneInfo",
+    "BindRegion": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapRegion",
+      "Index": 214
+    },
+    "Border": false,
+    "Index": 35,
+    "RedZone": true,
+    "Region": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapRegion",
+      "Index": 213
+    },
+    "StartClass": 0
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.SafeZoneInfo",
+    "BindRegion": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapRegion",
+      "Index": 709
+    },
+    "Border": false,
+    "Index": 36,
+    "RedZone": false,
+    "Region": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapRegion",
+      "Index": 708
+    },
+    "StartClass": 8
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.SafeZoneInfo",
+    "BindRegion": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapRegion",
+      "Index": 1115
+    },
+    "Border": false,
+    "Index": 39,
+    "RedZone": false,
+    "Region": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapRegion",
+      "Index": 1115
+    },
+    "StartClass": 0
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.SafeZoneInfo",
+    "BindRegion": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapRegion",
+      "Index": 1456
+    },
+    "Border": false,
+    "Index": 40,
+    "RedZone": false,
+    "Region": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapRegion",
+      "Index": 1456
+    },
+    "StartClass": 0
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.SafeZoneInfo",
+    "BindRegion": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapRegion",
+      "Index": 1496
+    },
+    "Border": false,
+    "Index": 41,
+    "RedZone": false,
+    "Region": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapRegion",
+      "Index": 1496
+    },
+    "StartClass": 0
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.SafeZoneInfo",
+    "BindRegion": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapRegion",
+      "Index": 1630
+    },
+    "Border": false,
+    "Index": 42,
+    "RedZone": false,
+    "Region": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapRegion",
+      "Index": 1630
+    },
+    "StartClass": 0
+  },
+  {
+    "$assembly": "LibraryCore",
+    "$type": "Library.SystemModels.SafeZoneInfo",
+    "BindRegion": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapRegion",
+      "Index": 1730
+    },
+    "Border": false,
+    "Index": 44,
+    "RedZone": false,
+    "Region": {
+      "$refAssembly": "LibraryCore",
+      "$refType": "Library.SystemModels.MapRegion",
+      "Index": 1730
+    },
+    "StartClass": 0
+  }
+]
