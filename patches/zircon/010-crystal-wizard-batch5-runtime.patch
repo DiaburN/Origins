@@ -24,13 +24,13 @@ diff --git a/LibraryCore/Enum.cs b/LibraryCore/Enum.cs
  
      public enum MagicProperty
 @@ -1296,6 +1303,7 @@ namespace Library
-         Burn = 1 << 11,        //Tick damage, displays effect
-         Containment = 1 << 12, //Tick damage, stops movement, displays effect
-         Chain = 1 << 13,       //Tick damage, limits movement, displays effect
-+        Frozen = 1 << 14,      //Crystal freeze state: stops movement and attacks while active
+         Chain = 1 << 13,        //Tick damage, limits movement, displays effect
+         Hemorrhage = 1 << 14,   //Tick damage, stops recovery, displays effect
+         Binding = 1 << 15,      //Tick damage, stops movement, displays effect
++        Frozen = 1 << 16,       //Crystal freeze state: stops movement and attacks while active
      }
  
-     public enum Element
+     public enum SpellEffect
 diff --git a/LibraryCore/Functions.cs b/LibraryCore/Functions.cs
 --- a/LibraryCore/Functions.cs
 +++ b/LibraryCore/Functions.cs
