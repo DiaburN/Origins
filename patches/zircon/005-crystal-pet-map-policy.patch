@@ -1,7 +1,7 @@
 diff --git a/LibraryCore/SystemModels/MapInfo.cs b/LibraryCore/SystemModels/MapInfo.cs
 --- a/LibraryCore/SystemModels/MapInfo.cs
 +++ b/LibraryCore/SystemModels/MapInfo.cs
-@@ -130,6 +130,21 @@ namespace Library.SystemModels
+@@ -130,6 +130,36 @@ namespace Library.SystemModels
          }
          private int _FireWallCount;
  
@@ -19,6 +19,21 @@ diff --git a/LibraryCore/SystemModels/MapInfo.cs b/LibraryCore/SystemModels/MapI
 +            }
 +        }
 +        private bool _NoPets;
++
++        public bool NoTeleport
++        {
++            get { return _NoTeleport; }
++            set
++            {
++                if (_NoTeleport == value) return;
++
++                var oldValue = _NoTeleport;
++                _NoTeleport = value;
++
++                OnChanged(oldValue, value, "NoTeleport");
++            }
++        }
++        private bool _NoTeleport;
 +
          public bool CanHorse
          {
