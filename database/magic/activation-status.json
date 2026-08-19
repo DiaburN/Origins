@@ -1,5 +1,5 @@
 {
-  "schemaVersion": 2,
+  "schemaVersion": 3,
   "branch": "work/spells-final-audit",
   "runtime": "pinned Zircon MagicObject with ORIGINS overrides/patches",
   "catalog": {
@@ -55,9 +55,16 @@
     "catalogued": 119
   },
   "databaseProjection": {
-    "fullSystemDbOverlayWritten": false,
-    "overlayFile": "database/overlays/70-magics-crystal.json",
-    "reason": "Full numeric projection remains gated behind runtime patch application/compile audit; do not write unvalidated handler identities into System.db."
+    "full119SystemDbProjectionComplete": false,
+    "authoringOverlay": "database/overlays/70-magics-crystal.json",
+    "authoringOverlayOperationCount": 0,
+    "earlyGeneratedBranch": "generated/origins-system-db",
+    "earlyGeneratedMagicUpdates": 5,
+    "earlyGeneratedSpells": ["FireBall", "ThunderBolt", "FireWall", "MagicShield", "IceStorm"],
+    "explicitActivationRoundTripsRecorded": 3,
+    "roundTripSpellsRecorded": ["FireBall", "ThunderBolt", "IceStorm"],
+    "usersDbLearnedMagicSmokeRecorded": ["FireBall"],
+    "note": "The generated branch is an early DB proof and contains stale catalogue metadata in its activation-status file. It is not the authoritative 119-spell scope."
   },
   "deferred": {
     "Monk": {
