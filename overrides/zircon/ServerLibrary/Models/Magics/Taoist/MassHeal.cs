@@ -3,6 +3,7 @@ using Server.DBModels;
 using Server.Envir;
 using System;
 using System.Drawing;
+using System.Linq;
 
 namespace Server.Models.Magics
 {
@@ -26,7 +27,8 @@ namespace Server.Models.Magics
 
             response.Locations.Add(location);
 
-            int healingPool = Magic.GetPower(Player.GetSC());
+            // Crystal: magic.GetDamage(GetAttackPower(MinSC, MaxSC)).
+            int healingPool = Magic.GetPower() + Player.GetSC();
             var delay = SEnvir.Now.AddMilliseconds(500);
 
             foreach (Cell cell in CurrentMap.GetCells(location, 0, 1))
@@ -49,11 +51,22 @@ namespace Server.Models.Magics
                 MapObject ob = cell.Objects[i];
                 if (ob?.Node == null || !Player.CanHelpTarget(ob) || ob.CurrentHP >= ob.Stats[Stat.Health]) continue;
 
-                BuffInfo existing = ob.Buffs.Find(x => x.Type == BuffType.CrystalHealing);
-                int pool = healingPool + (existing?.Stats?[Stat.Healing] ?? 0);
+                BuffInfo existing = ob.Buffs.FirstOrDefault(x => x.Type == BuffType.CrystalHealing);
+                if (existing == null)
+                {
+                    ob.BuffAdd(
+                        BuffType.CrystalHealing,
+                        TimeSpan.MaxValue,
+                        new Stats { [Stat.Healing] = healingPool },
+                        false,
+                        false,
+                        TimeSpan.FromMilliseconds(600));
+                }
+                else
+                {
+                    existing.Stats[Stat.Healing] += healingPool;
+                }
 
-                Stats stats = new Stats { [Stat.Healing] = pool };
-                ob.BuffAdd(BuffType.CrystalHealing, TimeSpan.MaxValue, stats, false, false, TimeSpan.FromMilliseconds(600));
                 trained = true;
             }
 
