@@ -15,7 +15,7 @@ diff --git a/LibraryCore/Enum.cs b/LibraryCore/Enum.cs
  
          //Wiz
          Renounce = 200,
-@@ -486,6 +493,22 @@ namespace Library
+@@ -486,6 +493,25 @@ namespace Library
          TaecheonSword = 135,
          FireSword = 136,
          FlameArt = 137, //NOT CODED
@@ -44,7 +44,7 @@ diff --git a/LibraryCore/Enum.cs b/LibraryCore/Enum.cs
 diff --git a/LibraryCore/Functions.cs b/LibraryCore/Functions.cs
 --- a/LibraryCore/Functions.cs
 +++ b/LibraryCore/Functions.cs
-@@ -326,10 +326,24 @@ namespace Library
+@@ -326,10 +326,23 @@ namespace Library
                  case MagicType.Fetter:
                  case MagicType.Endurance:
                  case MagicType.Invincibility:
