@@ -64,7 +64,7 @@ jobs:
           bash scripts/bootstrap-crystal-monk.sh
           bash scripts/bootstrap-crystal-database.sh
 
-      - name: Validate complete playable spell catalogue
+      - name: Validate 119 active spells and deferred Monk source
         run: python3 scripts/validate-crystal-playable-spells.py
 
       - name: Verify runtime-ready MagicObject registrations
@@ -82,7 +82,7 @@ jobs:
       - name: Export index-preserving base snapshot
         run: dotnet run --project tools/Origins.Database.Export/Origins.Database.Export.csproj --configuration Release -- ./DatabaseBase ./SnapshotBase ./BackupBase
 
-      - name: Generate all Crystal and Crystal-Monk playable spell values
+      - name: Generate active Crystal and Crystal-Monk spell values
         run: |
           set -euo pipefail
           mkdir -p GeneratedResearch
@@ -107,9 +107,10 @@ jobs:
           python3 - <<'PY'
           import json
           p=json.load(open('GeneratedResearch/70-magics-crystal.generated.json', encoding='utf-8'))
-          assert len(p['Operations']) == 128, len(p['Operations'])
-          assert p['$audit']['classCounts'] == {'Warrior':21,'Wizard':28,'Taoist':27,'Assassin':19,'Archer':24,'Monk':9}
-          print('Full playable magic overlay validated: 128/128')
+          assert len(p['Operations']) == 119, len(p['Operations'])
+          assert p['$audit']['classCounts'] == {'Warrior':21,'Wizard':28,'Taoist':27,'Assassin':19,'Archer':24}
+          assert p['$audit']['deferredMonkSpellsExcluded'] == 9
+          print('Full active magic overlay validated: 119/119; Monk deferred: 9')
           PY
 
       - name: Assemble ORIGINS overlay set
@@ -135,19 +136,21 @@ jobs:
           RUNTIME_READY=$(python3 -c "import json; print(json.load(open('GeneratedResearch/70-magics-crystal.generated.json'))['\$audit']['runtimeReady'])")
           cat > DatabaseOrigins/build-manifest.json <<EOF
           {
-            "schemaVersion": 4,
+            "schemaVersion": 5,
             "zirconCommit": "cbf1aa919083bc13fc3f23f93772a8ab8370632d",
             "crystalCommit": "0e315fe327192afe52c3d7357ddd1f5b7e26c5b8",
             "crystalMonkCommit": "381e589e3d7ee736cdf0583c8315c0d144ab058f",
             "crystalDatabaseJevCommit": "a19f6dca8f5e238d4ed79801820777abbf0a9ca4",
             "systemDbSha256": "$SYSTEM_SHA",
-            "playableSpellCount": 128,
+            "activePlayableClassCount": 5,
+            "activePlayableSpellCount": 119,
             "warriorSpells": 21,
             "wizardSpells": 28,
             "taoistSpells": 27,
             "assassinSpells": 19,
             "archerSpells": 24,
-            "monkSpells": 9,
+            "deferredMonkSpells": 9,
+            "sourceCatalogTotalWithDeferredMonk": 128,
             "crystalMonkExtraNonMonkSpells": 14,
             "runtimeReadySpellCount": $RUNTIME_READY,
             "pendingSpellsUseReservedMagicType": true,
@@ -197,5 +200,5 @@ jobs:
           git config user.email "actions@users.noreply.github.com"
           git checkout -B generated/origins-system-db
           git add -f database/generated/origins-system-db
-          git commit -m "generated(db): rebuild ORIGINS System.db with 128 Crystal playable spells" || exit 0
+          git commit -m "generated(db): rebuild ORIGINS System.db with 119 active Crystal spells" || exit 0
           git push --force origin HEAD:generated/origins-system-db
