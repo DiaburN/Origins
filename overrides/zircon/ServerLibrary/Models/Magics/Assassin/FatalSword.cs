@@ -12,7 +12,6 @@ namespace Server.Models.Magics
         public override bool IgnorePhysicalDefense => true;
 
         private bool ready;
-        private bool armAfterAttack;
 
         public FatalSword(PlayerObject player, UserMagic magic) : base(player, magic) { }
 
@@ -20,12 +19,16 @@ namespace Server.Models.Magics
         {
             var response = new AttackCast();
 
-            // Crystal consumes an already-armed proc first. The 1/10 roll made for this
-            // attack only arms FatalSword for the following attack.
+            // Crystal first checks an already-armed proc. Only after that check does it
+            // roll 1/10, so a new success is stored for the following physical attack.
             if (ready)
+            {
                 response.Magics.Add(Type);
+            }
             else if (SEnvir.Random.Next(10) == 0)
-                armAfterAttack = true;
+            {
+                ready = true;
+            }
 
             return response;
         }
@@ -37,16 +40,9 @@ namespace Server.Models.Magics
 
         public override void AttackComplete(MapObject target)
         {
+            // Crystal consumes FatalSword only after a successful damaging proc.
             ready = false;
             Player.LevelMagic(Magic);
-        }
-
-        public override void AttackCompletePassive(MapObject target, System.Collections.Generic.List<MagicType> types)
-        {
-            if (!armAfterAttack) return;
-
-            armAfterAttack = false;
-            ready = true;
         }
     }
 }
