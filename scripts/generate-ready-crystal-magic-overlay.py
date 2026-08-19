@@ -5,6 +5,8 @@ Existing Zircon rows are matched by normalized display name and updated in-place
 Crystal-only spells may be created only when the behavior decision explicitly
 supplies a reserved ORIGINS Index and MagicType plus class/school/property.
 Behavior decisions may be one JSON file or a manifest containing `includes`.
+`createMagicInfo.ForceCreate` protects same/similar names that belong to a
+separate Zircon class/skill (for example Wizard HellFire vs Assassin Hell Fire).
 """
 from __future__ import annotations
 
@@ -119,21 +121,22 @@ def main() -> int:
         fields = numeric["directFieldProjection"]
         set_values = numeric_set(fields, numeric)
         matches = zircon_by_name.get(key, [])
+        create = decision.get("createMagicInfo")
+        force_create = bool((create or {}).get("ForceCreate", False))
 
-        if len(matches) > 1:
+        if len(matches) > 1 and not force_create:
             raise RuntimeError(f"Expected at most one Zircon MagicInfo name match for {spell}; found {len(matches)}")
 
-        if len(matches) == 1:
+        if len(matches) == 1 and not force_create:
             target = matches[0]
             index = int(target["Index"])
             magic_type = int(target["Magic"])
             mode = "update_existing"
             zircon_name = target.get("Name")
         else:
-            create = decision.get("createMagicInfo")
             if not create:
                 raise RuntimeError(
-                    f"No Zircon MagicInfo name match for {spell}; runtime-ready Crystal-only spells must declare createMagicInfo"
+                    f"No unique Zircon MagicInfo target for {spell}; Crystal-only spells must declare createMagicInfo"
                 )
 
             required = ["Index", "Magic", "Class", "School", "Property"]
@@ -159,7 +162,7 @@ def main() -> int:
                 "Description": create.get("Description", ""),
                 **set_values,
             }
-            mode = "create_origins"
+            mode = "force_create_origins" if force_create else "create_origins"
             zircon_name = None
             used_magic_types.add(magic_type)
 
@@ -189,7 +192,7 @@ def main() -> int:
         })
 
     payload = {
-        "SchemaVersion": 3,
+        "SchemaVersion": 4,
         "Name": "Runtime-ready Crystal spells mapped or created in Zircon MagicInfo",
         "Operations": operations,
         "$audit": {
@@ -199,6 +202,7 @@ def main() -> int:
             "joinKey": "normalized spell name",
             "existingZirconIndicesPreserved": True,
             "crystalOnlyRowsRequireReservedExplicitIdentity": True,
+            "forceCreateProtectsCrossClassNameCollisions": True,
             "included": included,
             "skipped": skipped,
         },
@@ -207,7 +211,7 @@ def main() -> int:
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(payload, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
     updates = sum(1 for item in included if item["mode"] == "update_existing")
-    creates = sum(1 for item in included if item["mode"] == "create_origins")
+    creates = len(included) - updates
     print(f"Ready Crystal magic overlay candidate: {updates} updates, {creates} creates, {len(skipped)} skipped")
     for item in included:
         print(
