@@ -1,0 +1,7 @@
+{
+  "schemaVersion": 1,
+  "includes": [
+    "behavior-decisions-wizard-core.json",
+    "behavior-decisions-wizard-batch2.json"
+  ]
+}
