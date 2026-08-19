@@ -18,7 +18,9 @@ namespace Server.Models.Magics
         public override MagicCast MagicCast(MapObject target, Point location, MirDirection direction)
         {
             var response = new MagicCast { Ob = null };
-            if (!Functions.InRange(CurrentLocation, location, Globals.MagicRange) || !Player.UseAmulet(1, 0))
+
+            // Crystal checks for one amulet here but, unlike Hiding/SoulShield, does not consume it.
+            if (!Functions.InRange(CurrentLocation, location, Globals.MagicRange) || !Player.HasAmulet(1, 0))
             {
                 response.Cast = false;
                 return response;
