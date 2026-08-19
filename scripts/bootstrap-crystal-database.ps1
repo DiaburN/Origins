@@ -5,6 +5,8 @@ $Commit = "a19f6dca8f5e238d4ed79801820777abbf0a9ca4"
 $Root = (Resolve-Path (Join-Path $PSScriptRoot "..")).Path
 $Cache = Join-Path $Root ".cache\crystal-database-source"
 $Dest = Join-Path $Root "vendor\crystal-database\Jev"
+$Archive = Join-Path $Root ".cache\crystal-database-jev.zip"
+$Extracted = Join-Path $Root ".cache\crystal-database-jev-extracted"
 
 New-Item -ItemType Directory -Force -Path (Split-Path $Cache -Parent) | Out-Null
 New-Item -ItemType Directory -Force -Path $Dest | Out-Null
@@ -19,9 +21,15 @@ git -C $Cache fetch --depth=1 origin $Commit
 $Actual = (git -C $Cache rev-parse FETCH_HEAD).Trim()
 if ($Actual -ne $Commit) { throw "Crystal.Database revision mismatch. Expected $Commit, got $Actual" }
 
-$DbBytes = git -C $Cache show "$Commit`:Jev/Server.MirDB" --output=(Join-Path $Dest "Server.MirDB")
-if ($LASTEXITCODE -ne 0) { throw "Failed to extract Jev/Server.MirDB" }
-git -C $Cache show "$Commit`:Jev/README.md" | Set-Content -Encoding utf8 (Join-Path $Dest "README.md")
+if (Test-Path $Archive) { Remove-Item -Force $Archive }
+if (Test-Path $Extracted) { Remove-Item -Recurse -Force $Extracted }
+
+git -C $Cache archive --format=zip "--output=$Archive" $Commit Jev/Server.MirDB Jev/README.md
+if ($LASTEXITCODE -ne 0) { throw "Failed to archive Jev/Server.MirDB" }
+
+Expand-Archive -Path $Archive -DestinationPath $Extracted -Force
+Copy-Item -Force (Join-Path $Extracted "Jev\Server.MirDB") (Join-Path $Dest "Server.MirDB")
+Copy-Item -Force (Join-Path $Extracted "Jev\README.md") (Join-Path $Dest "README.md")
 
 $Db = Join-Path $Dest "Server.MirDB"
 if (-not (Test-Path $Db)) { throw "Jev/Server.MirDB was not extracted" }
