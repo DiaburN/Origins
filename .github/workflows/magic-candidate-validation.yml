@@ -90,7 +90,7 @@ jobs:
           python3 scripts/project-crystal-magic-numerics.py ./MagicResearch/crystal-source-catalog.json ./MagicResearch/crystal-jev-effective-magics.json ./MagicResearch/crystal-zircon-numeric-projection.json
 
       - name: Generate runtime-ready overlay candidate
-        run: python3 scripts/generate-ready-crystal-magic-overlay.py ./MagicResearch/crystal-zircon-numeric-projection.json ./database/magic/behavior-decisions-wizard-core.json ./SnapshotBase/LibraryCore__Library_SystemModels_MagicInfo.json ./MagicResearch/ready-magic-overlay-candidate.json
+        run: python3 scripts/generate-ready-crystal-magic-overlay.py ./MagicResearch/crystal-zircon-numeric-projection.json ./database/magic/behavior-decisions.json ./SnapshotBase/LibraryCore__Library_SystemModels_MagicInfo.json ./MagicResearch/ready-magic-overlay-candidate.json
 
       - name: Validate runtime-ready overlay coverage
         shell: bash
@@ -99,13 +99,23 @@ jobs:
           import json
           from pathlib import Path
 
-          decisions = json.loads(Path('database/magic/behavior-decisions-wizard-core.json').read_text(encoding='utf-8'))
+          def load_decisions(path: Path):
+              data = json.loads(path.read_text(encoding='utf-8'))
+              if 'includes' not in data:
+                  return data['decisions']
+              result = []
+              for include in data['includes']:
+                  result.extend(load_decisions(path.parent / include))
+              return result
+
+          decisions = load_decisions(Path('database/magic/behavior-decisions.json'))
           overlay = json.loads(Path('MagicResearch/ready-magic-overlay-candidate.json').read_text(encoding='utf-8'))
 
-          expected = [d['crystalSpell'] for d in decisions['decisions'] if d.get('runtimeReady')]
+          expected = [d['crystalSpell'] for d in decisions if d.get('runtimeReady')]
           included = [d['crystalSpell'] for d in overlay['$audit']['included']]
           operations = overlay['Operations']
           indexes = [op['Index'] for op in operations]
+          magic_types = [item['zirconMagic'] for item in overlay['$audit']['included']]
 
           if len(operations) != len(expected):
               raise SystemExit(f'Expected {len(expected)} runtime-ready operations, got {len(operations)}')
@@ -113,6 +123,8 @@ jobs:
               raise SystemExit(f'Overlay coverage mismatch. Expected={sorted(expected)} Included={sorted(included)}')
           if len(indexes) != len(set(indexes)):
               raise SystemExit(f'Duplicate Zircon MagicInfo indexes in generated overlay: {indexes}')
+          if len(magic_types) != len(set(magic_types)):
+              raise SystemExit(f'Duplicate MagicType identities in generated overlay: {magic_types}')
 
           print(f'Runtime-ready overlay coverage OK: {len(operations)} spells -> {sorted(included)}')
           PY
