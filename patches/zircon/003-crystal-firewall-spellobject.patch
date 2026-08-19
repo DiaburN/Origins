@@ -1,7 +1,7 @@
 diff --git a/ServerLibrary/Models/SpellObject.cs b/ServerLibrary/Models/SpellObject.cs
 --- a/ServerLibrary/Models/SpellObject.cs
 +++ b/ServerLibrary/Models/SpellObject.cs
-@@ -20,12 +20,14 @@ namespace Server.Models
+@@ -20,8 +20,10 @@ namespace Server.Models
          public int TickCount;
          public TimeSpan TickFrequency;
          public DateTime TickTime;
