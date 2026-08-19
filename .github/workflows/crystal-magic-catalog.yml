@@ -1,0 +1,43 @@
+name: Crystal Magic Catalogue
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'database/magic/**'
+      - 'scripts/bootstrap-crystal.sh'
+      - 'scripts/bootstrap-crystal-monk.sh'
+      - 'scripts/validate-crystal-playable-spells.py'
+      - '.github/workflows/crystal-magic-catalog.yml'
+  pull_request:
+    paths:
+      - 'database/magic/**'
+      - 'scripts/bootstrap-crystal.sh'
+      - 'scripts/bootstrap-crystal-monk.sh'
+      - 'scripts/validate-crystal-playable-spells.py'
+      - '.github/workflows/crystal-magic-catalog.yml'
+  workflow_dispatch:
+
+jobs:
+  validate-catalogue:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout ORIGINS
+        uses: actions/checkout@v4
+      - name: Pin Crystal
+        run: bash scripts/bootstrap-crystal.sh
+      - name: Pin Crystal-Monk
+        run: bash scripts/bootstrap-crystal-monk.sh
+      - name: Validate 114 playable spells
+        run: python3 scripts/validate-crystal-playable-spells.py
+      - name: Verify all nine Monk spell names exist in pinned source
+        shell: bash
+        run: |
+          set -euo pipefail
+          for spell in JiBenGunFa LuoHanGunFa JinGangGunFa DaMoGunFa XiangLongGunFa Taunt TianLeiZhen LuoHanZhen ShiBuYiSha; do
+            if ! grep -R -q --exclude-dir=.git "$spell" vendor/crystal-monk; then
+              echo "Missing Monk spell in pinned Crystal-Monk source: $spell" >&2
+              exit 1
+            fi
+          done
+          echo "Crystal-Monk source contains all 9 required Monk spells."
