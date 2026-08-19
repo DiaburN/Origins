@@ -26,7 +26,7 @@
     "effectDirectionStride": "Frame.EffectCount + Frame.EffectSkip"
   },
   "movementDirection": {
-    "sourceFiles": ["Shared/Functions.cs", "Server/MirObjects/HumanObject.cs"],
+    "sourceFiles": ["Shared/Functions/Functions.cs", "Server/MirObjects/HumanObject.cs"],
     "note": "Direction is authoritative gameplay state; PointMove/DirectionFromPoint use the same eight-value ordering. Client presentation must not remap this ordering."
   },
   "policy": {
