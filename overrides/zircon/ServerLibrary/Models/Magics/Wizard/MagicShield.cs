@@ -24,7 +24,13 @@ namespace Server.Models.Magics
                 Ob = null
             };
 
-            ActionList.Add(new DelayedAction(SEnvir.Now.AddMilliseconds(500), ActionType.DelayMagic, Type));
+            int durationSeconds = (int)Math.Round((Player.GetMC() + 15) / 4F * (Magic.Level + 1));
+
+            ActionList.Add(new DelayedAction(
+                SEnvir.Now.AddMilliseconds(500),
+                ActionType.DelayMagic,
+                Type,
+                durationSeconds));
 
             return response;
         }
@@ -35,7 +41,7 @@ namespace Server.Models.Magics
                 Player.Buffs.Any(x => x.Type == BuffType.SuperiorMagicShield))
                 return;
 
-            int durationSeconds = (int)Math.Round((Player.GetMC() + 15) / 4F * (Magic.Level + 1));
+            int durationSeconds = (int)data[1];
             int reductionPercent = (Magic.Level + 2) * 10;
 
             Stats buffStats = new Stats
