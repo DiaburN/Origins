@@ -18,6 +18,10 @@ on:
       - '.github/workflows/crystal-magic-catalog.yml'
   workflow_dispatch:
 
+concurrency:
+  group: crystal-magic-catalog-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
 jobs:
   validate-catalogue:
     runs-on: ubuntu-latest
