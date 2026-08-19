@@ -1,0 +1,26 @@
+diff --git a/ServerLibrary/Models/PlayerObject.cs b/ServerLibrary/Models/PlayerObject.cs
+--- a/ServerLibrary/Models/PlayerObject.cs
++++ b/ServerLibrary/Models/PlayerObject.cs
+@@ -1,3 +1,3 @@
+ ï»¿using Library;
+@@
+             if (Buffs.Any(x => x.Type == BuffType.Invincibility) && GetMagic(MagicType.Invincibility, out Invincibility invincibility))
+                 LevelMagic(invincibility.Magic);
++
++            // Crystal CounterAttack is a reactive physical strike, not merely
++            // a reflected-damage stat. Resolve it only after a real incoming
++            // hit has completed. Crystal-Monk's CounterAttack1 has priority
++            // when both books happen to be present.
++            if (power > 0 && attacker?.Node != null && !Dead)
++            {
++                bool countered = false;
++
++                if (GetMagic(MagicType.CounterAttack1, out CounterAttack1 counterAttack1))
++                    countered = counterAttack1.TryCounter(attacker);
++
++                if (!countered && GetMagic(MagicType.CounterAttack, out CounterAttack counterAttack))
++                    counterAttack.TryCounter(attacker);
++            }
+ 
+             return power;
+         }
