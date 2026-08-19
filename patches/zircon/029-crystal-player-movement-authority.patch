@@ -1,0 +1,17 @@
+diff --git a/ServerLibrary/Models/PlayerObject.cs b/ServerLibrary/Models/PlayerObject.cs
+--- a/ServerLibrary/Models/PlayerObject.cs
++++ b/ServerLibrary/Models/PlayerObject.cs
+@@
+-            if (distance == 3 && Horse == HorseType.None)
++            // Pinned Crystal Run() uses three cells for a mount or for ActiveSwiftFeet
++            // while the player is not sneaking. MoonLight and DarkBody are the Crystal
++            // buffs that set the sneaking state, so keep Zircon authoritative while
++            // admitting only that proven unmounted three-cell case.
++            bool crystalSwiftFeetRun = Buffs.Any(x => x.Type == BuffType.SwiftFeet) &&
++                                       !Buffs.Any(x => x.Type == BuffType.MoonLight || x.Type == BuffType.DarkBody);
++
++            if (distance == 3 && Horse == HorseType.None && !crystalSwiftFeetRun)
+             {
+                 Enqueue(new S.UserLocation { Direction = Direction, Location = CurrentLocation });
+                 return;
+             }
