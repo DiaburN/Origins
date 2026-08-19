@@ -1,0 +1,34 @@
+diff --git a/LibraryCore/Enum.cs b/LibraryCore/Enum.cs
+--- a/LibraryCore/Enum.cs
++++ b/LibraryCore/Enum.cs
+@@ -850,6 +850,11 @@ namespace Library
+         GreenSludgeBall = 540,
+ 
+         RushingMount = 700,
+         AscendingMount = 701,
++
++        // ORIGINS Crystal-only Wizard magic range (1200-1299).
++        GreatFireBall = 1200,
++        WizardHellFire = 1201,
++        FireBang = 1202,
+     }
+ 
+     public enum MagicProperty
+diff --git a/LibraryCore/Functions.cs b/LibraryCore/Functions.cs
+--- a/LibraryCore/Functions.cs
++++ b/LibraryCore/Functions.cs
+@@ -190,5 +190,6 @@ namespace Library
+                 case MagicType.MassBeckon:
+ 
+                 case MagicType.FireBall:
++                case MagicType.GreatFireBall:
+                 case MagicType.IceBolt:
+                 case MagicType.LightningBall:
+@@ -232,5 +233,7 @@ namespace Library
+                 case MagicType.FireSword:
+ 
++                case MagicType.WizardHellFire:
++                case MagicType.FireBang:
+                 case MagicType.Repulsion:
+                 case MagicType.ElectricShock:
+                 case MagicType.LightningWave:
