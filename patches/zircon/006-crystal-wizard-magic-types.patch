@@ -1,7 +1,7 @@
 diff --git a/LibraryCore/Enum.cs b/LibraryCore/Enum.cs
 --- a/LibraryCore/Enum.cs
 +++ b/LibraryCore/Enum.cs
-@@ -850,6 +850,11 @@ namespace Library
+@@ -850,7 +850,12 @@ namespace Library
          GreenSludgeBall = 540,
  
          RushingMount = 700,
