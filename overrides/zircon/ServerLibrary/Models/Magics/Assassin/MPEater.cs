@@ -27,7 +27,7 @@ namespace Server.Models.Magics
 
             int baseCount = 1 + Player.Stats[Stat.Accuracy] / 2;
             int maxCount = baseCount + Magic.Level * 5;
-            counter += SEnvir.Random.Next(baseCount, maxCount + 1);
+            counter += SEnvir.Random.Next(baseCount, maxCount);
 
             // Crystal crossing 100 arms the proc for the next attack.
             if (counter >= 100)
