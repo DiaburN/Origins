@@ -1,16 +1,6 @@
 name: Spell Patch Apply
 
 on:
-  push:
-    branches:
-      - work/spells-final-audit
-    paths:
-      - 'patches/zircon/**'
-      - 'overrides/zircon/**'
-      - 'scripts/bootstrap-zircon.sh'
-      - 'scripts/apply-origins-patches.py'
-      - 'scripts/validate-zircon-patches.py'
-      - '.github/workflows/spells-patch-apply.yml'
   pull_request:
     paths:
       - 'patches/zircon/**'
@@ -22,7 +12,7 @@ on:
   workflow_dispatch:
 
 concurrency:
-  group: spell-patch-apply-${{ github.ref }}
+  group: spell-patch-apply-${{ github.head_ref || github.ref_name }}
   cancel-in-progress: true
 
 permissions:
