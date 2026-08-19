@@ -8,6 +8,7 @@ on:
       - 'scripts/bootstrap-zircon.*'
       - 'scripts/fetch-zircon-system-db.*'
       - 'scripts/verify-zircon-four-class-magics.py'
+      - 'scripts/audit-zircon-four-class-db.py'
       - 'src/Origins.Database/**'
       - 'tools/Origins.Database.*/**'
       - '.github/workflows/database-foundation.yml'
@@ -17,6 +18,7 @@ on:
       - 'scripts/bootstrap-zircon.*'
       - 'scripts/fetch-zircon-system-db.*'
       - 'scripts/verify-zircon-four-class-magics.py'
+      - 'scripts/audit-zircon-four-class-db.py'
       - 'src/Origins.Database/**'
       - 'tools/Origins.Database.*/**'
       - '.github/workflows/database-foundation.yml'
@@ -64,6 +66,13 @@ jobs:
       - name: Export canonical Zircon System.db to JSON for inspection
         run: dotnet run --project tools/Origins.Database.Export/Origins.Database.Export.csproj --configuration Release -- ./Database ./SnapshotZircon ./Backup
 
+      - name: Audit four-class MagicInfo rows
+        run: >-
+          python3 scripts/audit-zircon-four-class-db.py
+          --catalog database/magic/zircon-four-class-magic-types.json
+          --magic-info SnapshotZircon/LibraryCore__Library_SystemModels_MagicInfo.json
+          --output ZirconMagicAudit/four-class-magic-db-report.json
+
       - name: Publish canonical Zircon database snapshot
         if: success()
         uses: actions/upload-artifact@v4
@@ -72,4 +81,5 @@ jobs:
           path: |
             Database/System.db
             SnapshotZircon/
+            ZirconMagicAudit/four-class-magic-db-report.json
           if-no-files-found: error
