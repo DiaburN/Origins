@@ -1,30 +1,39 @@
-# ORIGINS database source policy
+# ORIGINS-DxR database source policy
 
 ## Authoritative schema/runtime
 
-ORIGINS follows the pinned official `Suprcode/Zircon` source. The MirDB engine, SystemModels, DBModels and server-side execution rules come from that source revision.
+ORIGINS-DxR follows the pinned official `Suprcode/Zircon` source at commit `cbf1aa919083bc13fc3f23f93772a8ab8370632d`.
+
+The MirDB engine, `SystemModels`, `DBModels`, `MagicInfo`, `UserMagic` and server-side execution rules come from that Zircon revision.
+
+No second database or spell-runtime source participates in the active branch.
 
 ## Published content database
 
-The public Zircon file index currently exposes `Database.7z` as the content database download. Its listed modification date is older than the pinned source runtime, so ORIGINS treats it as an **input dataset**, not as an already-current schema.
+The public Zircon `Database.7z` is the canonical content input. It must be opened and verified with the pinned runtime before ORIGINS-specific data is layered on top.
 
-The build pipeline therefore never copies that `System.db` straight into ORIGINS production. It must pass this chain:
+Base validation chain:
 
 ```text
 Database.7z
- -> source preflight
- -> current Zircon mapping upgrade (staged copy)
- -> upgraded preflight
- -> complete index-preserving JSON snapshot
- -> ORIGINS overlays
- -> rebuild through current Zircon MirDB
+ -> canonical System.db
+ -> pinned Zircon source preflight
+ -> complete index-preserving JSON snapshot for inspection
+ -> optional Zircon-compatible ORIGINS content overlays
  -> reopen + preflight + index validation
 ```
 
 If any gate fails, the candidate is rejected.
 
-## Crystal
+## Magic policy
 
-Crystal is not a database source for ORIGINS. Crystal is consulted only for the spell catalogue and, where necessary, spell behavior. Crystal spell data is mapped into Zircon `MagicInfo`; execution remains Zircon `MagicObject`-based.
+The active magic source is Zircon itself:
 
-Monk content is intentionally deferred until the later item/set/stat phase.
+```text
+MagicType enum
+ -> System.db MagicInfo
+ -> MagicObject runtime handler
+ -> UserMagic player state
+```
+
+Current playable-class scope is Warrior, Wizard, Taoist and Assassin. Enum entries explicitly marked `NOT CODED` or `UNUSED` upstream remain incomplete; ORIGINS-DxR does not silently invent implementations while reconstructing the Zircon base.
