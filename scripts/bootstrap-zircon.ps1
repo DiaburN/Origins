@@ -6,6 +6,7 @@ $Root = (Resolve-Path (Join-Path $PSScriptRoot "..")).Path
 $Vendor = Join-Path $Root "vendor"
 $Dest = Join-Path $Vendor "zircon"
 $Overrides = Join-Path $Root "overrides\zircon"
+$Patches = Join-Path $Root "patches\zircon"
 
 New-Item -ItemType Directory -Force -Path $Vendor | Out-Null
 
@@ -34,4 +35,15 @@ if (Test-Path $Overrides) {
     }
 }
 
-Write-Host "Official Suprcode/Zircon pinned at $Head with ORIGINS overrides applied"
+if (Test-Path $Patches) {
+    Get-ChildItem -Path $Patches -File -Filter *.patch | Sort-Object Name | ForEach-Object {
+        git -C $Dest apply --check $_.FullName
+        if ($LASTEXITCODE -ne 0) { throw "Zircon patch check failed: $($_.FullName)" }
+        git -C $Dest apply --whitespace=nowarn $_.FullName
+        if ($LASTEXITCODE -ne 0) { throw "Zircon patch apply failed: $($_.FullName)" }
+        $Relative = [System.IO.Path]::GetRelativePath($Root, $_.FullName)
+        Write-Host "Applied ORIGINS Zircon patch: $Relative"
+    }
+}
+
+Write-Host "Official Suprcode/Zircon pinned at $Head with ORIGINS overrides/patches applied"
