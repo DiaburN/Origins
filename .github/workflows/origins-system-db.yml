@@ -64,7 +64,7 @@ jobs:
           python3 scripts/generate-crystal-magic-catalog.py ./vendor/crystal ./GeneratedResearch/crystal-source-catalog.json
           dotnet run --project tools/Origins.CrystalJevMagic.Export/Origins.CrystalJevMagic.Export.csproj --configuration Release -- ./vendor/crystal-database/Jev/Server.MirDB ./GeneratedResearch/crystal-jev-effective-magics.json
           python3 scripts/project-crystal-magic-numerics.py ./GeneratedResearch/crystal-source-catalog.json ./GeneratedResearch/crystal-jev-effective-magics.json ./GeneratedResearch/crystal-zircon-numeric-projection.json
-          python3 scripts/generate-ready-crystal-magic-overlay.py ./GeneratedResearch/crystal-zircon-numeric-projection.json ./database/magic/behavior-decisions-wizard-core.json ./SnapshotBase/LibraryCore__Library_SystemModels_MagicInfo.json ./GeneratedResearch/70-magics-crystal.generated.json
+          python3 scripts/generate-ready-crystal-magic-overlay.py ./GeneratedResearch/crystal-zircon-numeric-projection.json ./database/magic/behavior-decisions.json ./SnapshotBase/LibraryCore__Library_SystemModels_MagicInfo.json ./GeneratedResearch/70-magics-crystal.generated.json
 
       - name: Assemble ORIGINS overlay set
         run: |
@@ -88,13 +88,14 @@ jobs:
           SYSTEM_SHA=$(sha256sum DatabaseOrigins/System.db | awk '{print $1}')
           cat > DatabaseOrigins/build-manifest.json <<EOF
           {
-            "schemaVersion": 1,
+            "schemaVersion": 2,
             "zirconCommit": "cbf1aa919083bc13fc3f23f93772a8ab8370632d",
             "crystalCommit": "0e315fe327192afe52c3d7357ddd1f5b7e26c5b8",
             "crystalDatabaseJevCommit": "a19f6dca8f5e238d4ed79801820777abbf0a9ca4",
             "systemDbSha256": "$SYSTEM_SHA",
             "crystalJoinKey": "normalized spell name",
             "numericSpellIdUsedAsJevJoinKey": false,
+            "magicDecisionManifest": "database/magic/behavior-decisions.json",
             "runtime": "Zircon MagicObject with explicit ORIGINS overrides/patches"
           }
           EOF
