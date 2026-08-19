@@ -31,7 +31,7 @@ diff --git a/LibraryCore/Enum.cs b/LibraryCore/Enum.cs
      }
  
      public enum Element
- diff --git a/LibraryCore/Functions.cs b/LibraryCore/Functions.cs
+diff --git a/LibraryCore/Functions.cs b/LibraryCore/Functions.cs
 --- a/LibraryCore/Functions.cs
 +++ b/LibraryCore/Functions.cs
 @@ -240,6 +240,12 @@ namespace Library
@@ -47,7 +47,7 @@ diff --git a/LibraryCore/Enum.cs b/LibraryCore/Enum.cs
                  case MagicType.Repulsion:
                  case MagicType.ElectricShock:
                  case MagicType.LightningWave:
- diff --git a/LibraryCore/Stat.cs b/LibraryCore/Stat.cs
+diff --git a/LibraryCore/Stat.cs b/LibraryCore/Stat.cs
 --- a/LibraryCore/Stat.cs
 +++ b/LibraryCore/Stat.cs
 @@ -894,6 +894,12 @@ namespace Library
@@ -63,7 +63,7 @@ diff --git a/LibraryCore/Enum.cs b/LibraryCore/Enum.cs
          [StatDescription(Title = "Duration", Mode = StatType.Time)]
          Duration = 10000,
      }
- diff --git a/ServerLibrary/Models/MagicObject.cs b/ServerLibrary/Models/MagicObject.cs
+diff --git a/ServerLibrary/Models/MagicObject.cs b/ServerLibrary/Models/MagicObject.cs
 --- a/ServerLibrary/Models/MagicObject.cs
 +++ b/ServerLibrary/Models/MagicObject.cs
 @@ -76,6 +76,13 @@ namespace Server.Models
@@ -79,12 +79,12 @@ diff --git a/LibraryCore/Enum.cs b/LibraryCore/Enum.cs
              return cost;
          }
  
- diff --git a/ServerLibrary/Models/MapObject.cs b/ServerLibrary/Models/MapObject.cs
+diff --git a/ServerLibrary/Models/MapObject.cs b/ServerLibrary/Models/MapObject.cs
 --- a/ServerLibrary/Models/MapObject.cs
 +++ b/ServerLibrary/Models/MapObject.cs
-@@ -78,9 +78,9 @@ namespace Server.Models
-         public Color NameColour;
-         public List<PlayerObject> NearByPlayers;
+@@ -57,9 +57,9 @@ namespace Server.Models
+         public DateTime ActionTime, MoveTime, RegenTime, AttackTime, MagicTime, CellTime, StruckTime, BuffTime, ShockTime, DisplayHPMPTime, ItemReviveTime;
+         public List<DelayedAction> ActionList;
  
 -        public virtual bool CanMove => !Dead && SEnvir.Now >= ActionTime && SEnvir.Now >= MoveTime && SEnvir.Now > ShockTime && (Poison & PoisonType.Paralysis) != PoisonType.Paralysis && (Poison & PoisonType.WraithGrip) != PoisonType.WraithGrip && (Poison & PoisonType.Containment) != PoisonType.Containment && (Poison & PoisonType.Binding) != PoisonType.Binding && Buffs.All(x => x.Type != BuffType.DragonRepulse);
 -        public virtual bool CanAttack => !Dead && SEnvir.Now >= ActionTime && SEnvir.Now >= AttackTime && (Poison & PoisonType.Paralysis) != PoisonType.Paralysis && (Poison & PoisonType.Fear) != PoisonType.Fear && Buffs.All(x => x.Type != BuffType.DragonRepulse);
