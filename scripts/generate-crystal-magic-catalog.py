@@ -2,8 +2,9 @@
 """Generate a machine-readable player-spell catalog from pinned Suprcode/Crystal.
 
 This parses source declarations only. It does NOT import Crystal's database engine.
-The output deliberately distinguishes player spells, deferred Archer spells,
-custom spells, and map-event effects.
+The output distinguishes the five playable Crystal classes, custom spell
+candidates, and map-event effects. ORIGINS adds Monk and Crystal-Monk variants
+from the separately pinned Crystal-Monk source.
 """
 from __future__ import annotations
 
@@ -13,7 +14,6 @@ import json
 import operator
 import pathlib
 import re
-from dataclasses import dataclass
 from typing import Any
 
 CRYSTAL_COMMIT = "0e315fe327192afe52c3d7357ddd1f5b7e26c5b8"
@@ -39,7 +39,14 @@ DEFAULTS: dict[str, Any] = {
     "Range": 9,
 }
 
-PLAYER_CLASSES = {"Warrior", "Wizard", "Taoist", "Assassin"}
+PLAYER_CLASSES = {"Warrior", "Wizard", "Taoist", "Assassin", "Archer"}
+EXPECTED_PLAYER_COUNTS = {
+    "Warrior": 17,
+    "Wizard": 25,
+    "Taoist": 25,
+    "Assassin": 17,
+    "Archer": 21,
+}
 
 
 def matching_brace(text: str, open_pos: int) -> int:
@@ -172,8 +179,6 @@ def parse_value(raw: str) -> Any:
 
 def split_assignments(initializer: str) -> dict[str, Any]:
     result: dict[str, Any] = {}
-    # Initializers used by MagicInfo contain scalar expressions only; split on
-    # top-level commas while respecting quoted strings/parentheses.
     parts: list[str] = []
     current: list[str] = []
     depth = 0
@@ -249,8 +254,6 @@ def parse_spell_enum(text: str) -> list[dict[str, Any]]:
             kind = "none"
         elif category in PLAYER_CLASSES:
             kind = "player"
-        elif category == "Archer":
-            kind = "deferred_class"
         elif category == "Custom":
             kind = "custom_player_candidate"
         elif category == "MapEvent":
@@ -300,7 +303,6 @@ def extract_update_overrides(update_body: str) -> dict[str, dict[str, Any]]:
         spell = match.group(1)
         end = matches[idx + 1].start() if idx + 1 < len(matches) else len(update_body)
         block = update_body[match.end():end]
-        # Stop at the first break belonging to this simple switch case.
         block = block.split("break;", 1)[0]
         overrides: dict[str, Any] = {}
         for assignment in re.finditer(r"MagicInfoList\[i\]\.(\w+)\s*=\s*([^;]+);", block):
@@ -341,11 +343,23 @@ def main() -> int:
         spell["hasDefaultMagicInfo"] = default_record is not None
         spells.append(spell)
 
-    player_like = [s for s in spells if s["kind"] in {"player", "deferred_class", "custom_player_candidate"}]
-    missing_defaults = [s["name"] for s in player_like if not s["hasDefaultMagicInfo"]]
+    player_spells = [s for s in spells if s["kind"] == "player"]
+    player_counts = {
+        class_name: sum(1 for s in player_spells if s["category"] == class_name)
+        for class_name in sorted(PLAYER_CLASSES)
+    }
+    if player_counts != EXPECTED_PLAYER_COUNTS:
+        raise RuntimeError(f"Pinned Crystal playable-class counts changed: {player_counts}")
+
+    missing_defaults = [s["name"] for s in player_spells if not s["hasDefaultMagicInfo"]]
+    if missing_defaults != ["FastMove"]:
+        raise RuntimeError(
+            "Pinned Crystal playable spells without MagicInfo defaults changed; "
+            f"expected only FastMove, got {missing_defaults}"
+        )
 
     output = {
-        "schemaVersion": 1,
+        "schemaVersion": 2,
         "source": {
             "repository": "Suprcode/Crystal",
             "commit": CRYSTAL_COMMIT,
@@ -355,14 +369,15 @@ def main() -> int:
         },
         "policy": {
             "databaseEngineImported": False,
-            "supportedPlayerClasses": sorted(PLAYER_CLASSES),
-            "archerActivation": "deferred",
-            "mapEventsInMagicDialog": False
+            "playableClasses": sorted(PLAYER_CLASSES),
+            "archerRequired": True,
+            "mapEventsInMagicDialog": False,
+            "missingDefaultPolicy": "Preserve source identity; never invent MagicInfo numerics"
         },
         "counts": {
             "enumEntries": len(spells),
-            "supportedPlayerSpells": sum(1 for s in spells if s["kind"] == "player"),
-            "deferredArcherSpells": sum(1 for s in spells if s["kind"] == "deferred_class"),
+            "supportedPlayerSpells": len(player_spells),
+            "playerSpellsByClass": player_counts,
             "customPlayerCandidates": sum(1 for s in spells if s["kind"] == "custom_player_candidate"),
             "mapEventSpells": sum(1 for s in spells if s["kind"] == "map_event"),
             "recordsWithDefaults": sum(1 for s in spells if s["hasDefaultMagicInfo"])
@@ -373,9 +388,12 @@ def main() -> int:
 
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(output, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
-    print(f"Crystal spell catalog: {len(spells)} enum entries, {len(fill)} defaults, {len(updates)} update overrides")
-    if missing_defaults:
-        print("Player-like spells without FillMagicInfoList default: " + ", ".join(missing_defaults))
+    print(
+        f"Crystal spell catalog: {len(spells)} enum entries, {len(player_spells)} playable spells, "
+        f"{len(fill)} defaults, {len(updates)} update overrides"
+    )
+    print("Playable classes: " + ", ".join(f"{k}={v}" for k, v in player_counts.items()))
+    print("Source stubs without MagicInfo: FastMove")
     return 0
 
 
