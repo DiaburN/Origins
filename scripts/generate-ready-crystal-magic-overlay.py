@@ -4,6 +4,7 @@
 Existing Zircon rows are matched by normalized display name and updated in-place.
 Crystal-only spells may be created only when the behavior decision explicitly
 supplies a reserved ORIGINS Index and MagicType plus class/school/property.
+Behavior decisions may be one JSON file or a manifest containing `includes`.
 """
 from __future__ import annotations
 
@@ -19,6 +20,35 @@ def norm(value: str) -> str:
 
 def load(path: pathlib.Path):
     return json.loads(path.read_text(encoding="utf-8"))
+
+
+def load_decisions(path: pathlib.Path) -> dict:
+    payload = load(path)
+    if "includes" not in payload:
+        if "decisions" not in payload:
+            raise RuntimeError(f"Decision file {path} has neither decisions nor includes")
+        return payload
+
+    decisions = []
+    seen = set()
+    for include in payload["includes"]:
+        child_path = (path.parent / include).resolve()
+        child = load_decisions(child_path)
+        for decision in child["decisions"]:
+            key = norm(decision.get("crystalSpell") or "")
+            if not key:
+                raise RuntimeError(f"Decision without crystalSpell in {child_path}")
+            if key in seen:
+                raise RuntimeError(f"Duplicate Crystal spell decision across manifest: {decision['crystalSpell']}")
+            seen.add(key)
+            decisions.append(decision)
+
+    return {
+        "schemaVersion": payload.get("schemaVersion", 1),
+        "decisions": decisions,
+        "manifest": str(path),
+        "includes": payload["includes"],
+    }
 
 
 def numeric_set(fields: dict, numeric: dict) -> dict:
@@ -50,7 +80,7 @@ def main() -> int:
     args = parser.parse_args()
 
     projection = load(args.numeric_projection)
-    decisions = load(args.behavior_decisions)
+    decisions = load_decisions(args.behavior_decisions)
     zircon_rows = load(args.zircon_magic_snapshot)
 
     projection_by_name = {
@@ -159,11 +189,13 @@ def main() -> int:
         })
 
     payload = {
-        "SchemaVersion": 2,
+        "SchemaVersion": 3,
         "Name": "Runtime-ready Crystal spells mapped or created in Zircon MagicInfo",
         "Operations": operations,
         "$audit": {
             "generatedFromNumericSchemaVersion": projection.get("schemaVersion"),
+            "decisionManifest": decisions.get("manifest", str(args.behavior_decisions)),
+            "decisionIncludes": decisions.get("includes", []),
             "joinKey": "normalized spell name",
             "existingZirconIndicesPreserved": True,
             "crystalOnlyRowsRequireReservedExplicitIdentity": True,
