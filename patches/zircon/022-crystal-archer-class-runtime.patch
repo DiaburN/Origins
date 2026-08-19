@@ -2,27 +2,6 @@ diff --git a/LibraryCore/Enum.cs b/LibraryCore/Enum.cs
 --- a/LibraryCore/Enum.cs
 +++ b/LibraryCore/Enum.cs
 @@
-     public enum MirClass : byte
-     {
-         Warrior = 0,
-         Wizard = 1,
-         Taoist = 2,
-         Assassin = 3,
-+        Archer = 4,
-     }
-@@
-     public enum RequiredClass : byte
-     {
-         None = 0,
-         Warrior = 1,
-         Wizard = 2,
-         Taoist = 4,
-         Assassin = 8,
-+        Archer = 16,
-@@
--        All = WarWizTao | Assassin
-+        All = WarWizTao | Assassin | Archer
-@@
          MoonMist2 = 1418,
 +
 +        // ORIGINS Crystal / Crystal-Monk Archer runtime identities.
