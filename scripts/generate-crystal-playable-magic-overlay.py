@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Materialize the complete six-class Crystal playable spell catalogue in Zircon MagicInfo.
+"""Materialize the complete Crystal + Crystal-Monk playable spell catalogue in Zircon MagicInfo.
 
 Runtime-ready spells reuse the separately validated ready overlay. Every other
 playable spell is present in System.db with a reserved ORIGINS placeholder
@@ -13,23 +13,9 @@ import json
 import pathlib
 import re
 
-CLASS_IDS = {
-    "Warrior": 0,
-    "Wizard": 1,
-    "Taoist": 2,
-    "Assassin": 3,
-    "Archer": 4,
-    "Monk": 5,
-}
-EXPECTED_COUNTS = {
-    "Warrior": 17,
-    "Wizard": 25,
-    "Taoist": 25,
-    "Assassin": 17,
-    "Archer": 21,
-    "Monk": 9,
-}
-EXPECTED_TOTAL = 114
+CLASS_IDS = {"Warrior":0,"Wizard":1,"Taoist":2,"Assassin":3,"Archer":4,"Monk":5}
+EXPECTED_COUNTS = {"Warrior":21,"Wizard":28,"Taoist":27,"Assassin":19,"Archer":24,"Monk":9}
+EXPECTED_TOTAL = 128
 PENDING_MAGIC_TYPE_BASE = 3000
 PENDING_INDEX_BASE = 3000
 
@@ -43,19 +29,13 @@ def norm(value: str) -> str:
 
 
 def projection_map(payload: dict) -> dict[str, dict]:
-    result = {}
-    for row in payload["projections"]:
-        name = row.get("crystalName")
-        if not name:
-            continue
-        result[norm(name)] = row
-    return result
+    return {norm(row["crystalName"]): row for row in payload["projections"] if row.get("crystalName")}
 
 
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("base_numeric_projection", type=pathlib.Path)
-    parser.add_argument("monk_numeric_projection", type=pathlib.Path)
+    parser.add_argument("extension_numeric_projection", type=pathlib.Path)
     parser.add_argument("playable_catalog", type=pathlib.Path)
     parser.add_argument("runtime_ready_overlay", type=pathlib.Path)
     parser.add_argument("zircon_magic_snapshot", type=pathlib.Path)
@@ -63,7 +43,7 @@ def main() -> int:
     args = parser.parse_args()
 
     base_numeric = projection_map(load(args.base_numeric_projection))
-    monk_numeric = projection_map(load(args.monk_numeric_projection))
+    extension_numeric = projection_map(load(args.extension_numeric_projection))
     catalog = load(args.playable_catalog)
     ready = load(args.runtime_ready_overlay)
     zircon_rows = load(args.zircon_magic_snapshot)
@@ -82,13 +62,10 @@ def main() -> int:
     for row in zircon_rows:
         zircon_by_name.setdefault(norm(row.get("Name") or ""), []).append(row)
 
-    operations = []
-    audit = []
-    used_indices = set()
-    used_magic_types = set()
-    counts = {name: 0 for name in CLASS_IDS}
-    runtime_ready_count = 0
-    pending_count = 0
+    operations, audit = [], []
+    used_indices, used_magic_types = set(), set()
+    counts = {name:0 for name in CLASS_IDS}
+    runtime_ready_count = pending_count = 0
 
     for class_name, spells in catalog["classes"].items():
         if class_name not in CLASS_IDS:
@@ -105,12 +82,13 @@ def main() -> int:
                 op.setdefault("Set", {})["Name"] = name
                 op["Set"]["Class"] = CLASS_IDS[class_name]
                 index = int(op["Index"])
-                magic_type = int(op["Set"].get("Magic", next((r["Magic"] for r in zircon_rows if int(r["Index"]) == index), 0)))
+                existing = next((r for r in zircon_rows if int(r["Index"]) == index), None)
+                magic_type = int(op["Set"].get("Magic", existing["Magic"] if existing else 0))
                 status = "runtime_ready"
                 runtime_ready_count += 1
                 numeric_source = "runtime-ready Crystal overlay"
             else:
-                projection = monk_numeric.get(key) if class_name == "Monk" else base_numeric.get(key)
+                projection = base_numeric.get(key) or extension_numeric.get(key)
                 if projection is None:
                     raise RuntimeError(f"Missing numeric projection for playable spell {class_name}.{name}")
                 if projection.get("status") not in {"projected_by_name", "projected_from_pinned_source"}:
@@ -141,16 +119,10 @@ def main() -> int:
                     fields["Description"] = ""
                     mode = "create_catalog_row"
 
-                op = {
-                    "Action": "upsert",
-                    "AssemblyName": "LibraryCore",
-                    "TypeName": "Library.SystemModels.MagicInfo",
-                    "Index": index,
-                    "Set": fields,
-                }
+                op = {"Action":"upsert","AssemblyName":"LibraryCore","TypeName":"Library.SystemModels.MagicInfo","Index":index,"Set":fields}
                 status = "catalog_pending_runtime"
                 pending_count += 1
-                numeric_source = "Crystal-Monk pinned source" if class_name == "Monk" else "Crystal Jev effective MagicInfo"
+                numeric_source = "Crystal-Monk pinned source" if key in extension_numeric else "Crystal Jev effective MagicInfo"
 
             if index in used_indices:
                 raise RuntimeError(f"Duplicate MagicInfo target index {index} while materializing {name}")
@@ -159,15 +131,7 @@ def main() -> int:
                 raise RuntimeError(f"Duplicate playable MagicType {magic_type} while materializing {name}")
             used_magic_types.add(magic_type)
             operations.append(op)
-            audit.append({
-                "class": class_name,
-                "crystalSpell": name,
-                "crystalSpellId": source_id,
-                "zirconMagicInfoIndex": index,
-                "magicType": magic_type,
-                "status": status,
-                "numericSource": numeric_source,
-            })
+            audit.append({"class":class_name,"crystalSpell":name,"crystalSpellId":source_id,"zirconMagicInfoIndex":index,"magicType":magic_type,"status":status,"numericSource":numeric_source})
 
     if counts != EXPECTED_COUNTS:
         raise RuntimeError(f"Playable class counts mismatch: {counts}")
@@ -175,7 +139,7 @@ def main() -> int:
         raise RuntimeError(f"Expected {EXPECTED_TOTAL} playable MagicInfo operations, generated {len(operations)}")
 
     payload = {
-        "SchemaVersion": 5,
+        "SchemaVersion": 6,
         "Name": "Complete Crystal + Crystal-Monk playable spell catalogue for ORIGINS",
         "Operations": operations,
         "$audit": {
@@ -183,15 +147,15 @@ def main() -> int:
             "classCounts": counts,
             "runtimeReady": runtime_ready_count,
             "catalogPendingRuntime": pending_count,
-            "pendingMagicTypeRange": "3000 + Crystal SpellId",
-            "pendingMagicInfoIndexRange": "3000 + Crystal SpellId when no legacy row is reused",
+            "pendingMagicTypeRange": "3000 + Crystal/Crystal-Monk SpellId",
+            "pendingMagicInfoIndexRange": "3000 + SpellId when no legacy row is reused",
             "policy": "Pending spells exist in System.db but cannot silently execute unrelated Zircon logic.",
             "spells": audit,
         },
     }
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(payload, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
-    print(f"Playable Crystal magic overlay: {len(operations)}/114 rows; {runtime_ready_count} runtime-ready, {pending_count} pending runtime")
+    print(f"Playable Crystal magic overlay: {len(operations)}/128 rows; {runtime_ready_count} runtime-ready, {pending_count} pending runtime")
     for class_name in CLASS_IDS:
         print(f"- {class_name}: {counts[class_name]}")
     return 0

@@ -4,25 +4,23 @@ import pathlib
 import sys
 
 EXPECTED = {
-    "Warrior": 17,
-    "Wizard": 25,
-    "Taoist": 25,
-    "Assassin": 17,
-    "Archer": 21,
+    "Warrior": 21,
+    "Wizard": 28,
+    "Taoist": 27,
+    "Assassin": 19,
+    "Archer": 24,
     "Monk": 9,
 }
-EXPECTED_TOTAL = 114
-EXPECTED_MONK = {
-    161: "JiBenGunFa",
-    162: "LuoHanGunFa",
-    163: "JinGangGunFa",
-    164: "DaMoGunFa",
-    165: "XiangLongGunFa",
-    166: "Taunt",
-    167: "TianLeiZhen",
-    168: "ShiBuYiSha",
-    169: "LuoHanZhen",
+EXPECTED_TOTAL = 128
+EXPECTED_EXTENSION = {
+    "Warrior": {18:"CounterAttack1",19:"ProtectionField1",20:"EntrapSwordSecret",21:"ImmortalSkin1"},
+    "Wizard": {56:"GreateFireBallSecret",57:"Bisul",58:"StormEscape1"},
+    "Taoist": {87:"HealingCircle2",88:"Healing2"},
+    "Assassin": {108:"FlashDash2",109:"MoonMist2"},
+    "Archer": {142:"ElementalBarrier1",143:"DelayedExplosion2",144:"NapalmShot2"},
+    "Monk": {161:"JiBenGunFa",162:"LuoHanGunFa",163:"JinGangGunFa",164:"DaMoGunFa",165:"XiangLongGunFa",166:"Taunt",167:"TianLeiZhen",168:"ShiBuYiSha",169:"LuoHanZhen"},
 }
+APPROVED_EXTENSION_COMMIT = "381e589e3d7ee736cdf0583c8315c0d144ab058f"
 
 path = pathlib.Path(sys.argv[1] if len(sys.argv) > 1 else "database/magic/crystal-playable-spells.json")
 data = json.loads(path.read_text(encoding="utf-8"))
@@ -49,19 +47,23 @@ pairs = {(name, row["name"]) for name in EXPECTED for row in classes.get(name, [
 if len(pairs) != len(all_rows):
     errors.append("duplicate spell name inside a class")
 
-monk = {int(row["id"]): row["name"] for row in classes.get("Monk", [])}
-if monk != EXPECTED_MONK:
-    errors.append(f"Monk catalogue mismatch: {monk}")
+for class_name, expected in EXPECTED_EXTENSION.items():
+    rows = {int(row["id"]): row["name"] for row in classes.get(class_name, []) if row.get("source") == "Crystal-Monk"}
+    if rows != expected:
+        errors.append(f"Crystal-Monk extension mismatch for {class_name}: {rows}")
 
 scope = data.get("scope", {})
 if scope.get("requiredPlayableSpellCount") != EXPECTED_TOTAL:
-    errors.append("scope.requiredPlayableSpellCount must be 114")
+    errors.append("scope.requiredPlayableSpellCount must be 128")
 if scope.get("includeMonk") is not True:
     errors.append("scope.includeMonk must be true")
-if data.get("source", {}).get("monk") != "JevLOMCN/Crystal-Monk":
-    errors.append("Crystal-Monk source is not pinned")
-if data.get("source", {}).get("monkCommit") != "381e589e3d7ee736cdf0583c8315c0d144ab058f":
-    errors.append("Crystal-Monk commit is not pinned to the approved revision")
+if scope.get("includeCrystalMonkSecretSkills") is not True:
+    errors.append("scope.includeCrystalMonkSecretSkills must be true")
+source = data.get("source", {})
+if source.get("extension") != "JevLOMCN/Crystal-Monk":
+    errors.append("Crystal-Monk extension source is not pinned")
+if source.get("extensionCommit") != APPROVED_EXTENSION_COMMIT:
+    errors.append("Crystal-Monk extension commit is not pinned to the approved revision")
 
 if errors:
     print("Crystal playable spell catalogue FAILED")
