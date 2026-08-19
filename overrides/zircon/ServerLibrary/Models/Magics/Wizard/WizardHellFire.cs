@@ -1,6 +1,7 @@
 ﻿using Library;
 using Server.DBModels;
 using Server.Envir;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 
@@ -91,7 +92,6 @@ namespace Server.Models.Magics
                     train = true;
             }
 
-            // Crystal's map action trains once per successful HellFire step.
             if (train)
                 Player.LevelMagic(Magic);
         }
