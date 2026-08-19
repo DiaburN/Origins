@@ -115,7 +115,7 @@ jobs:
         shell: bash
         run: |
           SYSTEM_SHA=$(sha256sum DatabaseOrigins/System.db | awk '{print $1}')
-          RUNTIME_READY=$(python3 -c "import json; print(json.load(open('GeneratedResearch/70-magics-crystal.generated.json'))['$audit']['runtimeReady'])")
+          RUNTIME_READY=$(python3 -c "import json; print(json.load(open('GeneratedResearch/70-magics-crystal.generated.json'))['\$audit']['runtimeReady'])")
           cat > DatabaseOrigins/build-manifest.json <<EOF
           {
             "schemaVersion": 3,
