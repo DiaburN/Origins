@@ -14,7 +14,11 @@ from collections import defaultdict
 SPELL_REF = re.compile(r"\bSpell\.([A-Za-z_]\w*)\b")
 MAGIC_ATTR = re.compile(r"\[MagicType\(MagicType\.([A-Za-z_]\w*)\)\]")
 CLASS_DECL = re.compile(r"\bclass\s+([A-Za-z_]\w*)\b")
-METHOD_DECL = re.compile(r"\b(?:public|private|protected|internal)\s+(?:static\s+)?(?:async\s+)?[\w<>,\[\]?\.]+\s+([A-Za-z_]\w*)\s*\(")
+METHOD_DECL = re.compile(
+    r"\b(?:public|private|protected|internal)\s+"
+    r"(?:(?:static|override|virtual|abstract|sealed|async|new|partial)\s+)*"
+    r"[\w<>,\[\]?\.]+\s+([A-Za-z_]\w*)\s*\("
+)
 
 CRYSTAL_EXCLUDED = {
     "Shared/Enums.cs",
@@ -72,7 +76,7 @@ def zircon_index(root: pathlib.Path) -> dict[str, list[dict]]:
             if class_match:
                 class_name = class_match.group(1)
             methods = []
-            for idx, line in enumerate(lines):
+            for line in lines:
                 method = METHOD_DECL.search(line)
                 if method:
                     methods.append(method.group(1))
