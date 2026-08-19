@@ -41,7 +41,8 @@ diff --git a/LibraryCore/Functions.cs b/LibraryCore/Functions.cs
 --- a/LibraryCore/Functions.cs
 +++ b/LibraryCore/Functions.cs
 @@
-                 case MagicType.Healing2:
+                 case MagicType.BurningFire:
+                 case MagicType.Chain:
 +                case MagicType.FatalSword:
 +                case MagicType.DoubleSlash:
 +                case MagicType.Haste:
