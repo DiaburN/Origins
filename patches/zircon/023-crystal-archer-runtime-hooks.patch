@@ -146,9 +146,6 @@ diff --git a/ServerLibrary/Models/MapObject.cs b/ServerLibrary/Models/MapObject.
 +                                        victim == this ||
 +                                        victim.Buffs.Any(x => x.Type == BuffType.CrystalDelayedExplosion2)) continue;
 +
-+                                    // Jev DelayedExplosion2 carries Infect=true. Newly infected
-+                                    // victims receive the six-second / 1500-ms variant but do not
-+                                    // recursively propagate forever.
 +                                    victim.BuffAdd(
 +                                        BuffType.CrystalDelayedExplosion2,
 +                                        TimeSpan.FromSeconds(6),
@@ -198,3 +195,23 @@ diff --git a/ServerLibrary/Models/SpellObject.cs b/ServerLibrary/Models/SpellObj
 +                    }
 +                    break;
                  case SpellEffect.PoisonousCloud:
++diff --git a/ServerLibrary/Models/MonsterObject.cs b/ServerLibrary/Models/MonsterObject.cs
++--- a/ServerLibrary/Models/MonsterObject.cs
+++++ b/ServerLibrary/Models/MonsterObject.cs
++@@
++-        public DateTime SearchTime, RoamTime, EXPOwnerTime, DeadTime, RageTime, TameTime, HallucinationTime;
+++        public DateTime SearchTime, RoamTime, EXPOwnerTime, DeadTime, RageTime, TameTime, HallucinationTime, CrystalArcherExpireTime;
++@@
++         public override void Process()
++         {
++             base.Process();
+++
+++            // Crystal Archer summons and StoneTrap are explicitly temporary.
+++            // They die at AliveTime/DieTime; they do not merely become untamed.
+++            if (!Dead && CrystalArcherExpireTime != DateTime.MinValue && SEnvir.Now >= CrystalArcherExpireTime)
+++            {
+++                Die();
+++                return;
+++            }
+ 
+             if (Dead)
