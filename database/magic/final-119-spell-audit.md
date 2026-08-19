@@ -7,50 +7,47 @@ Pinned sources:
 - Zircon runtime/database: `Suprcode/Zircon@cbf1aa919083bc13fc3f23f93772a8ab8370632d`
 - Crystal base spell source: `Suprcode/Crystal@0e315fe327192afe52c3d7357ddd1f5b7e26c5b8`
 - Crystal-Monk extension source: `JevLOMCN/Crystal-Monk@381e589e3d7ee736cdf0583c8315c0d144ab058f`
+- Crystal.Database/Jev values: `a19f6dca8f5e238d4ed79801820777abbf0a9ca4`
 
 ## Final playable scope
 
-ORIGINS currently activates five playable classes and 119 catalogue spells:
+ORIGINS activates five playable classes and 119 catalogue spells:
 
-| Class | Spell count |
-|---|---:|
-| Warrior | 21 |
-| Wizard | 28 |
-| Taoist | 27 |
-| Assassin | 19 |
-| Archer | 24 |
-| **Total** | **119** |
+| Class | Spell count | Compiled runtime routes | Source stubs |
+|---|---:|---:|---:|
+| Warrior | 21 | 21 | 0 |
+| Wizard | 28 | 27 | 1 |
+| Taoist | 27 | 27 | 0 |
+| Assassin | 19 | 19 | 0 |
+| Archer | 24 | 24 | 0 |
+| **Total** | **119** | **118** | **1** |
 
-The nine Monk spells from Crystal-Monk are retained under `deferredClasses.Monk` in `crystal-playable-spells.json` but are not part of the active runtime. The source Monk kit is intentionally deferred because nine spells is materially incomplete compared with the other classes.
+The nine Monk spells from Crystal-Monk are retained under `deferredClasses.Monk` in `crystal-playable-spells.json` but are not part of the active runtime. `includeMonk=false`. The source Monk kit remains deferred because nine skills is materially incomplete compared with the five active classes.
 
-## Coverage result
+`FastMove` is the single intentional source stub. The pinned Crystal source contains only an unfinished/commented placeholder and does not expose usable `MagicInfo` plus server execution behavior. ORIGINS preserves the identity and does not fabricate numerics or runtime behavior.
 
-- Active catalogue entries: **119**
-- Entries with an identified/ported runtime behavior route: **118**
-- Source stubs deliberately left without invented behavior: **1** (`FastMove`)
-- Missing active-catalogue behavior decisions: **0**
-- Monk runtime patches in this branch: **0**
+## Runtime and handler validation — CLOSED
 
-`FastMove` is not treated as a defect in the port. The pinned Crystal source does not expose usable `MagicInfo` plus server execution behavior for it, so ORIGINS records the source stub instead of fabricating a spell.
+The complete five-class runtime patch set now applies cleanly to the pinned Zircon revision using exact-context patch application.
 
-## Runtime readiness
+Validated result:
 
-Current readiness must not be confused with source-port coverage:
+- active catalogue entries: **119**;
+- routed runtime behaviors: **118**;
+- registered `MagicObject` handlers: **118/118**;
+- source stubs: **1** (`FastMove`);
+- source-ported but uncompiled routes: **0**;
+- `LibraryCore` compile: **PASS**;
+- `ServerLibrary` compile: **PASS**;
+- Monk runtime routes: **0**.
 
-| State | Count |
-|---|---:|
-| Previously compile/runtime validated Wizard routes | 15 |
-| Source-ported but not yet compile-validated | 103 |
-| Source stub | 1 |
-| **Total** | **119** |
+The handler verifier requires exactly one compatible `MagicObject` registration for every routed active `MagicType`; renamed native mappings such as `Fencing -> Swordsmanship`, `Healing -> Heal`, `Teleport -> Teleportation` and other intentional mappings are therefore checked rather than inferred from spell names alone.
 
-Warrior, Taoist, Assassin and Archer remain `runtimeReady=false` until their accumulated patch series is applied to a clean copy of the pinned Zircon source and compiled. The newer Wizard batches also remain false for the same reason.
+Compilation proves integration/type correctness and registration coverage. It does not replace full in-game behavioral smoke testing of every spell family.
 
-This audit therefore closes **source/runtime design coverage**, not the final compile gate.
+## MagicType and custom-stat audit
 
-## MagicType range audit
-
-The ORIGINS custom ranges are separated by class and do not overlap:
+The ORIGINS custom MagicType ranges are separated by class and do not overlap:
 
 - Warrior: `1100–1114`
 - Wizard: `1200–1217`
@@ -58,48 +55,90 @@ The ORIGINS custom ranges are separated by class and do not overlap:
 - Assassin: `1400–1418`
 - Archer: `1500–1523`
 
-Existing Zircon identities continue to be reused when source behavior genuinely maps to them; the custom blocks are for Crystal-specific or incompatible behavior.
+Existing Zircon identities are reused when the source behavior genuinely maps to them; Crystal-specific/incompatible abilities use the reserved ORIGINS blocks.
 
-## Patch hygiene corrections made during this audit
+The server-only custom Stat IDs used by the magic port are also separated after the final compile audit:
 
-The obsolete `patches/zircon/007-crystal-playable-classes.patch` was removed. It duplicated the Archer class extension later owned by patch 022 and still introduced `Monk = 5` / `RequiredClass.Monk`, which conflicted with the final five-class scope.
+- `11000–11004`: Wizard/Warrior runtime additions;
+- `11005–11007`: Taoist runtime additions;
+- `11008–11011`: Archer runtime additions.
 
-After removal:
+## Patch hygiene — CLOSED
 
-- patch 022 is the single active Archer class/identity patch;
-- no active patch adds the Monk class;
-- no `027-crystal-monk-*` runtime patch exists on the final audit branch;
-- numbering gaps in the patch directory are intentional and harmless.
+Historical malformed/stale pseudo-diffs are applied through `scripts/apply-origins-patches.py`, which ignores stale hunk line-number metadata but requires every old-context block to match exactly once. Missing or ambiguous context is fatal; no fuzzy application is allowed.
 
-## Database projection status
+The obsolete patch that introduced Monk as an active class was removed. Superseded Archer delayed-explosion/pet-expiry patches were also removed after their behavior was consolidated into the active Archer runtime patch. Monk remains absent from the active patch chain.
 
-The authoring overlay `database/overlays/70-magics-crystal.json` remains empty by design. A complete 119-spell System.db projection must not be written until the pending runtime patches compile against the pinned Zircon source.
+## Crystal/Jev numeric-source hygiene — CLOSED
 
-There is an earlier proof branch, `generated/origins-system-db`, which contains a real generated `System.db` and proves the database pipeline works. That proof must be treated separately from the current 119-spell scope:
+The numeric pipeline now distinguishes current source identity from historical database labels:
 
-- generated System.db exists and passed database preflight;
-- its generated magic overlay updated **5 existing MagicInfo rows**: FireBall, ThunderBolt, FireWall, MagicShield and IceStorm;
-- the generated overlay preserved Zircon indices and joined Crystal/Jev data by normalized spell name rather than numeric spell ID;
-- the old activation-status on that branch explicitly recorded System.db round-trip for **3 spells**: FireBall, ThunderBolt and IceStorm;
-- the Users.db smoke test explicitly round-tripped one learned magic: Fire Ball;
-- that branch contains stale catalogue IDs/status metadata and is **not** authoritative for the final 119-spell catalogue.
+- Crystal source comments are masked before `MagicInfo` extraction, so the commented `FastMove` placeholder cannot become invented data;
+- Crystal-Monk spell IDs are parsed only from `Common.cs::Spell`, preventing collisions with identically named members in enums such as `PoisonType`;
+- Jev projection uses current Crystal spell identity and keeps legacy/unknown rows as audit evidence;
+- custom/map-event rows do not enter the 119-spell player runtime merge;
+- ambiguous playable duplicates cannot be selected by input order.
 
-The final branch records this distinction in `activation-status.json`.
+## Final System.db projection — CLOSED
 
-## Known remaining gates before full magic DB activation
+GitHub Actions run `32308650321` (`ORIGINS System DB`) completed successfully on validated head `a4e599c3b925c833ffdcd25f68988d23f6dfa6f9`.
 
-1. Apply patches 001–026, excluding removed/absent gaps, against a clean copy of pinned Zircon in order and resolve any context conflicts.
-2. Compile LibraryCore + ServerLibrary with all five-class changes together.
-3. Run runtime smoke tests for attack skills, persistent fields, buffs, summons, poison/control states and movement skills.
-4. Bind the Reincarnation request/accept/cancel packets to the client/mobile confirmation UI; the server protocol is already represented in patch 017.
-5. Decide/persist Archer `MentalState` and elemental-orb progress after compile validation; the current port deliberately keeps them as runtime fields.
-6. During the monster/database phase, ensure Crystal Archer summon records exist for VampireSpider, SpittingToad, SnakeTotem and StoneTrap, plus other spell-required pet definitions.
-7. Generate the complete 119-spell numeric `MagicInfo` overlay from Crystal/Jev values by normalized spell name and build a fresh System.db.
-8. Run System.db + Users.db round-trip tests across every class, not just the early Wizard proof.
-9. Bind client icons/visual choreography separately; visual readiness must not be inferred from server runtime readiness.
+The generated active magic overlay contains exactly:
+
+- **119** `MagicInfo` operations;
+- **118** compiled runtime routes bound to real patched-Zircon `MagicType` values;
+- **1** disabled source-stub row (`FastMove`);
+- **0** pending runtime placeholders;
+- **27** routed spells reusing native Zircon `MagicInfo` identities;
+- **91** routed spells using ORIGINS runtime mappings.
+
+Applying the overlay to the pinned Zircon snapshot completed with:
+
+- **90 created** rows;
+- **29 updated** rows;
+- **0 deleted** rows;
+- **119 total operations**.
+
+The rebuilt database passed import, verification and audit preflight. Final generated database metadata:
+
+- System version: `2026.08.19.1`
+- System.db SHA-256: `7df0446b804b6d95b1b192ae3d32570bb9f9ecbb3d5cb3827ca288cbee11cdbb`
+- artifact: `origins-system-db`
+
+The existing Users.db smoke also passed against this final System.db: account, character and learned-magic persistence round-tripped successfully with Wizard `FireBall`.
+
+## CI result for the final validated magic state
+
+On head `a4e599c3b925c833ffdcd25f68988d23f6dfa6f9`, all six relevant gates completed successfully:
+
+1. `Crystal Magic Catalogue` — PASS
+2. `Spell Patch Apply` — PASS
+3. `Spell Runtime Compile` — PASS
+4. `Magic Candidate Validation` — PASS
+5. `Database Foundation` — PASS
+6. `ORIGINS System DB` — PASS
+
+## Remaining work after database activation
+
+The source migration, compile gate and full numeric System.db projection are closed. Remaining work is runtime/content/client validation rather than additional spell discovery:
+
+1. Run representative in-game smoke tests for attack skills, persistent fields, buffs, summons, poison/control states and movement skills across all five classes.
+2. Expand learned-magic Users.db round-trip coverage beyond the existing Wizard/FireBall smoke to include at least one spell from every active class.
+3. Bind the Reincarnation request/accept/cancel protocol to the client/mobile confirmation UI.
+4. Decide and persist Archer `MentalState` and elemental-orb progress if persistence is required; the current port intentionally keeps them as runtime state.
+5. During the monster/content database phase, ensure the Archer summon dependencies exist for VampireSpider, SpittingToad, SnakeTotem and StoneTrap, plus any other spell-required pet definitions.
+6. Bind Crystal client icons, casting choreography, projectile/impact effects and mobile UI separately. Visual readiness is not inferred from server/runtime readiness.
 
 ## Audit conclusion
 
-The magic migration is now structurally closed at **five active classes / 119 catalogue spells**. All active spells have a behavior decision; 118 have runtime routes and FastMove is the single intentional source stub. Monk is fully excluded from the active class/runtime patch chain while its source material remains retained for a possible future redesign.
+The magic migration is now closed at the **server source + compilation + System.db integration** level:
 
-The next technical magic milestone is **compile + full numeric System.db projection**, not more spell discovery.
+- **5 active classes**;
+- **119 catalogue spells**;
+- **118 compiled and DB-activated runtime routes**;
+- **1 intentional source stub (`FastMove`)**;
+- **9 Monk spells deferred and inactive**;
+- **0 pending runtime placeholders**;
+- final System.db build/verify/audit: **PASS**.
+
+The next magic milestone is no longer migration or database construction. It is **in-game behavioral smoke testing and client visual/UI binding**.
