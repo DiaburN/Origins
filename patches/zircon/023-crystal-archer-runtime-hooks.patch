@@ -119,7 +119,11 @@ diff --git a/ServerLibrary/Models/MapObject.cs b/ServerLibrary/Models/MapObject.
 +                        buff.TickTime -= ticks;
 +                        if (buff.TickTime > TimeSpan.Zero) continue;
 +
-+                        if (buff.Caster is PlayerObject explosionOwner && Node != null && !Dead)
++                        PlayerObject explosionOwner = CurrentMap?.Objects?
++                            .OfType<PlayerObject>()
++                            .FirstOrDefault(x => x.ObjectID == (uint)buff.Extra);
++
++                        if (explosionOwner != null && Node != null && !Dead)
 +                        {
 +                            MagicType explosionType = buff.Type == BuffType.CrystalDelayedExplosion2
 +                                ? MagicType.DelayedExplosion2
@@ -151,7 +155,9 @@ diff --git a/ServerLibrary/Models/MapObject.cs b/ServerLibrary/Models/MapObject.
 +                                        },
 +                                        false,
 +                                        false,
-+                                        TimeSpan.FromMilliseconds(1500));
++                                        TimeSpan.FromMilliseconds(1500),
++                                        false,
++                                        (int)explosionOwner.ObjectID);
 +                                }
 +                            }
 +                        }
