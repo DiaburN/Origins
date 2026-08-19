@@ -26,7 +26,7 @@
       "verified": true,
       "executionKind": "ZirconAdapted",
       "runtimeReady": true,
-      "overlayReady": false,
+      "overlayReady": true,
       "crystalSources": [
         "Server/MirObjects/HumanObject.cs::Magic",
         "Server/MirObjects/HumanObject.cs::Fireball",
@@ -61,7 +61,7 @@
       "verified": true,
       "executionKind": "ZirconAdapted",
       "runtimeReady": true,
-      "overlayReady": false,
+      "overlayReady": true,
       "crystalSources": [
         "Server/MirObjects/HumanObject.cs::Magic",
         "Server/MirObjects/HumanObject.cs::ThunderBolt",
@@ -94,7 +94,7 @@
       "verified": true,
       "executionKind": "CrystalAdapted",
       "runtimeReady": true,
-      "overlayReady": false,
+      "overlayReady": true,
       "crystalSources": [
         "Server/MirObjects/HumanObject.cs::Magic",
         "Server/MirObjects/HumanObject.cs::FireWall",
@@ -126,7 +126,7 @@
       "verified": true,
       "executionKind": "CrystalAdapted",
       "runtimeReady": true,
-      "overlayReady": false,
+      "overlayReady": true,
       "crystalSources": [
         "Server/MirObjects/HumanObject.cs::Magic",
         "Server/MirObjects/HumanObject.cs::CompleteMagic",
@@ -152,7 +152,7 @@
       "verified": true,
       "executionKind": "ZirconAdapted",
       "runtimeReady": true,
-      "overlayReady": false,
+      "overlayReady": true,
       "crystalSources": [
         "Server/MirObjects/HumanObject.cs::Magic",
         "Server/MirObjects/HumanObject.cs::FireBang",
