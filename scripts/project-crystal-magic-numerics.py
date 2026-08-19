@@ -1,19 +1,23 @@
 #!/usr/bin/env python3
 """Project Crystal Jev spell numerics into the Zircon MagicInfo schema.
 
-This is a candidate generator, never an automatic overlay writer. It answers
-which Crystal values can be represented exactly by existing Zircon fields and
-which require handler-specific math.
+Jev is older than the pinned Crystal source, so numeric Spell ids are historical
+diagnostics only. Projection joins Jev to current Crystal by normalized spell
+name and never writes overlays automatically.
 """
 from __future__ import annotations
 
 import argparse
 import json
 import pathlib
+import re
+
+
+def norm(value: str) -> str:
+    return re.sub(r"[^a-z0-9]", "", (value or "").lower())
 
 
 def dotnet_round(value: float) -> int:
-    # Python round() and .NET Math.Round(double) both use midpoint-to-even.
     return int(round(value))
 
 
@@ -48,7 +52,7 @@ def main() -> int:
 
     catalog = json.loads(args.crystal_catalog.read_text(encoding="utf-8"))
     jev = json.loads(args.jev_effective.read_text(encoding="utf-8"))
-    source_by_id = {s["spellId"]: s for s in catalog["spells"]}
+    source_by_name = {norm(s["name"]): s for s in catalog["spells"]}
 
     rows = []
     exact_power = 0
@@ -56,18 +60,29 @@ def main() -> int:
     delay_reduction = 0
     multiplier_override = 0
     non_default_range = 0
+    legacy_unknown = 0
+    id_mismatches = 0
 
     for magic in jev["magics"]:
-        spell_id = magic["SpellId"]
-        source = source_by_id.get(spell_id)
+        jev_name = magic.get("Name") or magic.get("Spell") or ""
+        source = source_by_name.get(norm(jev_name))
         if source is None:
+            legacy_unknown += 1
             rows.append({
-                "spellId": spell_id,
-                "spell": magic["Spell"],
-                "status": "legacy_unknown_not_in_current_enum",
-                "automaticOverlayAllowed": False,
+                "crystalName": None,
+                "sourceSpellId": None,
+                "jevName": jev_name,
+                "jevSpellId": magic.get("SpellId"),
+                "status": "legacy_unknown_name_not_in_current_source",
+                "automaticOverlayAllowed": False
             })
             continue
+
+        source_id = source["spellId"]
+        jev_id = magic.get("SpellId")
+        id_mismatch = source_id != jev_id
+        if id_mismatch:
+            id_mismatches += 1
 
         mins, maxs = crystal_power_ranges(magic)
         min_base = mins[0]
@@ -100,10 +115,14 @@ def main() -> int:
             requirements.append("handler_or_targeting_range")
 
         rows.append({
-            "spellId": spell_id,
-            "spell": magic["Spell"],
+            "crystalName": source["name"],
+            "sourceSpellId": source_id,
+            "jevName": jev_name,
+            "jevSpellId": jev_id,
+            "legacyIdMismatch": id_mismatch,
             "category": source["category"],
             "kind": source["kind"],
+            "status": "projected_by_name",
             "automaticOverlayAllowed": False,
             "directFieldProjection": {
                 "Name": magic["Name"],
@@ -120,7 +139,7 @@ def main() -> int:
                 "MinBasePower": min_base,
                 "MaxBasePower": max_base,
                 "MinLevelPower": min_level_power,
-                "MaxLevelPower": max_level_power,
+                "MaxLevelPower": max_level_power
             },
             "proof": {
                 "crystalCostFormula": "BaseCost + Level * LevelCost",
@@ -135,39 +154,44 @@ def main() -> int:
                 "crystalDelayReduction": magic["DelayReduction"],
                 "crystalMultiplierBase": magic["MultiplierBase"],
                 "crystalMultiplierBonus": magic["MultiplierBonus"],
-                "crystalRange": magic["Range"],
+                "crystalRange": magic["Range"]
             },
             "runtimeRequirements": requirements,
-            "unmappedUntilBehaviorReview": ["Magic", "Class", "School", "Property", "Description"],
+            "unmappedUntilBehaviorReview": ["Magic", "Class", "School", "Property", "Description"]
         })
 
     payload = {
-        "schemaVersion": 1,
+        "schemaVersion": 2,
         "policy": {
             "source": "Crystal Jev effective MagicInfo",
             "destination": "Zircon MagicInfo",
+            "joinKey": "normalized spell name",
+            "numericSpellIdUsedAsJoinKey": False,
             "automaticOverlayWrites": False,
             "levelRange": [0, 1, 2, 3],
             "levelCostProjection": "Zircon.LevelCost = Crystal.LevelCost * 3",
             "requirementsProjection": "Crystal Level1/2/3 -> Zircon NeedLevel1/2/3; Crystal Need1/2/3 -> Zircon Experience1/2/3",
-            "schoolClassPropertyRequireBehaviorReview": True,
+            "schoolClassPropertyRequireBehaviorReview": True
         },
         "counts": {
             "jevEffectiveSpells": len(jev["magics"]),
+            "legacyUnknownNames": legacy_unknown,
+            "legacyIdMismatches": id_mismatches,
             "exactPowerProjection": exact_power,
             "specialPowerFormulaRequired": special_power,
             "levelScaledCooldownRequired": delay_reduction,
             "multiplierHandlerRequired": multiplier_override,
-            "nonDefaultRange": non_default_range,
+            "nonDefaultRange": non_default_range
         },
-        "projections": rows,
+        "projections": rows
     }
 
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(payload, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
     print(
         f"Crystal numeric projection: {exact_power} exact power mappings, "
-        f"{special_power} special power formulas, {delay_reduction} level-scaled cooldowns"
+        f"{special_power} special power formulas, {id_mismatches} historical id mismatches, "
+        f"{legacy_unknown} unknown names"
     )
     return 0
 
