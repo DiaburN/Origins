@@ -1,7 +1,7 @@
 diff --git a/LibraryCore/SystemModels/MagicInfo.cs b/LibraryCore/SystemModels/MagicInfo.cs
 --- a/LibraryCore/SystemModels/MagicInfo.cs
 +++ b/LibraryCore/SystemModels/MagicInfo.cs
-@@ -202,6 +202,22 @@ namespace Library.SystemModels
+@@ -202,6 +202,21 @@ namespace Library.SystemModels
          }
          private int _Delay;
  
