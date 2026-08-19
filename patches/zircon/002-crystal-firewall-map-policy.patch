@@ -1,0 +1,40 @@
+diff --git a/LibraryCore/SystemModels/MapInfo.cs b/LibraryCore/SystemModels/MapInfo.cs
+--- a/LibraryCore/SystemModels/MapInfo.cs
++++ b/LibraryCore/SystemModels/MapInfo.cs
+@@ -100,6 +100,38 @@ namespace Library.SystemModels
+         }
+         private int _SkillDelay;
+ 
++        public bool FireWallLimit
++        {
++            get { return _FireWallLimit; }
++            set
++            {
++                if (_FireWallLimit == value) return;
++
++                var oldValue = _FireWallLimit;
++                _FireWallLimit = value;
++
++                OnChanged(oldValue, value, "FireWallLimit");
++            }
++        }
++        private bool _FireWallLimit;
++
++        public int FireWallCount
++        {
++            get { return _FireWallCount; }
++            set
++            {
++                if (_FireWallCount == value) return;
++
++                var oldValue = _FireWallCount;
++                _FireWallCount = value;
++
++                OnChanged(oldValue, value, "FireWallCount");
++            }
++        }
++        private int _FireWallCount;
++
+         public bool CanHorse
+         {
+             get { return _CanHorse; }
