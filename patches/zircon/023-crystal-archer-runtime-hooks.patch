@@ -21,16 +21,16 @@ diff --git a/LibraryCore/Stat.cs b/LibraryCore/Stat.cs
 --- a/LibraryCore/Stat.cs
 +++ b/LibraryCore/Stat.cs
 @@
-         HealingCircle2ReductionPercent = 11005,
+         HealingCircle2ReductionPercent = 11006,
 +
 +        [StatDescription(Title = "Crystal Archer Barrier Reduction", Format = "{0:+#0%;-#0%;#0%}", Mode = StatType.Percent, ServerOnly = true)]
-+        CrystalArcherBarrierReductionPercent = 11006,
++        CrystalArcherBarrierReductionPercent = 11007,
 +
 +        [StatDescription(Title = "Crystal Delayed Explosion Power", Format = "{0:+#0;-#0;#0}", Mode = StatType.Default, ServerOnly = true)]
-+        CrystalDelayedExplosionPower = 11007,
++        CrystalDelayedExplosionPower = 11008,
 +
 +        [StatDescription(Title = "Crystal Delayed Explosion Infect", Format = "{0:+#0;-#0;#0}", Mode = StatType.Default, ServerOnly = true)]
-+        CrystalDelayedExplosionInfect = 11008,
++        CrystalDelayedExplosionInfect = 11009,
  
          [StatDescription(Title = "Duration", Mode = StatType.Time)]
 diff --git a/ServerLibrary/Models/PlayerObject.cs b/ServerLibrary/Models/PlayerObject.cs
