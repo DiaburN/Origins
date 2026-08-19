@@ -1,5 +1,5 @@
 {
-  "schemaVersion": 4,
+  "schemaVersion": 5,
   "source": {
     "base": "Suprcode/Crystal",
     "baseCommit": "0e315fe327192afe52c3d7357ddd1f5b7e26c5b8",
@@ -11,6 +11,7 @@
     "crystalMonkExtraNonMonkSpellCount": 14,
     "monkSpellCount": 9,
     "requiredPlayableSpellCount": 128,
+    "sourceStubCount": 1,
     "includeMonk": true,
     "includeCrystalMonkSecretSkills": true,
     "includeCustom": false,
@@ -22,7 +23,7 @@
       {"id":18,"name":"CounterAttack1","source":"Crystal-Monk"},{"id":19,"name":"ProtectionField1","source":"Crystal-Monk"},{"id":20,"name":"EntrapSwordSecret","source":"Crystal-Monk"},{"id":21,"name":"ImmortalSkin1","source":"Crystal-Monk"}
     ],
     "Wizard": [
-      {"id":31,"name":"FireBall"},{"id":32,"name":"Repulsion"},{"id":33,"name":"ElectricShock"},{"id":34,"name":"GreatFireBall"},{"id":35,"name":"HellFire"},{"id":36,"name":"ThunderBolt"},{"id":37,"name":"Teleport"},{"id":38,"name":"FireBang"},{"id":39,"name":"FireWall"},{"id":40,"name":"Lightning"},{"id":41,"name":"FrostCrunch"},{"id":42,"name":"ThunderStorm"},{"id":43,"name":"MagicShield"},{"id":44,"name":"TurnUndead"},{"id":45,"name":"Vampirism"},{"id":46,"name":"IceStorm"},{"id":47,"name":"FlameDisruptor"},{"id":48,"name":"Mirroring"},{"id":49,"name":"FlameField"},{"id":50,"name":"Blizzard"},{"id":51,"name":"MagicBooster"},{"id":52,"name":"MeteorStrike"},{"id":53,"name":"IceThrust"},{"id":54,"name":"FastMove"},{"id":55,"name":"StormEscape"},
+      {"id":31,"name":"FireBall"},{"id":32,"name":"Repulsion"},{"id":33,"name":"ElectricShock"},{"id":34,"name":"GreatFireBall"},{"id":35,"name":"HellFire"},{"id":36,"name":"ThunderBolt"},{"id":37,"name":"Teleport"},{"id":38,"name":"FireBang"},{"id":39,"name":"FireWall"},{"id":40,"name":"Lightning"},{"id":41,"name":"FrostCrunch"},{"id":42,"name":"ThunderStorm"},{"id":43,"name":"MagicShield"},{"id":44,"name":"TurnUndead"},{"id":45,"name":"Vampirism"},{"id":46,"name":"IceStorm"},{"id":47,"name":"FlameDisruptor"},{"id":48,"name":"Mirroring"},{"id":49,"name":"FlameField"},{"id":50,"name":"Blizzard"},{"id":51,"name":"MagicBooster"},{"id":52,"name":"MeteorStrike"},{"id":53,"name":"IceThrust"},{"id":54,"name":"FastMove","sourceStatus":"stub_no_magicinfo_no_server_handler"},{"id":55,"name":"StormEscape"},
       {"id":56,"name":"GreateFireBallSecret","source":"Crystal-Monk"},{"id":57,"name":"Bisul","source":"Crystal-Monk"},{"id":58,"name":"StormEscape1","source":"Crystal-Monk"}
     ],
     "Taoist": [
