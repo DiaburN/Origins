@@ -211,10 +211,11 @@ def main() -> int:
         raise RuntimeError(f"Expected {EXPECTED_TOTAL} playable MagicInfo operations, generated {len(operations)}")
 
     payload = {
-        "SchemaVersion": 8,
+        "SchemaVersion": 1,
         "Name": "Complete Crystal + Crystal-Monk playable spell catalogue for ORIGINS",
         "Operations": operations,
         "$audit": {
+            "generatorSchemaVersion": 8,
             "requiredPlayableSpells": EXPECTED_TOTAL,
             "classCounts": counts,
             "runtimeReady": runtime_ready_count,
