@@ -138,20 +138,41 @@ def main() -> int:
     parser.add_argument("input_overlay", type=pathlib.Path)
     parser.add_argument("behavior_decisions", type=pathlib.Path)
     parser.add_argument("zircon_enum", type=pathlib.Path)
-    parser.add_argument("output_overlay", type=pathlib.Path)
+    parser.add_argument(
+        "output_or_snapshot",
+        type=pathlib.Path,
+        help="Output overlay path, or Zircon MagicInfo snapshot when a fifth positional output path is supplied",
+    )
+    parser.add_argument(
+        "output_overlay",
+        type=pathlib.Path,
+        nargs="?",
+        help="Output overlay path when the Zircon MagicInfo snapshot is supplied positionally",
+    )
     parser.add_argument(
         "--zircon-magic-snapshot",
         type=pathlib.Path,
-        default=DEFAULT_ZIRCON_MAGIC_SNAPSHOT,
+        default=None,
         help="Exported pinned Zircon MagicInfo JSON used to reuse native MagicType rows",
     )
     args = parser.parse_args()
+
+    if args.output_overlay is None:
+        output_overlay = args.output_or_snapshot
+        zircon_magic_snapshot = args.zircon_magic_snapshot or DEFAULT_ZIRCON_MAGIC_SNAPSHOT
+    else:
+        if args.zircon_magic_snapshot is not None:
+            raise RuntimeError(
+                "Zircon MagicInfo snapshot was supplied both positionally and with --zircon-magic-snapshot"
+            )
+        zircon_magic_snapshot = args.output_or_snapshot
+        output_overlay = args.output_overlay
 
     overlay = load_json(args.input_overlay)
     operations = overlay.get("Operations", [])
     audit = overlay.get("$audit", {})
     spells = audit.get("spells", [])
-    zircon_rows = load_json(args.zircon_magic_snapshot)
+    zircon_rows = load_json(zircon_magic_snapshot)
 
     if len(operations) != EXPECTED_TOTAL or len(spells) != EXPECTED_TOTAL:
         raise RuntimeError(
@@ -307,7 +328,7 @@ def main() -> int:
         "nativeMagicInfoRowsReused": sum(1 for item in activated_spells if item["reusedNativeMagicInfo"]),
         "originsMagicInfoRowsUsed": sum(1 for item in activated_spells if not item["reusedNativeMagicInfo"]),
         "magicTypeSource": str(args.zircon_enum),
-        "magicInfoBase": str(args.zircon_magic_snapshot),
+        "magicInfoBase": str(zircon_magic_snapshot),
         "policy": (
             "All 118 explicitly routed active spells are bound to the numeric MagicType values "
             "compiled into patched Zircon. Existing native MagicInfo rows are reused by MagicType "
@@ -319,8 +340,8 @@ def main() -> int:
         "spells": activated_spells,
     }
 
-    args.output_overlay.parent.mkdir(parents=True, exist_ok=True)
-    args.output_overlay.write_text(json.dumps(overlay, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+    output_overlay.parent.mkdir(parents=True, exist_ok=True)
+    output_overlay.write_text(json.dumps(overlay, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
 
     print(
         f"Compiled Crystal runtime activation OK: {activated}/{EXPECTED_RUNTIME_ROUTES} routed spells bound; "
