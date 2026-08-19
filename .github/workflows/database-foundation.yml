@@ -9,6 +9,7 @@ on:
       - 'scripts/fetch-zircon-system-db.*'
       - 'scripts/verify-zircon-four-class-magics.py'
       - 'scripts/audit-zircon-four-class-db.py'
+      - 'scripts/audit-zircon-four-class-runtime.py'
       - 'src/Origins.Database/**'
       - 'tools/Origins.Database.*/**'
       - '.github/workflows/database-foundation.yml'
@@ -19,6 +20,7 @@ on:
       - 'scripts/fetch-zircon-system-db.*'
       - 'scripts/verify-zircon-four-class-magics.py'
       - 'scripts/audit-zircon-four-class-db.py'
+      - 'scripts/audit-zircon-four-class-runtime.py'
       - 'src/Origins.Database/**'
       - 'tools/Origins.Database.*/**'
       - '.github/workflows/database-foundation.yml'
@@ -73,6 +75,14 @@ jobs:
           --magic-info SnapshotZircon/LibraryCore__Library_SystemModels_MagicInfo.json
           --output ZirconMagicAudit/four-class-magic-db-report.json
 
+      - name: Audit four-class runtime handlers and playable coverage
+        run: >-
+          python3 scripts/audit-zircon-four-class-runtime.py
+          --catalog database/magic/zircon-four-class-magic-types.json
+          --magic-info SnapshotZircon/LibraryCore__Library_SystemModels_MagicInfo.json
+          --magics-root vendor/zircon/ServerLibrary/Models/Magics
+          --output ZirconMagicAudit/four-class-magic-runtime-report.json
+
       - name: Publish canonical Zircon database snapshot
         if: success()
         uses: actions/upload-artifact@v4
@@ -82,4 +92,5 @@ jobs:
             Database/System.db
             SnapshotZircon/
             ZirconMagicAudit/four-class-magic-db-report.json
+            ZirconMagicAudit/four-class-magic-runtime-report.json
           if-no-files-found: error
