@@ -51,7 +51,9 @@ namespace Server.Models.Magics
                 damage *= 2;
             damage += Magic.GetPower();
 
-            Player.Direction = Functions.DirectionFromPoint(CurrentLocation, attacker.CurrentLocation);
+            // Crystal faces ReverseDirection(target.Direction), not a newly
+            // calculated direction from the two coordinates.
+            Player.Direction = Functions.ShiftDirection(attacker.Direction, 4);
             Player.Attack(attacker, new List<MagicType> { Type }, true, damage);
             Player.LevelMagic(Magic);
             Player.BuffRemove(BuffType.CounterAttack);
