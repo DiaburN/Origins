@@ -1,7 +1,7 @@
 diff --git a/LibraryCore/Enum.cs b/LibraryCore/Enum.cs
 --- a/LibraryCore/Enum.cs
 +++ b/LibraryCore/Enum.cs
-@@ -11,7 +11,9 @@ namespace Library
+@@ -11,6 +11,8 @@ namespace Library
      {
          Warrior = 0,
          Wizard = 1,
@@ -10,7 +10,7 @@ diff --git a/LibraryCore/Enum.cs b/LibraryCore/Enum.cs
 +        Archer = 4,
 +        Monk = 5,
      }
-@@ -55,16 +57,18 @@ namespace Library
+@@ -55,15 +57,17 @@ namespace Library
      public enum RequiredClass : byte
      {
          None = 0,
