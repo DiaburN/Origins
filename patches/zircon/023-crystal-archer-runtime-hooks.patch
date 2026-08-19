@@ -99,8 +99,8 @@ diff --git a/ServerLibrary/Models/MapObject.cs b/ServerLibrary/Models/MapObject.
 --- a/ServerLibrary/Models/MapObject.cs
 +++ b/ServerLibrary/Models/MapObject.cs
 @@
-                     case BuffType.CrystalHealing:
-@@
+                         if (buff.Stats[Stat.Healing] <= 0 || CurrentHP >= Stats[Stat.Health])
+                             expiredBuffs.Add(buff);
                          break;
 +                    case BuffType.CrystalDelayedExplosion:
 +                    case BuffType.CrystalDelayedExplosion2:
@@ -139,6 +139,8 @@ diff --git a/ServerLibrary/Models/MapObject.cs b/ServerLibrary/Models/MapObject.
 +
 +                        expiredBuffs.Add(buff);
 +                        break;
+                     case BuffType.Cloak:
+                         buff.TickTime -= ticks;
 diff --git a/ServerLibrary/Models/SpellObject.cs b/ServerLibrary/Models/SpellObject.cs
 --- a/ServerLibrary/Models/SpellObject.cs
 +++ b/ServerLibrary/Models/SpellObject.cs
@@ -147,8 +149,7 @@ diff --git a/ServerLibrary/Models/SpellObject.cs b/ServerLibrary/Models/SpellObj
 +        public int CrystalTrapGroupId;
 +        public bool CrystalTrapDetonated;
 @@
-                 case SpellEffect.CrystalHealingCircle2:
-@@
+                     }
                      break;
 +                case SpellEffect.CrystalExplosiveTrap:
 +                    {
@@ -168,6 +169,7 @@ diff --git a/ServerLibrary/Models/SpellObject.cs b/ServerLibrary/Models/SpellObj
 +                    }
 +                    break;
                  case SpellEffect.PoisonousCloud:
+                     if (!Owner.CanHelpTarget(ob)) return;
 diff --git a/ServerLibrary/Models/MonsterObject.cs b/ServerLibrary/Models/MonsterObject.cs
 --- a/ServerLibrary/Models/MonsterObject.cs
 +++ b/ServerLibrary/Models/MonsterObject.cs
