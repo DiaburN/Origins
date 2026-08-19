@@ -1,190 +1,75 @@
-name: Database Foundation
+name: Origins DxR - Zircon Foundation
 
 on:
   push:
-    branches: [main]
+    branches: [Origins-DxR]
     paths:
+      - 'database/**'
+      - 'scripts/bootstrap-zircon.*'
+      - 'scripts/fetch-zircon-system-db.*'
+      - 'scripts/verify-zircon-four-class-magics.py'
       - 'src/Origins.Database/**'
       - 'tools/Origins.Database.*/**'
-      - 'tools/Origins.UsersDb.Smoke/**'
-      - 'tools/Origins.CrystalJevMagic.Export/**'
-      - 'database/**'
-      - 'scripts/**'
-      - 'overrides/zircon/**'
-      - 'vendor/README.md'
       - '.github/workflows/database-foundation.yml'
   pull_request:
     paths:
+      - 'database/**'
+      - 'scripts/bootstrap-zircon.*'
+      - 'scripts/fetch-zircon-system-db.*'
+      - 'scripts/verify-zircon-four-class-magics.py'
       - 'src/Origins.Database/**'
       - 'tools/Origins.Database.*/**'
-      - 'tools/Origins.UsersDb.Smoke/**'
-      - 'tools/Origins.CrystalJevMagic.Export/**'
-      - 'database/**'
-      - 'scripts/**'
-      - 'overrides/zircon/**'
-      - 'vendor/README.md'
       - '.github/workflows/database-foundation.yml'
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
-  build:
+  zircon-foundation:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout ORIGINS
+      - name: Checkout ORIGINS DxR
         uses: actions/checkout@v4
-      - name: Install .NET 10
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: '10.0.x'
-      - name: Install .NET 8 for Crystal reader
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: '8.0.x'
-      - name: Pin official Zircon source and apply ORIGINS overrides
-        run: bash scripts/bootstrap-zircon.sh
-      - name: Pin official Crystal source
-        run: bash scripts/bootstrap-crystal.sh
-      - name: Pin Crystal.Database Jev source
-        run: bash scripts/bootstrap-crystal-database.sh
-      - name: Validate magic research scripts
-        run: python3 -m py_compile scripts/generate-crystal-magic-catalog.py scripts/compare-crystal-zircon-magics.py scripts/compare-crystal-defaults-jev.py scripts/generate-magic-implementation-index.py scripts/project-crystal-magic-numerics.py scripts/build-magic-review-queue.py
-      - name: Build overridden Zircon ServerLibrary
-        run: dotnet build vendor/zircon/ServerLibrary/ServerLibrary.csproj --configuration Release
-      - name: Build ORIGINS database foundation
-        run: dotnet build src/Origins.Database/Origins.Database.csproj --configuration Release
-      - name: Build database verifier
-        run: dotnet build tools/Origins.Database.Verify/Origins.Database.Verify.csproj --configuration Release
-      - name: Build database upgrader
-        run: dotnet build tools/Origins.Database.Upgrade/Origins.Database.Upgrade.csproj --configuration Release
-      - name: Build database exporter
-        run: dotnet build tools/Origins.Database.Export/Origins.Database.Export.csproj --configuration Release
-      - name: Build database importer
-        run: dotnet build tools/Origins.Database.Import/Origins.Database.Import.csproj --configuration Release
-      - name: Build overlay tool
-        run: dotnet build tools/Origins.Database.ApplyOverlay/Origins.Database.ApplyOverlay.csproj --configuration Release
-      - name: Build database auditor
-        run: dotnet build tools/Origins.Database.Audit/Origins.Database.Audit.csproj --configuration Release
-      - name: Build Users.db smoke test
-        run: dotnet build tools/Origins.UsersDb.Smoke/Origins.UsersDb.Smoke.csproj --configuration Release
-      - name: Build Crystal Jev magic reader
-        run: dotnet build tools/Origins.CrystalJevMagic.Export/Origins.CrystalJevMagic.Export.csproj --configuration Release
 
-  migrate-and-roundtrip-system-db:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout ORIGINS
-        uses: actions/checkout@v4
       - name: Install .NET 10
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '10.0.x'
-      - name: Install .NET 8 for Crystal reader
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: '8.0.x'
+
       - name: Install 7-Zip
         run: sudo apt-get update && sudo apt-get install -y p7zip-full
-      - name: Pin official Zircon source and apply ORIGINS overrides
+
+      - name: Checkout pinned source-pure Zircon
         run: bash scripts/bootstrap-zircon.sh
-      - name: Pin official Crystal source
-        run: bash scripts/bootstrap-crystal.sh
-      - name: Pin Crystal.Database Jev source
-        run: bash scripts/bootstrap-crystal-database.sh
-      - name: Fetch published Zircon System.db
+
+      - name: Verify four-class MagicType catalog against pinned Zircon source
+        run: python3 scripts/verify-zircon-four-class-magics.py --source vendor/zircon/LibraryCore/Enum.cs --catalog database/magic/zircon-four-class-magic-types.json
+
+      - name: Build pinned Zircon ServerLibrary
+        run: dotnet build vendor/zircon/ServerLibrary/ServerLibrary.csproj --configuration Release
+
+      - name: Build ORIGINS database verifier
+        run: dotnet build tools/Origins.Database.Verify/Origins.Database.Verify.csproj --configuration Release
+
+      - name: Build ORIGINS database exporter
+        run: dotnet build tools/Origins.Database.Export/Origins.Database.Export.csproj --configuration Release
+
+      - name: Fetch canonical Zircon System.db
         run: bash scripts/fetch-zircon-system-db.sh
-      - name: Verify source database
+
+      - name: Verify canonical Zircon System.db
         run: dotnet run --project tools/Origins.Database.Verify/Origins.Database.Verify.csproj --configuration Release -- ./Database ./Backup
-      - name: Upgrade copied System.db using current Zircon mappings
-        run: dotnet run --project tools/Origins.Database.Upgrade/Origins.Database.Upgrade.csproj --configuration Release -- ./Database/System.db ./Database2026 ./Backup2026
-      - name: Verify upgraded database
-        run: dotnet run --project tools/Origins.Database.Verify/Origins.Database.Verify.csproj --configuration Release -- ./Database2026 ./Backup2026
-      - name: Audit upgraded Zircon database
-        run: dotnet run --project tools/Origins.Database.Audit/Origins.Database.Audit.csproj --configuration Release -- ./Database2026 ./Database2026/audit.json ./Backup2026
-      - name: Smoke-test Users.db account character and UserMagic persistence
-        run: dotnet run --project tools/Origins.UsersDb.Smoke/Origins.UsersDb.Smoke.csproj --configuration Release -- ./Database2026/System.db ./UserResearch/usersdb-smoke.json
-      - name: Export every Zircon system collection to JSON
-        run: dotnet run --project tools/Origins.Database.Export/Origins.Database.Export.csproj --configuration Release -- ./Database2026 ./SnapshotBase ./Backup2026
-      - name: Generate Crystal source spell catalog
-        run: python3 scripts/generate-crystal-magic-catalog.py ./vendor/crystal ./MagicResearch/crystal-source-catalog.json
-      - name: Index Crystal spell call sites and Zircon handlers
-        run: python3 scripts/generate-magic-implementation-index.py ./vendor/crystal ./vendor/zircon ./MagicResearch/crystal-source-catalog.json ./MagicResearch/magic-implementation-index.json
-      - name: Export effective Jev spell values through Crystal LoadDB
-        run: dotnet run --project tools/Origins.CrystalJevMagic.Export/Origins.CrystalJevMagic.Export.csproj --configuration Release -- ./vendor/crystal-database/Jev/Server.MirDB ./MagicResearch/crystal-jev-effective-magics.json
-      - name: Compare Crystal source defaults against Jev
-        run: python3 scripts/compare-crystal-defaults-jev.py ./MagicResearch/crystal-source-catalog.json ./MagicResearch/crystal-jev-effective-magics.json ./MagicResearch/crystal-jev-differences.json
-      - name: Compare Crystal catalog against Zircon MagicInfo
-        run: python3 scripts/compare-crystal-zircon-magics.py ./MagicResearch/crystal-source-catalog.json ./SnapshotBase/LibraryCore__Library_SystemModels_MagicInfo.json ./MagicResearch/crystal-zircon-comparison.json
-      - name: Project Crystal numerics into Zircon MagicInfo schema
-        run: python3 scripts/project-crystal-magic-numerics.py ./MagicResearch/crystal-source-catalog.json ./MagicResearch/crystal-jev-effective-magics.json ./MagicResearch/crystal-zircon-numeric-projection.json
-      - name: Build unified Crystal to Zircon magic review queue
-        run: python3 scripts/build-magic-review-queue.py ./MagicResearch/crystal-source-catalog.json ./MagicResearch/crystal-jev-effective-magics.json ./MagicResearch/crystal-jev-differences.json ./MagicResearch/crystal-zircon-comparison.json ./MagicResearch/magic-implementation-index.json ./MagicResearch/magic-review-queue.json
-      - name: Apply ORIGINS overlays
-        run: dotnet run --project tools/Origins.Database.ApplyOverlay/Origins.Database.ApplyOverlay.csproj --configuration Release -- ./SnapshotBase ./database/overlays ./SnapshotOrigins ./database/index-policy.json
-      - name: Rebuild ORIGINS System.db from overlayed JSON snapshot
-        run: dotnet run --project tools/Origins.Database.Import/Origins.Database.Import.csproj --configuration Release -- ./SnapshotOrigins ./DatabaseOrigins ./BackupOrigins
-      - name: Verify ORIGINS reconstructed database
-        run: dotnet run --project tools/Origins.Database.Verify/Origins.Database.Verify.csproj --configuration Release -- ./DatabaseOrigins ./BackupOrigins
-      - name: Audit ORIGINS reconstructed database
-        run: dotnet run --project tools/Origins.Database.Audit/Origins.Database.Audit.csproj --configuration Release -- ./DatabaseOrigins ./DatabaseOrigins/audit.json ./BackupOrigins
-      - name: Publish reports
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: zircon-system-db-reports
-          path: |
-            Database2026/migration-report.json
-            Database2026/audit.json
-            SnapshotOrigins/overlay-report.json
-            DatabaseOrigins/import-report.json
-            DatabaseOrigins/audit.json
-            MagicResearch/*.json
-            UserResearch/*.json
-          if-no-files-found: warn
-      - name: Publish editable snapshots
+
+      - name: Export canonical Zircon System.db to JSON for inspection
+        run: dotnet run --project tools/Origins.Database.Export/Origins.Database.Export.csproj --configuration Release -- ./Database ./SnapshotZircon ./Backup
+
+      - name: Publish canonical Zircon database snapshot
         if: success()
         uses: actions/upload-artifact@v4
         with:
-          name: origins-zircon-system-snapshots
+          name: origins-dxr-zircon-system
           path: |
-            SnapshotBase/
-            SnapshotOrigins/
+            Database/System.db
+            SnapshotZircon/
           if-no-files-found: error
-      - name: Publish upgraded and ORIGINS System.db files
-        if: success()
-        uses: actions/upload-artifact@v4
-        with:
-          name: origins-zircon-system-db-2026
-          path: |
-            Database2026/System.db
-            DatabaseOrigins/System.db
-          if-no-files-found: error
-      - name: Publish validated snapshot and research to generated branch
-        if: success() && github.event_name != 'pull_request'
-        shell: bash
-        run: |
-          set -euo pipefail
-          rm -rf database/generated/zircon-system database/generated/magic-research database/generated/usersdb-research
-          mkdir -p database/generated/zircon-system database/generated/magic-research database/generated/usersdb-research
-          cp -a SnapshotBase/. database/generated/zircon-system/
-          cp Database2026/migration-report.json database/generated/zircon-system/migration-report.json
-          cp Database2026/audit.json database/generated/zircon-system/audit.json
-          cp DatabaseOrigins/import-report.json database/generated/zircon-system/import-report.json
-          cp SnapshotOrigins/overlay-report.json database/generated/zircon-system/overlay-report.json
-          cp MagicResearch/*.json database/generated/magic-research/
-          cp UserResearch/*.json database/generated/usersdb-research/
-
-          git config user.name "ORIGINS Database Bot"
-          git config user.email "actions@users.noreply.github.com"
-          git checkout -B generated/zircon-system-snapshot
-          git add database/generated/zircon-system database/generated/magic-research database/generated/usersdb-research
-
-          if git diff --cached --quiet; then
-            echo "Generated snapshot/research is unchanged."
-            exit 0
-          fi
-
-          git commit -m "generated(db): refresh Zircon snapshot and ORIGINS database research"
-          git push --force origin HEAD:generated/zircon-system-snapshot
