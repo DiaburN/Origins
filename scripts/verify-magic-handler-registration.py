@@ -1,10 +1,14 @@
 #!/usr/bin/env python3
-"""Verify every runtime-ready Crystal spell resolves to a registered Zircon MagicObject handler.
+"""Verify all routed Crystal spells resolve to registered Zircon MagicObject handlers.
 
 ORIGINS extends Zircon registration to accept every non-abstract class assignable
 to MagicObject that carries [MagicType(MagicType.X)]. This check mirrors that
 rule statically, including handler classes that inherit through shared abstract
 bases such as CrystalArcherMagic and CrystalArcherProjectile.
+
+The active catalogue contains 119 spells. Exactly 118 have explicit runtime
+routes (`zirconMagicType`); FastMove is the single retained upstream source stub
+and deliberately has no handler identity.
 """
 from __future__ import annotations
 
@@ -12,6 +16,8 @@ import argparse
 import json
 import pathlib
 import re
+
+EXPECTED_RUNTIME_ROUTES = 118
 
 
 def norm(value: str) -> str:
@@ -94,7 +100,23 @@ def main() -> int:
     parser.add_argument("decisions", type=pathlib.Path)
     args = parser.parse_args()
 
-    decisions = [d for d in load_decisions(args.decisions) if d.get("runtimeReady")]
+    all_decisions = load_decisions(args.decisions)
+    decisions = [d for d in all_decisions if d.get("zirconMagicType")]
+    source_stubs = [
+        d for d in all_decisions
+        if not d.get("zirconMagicType") and d.get("executionKind") == "SourceStub"
+    ]
+
+    if len(decisions) != EXPECTED_RUNTIME_ROUTES:
+        raise RuntimeError(
+            f"Expected {EXPECTED_RUNTIME_ROUTES} routed active spells, found {len(decisions)}"
+        )
+    if len(source_stubs) != 1 or norm(source_stubs[0].get("crystalSpell", "")) != "fastmove":
+        raise RuntimeError(
+            f"Expected FastMove as the single unrouted source stub, found "
+            f"{[d.get('crystalSpell') for d in source_stubs]}"
+        )
+
     handlers, bases = scan_handlers(args.zircon_root / "ServerLibrary" / "Models" / "Magics")
 
     errors: list[str] = []
@@ -102,11 +124,7 @@ def main() -> int:
 
     for decision in decisions:
         spell = decision["crystalSpell"]
-        magic_type = decision.get("zirconMagicType")
-        if not magic_type:
-            errors.append(f"{spell}: missing zirconMagicType")
-            continue
-
+        magic_type = decision["zirconMagicType"]
         matches = handlers.get(magic_type, [])
         registered = [
             item for item in matches
@@ -128,7 +146,10 @@ def main() -> int:
             print(f"- {error}")
         return 1
 
-    print(f"Magic handler registration OK: {len(verified)} runtime-ready Crystal spells")
+    print(
+        f"Magic handler registration OK: {len(verified)}/{EXPECTED_RUNTIME_ROUTES} routed active spells; "
+        "FastMove retained as the single source stub"
+    )
     for item in verified:
         print(f"- {item}")
     return 0
