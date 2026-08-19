@@ -1,5 +1,5 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "source": {
     "crystalRepository": "Suprcode/Crystal",
     "crystalCommit": "0e315fe327192afe52c3d7357ddd1f5b7e26c5b8",
@@ -12,15 +12,20 @@
     "crystalDatabaseEngineImported": false,
     "verifiedMeans": "Crystal server cast/completion/helper path and current Zircon MagicObject path were compared",
     "overlayRequiresRuntimeReady": true,
+    "numericValuesEmbeddedHere": false,
+    "numericProjectionSource": "database/generated/magic-research/crystal-zircon-numeric-projection.json",
+    "jevJoinKey": "normalized spell name",
+    "numericSpellIdUsedAsJevJoinKey": false,
     "zirconOnlyAugmentsAreNotImplicitlyAppliedToCrystalSpells": true
   },
   "decisions": [
     {
       "crystalSpell": "FireBall",
-      "crystalSpellId": 31,
+      "crystalSourceSpellId": 31,
       "zirconMagicType": "FireBall",
       "verified": true,
       "executionKind": "ZirconAdapted",
+      "runtimeReady": true,
       "overlayReady": false,
       "crystalSources": [
         "Server/MirObjects/HumanObject.cs::Magic",
@@ -28,7 +33,7 @@
         "Server/MirObjects/HumanObject.cs::CompleteMagic"
       ],
       "zirconSources": [
-        "ServerLibrary/Models/Magics/Wizard/FireBall.cs",
+        "overrides/zircon/ServerLibrary/Models/Magics/Wizard/FireBall.cs",
         "ServerLibrary/Models/MagicObject.cs"
       ],
       "sharedBehavior": [
@@ -37,39 +42,29 @@
         "MAC/magic-defense damage path",
         "skill levels on successful damage"
       ],
-      "crystalBehaviorToPort": [
+      "portedBehavior": [
         "validate projectile flight path before accepting the cast",
+        "snapshot offensive spell power at cast time",
         "remember target location at cast time",
-        "at impact reject a target that changed map/despawned or moved more than 2 cells from the locked location",
-        "use 500 ms base travel plus 50 ms per distance step"
+        "reject impact after despawn/map change or movement beyond 2 cells",
+        "use 500 ms plus 50 ms per distance step for projectile travel"
       ],
-      "zirconBehaviorToDisableForCrystalMapping": [
-        "FireBall-specific Burning augment hook unless Burning is later explicitly retained as ORIGINS content"
+      "disabledZirconOnlyBehavior": [
+        "FireBall Burning augment hook unless Burning is explicitly retained later"
       ],
-      "numericProjection": {
-        "source": "Jev effective MagicInfo",
-        "BaseCost": 3,
-        "LevelCost": 6,
-        "NeedLevel1": 2,
-        "NeedLevel2": 7,
-        "NeedLevel3": 14,
-        "Experience1": 200,
-        "Experience2": 900,
-        "Experience3": 4000,
-        "Delay": 800,
-        "MinBasePower": 4,
-        "MaxBasePower": 4,
-        "MinLevelPower": 6,
-        "MaxLevelPower": 6,
-        "powerProjectionExactAtLevels0To3": true
-      }
+      "remainingBeforeOverlay": [
+        "regenerate numeric projection by name",
+        "implement Crystal level-scaled cooldown when DelayReduction is non-zero",
+        "resolve target MagicInfo row and write explicit overlay"
+      ]
     },
     {
       "crystalSpell": "ThunderBolt",
-      "crystalSpellId": 33,
+      "crystalSourceSpellId": 36,
       "zirconMagicType": "ThunderBolt",
       "verified": true,
       "executionKind": "ZirconAdapted",
+      "runtimeReady": true,
       "overlayReady": false,
       "crystalSources": [
         "Server/MirObjects/HumanObject.cs::Magic",
@@ -77,7 +72,7 @@
         "Server/MirObjects/HumanObject.cs::CompleteMagic"
       ],
       "zirconSources": [
-        "ServerLibrary/Models/Magics/Wizard/ThunderBolt.cs",
+        "overrides/zircon/ServerLibrary/Models/Magics/Wizard/ThunderBolt.cs",
         "ServerLibrary/Models/MagicObject.cs"
       ],
       "sharedBehavior": [
@@ -85,38 +80,28 @@
         "delayed completion",
         "MAC/magic-defense damage path"
       ],
-      "crystalBehaviorToPort": [
+      "portedBehavior": [
         "500 ms impact delay",
-        "remember target location and reject impact after map/despawn or movement beyond 2 cells",
-        "multiply raw spell damage by 1.5 against undead targets"
+        "snapshot offensive spell power at cast time",
+        "reject impact after despawn/map change or movement beyond 2 cells",
+        "multiply raw spell power by 1.5 against undead monsters"
       ],
-      "zirconBehaviorToDisableForCrystalMapping": [
-        "Zircon Shock augment hook unless that passive is explicitly retained later"
+      "disabledZirconOnlyBehavior": [
+        "Shock augment hook unless that passive is explicitly retained later"
       ],
-      "numericProjection": {
-        "source": "Jev effective MagicInfo",
-        "BaseCost": 12,
-        "LevelCost": 6,
-        "NeedLevel1": 19,
-        "NeedLevel2": 20,
-        "NeedLevel3": 21,
-        "Experience1": 3500,
-        "Experience2": 7000,
-        "Experience3": 10000,
-        "Delay": 2500,
-        "MinBasePower": 11,
-        "MaxBasePower": 16,
-        "MinLevelPower": 6,
-        "MaxLevelPower": 20,
-        "powerProjectionExactAtLevels0To3": true
-      }
+      "remainingBeforeOverlay": [
+        "regenerate numeric projection by name",
+        "implement Crystal level-scaled cooldown when DelayReduction is non-zero",
+        "resolve target MagicInfo row and write explicit overlay"
+      ]
     },
     {
       "crystalSpell": "FireWall",
-      "crystalSpellId": 36,
+      "crystalSourceSpellId": 40,
       "zirconMagicType": "FireWall",
       "verified": true,
       "executionKind": "CrystalAdapted",
+      "runtimeReady": false,
       "overlayReady": false,
       "crystalSources": [
         "Server/MirObjects/HumanObject.cs::Magic",
@@ -134,44 +119,28 @@
         "2-second damage ticks",
         "MAC/magic-defense damage path"
       ],
-      "crystalBehaviorToPort": [
-        "snapshot FireWall damage when the cast is created and reuse that fixed Value on every tick",
-        "duration is 10 + Value / 2 seconds",
+      "crystalBehaviorStillToPort": [
+        "snapshot FireWall damage when the cast is created and reuse that fixed value on every tick",
+        "duration is 10 plus Value divided by 2 seconds",
         "do not place a FireWall on a cell that already contains FireWall",
         "track the five cells as one CastInstanceId",
-        "limit simultaneous FireWall casts per map using MaxFireWallCastsPerMap and recycle the oldest cast group when the limit is reached",
+        "limit simultaneous FireWall cast groups per map and recycle the oldest group",
         "level the magic once for a successful cast rather than once per target/tick"
       ],
       "zirconBehaviorToReplace": [
         "per-cell despawn/replacement of FireWall or Tempest",
         "level-derived TickCount duration",
-        "recalculate Player.MagicAttack power on every tick",
+        "recalculate spell power on every tick",
         "per-hit default MagicAttackSuccess skill leveling"
-      ],
-      "numericProjection": {
-        "source": "Jev effective MagicInfo",
-        "BaseCost": 26,
-        "LevelCost": 9,
-        "NeedLevel1": 22,
-        "NeedLevel2": 24,
-        "NeedLevel3": 26,
-        "Experience1": 8000,
-        "Experience2": 15000,
-        "Experience3": 20000,
-        "Delay": 5000,
-        "MinBasePower": 4,
-        "MaxBasePower": 4,
-        "MinLevelPower": 2,
-        "MaxLevelPower": 2,
-        "powerProjectionExactAtLevels0To3": true
-      }
+      ]
     },
     {
       "crystalSpell": "MagicShield",
-      "crystalSpellId": 40,
+      "crystalSourceSpellId": 44,
       "zirconMagicType": "MagicShield",
       "verified": true,
       "executionKind": "CrystalAdapted",
+      "runtimeReady": false,
       "overlayReady": false,
       "crystalSources": [
         "Server/MirObjects/HumanObject.cs::Magic",
@@ -186,36 +155,24 @@
         "percentage incoming-damage reduction",
         "skill levels when the buff is successfully applied"
       ],
-      "crystalBehaviorToPort": [
+      "crystalBehaviorStillToPort": [
         "500 ms cast completion delay",
-        "damage reduction percent is (magic level + 2) * 10, therefore 20/30/40/50 percent at levels 0/1/2/3",
-        "buff duration is magic.GetPower(current MC roll + 15) seconds"
+        "damage reduction percent is (magic level + 2) * 10 = 20/30/40/50 percent",
+        "buff duration follows Crystal GetPower using the current MC roll plus 15"
       ],
       "zirconBehaviorToReplace": [
-        "fixed 50 percent MagicShield stat at every magic level",
-        "duration formula 30 + level * 20 + MC / 2 (+ Phantom augment)",
-        "generic Zircon MagicShield behavior that additionally consumes RemainingTime according to incoming damage"
-      ],
-      "numericProjection": {
-        "source": "Jev effective MagicInfo",
-        "BaseCost": 28,
-        "LevelCost": 12,
-        "NeedLevel1": 31,
-        "NeedLevel2": 34,
-        "NeedLevel3": 38,
-        "Experience1": 18000,
-        "Experience2": 23000,
-        "Experience3": 31000,
-        "Delay": 1200,
-        "standardSpellPowerFields": "not used for the Crystal shield-duration formula; handler uses MC + 15 through Crystal GetPower semantics"
-      }
+        "fixed 50 percent shield reduction at every skill level",
+        "Zircon-specific duration formula and Phantom augment",
+        "generic Zircon shield RemainingTime drain tied to incoming damage"
+      ]
     },
     {
       "crystalSpell": "IceStorm",
-      "crystalSpellId": 44,
+      "crystalSourceSpellId": 47,
       "zirconMagicType": "IceStorm",
       "verified": true,
       "executionKind": "ZirconAdapted",
+      "runtimeReady": true,
       "overlayReady": false,
       "crystalSources": [
         "Server/MirObjects/HumanObject.cs::Magic",
@@ -223,7 +180,7 @@
         "Server/MirEnvir/Map.cs::CompleteMagic"
       ],
       "zirconSources": [
-        "ServerLibrary/Models/Magics/Wizard/IceStorm.cs",
+        "overrides/zircon/ServerLibrary/Models/Magics/Wizard/IceStorm.cs",
         "ServerLibrary/Models/MagicObject.cs"
       ],
       "sharedBehavior": [
@@ -231,31 +188,16 @@
         "500 ms delayed damage",
         "MAC/magic-defense attack semantics"
       ],
-      "crystalBehaviorToPort": [
-        "snapshot cast damage before the delayed map action",
-        "level the skill once if at least one valid target was attacked"
+      "portedBehavior": [
+        "snapshot offensive spell power before the delayed map hit",
+        "level the skill once if at least one valid target was damaged",
+        "remove Zircon-only Slow status"
       ],
-      "zirconBehaviorToDisableForCrystalMapping": [
-        "built-in Slow=5 and SlowLevel=5 effect because Crystal IceStorm does not apply that status in its damage path",
-        "per-target default MagicAttackSuccess leveling"
-      ],
-      "numericProjection": {
-        "source": "Jev effective MagicInfo",
-        "BaseCost": 30,
-        "LevelCost": 24,
-        "NeedLevel1": 32,
-        "NeedLevel2": 35,
-        "NeedLevel3": 38,
-        "Experience1": 17000,
-        "Experience2": 27000,
-        "Experience3": 40000,
-        "Delay": 5000,
-        "MinBasePower": 17,
-        "MaxBasePower": 17,
-        "MinLevelPower": 9,
-        "MaxLevelPower": 9,
-        "powerProjectionExactAtLevels0To3": true
-      }
+      "remainingBeforeOverlay": [
+        "regenerate numeric projection by name",
+        "implement Crystal level-scaled cooldown when DelayReduction is non-zero",
+        "resolve target MagicInfo row and write explicit overlay"
+      ]
     }
   ]
 }
