@@ -12,10 +12,14 @@ diff --git a/ServerLibrary/Models/MagicObject.cs b/ServerLibrary/Models/MagicObj
          {
 @@
              Player.BuffRemove(BuffType.Transparency);
-+            // Crystal assassin stealth is cancelled by starting another magic.
-+            Player.BuffRemove(BuffType.MoonLight);
-+            Player.BuffRemove(BuffType.DarkBody);
-+            Player.BuffRemove(BuffType.MoonMist);
++            // Crystal assassin stealth is cancelled by starting a different magic,
++            // but the stealth spell being cast must not remove the buff it just applied.
++            if (Type != MagicType.MoonLight)
++                Player.BuffRemove(BuffType.MoonLight);
++            if (Type != MagicType.DarkBody)
++                Player.BuffRemove(BuffType.DarkBody);
++            if (Type != MagicType.MoonMist && Type != MagicType.MoonMist2)
++                Player.BuffRemove(BuffType.MoonMist);
          }
 diff --git a/ServerLibrary/Models/PlayerObject.cs b/ServerLibrary/Models/PlayerObject.cs
 --- a/ServerLibrary/Models/PlayerObject.cs
