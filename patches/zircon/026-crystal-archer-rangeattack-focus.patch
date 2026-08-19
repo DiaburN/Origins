@@ -100,9 +100,10 @@ diff --git a/ServerLibrary/Models/PlayerObject.cs b/ServerLibrary/Models/PlayerO
              DamageItem(GridType.Equipment, (int)EquipmentSlot.Weapon);
          }
 @@
-         public void Attack(MapObject ob, List<MagicType> types, bool primary, int extra)
-         {
-@@
+             for (int i = Pets.Count - 1; i >= 0; i--)
+                 if (Pets[i].Target == null)
+                     Pets[i].Target = ob;
+ 
 -            int power = GetDC();
 +            // Crystal Archer's normal ranged path snapshots the distance-adjusted
 +            // DC roll before the projectile is scheduled. For all other attacks
@@ -111,3 +112,5 @@ diff --git a/ServerLibrary/Models/PlayerObject.cs b/ServerLibrary/Models/PlayerO
 +                        (types.Count == 0 || types.All(x => x == MagicType.Focus))
 +                ? extra
 +                : GetDC();
+ 
+             bool ignoreAccuracy = false, ignoreDefense = false, hasFlameSplash = false;
