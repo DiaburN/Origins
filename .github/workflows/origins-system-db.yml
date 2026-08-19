@@ -87,7 +87,7 @@ jobs:
           set -euo pipefail
           mkdir -p GeneratedResearch
 
-          python3 scripts/generate-crystal-magic-catalog.py ./vendor/crystal ./GeneratedResearch/crystal-source-catalog.json
+          python3 scripts/generate-crystal-magic-catalog-safe.py ./vendor/crystal ./GeneratedResearch/crystal-source-catalog.json
           dotnet run --project tools/Origins.CrystalJevMagic.Export/Origins.CrystalJevMagic.Export.csproj --configuration Release -- ./vendor/crystal-database/Jev/Server.MirDB ./GeneratedResearch/crystal-jev-effective-magics.json
           python3 scripts/project-crystal-magic-numerics.py ./GeneratedResearch/crystal-source-catalog.json ./GeneratedResearch/crystal-jev-effective-magics.json ./GeneratedResearch/crystal-zircon-numeric-projection.json
 
