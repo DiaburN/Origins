@@ -1,0 +1,1 @@
+Temporary CI trigger: validate five runtime-ready Crystal wizard spells in the generated Zircon System.db.
