@@ -17,7 +17,6 @@ namespace Server.Models.Magics
             var response = new MagicCast { Ob = null };
             response.Locations.Add(CurrentLocation);
 
-            // Crystal snapshots DC at cast time and resolves a three-cell line after 500 ms.
             int power = Magic.GetPower() + Player.GetDC();
             ActionList.Add(new DelayedAction(
                 SEnvir.Now.AddMilliseconds(500),
@@ -51,8 +50,16 @@ namespace Server.Models.Magics
                     MapObject ob = cell.Objects[o];
                     if (ob?.Node == null || !Player.CanAttackTarget(ob)) continue;
 
-                    if (ob.Attacked(Player, power, Element.None, true, false, false, true) > 0)
+                    int damage = power - ob.GetMR();
+                    if (damage <= 0)
+                    {
+                        ob.Blocked();
+                        break;
+                    }
+
+                    if (ob.Attacked(Player, damage, Element.None, true, false, false, true) > 0)
                         trained = true;
+                    break;
                 }
             }
 
