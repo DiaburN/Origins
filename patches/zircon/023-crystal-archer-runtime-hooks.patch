@@ -16,8 +16,6 @@ diff --git a/LibraryCore/Enum.cs b/LibraryCore/Enum.cs
 @@
          CrystalHealingCircle2,
 +        CrystalExplosiveTrap,
-+        CrystalNapalmShot,
-+        CrystalNapalmShot2,
      }
 diff --git a/LibraryCore/Stat.cs b/LibraryCore/Stat.cs
 --- a/LibraryCore/Stat.cs
@@ -41,9 +39,9 @@ diff --git a/ServerLibrary/Models/PlayerObject.cs b/ServerLibrary/Models/PlayerO
 @@
      public sealed partial class PlayerObject : MapObject
      {
-+        // Crystal Archer runtime state.  The original stores MentalState and
-+        // element progress on CharacterInfo; ORIGINS keeps this in Zircon's
-+        // runtime object until the database persistence pass is compiled.
++        // Crystal Archer runtime state. The original persists MentalState and
++        // element progress on CharacterInfo; ORIGINS keeps it runtime-only
++        // until the database persistence pass is compile-validated.
 +        public byte CrystalArcherMentalState;
 +        public byte CrystalArcherMentalStateLevel;
 +        public int CrystalArcherElementsLevel;
@@ -70,8 +68,6 @@ diff --git a/ServerLibrary/Models/PlayerObject.cs b/ServerLibrary/Models/PlayerO
 +        {
 +            CrystalArcherElementsLevel = Math.Min(200, CrystalArcherElementsLevel + 50);
 +
-+            // Crystal GatherOrbsPerLevel caps the available tier at the
-+            // learned Meditation level. Level 3 can hold the fourth tier.
 +            int cap = meditationLevel >= 3 ? 200 : 50 * (meditationLevel + 1);
 +            CrystalArcherElementsLevel = Math.Min(CrystalArcherElementsLevel, cap);
 +        }
@@ -87,8 +83,7 @@ diff --git a/ServerLibrary/Models/PlayerObject.cs b/ServerLibrary/Models/PlayerO
 +                int reduction = Math.Max(0, archerBarrier.Stats[Stat.CrystalArcherBarrierReductionPercent]);
 +                power -= power * reduction / 100;
 +
-+                // Crystal base ElementalBarrier burns 60 ms of remaining
-+                // duration for every point that reaches the barrier.
++                // Crystal base ElementalBarrier loses 60 ms per damage point.
 +                archerBarrier.RemainingTime -= TimeSpan.FromMilliseconds(Math.Max(0, power) * 60L);
 +                if (archerBarrier.RemainingTime <= TimeSpan.Zero)
 +                    BuffRemove(archerBarrier);
@@ -129,23 +124,32 @@ diff --git a/ServerLibrary/Models/MapObject.cs b/ServerLibrary/Models/MapObject.
 +                                ? MagicType.DelayedExplosion2
 +                                : MagicType.DelayedExplosion;
 +
-+                            explosionOwner.MagicAttack(
-+                                new List<MagicType> { explosionType },
-+                                this,
-+                                true,
-+                                null,
-+                                buff.Stats[Stat.CrystalDelayedExplosionPower]);
-+
-+                            if (buff.Stats[Stat.CrystalDelayedExplosionInfect] > 0 && CurrentCell?.Objects != null)
++                            // Crystal's delayed detonation resolves over the full 3x3
++                            // square centred on the infected target.
++                            foreach (Cell cell in CurrentMap.GetCells(CurrentLocation, 0, 1))
 +                            {
-+                                // Jev's Infect flag allows the timed blast to seed nearby
-+                                // hostiles. Keep the spread local and source-owned.
-+                                foreach (MapObject nearby in CurrentCell.Objects.ToList())
-+                                {
-+                                    if (nearby == this || nearby.Node == null || !explosionOwner.CanAttackTarget(nearby)) continue;
-+                                    if (nearby.Buffs.Any(x => x.Type == BuffType.CrystalDelayedExplosion2)) continue;
++                                if (cell?.Objects == null) continue;
 +
-+                                    nearby.BuffAdd(
++                                foreach (MapObject victim in cell.Objects.ToList())
++                                {
++                                    if (victim?.Node == null || victim.Dead || !explosionOwner.CanAttackTarget(victim)) continue;
++
++                                    explosionOwner.MagicAttack(
++                                        new List<MagicType> { explosionType },
++                                        victim,
++                                        true,
++                                        null,
++                                        buff.Stats[Stat.CrystalDelayedExplosionPower]);
++
++                                    if (buff.Type != BuffType.CrystalDelayedExplosion2 ||
++                                        buff.Stats[Stat.CrystalDelayedExplosionInfect] <= 0 ||
++                                        victim == this ||
++                                        victim.Buffs.Any(x => x.Type == BuffType.CrystalDelayedExplosion2)) continue;
++
++                                    // Jev DelayedExplosion2 carries Infect=true. Newly infected
++                                    // victims receive the six-second / 1500-ms variant but do not
++                                    // recursively propagate forever.
++                                    victim.BuffAdd(
 +                                        BuffType.CrystalDelayedExplosion2,
 +                                        TimeSpan.FromSeconds(6),
 +                                        new Stats
@@ -183,7 +187,7 @@ diff --git a/ServerLibrary/Models/SpellObject.cs b/ServerLibrary/Models/SpellObj
 +                        CrystalTrapDetonated = true;
 +                        player.MagicAttack(new List<MagicType> { MagicType.ExplosiveTrap }, ob, true, null, Power);
 +
-+                        // Crystal links the front/left/right pieces by cast id.
++                        // Crystal links front/left/right trap pieces by one cast id.
 +                        foreach (SpellObject linked in player.SpellList.ToList())
 +                        {
 +                            if (linked.Effect != SpellEffect.CrystalExplosiveTrap || linked.CrystalTrapGroupId != CrystalTrapGroupId) continue;
@@ -191,14 +195,6 @@ diff --git a/ServerLibrary/Models/SpellObject.cs b/ServerLibrary/Models/SpellObj
 +                            linked.TickCount = Math.Min(linked.TickCount, 1);
 +                            linked.TickTime = SEnvir.Now.AddSeconds(1);
 +                        }
-+                    }
-+                    break;
-+                case SpellEffect.CrystalNapalmShot:
-+                case SpellEffect.CrystalNapalmShot2:
-+                    {
-+                        if (Owner is not PlayerObject player || ob?.Node == null || ob.Dead || !player.CanAttackTarget(ob)) return;
-+                        MagicType type = Effect == SpellEffect.CrystalNapalmShot2 ? MagicType.NapalmShot2 : MagicType.NapalmShot;
-+                        player.MagicAttack(new List<MagicType> { type }, ob, true, null, Power);
 +                    }
 +                    break;
                  case SpellEffect.PoisonousCloud:
