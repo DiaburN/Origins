@@ -1,5 +1,5 @@
 {
-  "schemaVersion": 2,
+  "schemaVersion": 3,
   "source": {
     "crystalRepository": "Suprcode/Crystal",
     "crystalCommit": "0e315fe327192afe52c3d7357ddd1f5b7e26c5b8",
@@ -10,7 +10,7 @@
   "policy": {
     "runtime": "Zircon MagicObject",
     "crystalDatabaseEngineImported": false,
-    "verifiedMeans": "Crystal server cast/completion/helper path and current Zircon MagicObject path were compared",
+    "verifiedMeans": "Crystal server cast/completion/helper path and pinned Zircon runtime path were compared",
     "overlayRequiresRuntimeReady": true,
     "numericValuesEmbeddedHere": false,
     "numericProjectionSource": "database/generated/magic-research/crystal-zircon-numeric-projection.json",
@@ -34,7 +34,7 @@
       ],
       "zirconSources": [
         "overrides/zircon/ServerLibrary/Models/Magics/Wizard/FireBall.cs",
-        "ServerLibrary/Models/MagicObject.cs"
+        "patches/zircon/001-crystal-level-cooldown.patch"
       ],
       "sharedBehavior": [
         "single hostile target projectile",
@@ -47,15 +47,11 @@
         "snapshot offensive spell power at cast time",
         "remember target location at cast time",
         "reject impact after despawn/map change or movement beyond 2 cells",
-        "use 500 ms plus 50 ms per distance step for projectile travel"
+        "use 500 ms plus 50 ms per distance step for projectile travel",
+        "support Crystal level-scaled cooldown through MagicInfo.LevelDelayReduction"
       ],
       "disabledZirconOnlyBehavior": [
         "FireBall Burning augment hook unless Burning is explicitly retained later"
-      ],
-      "remainingBeforeOverlay": [
-        "regenerate numeric projection by name",
-        "implement Crystal level-scaled cooldown when DelayReduction is non-zero",
-        "resolve target MagicInfo row and write explicit overlay"
       ]
     },
     {
@@ -73,7 +69,7 @@
       ],
       "zirconSources": [
         "overrides/zircon/ServerLibrary/Models/Magics/Wizard/ThunderBolt.cs",
-        "ServerLibrary/Models/MagicObject.cs"
+        "patches/zircon/001-crystal-level-cooldown.patch"
       ],
       "sharedBehavior": [
         "single hostile target lightning strike",
@@ -84,91 +80,74 @@
         "500 ms impact delay",
         "snapshot offensive spell power at cast time",
         "reject impact after despawn/map change or movement beyond 2 cells",
-        "multiply raw spell power by 1.5 against undead monsters"
+        "multiply raw spell power by 1.5 against undead monsters",
+        "support Crystal level-scaled cooldown through MagicInfo.LevelDelayReduction"
       ],
       "disabledZirconOnlyBehavior": [
         "Shock augment hook unless that passive is explicitly retained later"
-      ],
-      "remainingBeforeOverlay": [
-        "regenerate numeric projection by name",
-        "implement Crystal level-scaled cooldown when DelayReduction is non-zero",
-        "resolve target MagicInfo row and write explicit overlay"
       ]
     },
     {
       "crystalSpell": "FireWall",
-      "crystalSourceSpellId": 40,
+      "crystalSourceSpellId": 39,
       "zirconMagicType": "FireWall",
       "verified": true,
       "executionKind": "CrystalAdapted",
-      "runtimeReady": false,
+      "runtimeReady": true,
       "overlayReady": false,
       "crystalSources": [
         "Server/MirObjects/HumanObject.cs::Magic",
         "Server/MirObjects/HumanObject.cs::FireWall",
         "Server/MirEnvir/Map.cs::CompleteMagic",
-        "Server/MirObjects/SpellObject.cs::ProcessSpell"
+        "Server/MirObjects/SpellObject.cs::ProcessSpell",
+        "Server/MirDatabase/MapInfo.cs"
       ],
       "zirconSources": [
-        "ServerLibrary/Models/Magics/Wizard/FireWall.cs",
-        "ServerLibrary/Models/SpellObject.cs"
+        "overrides/zircon/ServerLibrary/Models/Magics/Wizard/FireWall.cs",
+        "patches/zircon/002-crystal-firewall-map-policy.patch",
+        "patches/zircon/003-crystal-firewall-spellobject.patch"
       ],
-      "sharedBehavior": [
+      "portedBehavior": [
         "five-cell cross centered on target location",
-        "persistent cell spell objects",
-        "2-second damage ticks",
-        "MAC/magic-defense damage path"
-      ],
-      "crystalBehaviorStillToPort": [
         "snapshot FireWall damage when the cast is created and reuse that fixed value on every tick",
-        "duration is 10 plus Value divided by 2 seconds",
-        "do not place a FireWall on a cell that already contains FireWall",
+        "duration is 10 plus frozen Power divided by 2 seconds",
+        "2-second damage ticks through Zircon attack/MR resolution",
+        "do not replace a cell that already contains FireWall",
         "track the five cells as one CastInstanceId",
-        "limit simultaneous FireWall cast groups per map and recycle the oldest group",
-        "level the magic once for a successful cast rather than once per target/tick"
-      ],
-      "zirconBehaviorToReplace": [
-        "per-cell despawn/replacement of FireWall or Tempest",
-        "level-derived TickCount duration",
-        "recalculate spell power on every tick",
-        "per-hit default MagicAttackSuccess skill leveling"
+        "optionally limit simultaneous FireWall cast groups per map and recycle the oldest group",
+        "level the magic once when the cast is created rather than once per target/tick",
+        "remove Zircon-only FireWall 0.60 power multiplier and PvP duration drain"
       ]
     },
     {
       "crystalSpell": "MagicShield",
-      "crystalSourceSpellId": 44,
+      "crystalSourceSpellId": 43,
       "zirconMagicType": "MagicShield",
       "verified": true,
       "executionKind": "CrystalAdapted",
-      "runtimeReady": false,
+      "runtimeReady": true,
       "overlayReady": false,
       "crystalSources": [
         "Server/MirObjects/HumanObject.cs::Magic",
-        "Server/MirObjects/HumanObject.cs::CompleteMagic"
+        "Server/MirObjects/HumanObject.cs::CompleteMagic",
+        "Server/MirDatabase/MagicInfo.cs"
       ],
       "zirconSources": [
-        "ServerLibrary/Models/Magics/Wizard/MagicShield.cs",
-        "ServerLibrary/Models/MapObject.cs"
+        "overrides/zircon/ServerLibrary/Models/Magics/Wizard/MagicShield.cs",
+        "patches/zircon/004-crystal-magicshield-duration.patch"
       ],
-      "sharedBehavior": [
-        "self buff",
-        "percentage incoming-damage reduction",
-        "skill levels when the buff is successfully applied"
-      ],
-      "crystalBehaviorStillToPort": [
+      "portedBehavior": [
+        "snapshot shield duration from the current MC roll at cast time",
         "500 ms cast completion delay",
         "damage reduction percent is (magic level + 2) * 10 = 20/30/40/50 percent",
-        "buff duration follows Crystal GetPower using the current MC roll plus 15"
-      ],
-      "zirconBehaviorToReplace": [
-        "fixed 50 percent shield reduction at every skill level",
-        "Zircon-specific duration formula and Phantom augment",
-        "generic Zircon shield RemainingTime drain tied to incoming damage"
+        "duration follows Crystal GetPower(MC + 15) semantics",
+        "remove Zircon Phantom augment from the Crystal mapping",
+        "incoming damage no longer consumes MagicShield RemainingTime"
       ]
     },
     {
       "crystalSpell": "IceStorm",
-      "crystalSourceSpellId": 47,
+      "crystalSourceSpellId": 46,
       "zirconMagicType": "IceStorm",
       "verified": true,
       "executionKind": "ZirconAdapted",
@@ -181,22 +160,15 @@
       ],
       "zirconSources": [
         "overrides/zircon/ServerLibrary/Models/Magics/Wizard/IceStorm.cs",
-        "ServerLibrary/Models/MagicObject.cs"
-      ],
-      "sharedBehavior": [
-        "3x3 area centered on selected location",
-        "500 ms delayed damage",
-        "MAC/magic-defense attack semantics"
+        "patches/zircon/001-crystal-level-cooldown.patch"
       ],
       "portedBehavior": [
+        "3x3 area centered on selected location",
+        "500 ms delayed damage",
         "snapshot offensive spell power before the delayed map hit",
         "level the skill once if at least one valid target was damaged",
-        "remove Zircon-only Slow status"
-      ],
-      "remainingBeforeOverlay": [
-        "regenerate numeric projection by name",
-        "implement Crystal level-scaled cooldown when DelayReduction is non-zero",
-        "resolve target MagicInfo row and write explicit overlay"
+        "remove Zircon-only Slow status",
+        "support Crystal level-scaled cooldown through MagicInfo.LevelDelayReduction"
       ]
     }
   ]
