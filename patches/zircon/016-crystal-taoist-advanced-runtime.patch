@@ -24,14 +24,14 @@ diff --git a/LibraryCore/Stat.cs b/LibraryCore/Stat.cs
 --- a/LibraryCore/Stat.cs
 +++ b/LibraryCore/Stat.cs
 @@ -900,6 +900,12 @@ namespace Library
-         [StatDescription(Title = "Freezing", Format = "{0:+#0;-#0;#0}", Mode = StatType.Default, ServerOnly = true)]
-         Freezing = 11002,
+         [StatDescription(Title = "Incoming Damage Reduction", Format = "{0:+#0%;-#0%;#0%}", Mode = StatType.Percent, ServerOnly = true)]
+         IncomingDamageReductionPercent = 11004,
 +
 +        [StatDescription(Title = "Energy Shield Proc Chance", Format = "{0:+#0%;-#0%;#0%}", Mode = StatType.Percent, ServerOnly = true)]
-+        EnergyShieldPercent = 11003,
++        EnergyShieldPercent = 11005,
 +
 +        [StatDescription(Title = "Energy Shield HP Gain", Format = "{0:+#0;-#0;#0}", Mode = StatType.Default, ServerOnly = true)]
-+        EnergyShieldHPGain = 11004,
++        EnergyShieldHPGain = 11006,
  
          [StatDescription(Title = "Duration", Mode = StatType.Time)]
          Duration = 10000,
