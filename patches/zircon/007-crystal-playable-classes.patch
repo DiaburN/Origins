@@ -1,0 +1,31 @@
+diff --git a/LibraryCore/Enum.cs b/LibraryCore/Enum.cs
+--- a/LibraryCore/Enum.cs
++++ b/LibraryCore/Enum.cs
+@@ -11,7 +11,9 @@ namespace Library
+     {
+         Warrior = 0,
+         Wizard = 1,
+         Taoist = 2,
+         Assassin = 3,
++        Archer = 4,
++        Monk = 5,
+     }
+@@ -55,16 +57,18 @@ namespace Library
+     public enum RequiredClass : byte
+     {
+         None = 0,
+         Warrior = 1,
+         Wizard = 2,
+         Taoist = 4,
+         Assassin = 8,
++        Archer = 16,
++        Monk = 32,
+         [Description("Warrior, Wizard, Taoist")]
+         WarWizTao = Warrior | Wizard | Taoist,
+         [Description("Wizard, Taoist")]
+         WizTao = Wizard | Taoist,
+         [Description("Warrior, Assassin")]
+         AssWar = Warrior | Assassin,
+-        All = WarWizTao | Assassin
++        All = WarWizTao | Assassin | Archer | Monk
+     }
