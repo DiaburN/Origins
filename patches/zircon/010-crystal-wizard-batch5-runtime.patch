@@ -73,7 +73,7 @@ diff --git a/LibraryCore/Stat.cs b/LibraryCore/Stat.cs
 diff --git a/ServerLibrary/Models/MagicObject.cs b/ServerLibrary/Models/MagicObject.cs
 --- a/ServerLibrary/Models/MagicObject.cs
 +++ b/ServerLibrary/Models/MagicObject.cs
-@@ -74,7 +74,14 @@ namespace Server.Models
+@@ -74,8 +74,15 @@ namespace Server.Models
          public virtual int GetMagicCost()
          {
              int cost = Magic.Cost;
@@ -92,7 +92,7 @@ diff --git a/ServerLibrary/Models/MagicObject.cs b/ServerLibrary/Models/MagicObj
 diff --git a/ServerLibrary/Models/MapObject.cs b/ServerLibrary/Models/MapObject.cs
 --- a/ServerLibrary/Models/MapObject.cs
 +++ b/ServerLibrary/Models/MapObject.cs
-@@ -57,9 +57,9 @@ namespace Server.Models
+@@ -57,8 +57,8 @@ namespace Server.Models
          public DateTime ActionTime, MoveTime, RegenTime, AttackTime, MagicTime, CellTime, StruckTime, BuffTime, ShockTime, DisplayHPMPTime, ItemReviveTime;
          public List<DelayedAction> ActionList;
  
