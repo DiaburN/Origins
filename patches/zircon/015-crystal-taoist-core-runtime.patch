@@ -8,7 +8,7 @@ diff --git a/LibraryCore/Enum.cs b/LibraryCore/Enum.cs
 +        UltimateEnhancer = 313,
 +        EnergyShield = 314,
 @@ -910,6 +913,22 @@ namespace Library
-         ImmortalSkin1 = 1114,
+         StormEscape1 = 1217,
 +
 +        // ORIGINS: Crystal / Crystal-Monk Taoist runtime identities.
 +        Revelation = 1300,
