@@ -23,15 +23,15 @@ diff --git a/LibraryCore/Enum.cs b/LibraryCore/Enum.cs
 diff --git a/LibraryCore/Stat.cs b/LibraryCore/Stat.cs
 --- a/LibraryCore/Stat.cs
 +++ b/LibraryCore/Stat.cs
-@@ -900,6 +900,12 @@ namespace Library
-         [StatDescription(Title = "Freezing", Format = "{0:+#0;-#0;#0}", Mode = StatType.Default, ServerOnly = true)]
-         Freezing = 11002,
+@@ -903,6 +903,12 @@ namespace Library
+         [StatDescription(Title = "Attack Power", Format = "{0:+#0%;-#0%;#0%}", Mode = StatType.Percent, ServerOnly = true)]
+         AttackPowerPercent = 11003,
 +
 +        [StatDescription(Title = "Energy Shield Proc Chance", Format = "{0:+#0%;-#0%;#0%}", Mode = StatType.Percent, ServerOnly = true)]
-+        EnergyShieldPercent = 11003,
++        EnergyShieldPercent = 11004,
 +
 +        [StatDescription(Title = "Energy Shield HP Gain", Format = "{0:+#0;-#0;#0}", Mode = StatType.Default, ServerOnly = true)]
-+        EnergyShieldHPGain = 11004,
++        EnergyShieldHPGain = 11005,
  
          [StatDescription(Title = "Duration", Mode = StatType.Time)]
          Duration = 10000,
@@ -78,7 +78,6 @@ diff --git a/ServerLibrary/Models/SpellObject.cs b/ServerLibrary/Models/SpellObj
 +                    {
 +                        if (Owner is not PlayerObject player || ob?.Node == null || ob.Dead || !player.CanAttackTarget(ob)) return;
 +
-+                        // Crystal stores the direct cloud hit power at cast time.
 +                        player.MagicAttack(new List<MagicType> { MagicType.PoisonCloud }, ob, true, null, Power);
 +
 +                        if (ob.Dead) return;
