@@ -26,7 +26,7 @@ diff --git a/LibraryCore/SystemModels/MagicInfo.cs b/LibraryCore/SystemModels/Ma
 diff --git a/ServerLibrary/Models/MagicObject.cs b/ServerLibrary/Models/MagicObject.cs
 --- a/ServerLibrary/Models/MagicObject.cs
 +++ b/ServerLibrary/Models/MagicObject.cs
-@@ -303,7 +303,10 @@ namespace Server.Models
+@@ -303,7 +303,9 @@ namespace Server.Models
              }
  
              var cooldownMagic = magic ?? Magic;
