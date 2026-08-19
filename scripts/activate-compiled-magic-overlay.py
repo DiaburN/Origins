@@ -7,6 +7,11 @@ runtime has applied cleanly, all routed handlers have compiled, and handler
 registration has been verified, this finalizer replaces those placeholders with
 the actual MagicType identities from the patched Zircon enum.
 
+When a routed MagicType already has a native Zircon MagicInfo row, ORIGINS reuses
+that row's index instead of creating a second MagicInfo with the same MagicType.
+This is essential for renamed Crystal identities such as Fencing ->
+Swordsmanship, Healing -> Heal, and similar semantic handler mappings.
+
 Exactly one active spell remains disabled: FastMove. The pinned Crystal source
 contains only a commented/unfinished placeholder for it and no usable server
 handler, so ORIGINS preserves its identity without inventing runtime behaviour.
@@ -58,8 +63,6 @@ def load_decisions(path: pathlib.Path) -> list[dict]:
 
 
 def strip_line_comment(line: str) -> str:
-    # MagicType enum entries do not contain string literals, so a simple source
-    # comment trim is intentionally sufficient here.
     return line.split("//", 1)[0].strip()
 
 
@@ -125,9 +128,6 @@ def is_passive(decision: dict) -> bool:
         *(str(item) for item in behavior),
     ]).lower()
 
-    # Meditation is implemented entirely through passive attack-complete hooks,
-    # while its historical decision-mode name describes the orb state rather
-    # than saying "passive" explicitly.
     explicit_passive = {"focus", "meditation"}
     return "passive" in metadata or norm(decision.get("crystalSpell", "")) in explicit_passive
 
@@ -137,6 +137,7 @@ def main() -> int:
     parser.add_argument("input_overlay", type=pathlib.Path)
     parser.add_argument("behavior_decisions", type=pathlib.Path)
     parser.add_argument("zircon_enum", type=pathlib.Path)
+    parser.add_argument("zircon_magic_snapshot", type=pathlib.Path)
     parser.add_argument("output_overlay", type=pathlib.Path)
     args = parser.parse_args()
 
@@ -144,6 +145,7 @@ def main() -> int:
     operations = overlay.get("Operations", [])
     audit = overlay.get("$audit", {})
     spells = audit.get("spells", [])
+    zircon_rows = load_json(args.zircon_magic_snapshot)
 
     if len(operations) != EXPECTED_TOTAL or len(spells) != EXPECTED_TOTAL:
         raise RuntimeError(
@@ -174,9 +176,16 @@ def main() -> int:
         )
 
     enum_values = parse_magic_type_enum(args.zircon_enum)
-    op_by_index = {int(op["Index"]): op for op in operations}
-    if len(op_by_index) != EXPECTED_TOTAL:
-        raise RuntimeError("Final overlay contains duplicate MagicInfo operation indices")
+
+    op_by_original_index = {int(op["Index"]): op for op in operations}
+    if len(op_by_original_index) != EXPECTED_TOTAL:
+        raise RuntimeError("Pre-activation overlay contains duplicate MagicInfo operation indices")
+
+    base_by_magic: dict[int, list[dict]] = {}
+    for row in zircon_rows:
+        if row.get("Magic") is None:
+            continue
+        base_by_magic.setdefault(int(row["Magic"]), []).append(row)
 
     activated = 0
     source_stubs = 0
@@ -190,10 +199,10 @@ def main() -> int:
         if decision is None:
             raise RuntimeError(f"No behavior decision found for active spell {spell}")
 
-        index = int(spell_audit["zirconMagicInfoIndex"])
-        operation = op_by_index.get(index)
+        original_index = int(spell_audit["zirconMagicInfoIndex"])
+        operation = op_by_original_index.get(original_index)
         if operation is None:
-            raise RuntimeError(f"No MagicInfo operation #{index} for {spell}")
+            raise RuntimeError(f"No MagicInfo operation #{original_index} for {spell}")
         fields = operation.setdefault("Set", {})
 
         magic_type_name = decision.get("zirconMagicType")
@@ -214,6 +223,36 @@ def main() -> int:
             raise RuntimeError(f"Duplicate routed MagicType value {actual_magic} while activating {spell}")
         actual_magic_values.add(actual_magic)
 
+        desired_class = int(fields.get("Class", -1))
+        existing_rows = base_by_magic.get(actual_magic, [])
+        if len(existing_rows) > 1:
+            raise RuntimeError(
+                f"Native Zircon snapshot contains {len(existing_rows)} MagicInfo rows for MagicType "
+                f"{actual_magic} ({magic_type_name})"
+            )
+
+        reused_native = False
+        if len(existing_rows) == 1:
+            native = existing_rows[0]
+            native_class = int(native.get("Class", -1))
+            if native_class != desired_class:
+                raise RuntimeError(
+                    f"Cross-class MagicType reuse rejected for {spell}: desired class={desired_class}, "
+                    f"native MagicInfo#{native['Index']} class={native_class}, MagicType={actual_magic}"
+                )
+
+            native_index = int(native["Index"])
+            operation["Index"] = native_index
+            spell_audit["zirconMagicInfoIndex"] = native_index
+            reused_native = True
+
+            if int(fields.get("School", 0)) == 0 and int(native.get("School", 0)) != 0:
+                fields["School"] = int(native["School"])
+            if int(fields.get("Property", 0)) == 0 and int(native.get("Property", 0)) != 0:
+                fields["Property"] = int(native["Property"])
+            if not fields.get("Description") and native.get("Description"):
+                fields["Description"] = native["Description"]
+
         fields["Magic"] = actual_magic
 
         passive = is_passive(decision)
@@ -225,19 +264,27 @@ def main() -> int:
         if int(fields["School"]) == 0 or int(fields["Property"]) == 0:
             raise RuntimeError(f"Activated spell {spell} still has disabled School/Property metadata")
 
+        final_index = int(operation["Index"])
         spell_audit["magicType"] = actual_magic
         spell_audit["magicTypeName"] = magic_type_name
         spell_audit["status"] = "compiled_runtime_ready"
         spell_audit["runtimeActivated"] = True
+        spell_audit["reusedNativeMagicInfo"] = reused_native
         activated += 1
         activated_spells.append({
             "spell": spell,
             "magicTypeName": magic_type_name,
             "magicType": actual_magic,
-            "magicInfoIndex": index,
+            "magicInfoIndex": final_index,
+            "reusedNativeMagicInfo": reused_native,
             "school": int(fields["School"]),
             "property": int(fields["Property"]),
         })
+
+    final_indices = [int(op["Index"]) for op in operations]
+    if len(final_indices) != len(set(final_indices)):
+        duplicates = sorted({idx for idx in final_indices if final_indices.count(idx) > 1})
+        raise RuntimeError(f"Runtime activation produced duplicate MagicInfo target indices: {duplicates}")
 
     if activated != EXPECTED_RUNTIME_ROUTES:
         raise RuntimeError(f"Expected {EXPECTED_RUNTIME_ROUTES} activated spells, got {activated}")
@@ -251,13 +298,17 @@ def main() -> int:
         "status": "compiled_handlers_bound",
         "activated": activated,
         "sourceStubs": source_stubs,
+        "nativeMagicInfoRowsReused": sum(1 for item in activated_spells if item["reusedNativeMagicInfo"]),
+        "originsMagicInfoRowsUsed": sum(1 for item in activated_spells if not item["reusedNativeMagicInfo"]),
         "magicTypeSource": str(args.zircon_enum),
+        "magicInfoBase": str(args.zircon_magic_snapshot),
         "policy": (
             "All 118 explicitly routed active spells are bound to the numeric MagicType values "
-            "compiled into patched Zircon. FastMove remains disabled because upstream Crystal "
-            "contains no usable MagicInfo/server handler. Existing nonzero Zircon School/Property "
-            "metadata is preserved; new routed rows receive non-None integration metadata, with "
-            "passive decisions retained as passive."
+            "compiled into patched Zircon. Existing native MagicInfo rows are reused by MagicType "
+            "to prevent duplicate handler identities for renamed Crystal spells. FastMove remains "
+            "disabled because upstream Crystal contains no usable MagicInfo/server handler. New "
+            "ORIGINS rows receive non-None integration metadata, with passive decisions retained "
+            "as passive."
         ),
         "spells": activated_spells,
     }
@@ -267,6 +318,7 @@ def main() -> int:
 
     print(
         f"Compiled Crystal runtime activation OK: {activated}/{EXPECTED_RUNTIME_ROUTES} routed spells bound; "
+        f"{audit['runtimeActivation']['nativeMagicInfoRowsReused']} native MagicInfo rows reused; "
         f"{source_stubs} source stub retained; 0 pending runtime rows"
     )
     return 0
