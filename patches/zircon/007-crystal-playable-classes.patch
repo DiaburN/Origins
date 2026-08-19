@@ -10,7 +10,7 @@ diff --git a/LibraryCore/Enum.cs b/LibraryCore/Enum.cs
      }
  
      public enum AttackMode : byte
-@@ -74,12 +76,14 @@
+@@ -74,11 +76,13 @@
          Wizard = 2,
          Taoist = 4,
          Assassin = 8,
@@ -25,4 +25,3 @@ diff --git a/LibraryCore/Enum.cs b/LibraryCore/Enum.cs
 -        All = WarWizTao | Assassin
 +        All = WarWizTao | Assassin | Archer | Monk
      }
- }
