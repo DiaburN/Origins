@@ -1,0 +1,71 @@
+{
+  "schemaVersion": 1,
+  "source": {
+    "crystalCommit": "0e315fe327192afe52c3d7357ddd1f5b7e26c5b8",
+    "zirconCommit": "cbf1aa919083bc13fc3f23f93772a8ab8370632d"
+  },
+  "decisions": [
+    {
+      "crystalSpell": "Vampirism",
+      "crystalSourceSpellId": 45,
+      "zirconMagicType": "Vampirism",
+      "verified": true,
+      "executionKind": "CrystalAdapted",
+      "runtimeReady": false,
+      "overlayReady": false,
+      "portedBehavior": [
+        "hostile target only",
+        "500 ms delayed MAC attack using cast-time MC/power snapshot",
+        "successful damage adds 25 percent per magic level+1 to a private healing pool",
+        "first healing pulse starts after 1000 ms",
+        "healing pool drains in chunks of up to 10 HP every 500 ms",
+        "skill levels on successful damage"
+      ],
+      "zirconSources": [
+        "overrides/zircon/ServerLibrary/Models/Magics/Wizard/Vampirism.cs",
+        "patches/zircon/008-crystal-magicbooster-runtime.patch"
+      ]
+    },
+    {
+      "crystalSpell": "FlameField",
+      "crystalSourceSpellId": 49,
+      "zirconMagicType": "FlameField",
+      "verified": true,
+      "executionKind": "CrystalAdapted",
+      "runtimeReady": false,
+      "overlayReady": false,
+      "portedBehavior": [
+        "500 ms delayed 5x5 area centered on the caster",
+        "cast-time MC/power snapshot",
+        "full MAC damage to every hostile player/monster in the area",
+        "Fire element in Zircon combat resolution",
+        "skill levels once per successful area cast"
+      ],
+      "zirconSources": [
+        "overrides/zircon/ServerLibrary/Models/Magics/Wizard/FlameField.cs",
+        "patches/zircon/008-crystal-magicbooster-runtime.patch"
+      ]
+    },
+    {
+      "crystalSpell": "MagicBooster",
+      "crystalSourceSpellId": 51,
+      "zirconMagicType": "MagicBooster",
+      "verified": true,
+      "executionKind": "CrystalAdapted",
+      "runtimeReady": false,
+      "overlayReady": false,
+      "portedBehavior": [
+        "500 ms delayed self buff",
+        "adds 6 + 6 per magic level to both MinMC and MaxMC",
+        "lasts 60 seconds",
+        "increases spell mana costs by 6 + magic level percent",
+        "mana penalty is applied dynamically at CheckCost and MagicConsume",
+        "skill levels after the buff is applied"
+      ],
+      "zirconSources": [
+        "overrides/zircon/ServerLibrary/Models/Magics/Wizard/MagicBooster.cs",
+        "patches/zircon/008-crystal-magicbooster-runtime.patch"
+      ]
+    }
+  ]
+}
