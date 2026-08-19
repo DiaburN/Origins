@@ -49,7 +49,10 @@ diff --git a/LibraryCore/Functions.cs b/LibraryCore/Functions.cs
 diff --git a/ServerLibrary/Models/MapObject.cs b/ServerLibrary/Models/MapObject.cs
 --- a/ServerLibrary/Models/MapObject.cs
 +++ b/ServerLibrary/Models/MapObject.cs
-@@ -443,6 +443,25 @@ namespace Server.Models
+@@ -57,6 +57,7 @@ namespace Server.Models
+         public DateTime ActionTime, MoveTime, RegenTime, AttackTime, MagicTime, CellTime, StruckTime, BuffTime, ShockTime, DisplayHPMPTime, ItemReviveTime;
++        public DateTime CrystalRevelationTime;
+@@ -443,6 +444,25 @@ namespace Server.Models
                      case BuffType.Heal:
                          buff.TickTime -= ticks;
 @@
