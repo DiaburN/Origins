@@ -1,0 +1,52 @@
+diff --git a/ServerLibrary/Models/SpellObject.cs b/ServerLibrary/Models/SpellObject.cs
+--- a/ServerLibrary/Models/SpellObject.cs
++++ b/ServerLibrary/Models/SpellObject.cs
+@@ -20,12 +20,14 @@ namespace Server.Models
+         public int TickCount;
+         public TimeSpan TickFrequency;
+         public DateTime TickTime;
++        public DateTime ExpireTime;
+         public MapObject Owner;
+         public UserMagic Magic;
+         public int Power;
++        public int CastInstanceId;
+ 
+         public List<MapObject> Targets = new List<MapObject>();
+@@ -38,6 +40,18 @@ namespace Server.Models
+                 return;
+             }
+ 
++            if (ExpireTime != DateTime.MinValue && SEnvir.Now > ExpireTime)
++            {
++                Despawn();
++                return;
++            }
++
++            if (Effect == SpellEffect.FireWall && Owner?.CurrentMap != CurrentMap)
++            {
++                Despawn();
++                return;
++            }
++
+             if (SEnvir.Now < TickTime) return;
+ 
+             if (TickCount-- <= 0)
+@@ -136,17 +150,7 @@ namespace Server.Models
+                         {
+                             if (!player.CanAttackTarget(ob)) return;
+ 
+-                            int damage = player.MagicAttack(new List<MagicType> { MagicType.FireWall }, ob, true);
+-
+-                            if (damage > 0 && ob.Race == ObjectType.Player)
+-                            {
+-                                foreach (SpellObject spell in player.SpellList)
+-                                {
+-                                    if (spell.Effect != Effect) continue;
+-
+-                                    spell.TickCount--;
+-                                }
+-                            }
++                            player.MagicAttack(new List<MagicType> { MagicType.FireWall }, ob, true, null, Power);
+                         }
+                     }
+                     break;
