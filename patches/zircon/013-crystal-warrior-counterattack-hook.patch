@@ -1,7 +1,7 @@
 diff --git a/ServerLibrary/Models/PlayerObject.cs b/ServerLibrary/Models/PlayerObject.cs
 --- a/ServerLibrary/Models/PlayerObject.cs
 +++ b/ServerLibrary/Models/PlayerObject.cs
-@@ -2850,6 +2850,22 @@ namespace Server.Models
+@@ -2850,5 +2850,20 @@ namespace Server.Models
              if (Buffs.Any(x => x.Type == BuffType.Invincibility) && GetMagic(MagicType.Invincibility, out Invincibility invincibility))
                  LevelMagic(invincibility.Magic);
 +
