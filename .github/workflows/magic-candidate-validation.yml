@@ -138,6 +138,7 @@ jobs:
             ./MagicResearch/full-magic-overlay-pre-activation.json \
             ./database/magic/behavior-decisions.json \
             ./vendor/zircon/LibraryCore/Enum.cs \
+            ./SnapshotBase/LibraryCore__Library_SystemModels_MagicInfo.json \
             ./MagicResearch/full-magic-overlay-candidate.json
 
       - name: Validate final candidate coverage
