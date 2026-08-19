@@ -1,0 +1,97 @@
+diff --git a/LibraryCore/Enum.cs b/LibraryCore/Enum.cs
+--- a/LibraryCore/Enum.cs
++++ b/LibraryCore/Enum.cs
+@@ -291,6 +291,9 @@ namespace Library
+         Spiritualism = 310,
+         SoulResonance = 311,
++        CrystalHealing = 312,
++        UltimateEnhancer = 313,
++        EnergyShield = 314,
+@@ -910,6 +913,22 @@ namespace Library
+         ImmortalSkin1 = 1114,
++
++        // ORIGINS: Crystal / Crystal-Monk Taoist runtime identities.
++        Revelation = 1300,
++        EnergyRepulsor = 1301,
++        TrapHexagon = 1302,
++        Hallucination = 1303,
++        UltimateEnhancer = 1304,
++        Reincarnation = 1305,
++        SummonHolyDeva = 1306,
++        Curse = 1307,
++        Plague = 1308,
++        EnergyShield = 1309,
++        PetEnhancer = 1310,
++        HealingCircle = 1311,
++        HealingCircle2 = 1312,
++        Healing2 = 1313,
+     }
+diff --git a/LibraryCore/Functions.cs b/LibraryCore/Functions.cs
+--- a/LibraryCore/Functions.cs
++++ b/LibraryCore/Functions.cs
+@@ -279,6 +279,20 @@ namespace Library
+                 case MagicType.PoisonCloud:
++                case MagicType.Revelation:
++                case MagicType.EnergyRepulsor:
++                case MagicType.TrapHexagon:
++                case MagicType.Hallucination:
++                case MagicType.UltimateEnhancer:
++                case MagicType.Reincarnation:
++                case MagicType.SummonHolyDeva:
++                case MagicType.Curse:
++                case MagicType.Plague:
++                case MagicType.EnergyShield:
++                case MagicType.PetEnhancer:
++                case MagicType.HealingCircle:
++                case MagicType.HealingCircle2:
++                case MagicType.Healing2:
+                     return MirAnimation.Combat2;
+diff --git a/ServerLibrary/Models/MapObject.cs b/ServerLibrary/Models/MapObject.cs
+--- a/ServerLibrary/Models/MapObject.cs
++++ b/ServerLibrary/Models/MapObject.cs
+@@ -443,6 +443,25 @@ namespace Server.Models
+                     case BuffType.Heal:
+                         buff.TickTime -= ticks;
+@@
+                         break;
++                    case BuffType.CrystalHealing:
++                        // Crystal stores healing as a pool and consumes it every 600 ms.
++                        buff.TickTime -= ticks;
++                        if (buff.TickTime > TimeSpan.Zero) continue;
++                        buff.TickTime += buff.TickFrequency;
++
++                        int healingPool = buff.Stats[Stat.Healing];
++                        if (healingPool <= 0 || CurrentHP >= Stats[Stat.Health])
++                        {
++                            expiredBuffs.Add(buff);
++                            break;
++                        }
++
++                        int crystalHeal = 5 + (Level / 10) + (healingPool / 10);
++                        crystalHeal = Math.Min(crystalHeal, healingPool);
++                        ChangeHP(crystalHeal);
++                        buff.Stats[Stat.Healing] -= crystalHeal;
++
++                        if (buff.Stats[Stat.Healing] <= 0 || CurrentHP >= Stats[Stat.Health])
++                            expiredBuffs.Add(buff);
++                        break;
+diff --git a/ServerLibrary/Models/MonsterObject.cs b/ServerLibrary/Models/MonsterObject.cs
+--- a/ServerLibrary/Models/MonsterObject.cs
++++ b/ServerLibrary/Models/MonsterObject.cs
+@@ -17,6 +17,7 @@ namespace Server.Models
+-        public DateTime SearchTime, RoamTime, EXPOwnerTime, DeadTime, RageTime, TameTime;
++        public DateTime SearchTime, RoamTime, EXPOwnerTime, DeadTime, RageTime, TameTime, HallucinationTime;
+@@ -895,6 +896,12 @@ namespace Server.Models
+         public virtual void ProcessAI()
+         {
+             if (Dead) return;
++
++            // Crystal Hallucination clears the current target and prevents
++            // reacquisition until its random 10-29 second window expires.
++            if (SEnvir.Now < HallucinationTime)
++            {
++                Target = null;
++                return;
++            }
+ 
+             if (PetOwner?.Node != null)
