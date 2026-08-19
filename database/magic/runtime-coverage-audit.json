@@ -1,0 +1,78 @@
+{
+  "schemaVersion": 1,
+  "branch": "work/monk-crystal-batch1",
+  "sources": {
+    "crystal": "Suprcode/Crystal@0e315fe327192afe52c3d7357ddd1f5b7e26c5b8",
+    "crystalMonk": "JevLOMCN/Crystal-Monk@381e589e3d7ee736cdf0583c8315c0d144ab058f",
+    "zircon": "Suprcode/Zircon@cbf1aa919083bc13fc3f23f93772a8ab8370632d"
+  },
+  "coverage": {
+    "cataloguedPlayable": 128,
+    "sourceBehaviorRoutes": 127,
+    "sourceStubs": 1,
+    "sourcePortCoverageComplete": true,
+    "compileValidated": false,
+    "clientOverlayValidated": false,
+    "classCounts": {
+      "Warrior": 21,
+      "Wizard": 28,
+      "Taoist": 27,
+      "Assassin": 19,
+      "Archer": 24,
+      "Monk": 9
+    }
+  },
+  "sourceStubs": [
+    {
+      "class": "Wizard",
+      "id": 54,
+      "spell": "FastMove",
+      "status": "stub_no_magicinfo_no_server_handler",
+      "policy": "do_not_invent"
+    }
+  ],
+  "customMagicTypeRanges": {
+    "Warrior": "1100-1114",
+    "Wizard": "1200-1217",
+    "Taoist": "1300-1313",
+    "Assassin": "1400-1418",
+    "Archer": "1500-1523",
+    "Monk": "1600-1608"
+  },
+  "customBuffTypeRanges": {
+    "Taoist": "312-318",
+    "Assassin": "600-605",
+    "Archer": "620-627"
+  },
+  "customStats": {
+    "11000": "ManaPenaltyPercent",
+    "11001": "TeleportManaPenaltyPercent",
+    "11002": "Freezing",
+    "11003": "AttackPowerPercent",
+    "11004": "EnergyShieldPercent",
+    "11005": "EnergyShieldHPGain",
+    "11006": "HealingCircle2ReductionPercent",
+    "11007": "CrystalArcherBarrierReductionPercent",
+    "11008": "CrystalDelayedExplosionPower",
+    "11009": "CrystalDelayedExplosionInfect",
+    "11010": "PoisonAttack"
+  },
+  "patchAudit": {
+    "highestPatch": 27,
+    "intentionalMissing": [
+      {"patch": 9, "reason": "deleted earlier as redundant"},
+      {"patch": 24, "reason": "absorbed into patch 023 during Archer consolidation"},
+      {"patch": 25, "reason": "absorbed into patch 023 during Archer consolidation"}
+    ],
+    "knownDuplicatePatchHunksRemoved": true,
+    "customStatCollisionFoundAndFixed": true
+  },
+  "policies": {
+    "runtimeArchitecture": "Zircon",
+    "behaviorSource": "Crystal / Crystal-Monk",
+    "numericIdJoin": false,
+    "noPlayerPush": true,
+    "visualBindingSeparatePhase": true
+  },
+  "nextGate": "apply patches to pinned Zircon source and perform real compile/runtime validation; keep new runtimeReady/overlayReady flags false until that succeeds"
+}
