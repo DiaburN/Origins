@@ -1,0 +1,117 @@
+name: Magic Candidate Validation
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'patches/zircon/**'
+      - 'overrides/zircon/**'
+      - 'scripts/bootstrap-zircon.*'
+      - 'scripts/bootstrap-crystal.*'
+      - 'scripts/bootstrap-crystal-database.*'
+      - 'scripts/generate-crystal-magic-catalog.py'
+      - 'scripts/project-crystal-magic-numerics.py'
+      - 'scripts/generate-ready-crystal-magic-overlay.py'
+      - 'database/magic/**'
+      - 'database/overlays/70-magics-crystal.json'
+      - 'database/index-policy.json'
+      - '.github/workflows/magic-candidate-validation.yml'
+  pull_request:
+    paths:
+      - 'patches/zircon/**'
+      - 'overrides/zircon/**'
+      - 'scripts/**'
+      - 'database/magic/**'
+      - 'database/overlays/70-magics-crystal.json'
+      - 'database/index-policy.json'
+      - '.github/workflows/magic-candidate-validation.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  candidate-roundtrip:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout ORIGINS
+        uses: actions/checkout@v4
+
+      - name: Install .NET 10
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Install .NET 8 for Crystal reader
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Install 7-Zip
+        run: sudo apt-get update && sudo apt-get install -y p7zip-full
+
+      - name: Pin Zircon and apply ORIGINS overrides/patches
+        run: bash scripts/bootstrap-zircon.sh
+
+      - name: Pin Crystal
+        run: bash scripts/bootstrap-crystal.sh
+
+      - name: Pin Crystal.Database Jev
+        run: bash scripts/bootstrap-crystal-database.sh
+
+      - name: Validate Python generators
+        run: python3 -m py_compile scripts/generate-crystal-magic-catalog.py scripts/project-crystal-magic-numerics.py scripts/generate-ready-crystal-magic-overlay.py
+
+      - name: Compile overridden Zircon runtime
+        run: dotnet build vendor/zircon/ServerLibrary/ServerLibrary.csproj --configuration Release
+
+      - name: Build required ORIGINS tools
+        run: |
+          dotnet build tools/Origins.Database.Verify/Origins.Database.Verify.csproj --configuration Release
+          dotnet build tools/Origins.Database.Upgrade/Origins.Database.Upgrade.csproj --configuration Release
+          dotnet build tools/Origins.Database.Export/Origins.Database.Export.csproj --configuration Release
+          dotnet build tools/Origins.Database.ApplyOverlay/Origins.Database.ApplyOverlay.csproj --configuration Release
+          dotnet build tools/Origins.Database.Import/Origins.Database.Import.csproj --configuration Release
+          dotnet build tools/Origins.CrystalJevMagic.Export/Origins.CrystalJevMagic.Export.csproj --configuration Release
+
+      - name: Fetch and upgrade published Zircon System.db
+        run: |
+          bash scripts/fetch-zircon-system-db.sh
+          dotnet run --project tools/Origins.Database.Upgrade/Origins.Database.Upgrade.csproj --configuration Release -- ./Database/System.db ./Database2026 ./Backup2026
+          dotnet run --project tools/Origins.Database.Verify/Origins.Database.Verify.csproj --configuration Release -- ./Database2026 ./Backup2026
+
+      - name: Export current Zircon snapshot
+        run: dotnet run --project tools/Origins.Database.Export/Origins.Database.Export.csproj --configuration Release -- ./Database2026 ./SnapshotBase ./Backup2026
+
+      - name: Read current Crystal/Jev spell values
+        run: |
+          python3 scripts/generate-crystal-magic-catalog.py ./vendor/crystal ./MagicResearch/crystal-source-catalog.json
+          dotnet run --project tools/Origins.CrystalJevMagic.Export/Origins.CrystalJevMagic.Export.csproj --configuration Release -- ./vendor/crystal-database/Jev/Server.MirDB ./MagicResearch/crystal-jev-effective-magics.json
+          python3 scripts/project-crystal-magic-numerics.py ./MagicResearch/crystal-source-catalog.json ./MagicResearch/crystal-jev-effective-magics.json ./MagicResearch/crystal-zircon-numeric-projection.json
+
+      - name: Generate runtime-ready overlay candidate
+        run: python3 scripts/generate-ready-crystal-magic-overlay.py ./MagicResearch/crystal-zircon-numeric-projection.json ./database/magic/behavior-decisions-wizard-core.json ./SnapshotBase/LibraryCore__Library_SystemModels_MagicInfo.json ./MagicResearch/ready-magic-overlay-candidate.json
+
+      - name: Assemble candidate overlay set
+        run: |
+          mkdir -p CandidateOverlays
+          cp database/overlays/*.json CandidateOverlays/
+          cp MagicResearch/ready-magic-overlay-candidate.json CandidateOverlays/70-magics-crystal.json
+
+      - name: Apply candidate and rebuild System.db
+        run: |
+          dotnet run --project tools/Origins.Database.ApplyOverlay/Origins.Database.ApplyOverlay.csproj --configuration Release -- ./SnapshotBase ./CandidateOverlays ./SnapshotCandidate ./database/index-policy.json
+          dotnet run --project tools/Origins.Database.Import/Origins.Database.Import.csproj --configuration Release -- ./SnapshotCandidate ./DatabaseCandidate ./BackupCandidate
+          dotnet run --project tools/Origins.Database.Verify/Origins.Database.Verify.csproj --configuration Release -- ./DatabaseCandidate ./BackupCandidate
+
+      - name: Publish candidate evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: crystal-magic-overlay-candidate
+          path: |
+            MagicResearch/crystal-zircon-numeric-projection.json
+            MagicResearch/ready-magic-overlay-candidate.json
+            SnapshotCandidate/overlay-report.json
+            DatabaseCandidate/import-report.json
+          if-no-files-found: warn
