@@ -6,6 +6,7 @@ COMMIT="cbf1aa919083bc13fc3f23f93772a8ab8370632d"
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 DEST="$ROOT/vendor/zircon"
 OVERRIDES="$ROOT/overrides/zircon"
+PATCHES="$ROOT/patches/zircon"
 
 mkdir -p "$ROOT/vendor"
 
@@ -35,4 +36,13 @@ if [ -d "$OVERRIDES" ]; then
   done < <(find "$OVERRIDES" -type f ! -name 'README.md' -print0 | sort -z)
 fi
 
-echo "Official Suprcode/Zircon pinned at $ACTUAL with ORIGINS overrides applied"
+if [ -d "$PATCHES" ]; then
+  while IFS= read -r -d '' patch; do
+    relative="${patch#"$ROOT/"}"
+    git -C "$DEST" apply --check "$patch"
+    git -C "$DEST" apply --whitespace=nowarn "$patch"
+    echo "Applied ORIGINS Zircon patch: $relative"
+  done < <(find "$PATCHES" -type f -name '*.patch' -print0 | sort -z)
+fi
+
+echo "Official Suprcode/Zircon pinned at $ACTUAL with ORIGINS overrides/patches applied"
