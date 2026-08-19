@@ -60,10 +60,11 @@ namespace Server.Models.Magics
             int durationMilliseconds = (int)data[4];
             if (map != CurrentMap) return;
 
-            int ticks = Math.Max(1, durationMilliseconds / 3000);
+            // Zircon SpellObject processes immediately at TickTime, then every 3 s.
+            // Ceil(duration / 3s) therefore reproduces Jev ticks at 0,3,6,... before expiry.
+            int ticks = Math.Max(1, (durationMilliseconds + 2999) / 3000);
             bool spawned = false;
 
-            // Jev secret version creates a 5x5 field and does not suppress overlapping cells.
             foreach (Cell cell in map.GetCells(location, 0, 2))
             {
                 if (cell == null || cell.Movements != null) continue;
