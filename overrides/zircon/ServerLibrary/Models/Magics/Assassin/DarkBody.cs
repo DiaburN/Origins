@@ -13,6 +13,7 @@ namespace Server.Models.Magics
     {
         protected override Element Element => Element.None;
         public override bool UpdateCombatTime => false;
+        public override bool AttackSkill => true;
 
         public DarkBody(PlayerObject player, UserMagic magic) : base(player, magic) { }
 
@@ -34,7 +35,6 @@ namespace Server.Models.Magics
                 return response;
             }
 
-            // Crystal toggles an existing living AssassinClone off instead of summoning another.
             MonsterObject existing = Player.Pets.FirstOrDefault(x => x.MonsterInfo == info && x.Node != null && !x.Dead);
             if (existing != null)
             {
@@ -70,6 +70,22 @@ namespace Server.Models.Magics
             Player.BuffAdd(BuffType.DarkBody, TimeSpan.FromSeconds(durationSeconds), new Stats(), true, false, TimeSpan.Zero);
 
             return response;
+        }
+
+        public override AttackCast AttackCast(MagicType attackType)
+        {
+            var response = new AttackCast();
+            BuffInfo buff = Player.Buffs.Find(x => x.Type == BuffType.DarkBody);
+            if (buff == null) return response;
+
+            Player.BuffRemove(buff);
+            response.Magics.Add(Type);
+            return response;
+        }
+
+        public override int ModifyPowerAdditionner(bool primary, int power, MapObject ob, Stats stats = null, int extra = 0)
+        {
+            return power + Magic.GetPower();
         }
     }
 }
