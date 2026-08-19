@@ -92,6 +92,31 @@ jobs:
       - name: Generate runtime-ready overlay candidate
         run: python3 scripts/generate-ready-crystal-magic-overlay.py ./MagicResearch/crystal-zircon-numeric-projection.json ./database/magic/behavior-decisions-wizard-core.json ./SnapshotBase/LibraryCore__Library_SystemModels_MagicInfo.json ./MagicResearch/ready-magic-overlay-candidate.json
 
+      - name: Validate runtime-ready overlay coverage
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+
+          decisions = json.loads(Path('database/magic/behavior-decisions-wizard-core.json').read_text(encoding='utf-8'))
+          overlay = json.loads(Path('MagicResearch/ready-magic-overlay-candidate.json').read_text(encoding='utf-8'))
+
+          expected = [d['crystalSpell'] for d in decisions['decisions'] if d.get('runtimeReady')]
+          included = [d['crystalSpell'] for d in overlay['$audit']['included']]
+          operations = overlay['Operations']
+          indexes = [op['Index'] for op in operations]
+
+          if len(operations) != len(expected):
+              raise SystemExit(f'Expected {len(expected)} runtime-ready operations, got {len(operations)}')
+          if set(included) != set(expected):
+              raise SystemExit(f'Overlay coverage mismatch. Expected={sorted(expected)} Included={sorted(included)}')
+          if len(indexes) != len(set(indexes)):
+              raise SystemExit(f'Duplicate Zircon MagicInfo indexes in generated overlay: {indexes}')
+
+          print(f'Runtime-ready overlay coverage OK: {len(operations)} spells -> {sorted(included)}')
+          PY
+
       - name: Assemble candidate overlay set
         run: |
           mkdir -p CandidateOverlays
