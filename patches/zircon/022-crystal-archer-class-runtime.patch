@@ -55,7 +55,7 @@ diff --git a/LibraryCore/Functions.cs b/LibraryCore/Functions.cs
 --- a/LibraryCore/Functions.cs
 +++ b/LibraryCore/Functions.cs
 @@
-                 case MagicType.MoonMist2:
+                 case MagicType.CrushingWave:
 +                case MagicType.Focus:
 +                case MagicType.StraightShot:
 +                case MagicType.DoubleShot:
