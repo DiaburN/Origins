@@ -35,9 +35,9 @@ namespace Server.Models.Magics
 
             if (target?.Node == null || target.CurrentMap != CurrentMap) return;
             if (target.Race != ObjectType.Player && target.Race != ObjectType.Monster) return;
-            if (SEnvir.Random.Next(4) > Magic.Level || SEnvir.Now < target.RevealTime) return;
+            if (SEnvir.Random.Next(4) > Magic.Level || SEnvir.Now < target.CrystalRevelationTime) return;
 
-            target.RevealTime = SEnvir.Now.AddSeconds(durationSeconds);
+            target.CrystalRevelationTime = SEnvir.Now.AddSeconds(durationSeconds);
             Player.LevelMagic(Magic);
         }
     }
