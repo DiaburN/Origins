@@ -1,7 +1,7 @@
 diff --git a/LibraryCore/Enum.cs b/LibraryCore/Enum.cs
 --- a/LibraryCore/Enum.cs
 +++ b/LibraryCore/Enum.cs
-@@ -282,6 +282,7 @@ namespace Library
+@@ -282,7 +282,8 @@ namespace Library
          SuperiorMagicShield = 204,
          FrostBite = 205,
          Tornado = 206,
