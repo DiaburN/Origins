@@ -1,12 +1,12 @@
 {
-  "SchemaVersion": 1,
+  "SchemaVersion": 2,
   "Description": "Legacy Zircon indices are frozen. Existing rows may be updated at their original index; new ORIGINS rows must use the reserved range for that collection and must never fill legacy gaps.",
   "Ranges": [
     { "AssemblyName": "LibraryCore", "TypeName": "Library.SystemModels.ItemInfo", "LegacyCollectionIndex": 1167, "OriginsStart": 2000, "Notes": "ORIGINS items/equipment/consumables" },
     { "AssemblyName": "LibraryCore", "TypeName": "Library.SystemModels.ItemInfoStat", "LegacyCollectionIndex": 3594, "OriginsStart": 5000, "Notes": "ORIGINS item stat rows" },
     { "AssemblyName": "LibraryCore", "TypeName": "Library.SystemModels.SetInfo", "LegacyCollectionIndex": 30, "OriginsStart": 1000, "Notes": "ORIGINS equipment sets" },
     { "AssemblyName": "LibraryCore", "TypeName": "Library.SystemModels.SetInfoStat", "LegacyCollectionIndex": 214, "OriginsStart": 1000, "Notes": "ORIGINS set bonuses" },
-    { "AssemblyName": "LibraryCore", "TypeName": "Library.SystemModels.BaseStat", "LegacyCollectionIndex": 360, "OriginsStart": 1000, "Notes": "Reserved for new class/stat progression only" },
+    { "AssemblyName": "LibraryCore", "TypeName": "Library.SystemModels.BaseStat", "LegacyCollectionIndex": 360, "OriginsStart": 1000, "Notes": "Reserved for future ORIGINS class/stat progression changes" },
     { "AssemblyName": "LibraryCore", "TypeName": "Library.SystemModels.MovementInfo", "LegacyCollectionIndex": 3048, "OriginsStart": 4000, "Notes": "ORIGINS map transitions" },
     { "AssemblyName": "LibraryCore", "TypeName": "Library.SystemModels.MapInfo", "LegacyCollectionIndex": 609, "OriginsStart": 1000, "Notes": "ORIGINS maps/rooms" },
     { "AssemblyName": "LibraryCore", "TypeName": "Library.SystemModels.MapRegion", "LegacyCollectionIndex": 1743, "OriginsStart": 2000, "Notes": "ORIGINS regions/spawn/connection markers" },
@@ -32,6 +32,6 @@
     { "AssemblyName": "LibraryCore", "TypeName": "Library.SystemModels.QuestRequirement", "LegacyCollectionIndex": 143, "OriginsStart": 1000, "Notes": "ORIGINS quest requirements" },
     { "AssemblyName": "LibraryCore", "TypeName": "Library.SystemModels.QuestTask", "LegacyCollectionIndex": 74, "OriginsStart": 1000, "Notes": "ORIGINS quest tasks" },
     { "AssemblyName": "LibraryCore", "TypeName": "Library.SystemModels.QuestReward", "LegacyCollectionIndex": 141, "OriginsStart": 1000, "Notes": "ORIGINS quest rewards" },
-    { "AssemblyName": "LibraryCore", "TypeName": "Library.SystemModels.MagicInfo", "LegacyCollectionIndex": 174, "OriginsStart": 1000, "Notes": "Crystal-derived player spells mapped into Zircon MagicInfo" }
+    { "AssemblyName": "LibraryCore", "TypeName": "Library.SystemModels.MagicInfo", "LegacyCollectionIndex": 174, "OriginsStart": 1000, "Notes": "Reserved only for future deliberate ORIGINS-native magic additions; canonical four-class Zircon rows remain untouched" }
   ]
 }
