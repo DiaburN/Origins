@@ -34,7 +34,15 @@ diff --git a/LibraryCore/Enum.cs b/LibraryCore/Enum.cs
 diff --git a/LibraryCore/Functions.cs b/LibraryCore/Functions.cs
 --- a/LibraryCore/Functions.cs
 +++ b/LibraryCore/Functions.cs
-@@ -240,6 +240,12 @@ namespace Library
+@@ -192,6 +192,7 @@ namespace Library
+                 case MagicType.FireBall:
+                 case MagicType.GreatFireBall:
+                 case MagicType.FrostCrunch:
++                case MagicType.FlameDisruptor:
+                 case MagicType.IceBolt:
+                 case MagicType.LightningBall:
+                 case MagicType.GustBlast:
+@@ -240,6 +241,11 @@ namespace Library
                  case MagicType.MagicBooster:
                  case MagicType.Vampirism:
                  case MagicType.FlameField:
@@ -42,7 +50,6 @@ diff --git a/LibraryCore/Functions.cs b/LibraryCore/Functions.cs
 +                case MagicType.MeteorStrike:
 +                case MagicType.IceThrust:
 +                case MagicType.StormEscape:
-+                case MagicType.FlameDisruptor:
 +                case MagicType.Mirroring:
                  case MagicType.Repulsion:
                  case MagicType.ElectricShock:
