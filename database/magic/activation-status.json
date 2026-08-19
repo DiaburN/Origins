@@ -1,10 +1,24 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "generatedDatabaseBranch": "generated/origins-system-db",
   "runtime": "pinned Zircon MagicObject with ORIGINS overrides/patches",
   "dataSource": "Crystal.Database/Jev effective MagicInfo joined to Crystal 2026 by normalized spell name",
   "numericSpellIdUsedAsJevJoinKey": false,
-  "active": [
+  "coverageAudit": "runtime-coverage-audit.json",
+  "sourcePort": {
+    "cataloguedPlayable": 128,
+    "sourceBehaviorRoutes": 127,
+    "sourceStubs": 1,
+    "sourcePortCoverageComplete": true,
+    "compileValidationPending": true,
+    "clientOverlayValidationPending": true,
+    "sourceStub": {
+      "spell": "FastMove",
+      "crystalSourceSpellId": 54,
+      "status": "stub_no_magicinfo_no_server_handler"
+    }
+  },
+  "legacyVerifiedActive": [
     {
       "spell": "FireBall",
       "crystalSourceSpellId": 31,
@@ -34,18 +48,8 @@
       "status": "active_generated_db"
     }
   ],
-  "next": [
-    {
-      "spell": "FireWall",
-      "crystalSourceSpellId": 40,
-      "executionKind": "CrystalAdapted",
-      "status": "runtime_port_required"
-    },
-    {
-      "spell": "MagicShield",
-      "crystalSourceSpellId": 44,
-      "executionKind": "CrystalAdapted",
-      "status": "runtime_port_required"
-    }
-  ]
+  "nextGate": {
+    "status": "compile_and_runtime_validation_required",
+    "description": "Apply the consolidated ORIGINS patches/overrides to the pinned Zircon source, fix any compile/runtime integration errors, then promote runtimeReady flags. Client spell animation/effect binding remains a separate phase."
+  }
 }

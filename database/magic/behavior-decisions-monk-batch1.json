@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "class": "Monk",
+  "source": {
+    "extension": "JevLOMCN/Crystal-Monk@381e589e3d7ee736cdf0583c8315c0d144ab058f",
+    "runtime": "Suprcode/Zircon@cbf1aa919083bc13fc3f23f93772a8ab8370632d"
+  },
+  "status": "source-ported-uncompiled",
+  "spells": [
+    {"id":161,"crystalSpell":"JiBenGunFa","zirconMagicType":"JiBenGunFa","mode":"jev-passive-accuracy-ac-attack-mastery","runtimeReady":false,"overlayReady":false,"note":"Passive Accuracy +2/+4/+6/+8 and MaxAC +1/+2/+3/+4; trains through successful physical attacks."},
+    {"id":162,"crystalSpell":"LuoHanGunFa","zirconMagicType":"LuoHanGunFa","mode":"jev-sc-physical-line-attack-port","runtimeReady":false,"overlayReady":false,"note":"Primary uses SC-derived power with ACAgility semantics; secondary source geometry reaches distance 2 then distance 4 and removes AC while retaining Agility."},
+    {"id":163,"crystalSpell":"JinGangGunFa","zirconMagicType":"JinGangGunFa","mode":"jev-sc-four-cell-mixed-defense-port","runtimeReady":false,"overlayReady":false,"note":"Four adjacent sectors; source front uses DefenceType.None while side sectors use MAC+Agility. Luck roll can double cast power."},
+    {"id":164,"crystalSpell":"DaMoGunFa","zirconMagicType":"DaMoGunFa","mode":"jev-armed-sc-ac-attack-port","runtimeReady":false,"overlayReady":false,"note":"SC-derived one-shot charged attack, AC-only defence, nine-second arm/re-arm window; source requires MP strictly greater than cost."},
+    {"id":165,"crystalSpell":"XiangLongGunFa","zirconMagicType":"XiangLongGunFa","mode":"jev-sc-one-cell-forward-ac-hit-port","runtimeReady":false,"overlayReady":false,"note":"500 ms delayed one-cell forward spear strike; SC-derived power against AC only. No teleport."},
+    {"id":166,"crystalSpell":"Taunt","zirconMagicType":"Taunt","mode":"jev-single-monster-target-control-port","runtimeReady":false,"overlayReady":false,"note":"500 ms delayed Monster-only target control; hidden higher-level monsters resist."},
+    {"id":167,"crystalSpell":"TianLeiZhen","zirconMagicType":"TianLeiZhen","mode":"jev-1200ms-toggle-sc-3x3-aura-port","runtimeReady":false,"overlayReady":false,"note":"Infinite toggle; every 1200 ms paid tick consumes MP, trains once and attacks hostile targets in 3x3 against MAC. Insufficient MP skips the tick but leaves the toggle enabled."},
+    {"id":168,"crystalSpell":"ShiBuYiSha","zirconMagicType":"ShiBuYiSha","mode":"jev-delayed-target-teleport-plus-5x5-mac-port","runtimeReady":false,"overlayReady":false,"note":"500 ms delayed teleport to requested cell, then hostile 5x5 SC-derived MAC damage; blocked on NoTeleport maps."},
+    {"id":169,"crystalSpell":"LuoHanZhen","zirconMagicType":"LuoHanZhen","mode":"jev-four-diagonal-monk-clone-port","runtimeReady":false,"overlayReady":false,"note":"Kills existing MonkClone pets and rebuilds the four diagonal clone formation around the caster."}
+  ],
+  "count": 9
+}

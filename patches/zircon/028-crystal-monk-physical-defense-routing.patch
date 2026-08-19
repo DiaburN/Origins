@@ -1,0 +1,21 @@
+diff --git a/ServerLibrary/Models/PlayerObject.cs b/ServerLibrary/Models/PlayerObject.cs
+--- a/ServerLibrary/Models/PlayerObject.cs
++++ b/ServerLibrary/Models/PlayerObject.cs
+@@
+             foreach (MagicType type in types)
+             {
+                 if (GetMagic(type, out MagicObject magicObject))
+                 {
+                     if (magicObject.IgnoreAccuracy) ignoreAccuracy = true;
+                     if (magicObject.IgnorePhysicalDefense) ignoreDefense = true;
++
++                    // Crystal-Monk LuoHanGunFa is intentionally asymmetric:
++                    // the primary hit uses ACAgility, while its two follow-up
++                    // spear cells use Agility only.  `primary == false` is
++                    // Zircon's existing signal for SecondaryAttackLocation, so
++                    // remove AC only for those follow-up hits without changing
++                    // any existing Zircon attack skill behaviour.
++                    if (!primary && type == MagicType.LuoHanGunFa)
++                        ignoreDefense = true;
+ 
+                     if (magicObject.MaxLifeSteal > maxLifeSteal) maxLifeSteal = magicObject.MaxLifeSteal;

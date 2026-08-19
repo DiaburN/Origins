@@ -1,0 +1,10 @@
+diff --git a/ServerLibrary/Models/Magics/Monk/MonkRuntime.cs b/ServerLibrary/Models/Magics/Monk/MonkRuntime.cs
+--- a/ServerLibrary/Models/Magics/Monk/MonkRuntime.cs
++++ b/ServerLibrary/Models/Magics/Monk/MonkRuntime.cs
+@@
+-            if (map == null || Player.CurrentMap != map || map.Info.NoTeleport || map.GetCell(location) == null) return;
++            // Crystal uses MapInfo.NoTeleport. Pinned Zircon has no equivalent
++            // flag; its native Teleportation handler uses SkillDelay > 0 as the
++            // map-level skill/teleport restriction, so ORIGINS reuses that policy.
++            if (map == null || Player.CurrentMap != map || map.Info.SkillDelay > 0 || map.GetCell(location) == null) return;
+             if (!Player.Teleport(map, location, false)) return;

@@ -1,0 +1,70 @@
+diff --git a/LibraryCore/Enum.cs b/LibraryCore/Enum.cs
+--- a/LibraryCore/Enum.cs
++++ b/LibraryCore/Enum.cs
+@@ -271,6 +271,13 @@ namespace Library
+         DefensiveBlow = 105,
+         Dash = 106,
+         ElementalSwords = 107,
++        ProtectionField = 108,
++        Rage = 109,
++        CounterAttack = 110,
++        Fury = 111,
++        ImmortalSkin = 112,
++        CounterAttack1 = 113,
++        ProtectionField1 = 114,
+ 
+         //Wiz
+         Renounce = 200,
+@@ -486,6 +493,25 @@ namespace Library
+         TaecheonSword = 135,
+         FireSword = 136,
+         FlameArt = 137, //NOT CODED
++
++        // ORIGINS: Crystal / Crystal-Monk Warrior runtime identities.
++        // Existing Zircon identities are reused for Fencing/Swordsmanship,
++        // Slaying, Thrusting, HalfMoon, ShoulderDash and FlamingSword.
++        TwinDrakeBlade = 1100,
++        Entrapment = 1101,
++        LionRoar = 1102,
++        CrossHalfMoon = 1103,
++        BladeAvalanche = 1104,
++        ProtectionField = 1105,
++        Rage = 1106,
++        CounterAttack = 1107,
++        SlashingBurst = 1108,
++        Fury = 1109,
++        ImmortalSkin = 1110,
++        CounterAttack1 = 1111,
++        ProtectionField1 = 1112,
++        EntrapSwordSecret = 1113,
++        ImmortalSkin1 = 1114,
+ 
+         FireBall = 201,
+         LightningBall = 202,
+diff --git a/LibraryCore/Functions.cs b/LibraryCore/Functions.cs
+--- a/LibraryCore/Functions.cs
++++ b/LibraryCore/Functions.cs
+@@ -326,10 +326,23 @@ namespace Library
+                 case MagicType.Fetter:
+                 case MagicType.Endurance:
+                 case MagicType.Invincibility:
++                case MagicType.Entrapment:
++                case MagicType.LionRoar:
++                case MagicType.ProtectionField:
++                case MagicType.Rage:
++                case MagicType.CounterAttack:
++                case MagicType.Fury:
++                case MagicType.ImmortalSkin:
++                case MagicType.CounterAttack1:
++                case MagicType.ProtectionField1:
++                case MagicType.EntrapSwordSecret:
++                case MagicType.ImmortalSkin1:
+ 
+                 case MagicType.Spiritualism:
+                     return MirAnimation.Combat15;
+ 
++                case MagicType.BladeAvalanche:
++                case MagicType.SlashingBurst:
+                 case MagicType.Shuriken:
+                 case MagicType.SwiftBlade:
+                 case MagicType.SeismicSlam:

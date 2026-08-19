@@ -1,0 +1,107 @@
+diff --git a/LibraryCore/Network/ClientPackets.cs b/LibraryCore/Network/ClientPackets.cs
+--- a/LibraryCore/Network/ClientPackets.cs
++++ b/LibraryCore/Network/ClientPackets.cs
+@@ -1,3 +1,7 @@
+     public sealed class TownRevive : Packet { }
++
++    // Crystal Reincarnation response packets are deliberately payload-free.
++    public sealed class ReincarnationAccept : Packet { }
++    public sealed class ReincarnationCancel : Packet { }
+ 
+     public sealed class Turn : Packet
+diff --git a/LibraryCore/Network/ServerPackets.cs b/LibraryCore/Network/ServerPackets.cs
+--- a/LibraryCore/Network/ServerPackets.cs
++++ b/LibraryCore/Network/ServerPackets.cs
+@@ -1,7 +1,11 @@
+     public sealed class MapChanged : Packet
+     {
+         public int MapIndex { get; set; }
+         public int InstanceIndex { get; set; }
+     }
++
++    // Sent to a dead player after the Crystal Reincarnation channel succeeds.
++    // The mobile/client UI later binds this packet to an Accept / Cancel prompt.
++    public sealed class ReincarnationRequest : Packet { }
++
+     public sealed class UserLocation : Packet
+diff --git a/ServerLibrary/Models/PlayerObject.cs b/ServerLibrary/Models/PlayerObject.cs
+--- a/ServerLibrary/Models/PlayerObject.cs
++++ b/ServerLibrary/Models/PlayerObject.cs
+@@ -1,1 +1,6 @@
+         public List<MonsterObject> Pets = new List<MonsterObject>();
++
++        // Crystal Taoist Reincarnation channel/accept state.
++        public bool ActiveReincarnation, ReincarnationReady;
++        public PlayerObject ReincarnationTarget, ReincarnationHost;
++        public DateTime ReincarnationExpireTime;
+@@ -1,5 +1,24 @@
+         public override void Process()
+         {
+             base.Process();
++
++            if (ReincarnationReady && SEnvir.Now >= ReincarnationExpireTime)
++            {
++                ReincarnationReady = false;
++                ActiveReincarnation = false;
++
++                if (ReincarnationTarget != null && ReincarnationTarget.ReincarnationHost == this)
++                    ReincarnationTarget.ReincarnationHost = null;
++
++                ReincarnationTarget = null;
++            }
++
++            if ((ReincarnationReady || ActiveReincarnation) &&
++                (ReincarnationTarget == null || !ReincarnationTarget.Dead))
++            {
++                ReincarnationReady = false;
++                ActiveReincarnation = false;
++                ReincarnationTarget = null;
++            }
+ 
+             // if (LastHitter != null && LastHitter.Node == null) LastHitter = null;
+diff --git a/ServerLibrary/Envir/SConnection.cs b/ServerLibrary/Envir/SConnection.cs
+--- a/ServerLibrary/Envir/SConnection.cs
++++ b/ServerLibrary/Envir/SConnection.cs
+@@ -1,2 +1,42 @@
+         }
++
++        public void Process(C.ReincarnationAccept p)
++        {
++            if (Stage != GameStage.Game || Player == null || !Player.Dead) return;
++
++            PlayerObject host = Player.ReincarnationHost;
++            if (host?.Node != null && host.ReincarnationReady &&
++                host.ActiveReincarnation && host.ReincarnationTarget == Player &&
++                SEnvir.Now < host.ReincarnationExpireTime)
++            {
++                Player.Dead = false;
++                Player.SetHP(Math.Max(1, Player.Stats[Stat.Health] / 2));
++                Player.Broadcast(new S.ObjectRevive
++                {
++                    ObjectID = Player.ObjectID,
++                    Location = Player.CurrentLocation,
++                    Effect = true
++                });
++
++                host.ReincarnationReady = false;
++                host.ActiveReincarnation = false;
++                host.ReincarnationTarget = null;
++                Player.ReincarnationHost = null;
++                return;
++            }
++
++            Player.ReincarnationHost = null;
++        }
++
++        public void Process(C.ReincarnationCancel p)
++        {
++            if (Stage != GameStage.Game || Player == null) return;
++
++            PlayerObject host = Player.ReincarnationHost;
++            if (host != null)
++                host.ReincarnationExpireTime = SEnvir.Now;
++
++            Player.ReincarnationHost = null;
++        }
++
+         public void Process(C.Turn p)

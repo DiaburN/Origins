@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "class": "Archer",
+  "source": {
+    "base": "Suprcode/Crystal@0e315fe327192afe52c3d7357ddd1f5b7e26c5b8",
+    "extension": "JevLOMCN/Crystal-Monk@381e589e3d7ee736cdf0583c8315c0d144ab058f",
+    "runtime": "Suprcode/Zircon@cbf1aa919083bc13fc3f23f93772a8ab8370632d"
+  },
+  "status": "source-ported-uncompiled",
+  "spells": [
+    {"id":121,"crystalSpell":"Focus","zirconMagicType":"Focus","mode":"zircon-adapted-passive-range-proc","runtimeReady":false,"overlayReady":false},
+    {"id":122,"crystalSpell":"StraightShot","zirconMagicType":"StraightShot","mode":"crystal-projectile-port","runtimeReady":false,"overlayReady":false},
+    {"id":123,"crystalSpell":"DoubleShot","zirconMagicType":"DoubleShot","mode":"crystal-double-projectile-port","runtimeReady":false,"overlayReady":false},
+    {"id":124,"crystalSpell":"ExplosiveTrap","zirconMagicType":"ExplosiveTrap","mode":"crystal-linked-spellobject-trap-port","runtimeReady":false,"overlayReady":false},
+    {"id":125,"crystalSpell":"DelayedExplosion","zirconMagicType":"DelayedExplosion","mode":"crystal-delayed-state-plus-3x3-explosion-port","runtimeReady":false,"overlayReady":false},
+    {"id":126,"crystalSpell":"Meditation","zirconMagicType":"Meditation","mode":"crystal-element-orb-state-port","runtimeReady":false,"overlayReady":false},
+    {"id":127,"crystalSpell":"BackStep","zirconMagicType":"BackStep","mode":"zircon-movement-adaptation","runtimeReady":false,"overlayReady":false},
+    {"id":128,"crystalSpell":"ElementalShot","zirconMagicType":"ElementalShot","mode":"crystal-orb-consume-projectile-port","runtimeReady":false,"overlayReady":false},
+    {"id":129,"crystalSpell":"Concentration","zirconMagicType":"ArcherConcentration","mode":"crystal-meditation-chance-buff-port","runtimeReady":false,"overlayReady":false},
+    {"id":130,"crystalSpell":"Stonetrap","zirconMagicType":"Stonetrap","mode":"crystal-timed-pet-port","runtimeReady":false,"overlayReady":false},
+    {"id":131,"crystalSpell":"ElementalBarrier","zirconMagicType":"ElementalBarrier","mode":"crystal-orb-defense-port","runtimeReady":false,"overlayReady":false},
+    {"id":132,"crystalSpell":"SummonVampire","zirconMagicType":"SummonVampire","mode":"crystal-timed-pet-port","runtimeReady":false,"overlayReady":false},
+    {"id":133,"crystalSpell":"VampireShot","zirconMagicType":"VampireShot","mode":"crystal-projectile-vamp-pool-port","runtimeReady":false,"overlayReady":false},
+    {"id":134,"crystalSpell":"SummonToad","zirconMagicType":"SummonToad","mode":"crystal-timed-pet-port","runtimeReady":false,"overlayReady":false},
+    {"id":135,"crystalSpell":"PoisonShot","zirconMagicType":"PoisonShot","mode":"crystal-projectile-poison-port","runtimeReady":false,"overlayReady":false},
+    {"id":136,"crystalSpell":"CrippleShot","zirconMagicType":"CrippleShot","mode":"crystal-special-arrow-consume-3x3-port","runtimeReady":false,"overlayReady":false},
+    {"id":137,"crystalSpell":"SummonSnakes","zirconMagicType":"SummonSnakes","mode":"crystal-timed-pet-port","runtimeReady":false,"overlayReady":false},
+    {"id":138,"crystalSpell":"NapalmShot","zirconMagicType":"NapalmShot","mode":"crystal-5x5-mac-area-port","runtimeReady":false,"overlayReady":false},
+    {"id":139,"crystalSpell":"OneWithNature","zirconMagicType":"OneWithNature","mode":"crystal-5x5-offensive-special-arrow-synergy-port","runtimeReady":false,"overlayReady":false},
+    {"id":140,"crystalSpell":"BindingShot","zirconMagicType":"BindingShot","mode":"crystal-monster-shock-area-port","runtimeReady":false,"overlayReady":false},
+    {"id":141,"crystalSpell":"MentalState","zirconMagicType":"MentalState","mode":"crystal-three-state-range-damage-port","runtimeReady":false,"overlayReady":false,"note":"MentalState level is held on Zircon runtime state until persistence pass; source CharacterInfo stores a separate MentalStateLvl byte."},
+    {"id":142,"crystalSpell":"ElementalBarrier1","source":"Crystal-Monk","zirconMagicType":"ElementalBarrier1","mode":"jev-dc-duration-flat-hit-decay-port","runtimeReady":false,"overlayReady":false},
+    {"id":143,"crystalSpell":"DelayedExplosion2","source":"Crystal-Monk","zirconMagicType":"DelayedExplosion2","mode":"jev-infecting-delayed-explosion-port","runtimeReady":false,"overlayReady":false},
+    {"id":144,"crystalSpell":"NapalmShot2","source":"Crystal-Monk","zirconMagicType":"NapalmShot2","mode":"jev-5x5-special-arrow-synergy-port","runtimeReady":false,"overlayReady":false}
+  ],
+  "count": 24
+}

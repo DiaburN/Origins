@@ -1,0 +1,187 @@
+diff --git a/LibraryCore/Enum.cs b/LibraryCore/Enum.cs
+--- a/LibraryCore/Enum.cs
++++ b/LibraryCore/Enum.cs
+@@ -283,6 +283,8 @@ namespace Library
+         Tornado = 206,
+         MagicBooster = 207,
+         TemporalFlux = 208,
++        Bisul = 209,
++        StormEscape = 210,
+ 
+         //Tao
+         Heal = 300,
+@@ -868,6 +870,9 @@ namespace Library
+         StormEscape = 1212,
+         FlameDisruptor = 1213,
+         Mirroring = 1214,
++        GreateFireBallSecret = 1215,
++        Bisul = 1216,
++        StormEscape1 = 1217,
+     }
+ 
+     public enum MagicProperty
+diff --git a/LibraryCore/Functions.cs b/LibraryCore/Functions.cs
+--- a/LibraryCore/Functions.cs
++++ b/LibraryCore/Functions.cs
+@@ -193,6 +193,7 @@ namespace Library
+                 case MagicType.GreatFireBall:
+                 case MagicType.FrostCrunch:
+                 case MagicType.FlameDisruptor:
++                case MagicType.GreateFireBallSecret:
+                 case MagicType.IceBolt:
+                 case MagicType.LightningBall:
+                 case MagicType.GustBlast:
+@@ -246,6 +247,8 @@ namespace Library
+                 case MagicType.IceThrust:
+                 case MagicType.StormEscape:
+                 case MagicType.Mirroring:
++                case MagicType.Bisul:
++                case MagicType.StormEscape1:
+                 case MagicType.Repulsion:
+                 case MagicType.ElectricShock:
+                 case MagicType.LightningWave:
+diff --git a/LibraryCore/Stat.cs b/LibraryCore/Stat.cs
+--- a/LibraryCore/Stat.cs
++++ b/LibraryCore/Stat.cs
+@@ -900,6 +900,9 @@ namespace Library
+         [StatDescription(Title = "Freezing", Format = "{0:+#0;-#0;#0}", Mode = StatType.Default, ServerOnly = true)]
+         Freezing = 11002,
+ 
++        [StatDescription(Title = "Attack Power", Format = "{0:+#0%;-#0%;#0%}", Mode = StatType.Percent, ServerOnly = true)]
++        AttackPowerPercent = 11003,
++
+         [StatDescription(Title = "Duration", Mode = StatType.Time)]
+         Duration = 10000,
+     }
+diff --git a/ServerLibrary/Models/MagicObject.cs b/ServerLibrary/Models/MagicObject.cs
+--- a/ServerLibrary/Models/MagicObject.cs
++++ b/ServerLibrary/Models/MagicObject.cs
+@@ -76,7 +76,7 @@ namespace Server.Models
+             int cost = Magic.Cost;
+ 
+-            if (Type == MagicType.Teleportation || Type == MagicType.StormEscape)
++            if (Type == MagicType.Teleportation || Type == MagicType.StormEscape || Type == MagicType.StormEscape1)
+             {
+                 int teleportPenalty = Player.Stats[Stat.TeleportManaPenaltyPercent];
+                 if (teleportPenalty > 0) cost += Player.Stats[Stat.Mana] * teleportPenalty / 100;
+diff --git a/ServerLibrary/Models/MapObject.cs b/ServerLibrary/Models/MapObject.cs
+--- a/ServerLibrary/Models/MapObject.cs
++++ b/ServerLibrary/Models/MapObject.cs
+@@ -1734,6 +1734,13 @@ namespace Server.Models
+             return ob?.GroupMembers != null && ob.GroupMembers == GroupMembers;
+         }
+ 
++        private int ApplyAttackPowerPercent(int value)
++        {
++            int percent = Stats[Stat.AttackPowerPercent];
++            if (percent == 0) return value;
++            return value + value * percent / 100;
++        }
++
+         public int GetDC()
+         {
+             int min = Stats[Stat.MinDC];
+@@ -1742,17 +1749,17 @@ namespace Server.Models
+             int luck = Stats[Stat.Luck];
+ 
+             if (min < 0) min = 0;
+-            if (min >= max) return max;
++            if (min >= max) return ApplyAttackPowerPercent(max);
+ 
+             if (luck > 0)
+             {
+-                if (luck >= 10) return max;
++                if (luck >= 10) return ApplyAttackPowerPercent(max);
+ 
+-                if (SEnvir.Random.Next(10) < luck) return max;
++                if (SEnvir.Random.Next(10) < luck) return ApplyAttackPowerPercent(max);
+             }
+             else if (luck < 0)
+             {
+-                if (luck < -SEnvir.Random.Next(10)) return min;
++                if (luck < -SEnvir.Random.Next(10)) return ApplyAttackPowerPercent(min);
+             }
+ 
+-            return SEnvir.Random.Next(min, max + 1);
++            return ApplyAttackPowerPercent(SEnvir.Random.Next(min, max + 1));
+         }
+         public int GetMC()
+         {
+@@ -1761,17 +1768,17 @@ namespace Server.Models
+             int luck = Stats[Stat.Luck];
+ 
+             if (min < 0) min = 0;
+-            if (min >= max) return max;
++            if (min >= max) return ApplyAttackPowerPercent(max);
+ 
+             if (luck > 0)
+             {
+-                if (luck >= 10) return max;
++                if (luck >= 10) return ApplyAttackPowerPercent(max);
+ 
+-                if (SEnvir.Random.Next(10) < luck) return max;
++                if (SEnvir.Random.Next(10) < luck) return ApplyAttackPowerPercent(max);
+             }
+             else if (luck < 0)
+             {
+-                if (luck < -SEnvir.Random.Next(10)) return min;
++                if (luck < -SEnvir.Random.Next(10)) return ApplyAttackPowerPercent(min);
+             }
+ 
+-            return SEnvir.Random.Next(min, max + 1);
++            return ApplyAttackPowerPercent(SEnvir.Random.Next(min, max + 1));
+         }
+         public int GetSC()
+         {
+@@ -1780,17 +1787,17 @@ namespace Server.Models
+             int luck = Stats[Stat.Luck];
+ 
+             if (min < 0) min = 0;
+-            if (min >= max) return max;
++            if (min >= max) return ApplyAttackPowerPercent(max);
+ 
+             if (luck > 0)
+             {
+-                if (luck >= 10) return max;
++                if (luck >= 10) return ApplyAttackPowerPercent(max);
+ 
+-                if (SEnvir.Random.Next(10) < luck) return max;
++                if (SEnvir.Random.Next(10) < luck) return ApplyAttackPowerPercent(max);
+             }
+             else if (luck < 0)
+             {
+-                if (luck < -SEnvir.Random.Next(10)) return min;
++                if (luck < -SEnvir.Random.Next(10)) return ApplyAttackPowerPercent(min);
+             }
+ 
+-            return SEnvir.Random.Next(min, max + 1);
++            return ApplyAttackPowerPercent(SEnvir.Random.Next(min, max + 1));
+         }
+         public int GetSP()
+         {
+@@ -1799,17 +1806,17 @@ namespace Server.Models
+             int luck = Stats[Stat.Luck];
+ 
+             if (min < 0) min = 0;
+-            if (min >= max) return max;
++            if (min >= max) return ApplyAttackPowerPercent(max);
+ 
+             if (luck > 0)
+             {
+-                if (luck >= 10) return max;
++                if (luck >= 10) return ApplyAttackPowerPercent(max);
+ 
+-                if (SEnvir.Random.Next(10) < luck) return max;
++                if (SEnvir.Random.Next(10) < luck) return ApplyAttackPowerPercent(max);
+             }
+             else if (luck < 0)
+             {
+-                if (luck < -SEnvir.Random.Next(10)) return min;
++                if (luck < -SEnvir.Random.Next(10)) return ApplyAttackPowerPercent(min);
+             }
+ 
+-            return SEnvir.Random.Next(min, max + 1);
++            return ApplyAttackPowerPercent(SEnvir.Random.Next(min, max + 1));
+         }
+         public int GetAC()
+         {

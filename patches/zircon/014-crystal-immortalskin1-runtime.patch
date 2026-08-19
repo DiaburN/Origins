@@ -1,0 +1,27 @@
+diff --git a/LibraryCore/Stat.cs b/LibraryCore/Stat.cs
+--- a/LibraryCore/Stat.cs
++++ b/LibraryCore/Stat.cs
+@@ -903,6 +903,9 @@ namespace Library
+         [StatDescription(Title = "Attack Power", Format = "{0:+#0%;-#0%;#0%}", Mode = StatType.Percent, ServerOnly = true)]
+         AttackPowerPercent = 11003,
+ 
++        [StatDescription(Title = "Incoming Damage Reduction", Format = "{0:+#0%;-#0%;#0%}", Mode = StatType.Percent, ServerOnly = true)]
++        IncomingDamageReductionPercent = 11004,
++
+         [StatDescription(Title = "Duration", Mode = StatType.Time)]
+         Duration = 10000,
+     }
+diff --git a/ServerLibrary/Models/PlayerObject.cs b/ServerLibrary/Models/PlayerObject.cs
+--- a/ServerLibrary/Models/PlayerObject.cs
++++ b/ServerLibrary/Models/PlayerObject.cs
+@@ -2750,4 +2750,10 @@ namespace Server.Models
+             LastHitter = attacker;
++
++            // Crystal-Monk ImmortalSkin1 applies DamageReduceRate after the
++            // incoming hit has been resolved but before shields/HP consume it.
++            int incomingReduction = Stats[Stat.IncomingDamageReductionPercent];
++            if (incomingReduction > 0)
++                power -= power * incomingReduction / 100;
+ 
+             if (!ignoreShield && Buffs.Any(x => x.Type == BuffType.SuperiorMagicShield))
+             {

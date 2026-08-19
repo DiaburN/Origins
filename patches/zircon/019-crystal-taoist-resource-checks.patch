@@ -1,0 +1,18 @@
+diff --git a/ServerLibrary/Models/PlayerObject.cs b/ServerLibrary/Models/PlayerObject.cs
+--- a/ServerLibrary/Models/PlayerObject.cs
++++ b/ServerLibrary/Models/PlayerObject.cs
+@@
+-        public bool UseAmulet(int count, int shape)
++        public bool HasAmulet(int count, int shape)
++        {
++            UserItem amulet = Equipment[(int)EquipmentSlot.Amulet];
++
++            return amulet != null &&
++                   amulet.Info.ItemType == ItemType.Amulet &&
++                   amulet.Count >= count &&
++                   amulet.Info.Shape == shape;
++        }
++
++        public bool UseAmulet(int count, int shape)
+         {
+             UserItem amulet = Equipment[(int)EquipmentSlot.Amulet];

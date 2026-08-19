@@ -1,0 +1,106 @@
+diff --git a/LibraryCore/Enum.cs b/LibraryCore/Enum.cs
+--- a/LibraryCore/Enum.cs
++++ b/LibraryCore/Enum.cs
+@@ -282,7 +282,8 @@ namespace Library
+         SuperiorMagicShield = 204,
+         FrostBite = 205,
+         Tornado = 206,
+         MagicBooster = 207,
++        TemporalFlux = 208,
+ 
+         //Tao
+         Heal = 300,
+@@ -861,6 +862,12 @@ namespace Library
+         MagicBooster = 1206,
+         Vampirism = 1207,
+         FlameField = 1208,
++        Blizzard = 1209,
++        MeteorStrike = 1210,
++        IceThrust = 1211,
++        StormEscape = 1212,
++        FlameDisruptor = 1213,
++        Mirroring = 1214,
+     }
+ 
+     public enum MagicProperty
+@@ -1296,6 +1303,7 @@ namespace Library
+         Chain = 1 << 13,        //Tick damage, limits movement, displays effect
+         Hemorrhage = 1 << 14,   //Tick damage, stops recovery, displays effect
+         Binding = 1 << 15,      //Tick damage, stops movement, displays effect
++        Frozen = 1 << 16,       //Crystal freeze state: stops movement and attacks while active
+     }
+ 
+     public enum SpellEffect
+diff --git a/LibraryCore/Functions.cs b/LibraryCore/Functions.cs
+--- a/LibraryCore/Functions.cs
++++ b/LibraryCore/Functions.cs
+@@ -192,6 +192,7 @@ namespace Library
+                 case MagicType.FireBall:
+                 case MagicType.GreatFireBall:
+                 case MagicType.FrostCrunch:
++                case MagicType.FlameDisruptor:
+                 case MagicType.IceBolt:
+                 case MagicType.LightningBall:
+                 case MagicType.GustBlast:
+@@ -240,6 +241,11 @@ namespace Library
+                 case MagicType.MagicBooster:
+                 case MagicType.Vampirism:
+                 case MagicType.FlameField:
++                case MagicType.Blizzard:
++                case MagicType.MeteorStrike:
++                case MagicType.IceThrust:
++                case MagicType.StormEscape:
++                case MagicType.Mirroring:
+                 case MagicType.Repulsion:
+                 case MagicType.ElectricShock:
+                 case MagicType.LightningWave:
+diff --git a/LibraryCore/Stat.cs b/LibraryCore/Stat.cs
+--- a/LibraryCore/Stat.cs
++++ b/LibraryCore/Stat.cs
+@@ -894,6 +894,12 @@ namespace Library
+         [StatDescription(Title = "Mana Cost Penalty", Format = "{0:+#0%;-#0%;#0%}", Mode = StatType.Percent, ServerOnly = true)]
+         ManaPenaltyPercent = 11000,
+ 
++        [StatDescription(Title = "Teleport Mana Cost Penalty", Format = "{0:+#0%;-#0%;#0%}", Mode = StatType.Percent, ServerOnly = true)]
++        TeleportManaPenaltyPercent = 11001,
++
++        [StatDescription(Title = "Freezing", Format = "{0:+#0;-#0;#0}", Mode = StatType.Default, ServerOnly = true)]
++        Freezing = 11002,
++
+         [StatDescription(Title = "Duration", Mode = StatType.Time)]
+         Duration = 10000,
+     }
+diff --git a/ServerLibrary/Models/MagicObject.cs b/ServerLibrary/Models/MagicObject.cs
+--- a/ServerLibrary/Models/MagicObject.cs
++++ b/ServerLibrary/Models/MagicObject.cs
+@@ -74,8 +74,15 @@ namespace Server.Models
+         public virtual int GetMagicCost()
+         {
+             int cost = Magic.Cost;
++
++            if (Type == MagicType.Teleportation || Type == MagicType.StormEscape)
++            {
++                int teleportPenalty = Player.Stats[Stat.TeleportManaPenaltyPercent];
++                if (teleportPenalty > 0) cost += Player.Stats[Stat.Mana] * teleportPenalty / 100;
++            }
++
+             int penalty = Player.Stats[Stat.ManaPenaltyPercent];
+             if (penalty > 0) cost += cost * penalty / 100;
+             return cost;
+         }
+ 
+diff --git a/ServerLibrary/Models/MapObject.cs b/ServerLibrary/Models/MapObject.cs
+--- a/ServerLibrary/Models/MapObject.cs
++++ b/ServerLibrary/Models/MapObject.cs
+@@ -57,8 +57,8 @@ namespace Server.Models
+         public DateTime ActionTime, MoveTime, RegenTime, AttackTime, MagicTime, CellTime, StruckTime, BuffTime, ShockTime, DisplayHPMPTime, ItemReviveTime;
+         public List<DelayedAction> ActionList;
+ 
+-        public virtual bool CanMove => !Dead && SEnvir.Now >= ActionTime && SEnvir.Now >= MoveTime && SEnvir.Now > ShockTime && (Poison & PoisonType.Paralysis) != PoisonType.Paralysis && (Poison & PoisonType.WraithGrip) != PoisonType.WraithGrip && (Poison & PoisonType.Containment) != PoisonType.Containment && (Poison & PoisonType.Binding) != PoisonType.Binding && Buffs.All(x => x.Type != BuffType.DragonRepulse);
+-        public virtual bool CanAttack => !Dead && SEnvir.Now >= ActionTime && SEnvir.Now >= AttackTime && (Poison & PoisonType.Paralysis) != PoisonType.Paralysis && (Poison & PoisonType.Fear) != PoisonType.Fear && Buffs.All(x => x.Type != BuffType.DragonRepulse);
+-        public virtual bool CanCast => !Dead && SEnvir.Now >= ActionTime && SEnvir.Now >= MagicTime && (Poison & PoisonType.Paralysis) != PoisonType.Paralysis && (Poison & PoisonType.Fear) != PoisonType.Fear && (Poison & PoisonType.Silenced) != PoisonType.Silenced && Buffs.All(x => x.Type != BuffType.DragonRepulse);
++        public virtual bool CanMove => !Dead && SEnvir.Now >= ActionTime && SEnvir.Now >= MoveTime && SEnvir.Now > ShockTime && (Poison & PoisonType.Paralysis) != PoisonType.Paralysis && (Poison & PoisonType.Frozen) != PoisonType.Frozen && (Poison & PoisonType.WraithGrip) != PoisonType.WraithGrip && (Poison & PoisonType.Containment) != PoisonType.Containment && (Poison & PoisonType.Binding) != PoisonType.Binding && Buffs.All(x => x.Type != BuffType.DragonRepulse);
++        public virtual bool CanAttack => !Dead && SEnvir.Now >= ActionTime && SEnvir.Now >= AttackTime && (Poison & PoisonType.Paralysis) != PoisonType.Paralysis && (Poison & PoisonType.Frozen) != PoisonType.Frozen && (Poison & PoisonType.Fear) != PoisonType.Fear && Buffs.All(x => x.Type != BuffType.DragonRepulse);
++        public virtual bool CanCast => !Dead && SEnvir.Now >= ActionTime && SEnvir.Now >= MagicTime && (Poison & PoisonType.Paralysis) != PoisonType.Paralysis && (Poison & PoisonType.Frozen) != PoisonType.Frozen && (Poison & PoisonType.Fear) != PoisonType.Fear && (Poison & PoisonType.Silenced) != PoisonType.Silenced && Buffs.All(x => x.Type != BuffType.DragonRepulse);
+ 
+         public List<SpellObject> SpellList = new List<SpellObject>();
