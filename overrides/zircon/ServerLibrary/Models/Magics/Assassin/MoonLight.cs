@@ -18,8 +18,8 @@ namespace Server.Models.Magics
             var response = new MagicCast { Ob = Player };
             response.Targets.Add(Player.ObjectID);
 
-            // Crystal: (AC roll + 5 * (level + 1)) * 500 ms.
-            double seconds = (Player.Stats[Stat.MinAC] + Player.Stats[Stat.MaxAC]) / 4D + (Magic.Level + 1) * 2.5D;
+            // Crystal: (GetAttackPower(MinAC, MaxAC) + 5 * (level + 1)) * 500 ms.
+            double seconds = (Player.GetAC() + (Magic.Level + 1) * 5) * 0.5D;
 
             Player.BuffAdd(
                 BuffType.MoonLight,
