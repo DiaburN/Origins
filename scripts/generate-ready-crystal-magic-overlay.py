@@ -1,14 +1,15 @@
 #!/usr/bin/env python3
-"""Generate a deterministic MagicInfo overlay for runtime-ready Crystal spells.
+"""Generate a deterministic MagicInfo overlay for authored runtime-ready Crystal spells.
 
 Resolution order for each runtime-ready Crystal spell:
 1. `mapExistingMagicInfo.Magic` explicitly maps to an existing Zircon MagicType.
 2. otherwise an exact normalized display-name match updates the existing row.
 3. otherwise `createMagicInfo` creates a Crystal-only row with reserved identities.
 
-This lets ORIGINS preserve Zircon indexes/handlers when the behavior is equivalent
-but the display name differs (for example Teleport -> Teleportation), while still
-creating genuinely missing Crystal skills in reserved ranges.
+The authored behavior manifest contains two historical leaf schemas: most batches
+use `decisions`, while Archer uses `spells`. Both are accepted so the root
+manifest can always be traversed even while Archer rows remain authored as
+runtimeReady=false until the full compile/activation gate runs.
 """
 from __future__ import annotations
 
@@ -29,9 +30,15 @@ def load(path: pathlib.Path):
 def load_decisions(path: pathlib.Path) -> dict:
     payload = load(path)
     if "includes" not in payload:
-        if "decisions" not in payload:
-            raise RuntimeError(f"Decision file {path} has neither decisions nor includes")
-        return payload
+        rows = payload.get("decisions", payload.get("spells"))
+        if rows is None:
+            raise RuntimeError(f"Decision file {path} has neither decisions/spells nor includes")
+        return {
+            "schemaVersion": payload.get("schemaVersion", 1),
+            "decisions": rows,
+            "manifest": str(path),
+            "includes": [],
+        }
 
     decisions = []
     seen = set()
@@ -117,9 +124,9 @@ def main() -> int:
         numeric = projection_by_name.get(key)
         if numeric is None:
             raise RuntimeError(f"No numeric projection found by name for runtime-ready spell {spell}")
-        if numeric.get("status") != "projected_by_name":
+        if numeric.get("status") not in {"projected_by_name", "projected_from_pinned_source"}:
             raise RuntimeError(
-                f"Numeric projection for {spell} is not a verified name projection: {numeric.get('status')}"
+                f"Numeric projection for {spell} is not a verified source/name projection: {numeric.get('status')}"
             )
 
         fields = numeric["directFieldProjection"]
@@ -196,6 +203,10 @@ def main() -> int:
             raise RuntimeError(f"Duplicate MagicInfo overlay index {index} while processing {spell}")
         used_indices.add(index)
 
+        source_id = decision.get("crystalSourceSpellId", decision.get("id"))
+        if source_id is None:
+            raise RuntimeError(f"Runtime-ready decision for {spell} is missing a source spell id")
+
         operations.append({
             "Action": "upsert",
             "AssemblyName": "LibraryCore",
@@ -205,14 +216,14 @@ def main() -> int:
         })
         included.append({
             "crystalSpell": spell,
-            "crystalSourceSpellId": decision["crystalSourceSpellId"],
+            "crystalSourceSpellId": int(source_id),
             "jevSpellId": numeric.get("jevSpellId"),
             "legacyIdMismatch": numeric.get("legacyIdMismatch", False),
             "zirconIndex": index,
             "zirconName": zircon_name,
             "zirconMagic": magic_type,
             "mode": mode,
-            "executionKind": decision["executionKind"],
+            "executionKind": decision.get("executionKind", decision.get("mode", "CrystalAdapted")),
             "runtimeRequirements": numeric.get("runtimeRequirements", []),
             "set": set_values,
         })
