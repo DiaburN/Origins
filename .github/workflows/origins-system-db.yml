@@ -30,6 +30,10 @@ on:
       - '.github/workflows/origins-system-db.yml'
   workflow_dispatch:
 
+concurrency:
+  group: origins-system-db-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
 permissions:
   contents: write
 
