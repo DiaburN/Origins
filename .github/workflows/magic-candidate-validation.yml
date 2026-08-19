@@ -27,6 +27,10 @@ on:
       - '.github/workflows/magic-candidate-validation.yml'
   workflow_dispatch:
 
+concurrency:
+  group: magic-candidate-${{ github.ref }}
+  cancel-in-progress: true
+
 permissions:
   contents: read
 
