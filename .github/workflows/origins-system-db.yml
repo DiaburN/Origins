@@ -46,6 +46,9 @@ jobs:
           bash scripts/bootstrap-crystal.sh
           bash scripts/bootstrap-crystal-database.sh
 
+      - name: Verify runtime-ready MagicObject registrations
+        run: python3 scripts/verify-magic-handler-registration.py ./vendor/zircon ./database/magic/behavior-decisions.json
+
       - name: Compile overridden Zircon runtime
         run: dotnet build vendor/zircon/ServerLibrary/ServerLibrary.csproj --configuration Release
 
