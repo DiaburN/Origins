@@ -1,13 +1,13 @@
 diff --git a/LibraryCore/Enum.cs b/LibraryCore/Enum.cs
 --- a/LibraryCore/Enum.cs
 +++ b/LibraryCore/Enum.cs
-@@ -291,6 +291,9 @@ namespace Library
+@@ -291,2 +291,5 @@ namespace Library
          Spiritualism = 310,
          SoulResonance = 311,
 +        CrystalHealing = 312,
 +        UltimateEnhancer = 313,
 +        EnergyShield = 314,
-@@ -910,6 +913,22 @@ namespace Library
+@@ -910,2 +913,18 @@ namespace Library
          ImmortalSkin1 = 1114,
 +
 +        // ORIGINS: Crystal / Crystal-Monk Taoist runtime identities.
@@ -29,7 +29,7 @@ diff --git a/LibraryCore/Enum.cs b/LibraryCore/Enum.cs
 diff --git a/LibraryCore/Functions.cs b/LibraryCore/Functions.cs
 --- a/LibraryCore/Functions.cs
 +++ b/LibraryCore/Functions.cs
-@@ -279,6 +279,20 @@ namespace Library
+@@ -279,2 +279,16 @@ namespace Library
                  case MagicType.PoisonCloud:
 +                case MagicType.Revelation:
 +                case MagicType.EnergyRepulsor:
@@ -49,13 +49,13 @@ diff --git a/LibraryCore/Functions.cs b/LibraryCore/Functions.cs
 diff --git a/ServerLibrary/Models/MapObject.cs b/ServerLibrary/Models/MapObject.cs
 --- a/ServerLibrary/Models/MapObject.cs
 +++ b/ServerLibrary/Models/MapObject.cs
-@@ -57,6 +57,7 @@ namespace Server.Models
+@@ -57,1 +57,2 @@ namespace Server.Models
          public DateTime ActionTime, MoveTime, RegenTime, AttackTime, MagicTime, CellTime, StruckTime, BuffTime, ShockTime, DisplayHPMPTime, ItemReviveTime;
 +        public DateTime CrystalRevelationTime;
-@@ -443,6 +444,25 @@ namespace Server.Models
-                     case BuffType.Heal:
-                         buff.TickTime -= ticks;
-@@
+@@ -489,6 +490,27 @@ namespace Server.Models
+                         else
+                             expiredBuffs.Add(buff);
+ 
                          break;
 +                    case BuffType.CrystalHealing:
 +                        // Crystal stores healing as a pool and consumes it every 600 ms.
@@ -78,13 +78,15 @@ diff --git a/ServerLibrary/Models/MapObject.cs b/ServerLibrary/Models/MapObject.
 +                        if (buff.Stats[Stat.Healing] <= 0 || CurrentHP >= Stats[Stat.Health])
 +                            expiredBuffs.Add(buff);
 +                        break;
+                     case BuffType.Cloak:
+                         buff.TickTime -= ticks;
 diff --git a/ServerLibrary/Models/MonsterObject.cs b/ServerLibrary/Models/MonsterObject.cs
 --- a/ServerLibrary/Models/MonsterObject.cs
 +++ b/ServerLibrary/Models/MonsterObject.cs
-@@ -17,6 +17,7 @@ namespace Server.Models
+@@ -17,1 +17,1 @@ namespace Server.Models
 -        public DateTime SearchTime, RoamTime, EXPOwnerTime, DeadTime, RageTime, TameTime;
 +        public DateTime SearchTime, RoamTime, EXPOwnerTime, DeadTime, RageTime, TameTime, HallucinationTime;
-@@ -895,6 +896,12 @@ namespace Server.Models
+@@ -895,5 +896,13 @@ namespace Server.Models
          public virtual void ProcessAI()
          {
              if (Dead) return;
