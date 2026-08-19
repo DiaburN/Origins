@@ -1,12 +1,14 @@
 #!/usr/bin/env python3
 """Generate a deterministic MagicInfo overlay for runtime-ready Crystal spells.
 
-Existing Zircon rows are matched by normalized display name and updated in-place.
-Crystal-only spells may be created only when the behavior decision explicitly
-supplies a reserved ORIGINS Index and MagicType plus class/school/property.
-Behavior decisions may be one JSON file or a manifest containing `includes`.
-`createMagicInfo.ForceCreate` protects same/similar names that belong to a
-separate Zircon class/skill (for example Wizard HellFire vs Assassin Hell Fire).
+Resolution order for each runtime-ready Crystal spell:
+1. `mapExistingMagicInfo.Magic` explicitly maps to an existing Zircon MagicType.
+2. otherwise an exact normalized display-name match updates the existing row.
+3. otherwise `createMagicInfo` creates a Crystal-only row with reserved identities.
+
+This lets ORIGINS preserve Zircon indexes/handlers when the behavior is equivalent
+but the display name differs (for example Teleport -> Teleportation), while still
+creating genuinely missing Crystal skills in reserved ranges.
 """
 from __future__ import annotations
 
@@ -90,12 +92,14 @@ def main() -> int:
         for row in projection["projections"]
         if row.get("crystalName")
     }
-    zircon_by_name = {}
+    zircon_by_name: dict[str, list[dict]] = {}
+    zircon_by_magic: dict[int, list[dict]] = {}
     for row in zircon_rows:
         key = norm(row.get("Name") or "")
-        if not key:
-            continue
-        zircon_by_name.setdefault(key, []).append(row)
+        if key:
+            zircon_by_name.setdefault(key, []).append(row)
+        if row.get("Magic") is not None:
+            zircon_by_magic.setdefault(int(row["Magic"]), []).append(row)
 
     operations = []
     included = []
@@ -120,19 +124,41 @@ def main() -> int:
 
         fields = numeric["directFieldProjection"]
         set_values = numeric_set(fields, numeric)
-        matches = zircon_by_name.get(key, [])
+        name_matches = zircon_by_name.get(key, [])
+        semantic_map = decision.get("mapExistingMagicInfo")
         create = decision.get("createMagicInfo")
         force_create = bool((create or {}).get("ForceCreate", False))
 
-        if len(matches) > 1 and not force_create:
-            raise RuntimeError(f"Expected at most one Zircon MagicInfo name match for {spell}; found {len(matches)}")
+        if semantic_map and create:
+            raise RuntimeError(f"{spell} cannot declare both mapExistingMagicInfo and createMagicInfo")
 
-        if len(matches) == 1 and not force_create:
-            target = matches[0]
+        if semantic_map:
+            if "Magic" not in semantic_map:
+                raise RuntimeError(f"mapExistingMagicInfo for {spell} must declare Magic")
+            requested_magic = int(semantic_map["Magic"])
+            mapped = zircon_by_magic.get(requested_magic, [])
+            if len(mapped) != 1:
+                raise RuntimeError(
+                    f"Expected exactly one Zircon MagicInfo with Magic={requested_magic} for {spell}; found {len(mapped)}"
+                )
+            target = mapped[0]
+            index = int(target["Index"])
+            magic_type = int(target["Magic"])
+            mode = "map_existing_magic"
+            zircon_name = target.get("Name")
+            if semantic_map.get("RenameToCrystalName", False):
+                set_values["Name"] = fields.get("Name") or spell
+
+        elif len(name_matches) > 1 and not force_create:
+            raise RuntimeError(f"Expected at most one Zircon MagicInfo name match for {spell}; found {len(name_matches)}")
+
+        elif len(name_matches) == 1 and not force_create:
+            target = name_matches[0]
             index = int(target["Index"])
             magic_type = int(target["Magic"])
             mode = "update_existing"
             zircon_name = target.get("Name")
+
         else:
             if not create:
                 raise RuntimeError(
@@ -192,15 +218,16 @@ def main() -> int:
         })
 
     payload = {
-        "SchemaVersion": 4,
+        "SchemaVersion": 5,
         "Name": "Runtime-ready Crystal spells mapped or created in Zircon MagicInfo",
         "Operations": operations,
         "$audit": {
             "generatedFromNumericSchemaVersion": projection.get("schemaVersion"),
             "decisionManifest": decisions.get("manifest", str(args.behavior_decisions)),
             "decisionIncludes": decisions.get("includes", []),
-            "joinKey": "normalized spell name",
+            "numericJoinKey": "normalized Crystal spell name",
             "existingZirconIndicesPreserved": True,
+            "semanticMappingsRequireExplicitMagicType": True,
             "crystalOnlyRowsRequireReservedExplicitIdentity": True,
             "forceCreateProtectsCrossClassNameCollisions": True,
             "included": included,
@@ -210,9 +237,9 @@ def main() -> int:
 
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(payload, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
-    updates = sum(1 for item in included if item["mode"] == "update_existing")
+    updates = sum(1 for item in included if item["mode"] in {"update_existing", "map_existing_magic"})
     creates = len(included) - updates
-    print(f"Ready Crystal magic overlay candidate: {updates} updates, {creates} creates, {len(skipped)} skipped")
+    print(f"Ready Crystal magic overlay candidate: {updates} updates/maps, {creates} creates, {len(skipped)} skipped")
     for item in included:
         print(
             f"- {item['crystalSpell']} -> MagicInfo#{item['zirconIndex']} "
