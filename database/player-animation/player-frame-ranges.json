@@ -1,0 +1,56 @@
+{
+  "schemaVersion": 1,
+  "status": "SOURCE_CONFIRMED",
+  "source": {
+    "repository": "Suprcode/Crystal",
+    "commit": "0e315fe327192afe52c3d7357ddd1f5b7e26c5b8",
+    "file": "Client/MirObjects/Frames.cs",
+    "frameSet": "FrameSet.Player"
+  },
+  "frameSemantics": {
+    "directionStride": "count + skip",
+    "effectDirectionStride": "effectCount + effectSkip",
+    "frameEndWithinDirection": "start + count - 1",
+    "reverse": "iterate the configured range in reverse; used by Revive"
+  },
+  "actions": {
+    "Standing": {"start":0,"count":4,"skip":0,"intervalMs":500,"effectStart":0,"effectCount":8,"effectSkip":0,"effectIntervalMs":250},
+    "Walking": {"start":32,"count":6,"skip":0,"intervalMs":100,"effectStart":64,"effectCount":6,"effectSkip":0,"effectIntervalMs":100},
+    "Running": {"start":80,"count":6,"skip":0,"intervalMs":100,"effectStart":112,"effectCount":6,"effectSkip":0,"effectIntervalMs":100},
+    "Stance": {"start":128,"count":1,"skip":0,"intervalMs":1000,"effectStart":160,"effectCount":1,"effectSkip":0,"effectIntervalMs":1000},
+    "Stance2": {"start":300,"count":1,"skip":5,"intervalMs":1000,"effectStart":332,"effectCount":1,"effectSkip":5,"effectIntervalMs":1000},
+    "Attack1": {"start":136,"count":6,"skip":0,"intervalMs":100,"effectStart":168,"effectCount":6,"effectSkip":0,"effectIntervalMs":100},
+    "Attack2": {"start":184,"count":6,"skip":0,"intervalMs":100,"effectStart":216,"effectCount":6,"effectSkip":0,"effectIntervalMs":100},
+    "Attack3": {"start":232,"count":8,"skip":0,"intervalMs":100,"effectStart":264,"effectCount":8,"effectSkip":0,"effectIntervalMs":100},
+    "Attack4": {"start":416,"count":6,"skip":0,"intervalMs":100,"effectStart":448,"effectCount":6,"effectSkip":0,"effectIntervalMs":100},
+    "Spell": {"start":296,"count":6,"skip":0,"intervalMs":100,"effectStart":328,"effectCount":6,"effectSkip":0,"effectIntervalMs":100},
+    "Harvest": {"start":344,"count":2,"skip":0,"intervalMs":300,"effectStart":376,"effectCount":2,"effectSkip":0,"effectIntervalMs":300},
+    "Struck": {"start":360,"count":3,"skip":0,"intervalMs":100,"effectStart":392,"effectCount":3,"effectSkip":0,"effectIntervalMs":100},
+    "Die": {"start":384,"count":4,"skip":0,"intervalMs":100,"effectStart":416,"effectCount":4,"effectSkip":0,"effectIntervalMs":100},
+    "Dead": {"start":387,"count":1,"skip":3,"intervalMs":1000,"effectStart":419,"effectCount":1,"effectSkip":3,"effectIntervalMs":1000},
+    "Revive": {"start":384,"count":4,"skip":0,"intervalMs":100,"effectStart":416,"effectCount":4,"effectSkip":0,"effectIntervalMs":100,"reverse":true},
+    "Mine": {"start":184,"count":6,"skip":0,"intervalMs":100,"effectStart":216,"effectCount":6,"effectSkip":0,"effectIntervalMs":100},
+    "Lunge": {"start":139,"count":1,"skip":5,"intervalMs":1000,"effectStart":300,"effectCount":1,"effectSkip":5,"effectIntervalMs":1000,"reachability":"NEEDS_PLAYER_CALLSITE_EVIDENCE"},
+    "Sneek": {"start":464,"count":6,"skip":0,"intervalMs":100,"effectStart":496,"effectCount":6,"effectSkip":0,"effectIntervalMs":100,"classScope":["Assassin"]},
+    "DashAttack": {"start":80,"count":3,"skip":3,"intervalMs":100,"effectStart":112,"effectCount":3,"effectSkip":3,"effectIntervalMs":100,"classScope":["Assassin"]},
+    "WalkingBow": {"start":0,"count":6,"skip":0,"intervalMs":100,"effectStart":0,"effectCount":6,"effectSkip":0,"effectIntervalMs":100,"classScope":["Archer"]},
+    "RunningBow": {"start":48,"count":6,"skip":0,"intervalMs":100,"effectStart":48,"effectCount":6,"effectSkip":0,"effectIntervalMs":100,"classScope":["Archer"]},
+    "AttackRange1": {"start":96,"count":8,"skip":0,"intervalMs":100,"effectStart":96,"effectCount":8,"effectSkip":0,"effectIntervalMs":100,"classScope":["Archer"]},
+    "AttackRange2": {"start":160,"count":8,"skip":0,"intervalMs":100,"effectStart":160,"effectCount":8,"effectSkip":0,"effectIntervalMs":100,"classScope":["Archer"]},
+    "AttackRange3": {"start":224,"count":8,"skip":0,"intervalMs":100,"effectStart":224,"effectCount":8,"effectSkip":0,"effectIntervalMs":100,"classScope":["Archer"]},
+    "Jump": {"start":288,"count":8,"skip":0,"intervalMs":100,"effectStart":288,"effectCount":8,"effectSkip":0,"effectIntervalMs":100,"classScope":["Archer"]},
+    "MountStanding": {"start":416,"count":4,"skip":0,"intervalMs":500,"effectStart":448,"effectCount":4,"effectSkip":0,"effectIntervalMs":500},
+    "MountWalking": {"start":448,"count":8,"skip":0,"intervalMs":100,"effectStart":480,"effectCount":8,"effectSkip":0,"effectIntervalMs":500},
+    "MountRunning": {"start":512,"count":6,"skip":0,"intervalMs":100,"effectStart":544,"effectCount":6,"effectSkip":0,"effectIntervalMs":100},
+    "MountStruck": {"start":560,"count":3,"skip":0,"intervalMs":100,"effectStart":592,"effectCount":3,"effectSkip":0,"effectIntervalMs":100},
+    "MountAttack": {"start":584,"count":6,"skip":0,"intervalMs":100,"effectStart":616,"effectCount":6,"effectSkip":0,"effectIntervalMs":100},
+    "FishingCast": {"start":632,"count":8,"skip":0,"intervalMs":100,"effectStart":0,"effectCount":0,"effectSkip":0,"effectIntervalMs":0},
+    "FishingWait": {"start":696,"count":6,"skip":0,"intervalMs":120,"effectStart":0,"effectCount":0,"effectSkip":0,"effectIntervalMs":0},
+    "FishingReel": {"start":744,"count":8,"skip":0,"intervalMs":100,"effectStart":0,"effectCount":0,"effectSkip":0,"effectIntervalMs":0}
+  },
+  "validationPolicy": {
+    "assetConfirmedRequiresLibraryInspection": true,
+    "codeRangeAloneIsNotAssetConfirmed": true,
+    "inventMissingPlayerFrames": false
+  }
+}
