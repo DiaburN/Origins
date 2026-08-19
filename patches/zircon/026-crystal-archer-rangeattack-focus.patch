@@ -1,0 +1,113 @@
+diff --git a/LibraryCore/Stat.cs b/LibraryCore/Stat.cs
+--- a/LibraryCore/Stat.cs
++++ b/LibraryCore/Stat.cs
+@@
+         CrystalDelayedExplosionInfect = 11008,
++
++        [StatDescription(Title = "Poison Attack", Format = "{0:+#0;-#0;#0}", Mode = StatType.Default, ServerOnly = true)]
++        PoisonAttack = 11009,
+ 
+         [StatDescription(Title = "Duration", Mode = StatType.Time)]
+diff --git a/ServerLibrary/Models/PlayerObject.cs b/ServerLibrary/Models/PlayerObject.cs
+--- a/ServerLibrary/Models/PlayerObject.cs
++++ b/ServerLibrary/Models/PlayerObject.cs
+@@
+         public void RangeAttack(MirDirection direction, uint target)
+         {
+             UserItem weapon = Equipment[(int)EquipmentSlot.Weapon];
+ 
+             // shukiran
+-            if (weapon is null || weapon.Info.Shape != Globals.ShurikenLibraryWeaponShape)
++            // Crystal Archer uses the same ranged action path but is not a
++            // Zircon shuriken user. Archer weapon/class filtering is data-driven.
++            if (weapon is null || (Class != MirClass.Archer && weapon.Info.Shape != Globals.ShurikenLibraryWeaponShape))
+                 return;
+@@
+             MapObject ob = VisibleObjects.FirstOrDefault(x => x.ObjectID == target);
+ 
+             if (ob is null) return;
++
++            bool crystalArcher = Class == MirClass.Archer;
++            bool focus = false;
++            int crystalArcherDamage = 0;
++            int crystalArcherDistance = Functions.Distance(CurrentLocation, ob.CurrentLocation);
++
++            if (crystalArcher)
++            {
++                if (GetMagic(MagicType.Focus, out MagicObject focusObject) && focusObject is Focus focusMagic)
++                    focus = focusMagic.TryProc();
++
++                int min = Stats[Stat.MinDC];
++                int max = Stats[Stat.MaxDC];
++                int range = Math.Max(0, Math.Min(9, crystalArcherDistance));
++                decimal loss = ((decimal)min / 9M) * (9 - range);
++                min -= (int)Math.Floor(loss);
++                crystalArcherDamage = min >= max ? max : SEnvir.Random.Next(min, max + 1);
++
++                switch (CrystalArcherMentalState)
++                {
++                    case 1:
++                        crystalArcherDamage = crystalArcherDamage * (55 + CrystalArcherMentalStateLevel * 5) / 100;
++                        break;
++                    case 2:
++                        crystalArcherDamage = crystalArcherDamage * 80 / 100;
++                        break;
++                }
++            }
+@@
+-            Broadcast(new S.ObjectRangeAttack
++            Broadcast(new S.ObjectRangeAttack
+             {
+                 ObjectID = ObjectID,
+                 Direction = Direction,
+                 Location = CurrentLocation,
+-                AttackMagic = MagicType.Shuriken,
++                AttackMagic = crystalArcher && focus ? MagicType.Focus : MagicType.Shuriken,
+                 AttackElement = element,
+                 Targets = new List<uint> { ob.ObjectID }
+             });
+ 
+-            int projectileDelay = Math.Max(100, Math.Min(750, Functions.Distance(CurrentLocation, ob.CurrentLocation) * 50));
++            int projectileDelay = crystalArcher
++                ? crystalArcherDistance * 50 + 550
++                : Math.Max(100, Math.Min(750, Functions.Distance(CurrentLocation, ob.CurrentLocation) * 50));
+ 
+-            ActionList.Add(new DelayedAction(SEnvir.Now.AddMilliseconds(projectileDelay), ActionType.DelayAttack, ob, new List<MagicType>() { MagicType.Shuriken }, true, 50));
++            if (crystalArcher)
++            {
++                int chanceToHit = (100 - ((100 / 9) * crystalArcherDistance)) * (focus ? 2 : 1);
++                chanceToHit = Math.Max(0, chanceToHit);
++
++                if (SEnvir.Random.Next(100) < chanceToHit)
++                {
++                    var archerTypes = new List<MagicType>();
++                    if (focus) archerTypes.Add(MagicType.Focus);
++
++                    ActionList.Add(new DelayedAction(
++                        SEnvir.Now.AddMilliseconds(projectileDelay),
++                        ActionType.DelayAttack,
++                        ob,
++                        archerTypes,
++                        true,
++                        crystalArcherDamage));
++                }
++            }
++            else
++            {
++                ActionList.Add(new DelayedAction(SEnvir.Now.AddMilliseconds(projectileDelay), ActionType.DelayAttack, ob, new List<MagicType>() { MagicType.Shuriken }, true, 50));
++            }
+ 
+             DamageItem(GridType.Equipment, (int)EquipmentSlot.Weapon);
+         }
+@@
+         public void Attack(MapObject ob, List<MagicType> types, bool primary, int extra)
+         {
+@@
+-            int power = GetDC();
++            // Crystal Archer's normal ranged path snapshots the distance-adjusted
++            // DC roll before the projectile is scheduled. For all other attacks
++            // Zircon retains its native GetDC() calculation.
++            int power = Class == MirClass.Archer &&
++                        (types.Count == 0 || types.All(x => x == MagicType.Focus))
++                ? extra
++                : GetDC();
