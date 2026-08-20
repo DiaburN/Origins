@@ -259,6 +259,24 @@ jobs:
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+
+          git fetch origin Origins-DxR
+          $remote = (git rev-parse origin/Origins-DxR).Trim()
+          if ($remote -ne $env:GITHUB_SHA) {
+            $allowedGenerated = @(
+              $env:CONTRACT_JSON,
+              $env:CONTRACT_JS,
+              'docs/generated/ORIGINS_DXR_WEB_PLAYER_ASSETS_STEP2.md'
+            )
+            $changedAfterRun = @(git diff --name-only "$env:GITHUB_SHA..$remote")
+            $newerSource = @($changedAfterRun | Where-Object { $allowedGenerated -notcontains $_ })
+            if ($newerSource.Count -gt 0) {
+              Write-Host "Stale Step 2 run: newer source changes exist. Evidence will not overwrite them."
+              $newerSource | ForEach-Object { Write-Host " - $_" }
+              exit 0
+            }
+          }
+
           $paths = @(
             $env:CONTRACT_JSON,
             $env:CONTRACT_JS,
