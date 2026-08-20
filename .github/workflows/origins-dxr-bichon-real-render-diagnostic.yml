@@ -1,0 +1,151 @@
+name: Origins DxR - Bichon Real Render Diagnostic
+
+on:
+  push:
+    branches: [Origins-DxR]
+    paths:
+      - 'maps/origins/0.map'
+      - 'tools/zircon-map-renderer/**'
+      - '.github/workflows/origins-dxr-bichon-real-render-diagnostic.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+env:
+  ZIRCON_COMMIT: cbf1aa919083bc13fc3f23f93772a8ab8370632d
+  MIRROR_PATCH: https://mirfiles.co.uk/resources/mir3/zircon/patch/
+  PRIMARY_PATCH: https://mirfiles.com/resources/mir3/zircon/patch/
+  RAW_ROOT: runtime-assets/zircon-map-render
+  OUT_ROOT: artifacts/bichon-real-render-diagnostic
+
+jobs:
+  diagnose:
+    runs-on: windows-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Bootstrap pinned Zircon
+        id: bootstrap
+        continue-on-error: true
+        shell: pwsh
+        run: ./scripts/bootstrap-zircon.ps1
+
+      - name: Prepare managed DXT
+        id: dxt
+        if: steps.bootstrap.outcome == 'success'
+        continue-on-error: true
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force $env:OUT_ROOT | Out-Null
+          python scripts/prepare-zircon-libraryeditor-managed-dxt.py --zircon-root vendor/zircon --report "$env:OUT_ROOT/dxt.json"
+
+      - name: Fetch official map libraries
+        id: fetch
+        if: steps.dxt.outcome == 'success'
+        continue-on-error: true
+        shell: pwsh
+        run: |
+          @'
+          import gzip,json,os,urllib.parse,urllib.request
+          from pathlib import Path
+          rels=[
+            'Data/Map Data/Tilesc.Zl','Data/Map Data/Tiles30c.Zl','Data/Map Data/Tiles5c.Zl','Data/Map Data/SmTilesc.Zl',
+            'Data/Map Data/Housesc.Zl','Data/Map Data/Cliffsc.Zl','Data/Map Data/Dungeonsc.Zl','Data/Map Data/Innersc.Zl',
+            'Data/Map Data/Furnituresc.Zl','Data/Map Data/Wallsc.Zl','Data/Map Data/SmObjectsc.Zl','Data/Map Data/Animationsc.Zl',
+            'Data/Map Data/Object1c.Zl','Data/Map Data/Object2c.Zl']
+          hosts=[os.environ['MIRROR_PATCH'],os.environ['PRIMARY_PATCH']]
+          root=Path(os.environ['RAW_ROOT']); rows=[]; ok=True
+          for rel in rels:
+              dest=root/Path(rel); dest.parent.mkdir(parents=True,exist_ok=True)
+              patch=rel.replace('/','-')+'.gz'; attempts=[]; ready=False
+              for host in hosts:
+                  url=host+urllib.parse.quote(patch,safe='-_.()')
+                  try:
+                      req=urllib.request.Request(url,headers={'User-Agent':'ORIGINS-DxR-MapRenderDiagnostic/1.0'})
+                      with urllib.request.urlopen(req,timeout=75) as r: compressed=r.read()
+                      payload=gzip.decompress(compressed); dest.write_bytes(payload)
+                      rows.append({'relativePath':rel,'status':'READY','url':url,'bytes':len(payload)}); ready=True; break
+                  except Exception as exc:
+                      attempts.append({'url':url,'error':f'{type(exc).__name__}: {exc}'})
+              if not ready:
+                  ok=False; rows.append({'relativePath':rel,'status':'FAIL','attempts':attempts})
+          Path(os.environ['OUT_ROOT'],'fetch.json').write_text(json.dumps({'status':'PASS' if ok else 'FAIL','libraries':rows},indent=2)+'\n',encoding='utf-8')
+          if not ok: raise SystemExit('One or more official map libraries failed to download')
+          '@ | python - 2>&1 | Tee-Object -FilePath "$env:OUT_ROOT/fetch.log"
+          if ($LASTEXITCODE -ne 0) { throw "Map library fetch failed with $LASTEXITCODE" }
+
+      - name: Build renderer
+        id: build
+        if: steps.fetch.outcome == 'success'
+        continue-on-error: true
+        shell: pwsh
+        run: |
+          dotnet build tools/zircon-map-renderer/ZirconMapRenderer.csproj -c Release -p:Platform=AnyCPU 2>&1 | Tee-Object -FilePath "$env:OUT_ROOT/build.log"
+          if ($LASTEXITCODE -ne 0) { throw "Renderer build failed with $LASTEXITCODE" }
+
+      - name: Render committed 0.map
+        id: render
+        if: steps.build.outcome == 'success'
+        continue-on-error: true
+        shell: pwsh
+        run: |
+          dotnet run --project tools/zircon-map-renderer/ZirconMapRenderer.csproj -c Release -p:Platform=AnyCPU --no-build -- --map maps/origins/0.map --source-root $env:RAW_ROOT --output-dir $env:OUT_ROOT 2>&1 | Tee-Object -FilePath "$env:OUT_ROOT/render.log"
+          if ($LASTEXITCODE -ne 0) { throw "Renderer execution failed with $LASTEXITCODE" }
+
+      - name: Write and commit diagnostic
+        if: always()
+        shell: pwsh
+        env:
+          BOOTSTRAP: ${{ steps.bootstrap.outcome }}
+          DXT: ${{ steps.dxt.outcome }}
+          FETCH: ${{ steps.fetch.outcome }}
+          BUILD: ${{ steps.build.outcome }}
+          RENDER: ${{ steps.render.outcome }}
+        run: |
+          New-Item -ItemType Directory -Force docs/generated/bichon-map0 | Out-Null
+          @'
+          import json,os
+          from pathlib import Path
+          out=Path(os.environ['OUT_ROOT'])
+          outcomes={k:os.environ.get(k,'unknown') for k in ['BOOTSTRAP','DXT','FETCH','BUILD','RENDER']}
+          gate='PASS' if all(v=='success' for v in outcomes.values()) and (out/'render-report.json').exists() else 'FAIL'
+          lines=['# ORIGINS-DxR — Bichon Real Render Diagnostic','',f'- Gate: **{gate}**',f'- HEAD: `{os.environ.get("GITHUB_SHA","unknown")}`','', '## Steps','']
+          lines += [f'- {k}: **{v}**' for k,v in outcomes.items()]
+          fetch=out/'fetch.json'
+          if fetch.exists():
+              payload=json.loads(fetch.read_text(encoding='utf-8'))
+              lines += ['','## Fetch','']
+              for row in payload.get('libraries',[]):
+                  lines.append(f'- `{row.get("relativePath")}`: **{row.get("status")}**; bytes `{row.get("bytes","—")}`')
+                  for a in row.get('attempts',[]): lines.append(f'  - `{a.get("url")}` → `{a.get("error")}`')
+          for name in ['build.log','render.log']:
+              p=out/name
+              if p.exists():
+                  tail='\n'.join(p.read_text(errors='replace').splitlines()[-50:])
+                  lines += ['',f'## {name}','', '```text',tail,'```']
+          report=out/'render-report.json'
+          if report.exists():
+              r=json.loads(report.read_text(encoding='utf-8'))
+              lines += ['','## Render report','',f'- Map SHA-256: `{r["map"]["sha256"]}`']
+              for row in r.get('renders',[]): lines.append(f'- {row["name"]}: **{row["pixelWidth"]}×{row["pixelHeight"]}**, `{row["bytes"]}` bytes, SHA `{row["sha256"]}`')
+          Path('docs/generated/ORIGINS_DXR_BICHON_REAL_RENDER_DIAGNOSTIC.md').write_text('\n'.join(lines)+'\n',encoding='utf-8')
+          '@ | python -
+          if (Test-Path "$env:OUT_ROOT/bichon-cataclysm-real-overview.png") { Copy-Item "$env:OUT_ROOT/bichon-cataclysm-real-overview.png" docs/generated/bichon-map0/real-overview.png -Force }
+          if (Test-Path "$env:OUT_ROOT/bichon-cataclysm-real-detail.png") { Copy-Item "$env:OUT_ROOT/bichon-cataclysm-real-detail.png" docs/generated/bichon-map0/real-detail.png -Force }
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add docs/generated/ORIGINS_DXR_BICHON_REAL_RENDER_DIAGNOSTIC.md
+          if (Test-Path docs/generated/bichon-map0/real-overview.png) { git add docs/generated/bichon-map0/real-overview.png }
+          if (Test-Path docs/generated/bichon-map0/real-detail.png) { git add docs/generated/bichon-map0/real-detail.png }
+          if (-not (git diff --cached --quiet)) {
+            git commit -m 'audit(map): record real Bichon render diagnostic'
+            git pull --rebase origin Origins-DxR
+            git push origin HEAD:Origins-DxR
+          }
