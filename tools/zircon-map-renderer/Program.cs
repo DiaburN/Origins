@@ -28,6 +28,9 @@ internal static class Program
         [11] = @"Data\Map Data\Animationsc.Zl",
         [12] = @"Data\Map Data\Object1c.Zl",
         [13] = @"Data\Map Data\Object2c.Zl",
+        [15] = @"Data\Map Data\Wood\Tilesc.Zl",
+        [19] = @"Data\Map Data\Wood\Housesc.Zl",
+        [25] = @"Data\Map Data\Wood\SmObjectsc.Zl",
     };
 
     [STAThread]
@@ -180,7 +183,7 @@ internal static class Program
     private static void DrawLayer(Graphics g, IReadOnlyDictionary<int, Mir3Library> libraries,
         int fileId, int index, int animationFrame, int cellX, int cellY, RenderSpec spec)
     {
-        if (fileId == 0) return; // Zircon MapViewer skips Tilesc for middle/front.
+        if (fileId == 0 || fileId == 255) return; // Zircon MapViewer skips Tilesc and unknown sentinel ids.
         if (!libraries.TryGetValue(fileId, out Mir3Library? library)) return;
 
         Mir3Library.Mir3Image? image = library.GetImage(index);
@@ -198,6 +201,7 @@ internal static class Program
     private static void DrawImage(Graphics g, IReadOnlyDictionary<int, Mir3Library> libraries,
         int fileId, int index, int worldX, int worldY, RenderSpec spec, bool blend)
     {
+        if (fileId == 255) return;
         if (!libraries.TryGetValue(fileId, out Mir3Library? library)) return;
         Mir3Library.Mir3Image? image = library.GetImage(index);
         if (image?.Image is null || image.Width <= 0 || image.Height <= 0) return;
@@ -324,9 +328,9 @@ internal sealed class NativeMap
             for (int y = 0; y < Height; y++)
             {
                 Cell c = Cells[x, y];
-                if ((x & 1) == 0 && (y & 1) == 0) ids.Add(c.BackFile);
-                if (c.MiddleFile != 0) ids.Add(c.MiddleFile);
-                if (c.FrontFile != 0) ids.Add(c.FrontFile);
+                if ((x & 1) == 0 && (y & 1) == 0 && c.BackFile != 255) ids.Add(c.BackFile);
+                if (c.MiddleFile != 0 && c.MiddleFile != 255) ids.Add(c.MiddleFile);
+                if (c.FrontFile != 0 && c.FrontFile != 255) ids.Add(c.FrontFile);
             }
         }
         return ids;
