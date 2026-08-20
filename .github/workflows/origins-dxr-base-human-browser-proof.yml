@@ -1,0 +1,264 @@
+name: Origins DxR - Base Human Browser Proof
+
+on:
+  push:
+    branches: [Origins-DxR]
+    paths:
+      - 'apps/origins-web-runtime/main.js'
+      - 'apps/origins-web-runtime/player-sprite-runtime.js'
+      - '.github/workflows/origins-dxr-base-human-browser-proof.yml'
+  workflow_dispatch:
+
+permissions:
+  actions: read
+  contents: write
+
+env:
+  SOURCE_WORKFLOW: origins-dxr-base-human-import.yml
+  ZIRCON_COMMIT: cbf1aa919083bc13fc3f23f93772a8ab8370632d
+
+jobs:
+  browser-proof:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - name: Checkout Origins-DxR
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Locate latest base-human preview artifact
+        id: source
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p .qa
+          payload="$(gh api "repos/${GITHUB_REPOSITORY}/actions/workflows/${SOURCE_WORKFLOW}/runs?branch=Origins-DxR&per_page=30")"
+          python3 - <<'PY' <<<"$payload" > .qa/source-candidates.txt
+          import json,sys
+          d=json.load(sys.stdin)
+          for run in d.get('workflow_runs', []):
+              print(run.get('id',''), run.get('head_sha',''), run.get('status',''), run.get('conclusion',''))
+          PY
+
+          run_id=""
+          run_sha=""
+          while read -r candidate_id candidate_sha candidate_status candidate_conclusion; do
+            [[ -n "$candidate_id" ]] || continue
+            [[ "$candidate_status" == "completed" ]] || continue
+            artifacts="$(gh api "repos/${GITHUB_REPOSITORY}/actions/runs/${candidate_id}/artifacts")"
+            artifact_id="$(python3 -c 'import json,sys; d=json.load(sys.stdin); xs=[a for a in d.get("artifacts",[]) if a.get("name")=="origins-dxr-base-humans-preview" and not a.get("expired")]; print(xs[0]["id"] if xs else "")' <<<"$artifacts")"
+            if [[ -n "$artifact_id" ]]; then
+              run_id="$candidate_id"
+              run_sha="$candidate_sha"
+              echo "artifact_id=$artifact_id" >> "$GITHUB_OUTPUT"
+              break
+            fi
+          done < .qa/source-candidates.txt
+
+          [[ -n "$run_id" ]] || { echo "No completed import run with preview artifact found"; cat .qa/source-candidates.txt; exit 1; }
+          echo "run_id=$run_id" >> "$GITHUB_OUTPUT"
+          echo "run_sha=$run_sha" >> "$GITHUB_OUTPUT"
+          echo "Using import run ${run_id} at ${run_sha}"
+
+      - name: Download exact generated preview
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p .qa/preview
+          gh api "repos/${GITHUB_REPOSITORY}/actions/artifacts/${{ steps.source.outputs.artifact_id }}/zip" > .qa/preview.zip
+          unzip -q .qa/preview.zip -d .qa/preview
+          test -f .qa/preview/index.html
+          test -f .qa/preview/main.js
+          test -f .qa/preview/assets/player/player-assets.json
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          root=Path('.qa/preview/assets/player')
+          master=json.loads((root/'player-assets.json').read_text(encoding='utf-8-sig'))
+          names={r['libraryFile'] for r in master['libraries']}
+          if names != {'M_Hum','WM_Hum'}:
+              raise SystemExit(f'Unexpected base-human pair: {names}')
+          print('Preview contains exact M_Hum + WM_Hum pair')
+          PY
+
+      - name: Render Male and Female in Chrome
+        id: chrome
+        continue-on-error: true
+        shell: bash
+        run: |
+          set -uo pipefail
+          mkdir -p .qa/browser
+          browser_error=.qa/browser/browser-error.txt
+          : > "$browser_error"
+
+          chrome="$(command -v google-chrome || command -v google-chrome-stable || command -v chromium || true)"
+          if [[ -z "$chrome" ]]; then
+            echo "Chrome/Chromium executable not found" | tee "$browser_error"
+            exit 1
+          fi
+          "$chrome" --version > .qa/browser/chrome-version.txt 2>&1
+
+          python3 -m http.server 8765 --bind 127.0.0.1 --directory .qa/preview > .qa/browser/http.out.log 2> .qa/browser/http.err.log &
+          server_pid=$!
+          trap 'kill "$server_pid" 2>/dev/null || true' EXIT
+          sleep 2
+          if ! curl --fail --silent --show-error http://127.0.0.1:8765/index.html >/dev/null; then
+            echo "Preview HTTP server did not answer" | tee "$browser_error"
+            cat .qa/browser/http.err.log >> "$browser_error" || true
+            exit 1
+          fi
+
+          failed=0
+          for gender in Male Female; do
+            url="http://127.0.0.1:8765/index.html?gender=${gender}"
+            dom=".qa/browser/${gender}-dom.html"
+            log=".qa/browser/${gender}-chrome.log"
+            shot="$(pwd)/.qa/browser/${gender}.png"
+
+            "$chrome" --headless=new --no-sandbox --disable-gpu --hide-scrollbars \
+              --window-size=960,720 --virtual-time-budget=60000 --dump-dom "$url" > "$dom" 2> "$log"
+            code=$?
+            if [[ $code -ne 0 ]]; then
+              echo "${gender}: Chrome DOM exit code ${code}" >> "$browser_error"
+              tail -80 "$log" >> "$browser_error" || true
+              failed=1
+              continue
+            fi
+
+            "$chrome" --headless=new --no-sandbox --disable-gpu --hide-scrollbars \
+              --window-size=960,720 --virtual-time-budget=60000 --screenshot="$shot" "$url" >> "$log" 2>&1
+            code=$?
+            if [[ $code -ne 0 || ! -s "$shot" ]]; then
+              echo "${gender}: Chrome screenshot failed, exit=${code}" >> "$browser_error"
+              tail -80 "$log" >> "$browser_error" || true
+              failed=1
+            fi
+          done
+
+          if [[ $failed -ne 0 ]]; then
+            exit 1
+          fi
+
+          python3 - <<'PY' > .qa/browser/validation.out 2> .qa/browser/validation.err
+          import json,re
+          from pathlib import Path
+          root=Path('.qa/browser')
+          expected={'Male':'M_Hum','Female':'WM_Hum'}
+          rows=[]
+          for gender,library in expected.items():
+              text=(root/f'{gender}-dom.html').read_text(encoding='utf-8',errors='replace')
+              match=re.search(r'<html\b([^>]*)>', text, re.I|re.S)
+              if not match:
+                  raise SystemExit(f'{gender}: rendered DOM has no html element')
+              attrs=dict(re.findall(r'([:\w-]+)="([^"]*)"', match.group(1)))
+              checks={
+                  'data-preview-gender':gender,
+                  'data-player-asset-pair':'READY',
+                  'data-player-library':library,
+                  'data-real-frame-drawn':'true',
+              }
+              for key,value in checks.items():
+                  if attrs.get(key) != value:
+                      raise SystemExit(f'{gender}: {key}={attrs.get(key)!r}, expected {value!r}; html attrs={attrs}')
+              idx=attrs.get('data-player-image-index')
+              if idx is None or not idx.isdigit():
+                  raise SystemExit(f'{gender}: data-player-image-index={idx!r}')
+              shot=root/f'{gender}.png'
+              if not shot.is_file() or shot.stat().st_size <= 0:
+                  raise SystemExit(f'{gender}: screenshot missing')
+              rows.append({'gender':gender,'libraryFile':library,'imageIndex':int(idx),'screenshotBytes':shot.stat().st_size})
+          result={'schema':'origins.zircon.base-human-browser-proof.v1','status':'PASS','renders':rows}
+          (root/'browser-proof.json').write_text(json.dumps(result,indent=2)+'\n',encoding='utf-8')
+          print(json.dumps(result,indent=2))
+          PY
+          code=$?
+          if [[ $code -ne 0 ]]; then
+            echo "DOM validation failed" >> "$browser_error"
+            cat .qa/browser/validation.err >> "$browser_error" || true
+            for gender in Male Female; do
+              echo "--- ${gender} html tag ---" >> "$browser_error"
+              grep -o -m1 '<html[^>]*>' ".qa/browser/${gender}-dom.html" >> "$browser_error" 2>/dev/null || true
+              echo "--- ${gender} chrome log ---" >> "$browser_error"
+              tail -40 ".qa/browser/${gender}-chrome.log" >> "$browser_error" 2>/dev/null || true
+            done
+            exit 1
+          fi
+          cat .qa/browser/validation.out
+
+      - name: Write browser-proof evidence
+        if: always()
+        shell: bash
+        env:
+          CHROME_OUTCOME: ${{ steps.chrome.outcome }}
+          SOURCE_RUN_ID: ${{ steps.source.outputs.run_id }}
+          SOURCE_RUN_SHA: ${{ steps.source.outputs.run_sha }}
+        run: |
+          set -euo pipefail
+          mkdir -p docs/generated
+          python3 - <<'PY'
+          import json,os
+          from pathlib import Path
+          root=Path('.qa/browser')
+          result={}
+          rp=root/'browser-proof.json'
+          if rp.exists(): result=json.loads(rp.read_text(encoding='utf-8-sig'))
+          outcome=os.environ.get('CHROME_OUTCOME','unknown')
+          gate='PASS' if outcome=='success' and result.get('status')=='PASS' else 'FAIL'
+          lines=[
+            '# ORIGINS-DxR — Real M-Hum + WM-Hum Browser Proof','',
+            f'- Browser gate: **{gate}**',
+            f'- Zircon authority: `{os.environ["ZIRCON_COMMIT"]}`',
+            f'- Browser-proof commit: `{os.environ.get("GITHUB_SHA","unknown")}`',
+            f'- Source import workflow run: **{os.environ.get("SOURCE_RUN_ID","unknown")}**',
+            f'- Source preview commit: `{os.environ.get("SOURCE_RUN_SHA","unknown")}`',
+            f'- GitHub Actions proof run: **{os.environ.get("GITHUB_RUN_ID","unknown")}**',
+            '', '## Browser result','',
+          ]
+          if result.get('renders'):
+              for row in result['renders']:
+                  lines.append(f'- `{row["gender"]}` → `{row["libraryFile"]}` → image index **{row["imageIndex"]}** → screenshot **{row["screenshotBytes"]} bytes**')
+          err=root/'browser-error.txt'
+          if gate!='PASS' and err.exists():
+              text=err.read_text(encoding='utf-8',errors='replace').splitlines()[-120:]
+              lines += ['','## Failure diagnostics','', '```text', *text, '```']
+          lines += ['','## Boundary','',
+                    '- PASS requires Chrome to load the generated preview, resolve the complete `M_Hum + WM_Hum` pair, and record a real atlas frame draw for each gender.',
+                    '- No Crystal or placeholder sprite can satisfy this gate.']
+          Path('docs/generated/ORIGINS_DXR_BASE_HUMAN_BROWSER_STATUS.md').write_text('\n'.join(lines)+'\n',encoding='utf-8')
+          Path('.qa/browser-gate.txt').write_text(gate+'\n',encoding='utf-8')
+          PY
+
+      - name: Upload browser proof
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: origins-dxr-base-human-browser-proof
+          path: |
+            .qa/browser/
+            docs/generated/ORIGINS_DXR_BASE_HUMAN_BROWSER_STATUS.md
+          if-no-files-found: warn
+
+      - name: Commit browser-proof evidence
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -- docs/generated/ORIGINS_DXR_BASE_HUMAN_BROWSER_STATUS.md
+          if ! git diff --cached --quiet; then
+            git commit -m 'audit(dxr): record real base-human browser proof'
+            git pull --rebase origin Origins-DxR
+            git push origin HEAD:Origins-DxR
+          fi
+
+      - name: Enforce browser gate
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -f .qa/browser-gate.txt
+          [[ "$(tr -d '\r\n' < .qa/browser-gate.txt)" == 'PASS' ]]
