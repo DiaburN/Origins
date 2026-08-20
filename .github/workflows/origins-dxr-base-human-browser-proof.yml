@@ -31,39 +31,47 @@ jobs:
 
       - name: Locate latest base-human preview artifact
         id: source
+        continue-on-error: true
         shell: bash
         run: |
           set -euo pipefail
           mkdir -p .qa
           payload="$(gh api "repos/${GITHUB_REPOSITORY}/actions/workflows/${SOURCE_WORKFLOW}/runs?branch=Origins-DxR&per_page=30")"
-          python3 - <<'PY' <<<"$payload" > .qa/source-candidates.txt
-          import json,sys
-          d=json.load(sys.stdin)
-          for run in d.get('workflow_runs', []):
-              print(run.get('id',''), run.get('head_sha',''), run.get('status',''), run.get('conclusion',''))
-          PY
+          python3 -c 'import json,sys; d=json.load(sys.stdin); [print(r.get("id",""),r.get("head_sha",""),r.get("status",""),r.get("conclusion","")) for r in d.get("workflow_runs",[])]' <<<"$payload" > .qa/source-candidates.txt
 
           run_id=""
           run_sha=""
+          artifact_id=""
           while read -r candidate_id candidate_sha candidate_status candidate_conclusion; do
             [[ -n "$candidate_id" ]] || continue
             [[ "$candidate_status" == "completed" ]] || continue
             artifacts="$(gh api "repos/${GITHUB_REPOSITORY}/actions/runs/${candidate_id}/artifacts")"
-            artifact_id="$(python3 -c 'import json,sys; d=json.load(sys.stdin); xs=[a for a in d.get("artifacts",[]) if a.get("name")=="origins-dxr-base-humans-preview" and not a.get("expired")]; print(xs[0]["id"] if xs else "")' <<<"$artifacts")"
-            if [[ -n "$artifact_id" ]]; then
+            candidate_artifact_id="$(python3 -c 'import json,sys; d=json.load(sys.stdin); xs=[a for a in d.get("artifacts",[]) if a.get("name")=="origins-dxr-base-humans-preview" and not a.get("expired")]; print(xs[0]["id"] if xs else "")' <<<"$artifacts")"
+            if [[ -n "$candidate_artifact_id" ]]; then
               run_id="$candidate_id"
               run_sha="$candidate_sha"
-              echo "artifact_id=$artifact_id" >> "$GITHUB_OUTPUT"
+              artifact_id="$candidate_artifact_id"
               break
             fi
           done < .qa/source-candidates.txt
 
-          [[ -n "$run_id" ]] || { echo "No completed import run with preview artifact found"; cat .qa/source-candidates.txt; exit 1; }
+          if [[ -z "$run_id" ]]; then
+            {
+              echo "No completed import run with preview artifact found"
+              cat .qa/source-candidates.txt
+            } > .qa/source-error.txt
+            cat .qa/source-error.txt
+            exit 1
+          fi
           echo "run_id=$run_id" >> "$GITHUB_OUTPUT"
           echo "run_sha=$run_sha" >> "$GITHUB_OUTPUT"
-          echo "Using import run ${run_id} at ${run_sha}"
+          echo "artifact_id=$artifact_id" >> "$GITHUB_OUTPUT"
+          echo "Using import run ${run_id} at ${run_sha}, artifact ${artifact_id}"
 
       - name: Download exact generated preview
+        id: download
+        if: steps.source.outcome == 'success'
+        continue-on-error: true
         shell: bash
         run: |
           set -euo pipefail
@@ -86,6 +94,7 @@ jobs:
 
       - name: Render Male and Female in Chrome
         id: chrome
+        if: steps.download.outcome == 'success'
         continue-on-error: true
         shell: bash
         run: |
@@ -192,6 +201,8 @@ jobs:
         if: always()
         shell: bash
         env:
+          SOURCE_OUTCOME: ${{ steps.source.outcome }}
+          DOWNLOAD_OUTCOME: ${{ steps.download.outcome }}
           CHROME_OUTCOME: ${{ steps.chrome.outcome }}
           SOURCE_RUN_ID: ${{ steps.source.outputs.run_id }}
           SOURCE_RUN_SHA: ${{ steps.source.outputs.run_sha }}
@@ -205,21 +216,29 @@ jobs:
           result={}
           rp=root/'browser-proof.json'
           if rp.exists(): result=json.loads(rp.read_text(encoding='utf-8-sig'))
-          outcome=os.environ.get('CHROME_OUTCOME','unknown')
-          gate='PASS' if outcome=='success' and result.get('status')=='PASS' else 'FAIL'
+          source_outcome=os.environ.get('SOURCE_OUTCOME','unknown')
+          download_outcome=os.environ.get('DOWNLOAD_OUTCOME','unknown')
+          chrome_outcome=os.environ.get('CHROME_OUTCOME','unknown')
+          gate='PASS' if source_outcome=='success' and download_outcome=='success' and chrome_outcome=='success' and result.get('status')=='PASS' else 'FAIL'
           lines=[
             '# ORIGINS-DxR — Real M-Hum + WM-Hum Browser Proof','',
             f'- Browser gate: **{gate}**',
             f'- Zircon authority: `{os.environ["ZIRCON_COMMIT"]}`',
             f'- Browser-proof commit: `{os.environ.get("GITHUB_SHA","unknown")}`',
-            f'- Source import workflow run: **{os.environ.get("SOURCE_RUN_ID","unknown")}**',
-            f'- Source preview commit: `{os.environ.get("SOURCE_RUN_SHA","unknown")}`',
+            f'- Source artifact lookup: **{source_outcome}**',
+            f'- Preview download: **{download_outcome}**',
+            f'- Chrome render: **{chrome_outcome}**',
+            f'- Source import workflow run: **{os.environ.get("SOURCE_RUN_ID") or "not resolved"}**',
+            f'- Source preview commit: `{os.environ.get("SOURCE_RUN_SHA") or "not resolved"}`',
             f'- GitHub Actions proof run: **{os.environ.get("GITHUB_RUN_ID","unknown")}**',
             '', '## Browser result','',
           ]
           if result.get('renders'):
               for row in result['renders']:
                   lines.append(f'- `{row["gender"]}` → `{row["libraryFile"]}` → image index **{row["imageIndex"]}** → screenshot **{row["screenshotBytes"]} bytes**')
+          source_err=Path('.qa/source-error.txt')
+          if gate!='PASS' and source_err.exists():
+              lines += ['','## Source artifact diagnostics','', '```text', *source_err.read_text(encoding='utf-8',errors='replace').splitlines()[-120:], '```']
           err=root/'browser-error.txt'
           if gate!='PASS' and err.exists():
               text=err.read_text(encoding='utf-8',errors='replace').splitlines()[-120:]
@@ -237,7 +256,7 @@ jobs:
         with:
           name: origins-dxr-base-human-browser-proof
           path: |
-            .qa/browser/
+            .qa/
             docs/generated/ORIGINS_DXR_BASE_HUMAN_BROWSER_STATUS.md
           if-no-files-found: warn
 
