@@ -12,6 +12,7 @@ import {
   resolveMagicAnimation,
   resolvePlayerAnimation,
   resolvePlayerDrawFrame,
+  resolvePlayerDrawPlan,
   resolvePlayerLayerFrames,
   resolvePlayerLibrarySelection,
 } from '../player-animation-runtime.js';
@@ -216,4 +217,70 @@ test('weapon frame shape normalization matches PlayerObject UpdateLibraries', ()
   assert.equal(normalizeWeaponShape(999), 999);
   assert.equal(normalizeWeaponShape(1100), 100);
   assert.equal(normalizeWeaponShape(1200), 200);
+});
+
+test('direction-aware draw plan preserves native weapon and shield depth', () => {
+  const up = resolvePlayerDrawPlan({
+    direction: 0, weapon1Available: true, weapon2Available: true,
+    shieldShape: 0, hairType: 1,
+  }).map(row => `${row.layer}:${row.phase}`);
+  assert.deepEqual(up, [
+    'weapon1:behind', 'body:body', 'hair:body', 'weapon2:front', 'shield:front',
+  ]);
+
+  const right = resolvePlayerDrawPlan({
+    direction: 2, weapon1Available: true, weapon2Available: true,
+    shieldShape: 0, helmetShape: 1,
+  }).map(row => `${row.layer}:${row.phase}`);
+  assert.deepEqual(right, [
+    'weapon2:behind', 'shield:behind', 'body:body', 'helmet:body', 'weapon1:front',
+  ]);
+});
+
+test('costume hide list suppresses both weapons and shield exactly like DrawBody', () => {
+  const plan = resolvePlayerDrawPlan({
+    direction: 2,
+    costumeShape: 6,
+    weapon1Available: true,
+    weapon2Available: true,
+    shieldShape: 0,
+    hairType: 1,
+  }).map(row => row.layer);
+  assert.deepEqual(plan, ['body', 'hair']);
+});
+
+test('DrawWeapon false suppresses weapons but does not suppress shield', () => {
+  const plan = resolvePlayerDrawPlan({
+    direction: 2,
+    drawWeapon: false,
+    weapon1Available: true,
+    weapon2Available: true,
+    shieldShape: 0,
+  }).map(row => `${row.layer}:${row.phase}`);
+  assert.deepEqual(plan, ['shield:behind', 'body:body']);
+});
+
+test('horse is always behind body and dark/royal effect is an overlay', () => {
+  const darkHorse = resolvePlayerDrawPlan({
+    direction: 4,
+    animation: 'HorseRunning',
+    horseShape: 5,
+    weapon1Available: false,
+    weapon2Available: false,
+    shieldShape: -1,
+  });
+  assert.equal(darkHorse[0].layer, 'horse');
+  assert.equal(darkHorse[0].frameMode, 'drawFrame');
+  assert.equal(darkHorse.at(-1).layer, 'horseShapeEffect');
+
+  const ironHorse = resolvePlayerDrawPlan({
+    direction: 4,
+    animation: 'HorseWalking',
+    horseShape: 1,
+    weapon1Available: false,
+    weapon2Available: false,
+    shieldShape: -1,
+  });
+  assert.equal(ironHorse[0].frameMode, 'horseFrame');
+  assert.ok(!ironHorse.some(row => row.layer === 'horseShapeEffect'));
 });
