@@ -102,6 +102,8 @@ def fetch_one(row: dict, output_root: Path) -> dict:
 
 def select_profile(rows: list[dict], profile: str) -> list[dict]:
     bodies = [row for row in rows if BODY_LIBRARY_RE.fullmatch(row.get("libraryFile", ""))]
+    if profile == "all-player-libraries":
+        return list(rows)
     if profile == "body":
         return bodies
     if profile == "female-body":
@@ -117,7 +119,11 @@ def main() -> int:
     parser.add_argument("--contract", type=Path, required=True)
     parser.add_argument("--output-root", type=Path, required=True)
     parser.add_argument("--report", type=Path, required=True)
-    parser.add_argument("--profile", choices=["body", "female-body", "male-body"], default=None)
+    parser.add_argument(
+        "--profile",
+        choices=["all-player-libraries", "body", "female-body", "male-body"],
+        default=None,
+    )
     parser.add_argument("--library", action="append", default=[])
     parser.add_argument("--workers", type=int, default=4)
     args = parser.parse_args()
@@ -140,7 +146,9 @@ def main() -> int:
             raise SystemExit(f"Unknown contract player libraries: {missing_names}")
         selected = [by_name[name] for name in args.library]
     else:
-        raise SystemExit("Use --profile body/female-body/male-body or at least one --library.")
+        raise SystemExit(
+            "Use --profile all-player-libraries/body/female-body/male-body or at least one --library."
+        )
 
     selected.sort(key=lambda row: row["libraryFile"])
     args.output_root.mkdir(parents=True, exist_ok=True)
