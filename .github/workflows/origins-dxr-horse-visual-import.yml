@@ -1,0 +1,166 @@
+name: Origins DxR - Horse Visual Import
+
+on:
+  push:
+    branches: [Origins-DxR]
+    paths:
+      - '.github/workflows/origins-dxr-horse-visual-import.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: origins-dxr-horse-visual-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  ZIRCON_COMMIT: cbf1aa919083bc13fc3f23f93772a8ab8370632d
+  CONTRACT_JSON: apps/origins-web-runtime/generated/zircon-player-asset-contract.json
+  RAW_ROOT: runtime-assets/zircon-horses
+  WEB_ROOT: artifacts/horse-visual/web-assets/player
+
+jobs:
+  horse-visual:
+    runs-on: windows-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Bootstrap pinned Zircon
+        id: bootstrap
+        continue-on-error: true
+        shell: pwsh
+        run: |
+          ./scripts/bootstrap-zircon.ps1
+          if ((git -C vendor/zircon rev-parse HEAD).Trim() -ne $env:ZIRCON_COMMIT) { throw 'Pinned Zircon mismatch.' }
+
+      - name: Prepare managed DXT decoder
+        id: dxt
+        if: steps.bootstrap.outcome == 'success'
+        continue-on-error: true
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force artifacts/horse-visual | Out-Null
+          python scripts/prepare-zircon-libraryeditor-managed-dxt.py --zircon-root vendor/zircon --report artifacts/horse-visual/managed-dxt.json
+
+      - name: Fetch official horse libraries
+        id: fetch
+        if: steps.dxt.outcome == 'success'
+        continue-on-error: true
+        shell: pwsh
+        run: |
+          $libs=@('Horse','HorseIron','HorseSilver','HorseGold','HorseBlue','HorseDark','HorseDarkEffect','HorseRoyal','HorseRoyalEffect','HorseBlueDragon','HorseBlueDragonEffect')
+          $a=@('--zircon-root','vendor/zircon','--contract',$env:CONTRACT_JSON,'--output-root',$env:RAW_ROOT,'--report','artifacts/horse-visual/fetch.json','--workers','6')
+          foreach($lib in $libs){$a+=@('--library',$lib)}
+          python scripts/fetch-zircon-player-libraries.py @a
+          if($LASTEXITCODE -ne 0){throw "Horse fetch failed with $LASTEXITCODE"}
+
+      - name: Build exporter
+        id: build
+        if: steps.fetch.outcome == 'success'
+        continue-on-error: true
+        shell: pwsh
+        run: dotnet build tools/zircon-web-asset-exporter/ZirconWebAssetExporter.csproj -c Release -p:Platform=AnyCPU
+
+      - name: Export official horse atlases
+        id: export
+        if: steps.build.outcome == 'success'
+        continue-on-error: true
+        shell: pwsh
+        run: |
+          $libs=@('Horse','HorseIron','HorseSilver','HorseGold','HorseBlue','HorseDark','HorseDarkEffect','HorseRoyal','HorseRoyalEffect','HorseBlueDragon','HorseBlueDragonEffect')
+          New-Item -ItemType Directory -Force $env:WEB_ROOT | Out-Null
+          $a=@('--contract',$env:CONTRACT_JSON,'--source-root',$env:RAW_ROOT,'--output-root',$env:WEB_ROOT)
+          foreach($lib in $libs){$a+=@('--library',$lib)}
+          & dotnet run --project tools/zircon-web-asset-exporter/ZirconWebAssetExporter.csproj -c Release -p:Platform=AnyCPU --no-build -- @a
+          if($LASTEXITCODE -ne 0){throw "Horse export failed with $LASTEXITCODE"}
+
+      - name: Validate horse stack
+        id: validate
+        if: steps.export.outcome == 'success'
+        continue-on-error: true
+        shell: pwsh
+        run: |
+          @'
+          import json
+          from pathlib import Path
+          expected={'Horse','HorseIron','HorseSilver','HorseGold','HorseBlue','HorseDark','HorseDarkEffect','HorseRoyal','HorseRoyalEffect','HorseBlueDragon','HorseBlueDragonEffect'}
+          root=Path('artifacts/horse-visual/web-assets/player')
+          master=json.loads((root/'player-assets.json').read_text(encoding='utf-8-sig'))
+          rows={r['libraryFile']:r for r in master.get('libraries',[])}
+          if set(rows)!=expected: raise SystemExit(f'Horse library mismatch: {sorted(rows)}')
+          summary=[]
+          for name in sorted(expected):
+              mp=root/rows[name]['manifest']; m=json.loads(mp.read_text(encoding='utf-8-sig'))
+              pages=[mp.parent/p for p in m.get('pages',[])]
+              if m.get('exportedImageCount',0)<=0 or not pages or any(not p.is_file() or p.stat().st_size<=0 for p in pages): raise SystemExit(f'{name}: incomplete atlas')
+              summary.append({'libraryFile':name,'exportedImageCount':m['exportedImageCount'],'imageCount':m['imageCount'],'pageCount':len(pages),'atlasBytes':sum(p.stat().st_size for p in pages)})
+          out={'schema':'origins.zircon.horse-visual-import.v1','status':'PASS','libraryCount':len(summary),'libraries':summary,'webAssetBytes':sum(p.stat().st_size for p in root.rglob('*') if p.is_file())}
+          Path('artifacts/horse-visual/validation.json').write_text(json.dumps(out,indent=2)+'\n',encoding='utf-8')
+          print(json.dumps(out,indent=2))
+          '@ | python -
+
+      - name: Write evidence
+        if: always()
+        shell: pwsh
+        env:
+          BOOTSTRAP: ${{ steps.bootstrap.outcome }}
+          DXT: ${{ steps.dxt.outcome }}
+          FETCH: ${{ steps.fetch.outcome }}
+          BUILD: ${{ steps.build.outcome }}
+          EXPORT: ${{ steps.export.outcome }}
+          VALIDATE: ${{ steps.validate.outcome }}
+        run: |
+          New-Item -ItemType Directory -Force docs/generated artifacts/horse-visual | Out-Null
+          @'
+          import json,os
+          from pathlib import Path
+          p=Path('artifacts/horse-visual/validation.json'); v=json.loads(p.read_text(encoding='utf-8-sig')) if p.exists() else {}
+          outcomes={'Bootstrap':os.environ.get('BOOTSTRAP'),'Managed DXT':os.environ.get('DXT'),'Fetch':os.environ.get('FETCH'),'Build':os.environ.get('BUILD'),'Export':os.environ.get('EXPORT'),'Validate':os.environ.get('VALIDATE')}
+          gate='PASS' if all(x=='success' for x in outcomes.values()) and v.get('status')=='PASS' else 'FAIL'
+          lines=['# ORIGINS-DxR — Horse Visual Import','',f'- Gate: **{gate}**',f'- Zircon authority: `{os.environ["ZIRCON_COMMIT"]}`',f'- HEAD tested: `{os.environ.get("GITHUB_SHA","unknown")}`','', '## CI','','| Check | Result |','|---|---|']+[f'| {k} | {x} |' for k,x in outcomes.items()]
+          if v.get('libraries'):
+              lines += ['','## Official horse libraries','','| Library | Exported / slots | Pages | PNG bytes |','|---|---:|---:|---:|']
+              for r in v['libraries']: lines.append(f'| {r["libraryFile"]} | {r["exportedImageCount"]} / {r["imageCount"]} | {r["pageCount"]} | {r["atlasBytes"]} |')
+              lines += ['',f'- Browser payload: **{v.get("webAssetBytes",0)} bytes**']
+          lines += ['','## Boundary','','- PASS proves the official pinned-Zircon horse/base/shape/effect libraries were fetched and converted with real frame metadata.','- It does not yet claim mounted Chrome composition; that will be validated separately.','- No Crystal or placeholder horse art is accepted.']
+          Path('docs/generated/ORIGINS_DXR_HORSE_VISUAL_IMPORT.md').write_text('\n'.join(lines)+'\n',encoding='utf-8')
+          Path('artifacts/horse-visual/gate.txt').write_text(gate+'\n',encoding='utf-8')
+          '@ | python -
+
+      - name: Upload evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: origins-dxr-horse-visual-evidence
+          path: |
+            artifacts/horse-visual/*.json
+            artifacts/horse-visual/gate.txt
+            docs/generated/ORIGINS_DXR_HORSE_VISUAL_IMPORT.md
+          if-no-files-found: warn
+
+      - name: Commit non-stale report
+        if: always()
+        shell: pwsh
+        run: |
+          git config user.name 'github-actions[bot]'; git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -- docs/generated/ORIGINS_DXR_HORSE_VISUAL_IMPORT.md
+          if(git diff --cached --quiet){exit 0}
+          git commit -m 'audit(dxr): record horse visual import'
+          git fetch origin Origins-DxR
+          $remote=(git rev-parse origin/Origins-DxR).Trim()
+          if($remote -ne $env:GITHUB_SHA){$meaningful=@(git diff --name-only $env:GITHUB_SHA $remote | Where-Object {$_ -notlike 'docs/generated/*'}); if($meaningful.Count -gt 0){Write-Host "Skipping stale report: $($meaningful -join ', ')"; exit 0}}
+          git pull --rebase origin Origins-DxR; git push origin HEAD:Origins-DxR
+
+      - name: Enforce horse gate
+        if: always()
+        shell: pwsh
+        run: |
+          if(-not (Test-Path artifacts/horse-visual/gate.txt)){throw 'Missing horse gate'}
+          $gate=(Get-Content artifacts/horse-visual/gate.txt -Raw).Trim(); if($gate -ne 'PASS'){throw "Horse visual gate is $gate"}
