@@ -2,62 +2,95 @@
 
 - Coverage gate: **FAIL**
 - Zircon authority: `cbf1aa919083bc13fc3f23f93772a8ab8370632d`
-- Coverage commit: `b1723559172c03b16ee79321c2ad3461ca783a72`
+- Coverage commit: `8e5e3cd397013f910e07141728cd5517fafb5741`
 - Source import run: **32392632203**
 - Source preview commit: `cbe40cbde1efea9b9c0dd423a41b97607907851d`
 - Animations audited: **42**
 - Directions per animation: **8**
-- Real frame references checked: **3680**
-- Missing referenced frames: **352**
+- Runtime-draw frame references checked: **3680**
+- Missing runtime-draw references: **352**
+
+## Native runtime semantics
+
+- Player `Pushed`: pinned `MapObject.UpdateFrame()` forces local frame(s) **[0]**.
+- Fishing body draw: `Client/Models/PlayerObject.cs DrawBody: BodyLibrary.GetImage(ArmourFrame)`.
+- Normal W/W/T body bank offset: **5000**; banks per `.Zl`: **11**.
 
 ## Per-animation result
 
-| Animation | Frames | References M+F / 8 dirs | Missing | Result |
-|---|---:|---:|---:|---|
-| Standing | 4 | 64 | 0 | PASS |
-| Walking | 6 | 96 | 0 | PASS |
-| Running | 6 | 96 | 0 | PASS |
-| CreepStanding | 4 | 64 | 0 | PASS |
-| CreepWalkFast | 6 | 96 | 0 | PASS |
-| CreepWalkSlow | 6 | 96 | 0 | PASS |
-| Pushed | 6 | 16 | 0 | PASS |
-| Stance | 3 | 48 | 0 | PASS |
-| Harvest | 2 | 32 | 0 | PASS |
-| Combat1 | 5 | 80 | 0 | PASS |
-| Combat2 | 5 | 80 | 0 | PASS |
-| Combat3 | 6 | 96 | 0 | PASS |
-| Combat4 | 6 | 96 | 0 | PASS |
-| Combat5 | 10 | 160 | 0 | PASS |
-| Combat6 | 10 | 160 | 0 | PASS |
-| Combat7 | 10 | 160 | 0 | PASS |
-| Combat8 | 6 | 96 | 0 | PASS |
-| Combat9 | 10 | 160 | 0 | PASS |
-| Combat10 | 10 | 160 | 0 | PASS |
-| Combat11 | 10 | 160 | 0 | PASS |
-| Combat12 | 10 | 160 | 0 | PASS |
-| Combat13 | 6 | 96 | 0 | PASS |
-| Combat14 | 8 | 128 | 0 | PASS |
-| Combat15 | 3 | 48 | 0 | PASS |
-| DragonRepulseStart | 6 | 96 | 0 | PASS |
-| DragonRepulseMiddle | 1 | 16 | 0 | PASS |
-| DragonRepulseEnd | 2 | 32 | 0 | PASS |
-| Struck | 3 | 48 | 0 | PASS |
-| Die | 10 | 160 | 0 | PASS |
-| Dead | 1 | 16 | 0 | PASS |
-| FishingCast | 8 | 128 | 128 | FAIL |
-| FishingWait | 6 | 96 | 96 | FAIL |
-| FishingReel | 8 | 128 | 128 | FAIL |
-| HorseStanding | 4 | 64 | 0 | PASS |
-| HorseWalking | 6 | 96 | 0 | PASS |
-| HorseRunning | 6 | 96 | 0 | PASS |
-| HorseStruck | 3 | 48 | 0 | PASS |
-| ChannellingStart | 4 | 64 | 0 | PASS |
-| ChannellingMiddle | 1 | 16 | 0 | PASS |
-| ChannellingEnd | 1 | 16 | 0 | PASS |
-| TamingCast | 6 | 96 | 0 | PASS |
-| TamingWait | 1 | 16 | 0 | PASS |
+| Animation | Source Frames | Runtime Local Frames | References M+F / 8 dirs | Missing | Result |
+|---|---:|---:|---:|---:|---|
+| Standing | 4 | 4 | 64 | 0 | PASS |
+| Walking | 6 | 6 | 96 | 0 | PASS |
+| Running | 6 | 6 | 96 | 0 | PASS |
+| CreepStanding | 4 | 4 | 64 | 0 | PASS |
+| CreepWalkFast | 6 | 6 | 96 | 0 | PASS |
+| CreepWalkSlow | 6 | 6 | 96 | 0 | PASS |
+| Pushed | 6 | 1 | 16 | 0 | PASS |
+| Stance | 3 | 3 | 48 | 0 | PASS |
+| Harvest | 2 | 2 | 32 | 0 | PASS |
+| Combat1 | 5 | 5 | 80 | 0 | PASS |
+| Combat2 | 5 | 5 | 80 | 0 | PASS |
+| Combat3 | 6 | 6 | 96 | 0 | PASS |
+| Combat4 | 6 | 6 | 96 | 0 | PASS |
+| Combat5 | 10 | 10 | 160 | 0 | PASS |
+| Combat6 | 10 | 10 | 160 | 0 | PASS |
+| Combat7 | 10 | 10 | 160 | 0 | PASS |
+| Combat8 | 6 | 6 | 96 | 0 | PASS |
+| Combat9 | 10 | 10 | 160 | 0 | PASS |
+| Combat10 | 10 | 10 | 160 | 0 | PASS |
+| Combat11 | 10 | 10 | 160 | 0 | PASS |
+| Combat12 | 10 | 10 | 160 | 0 | PASS |
+| Combat13 | 6 | 6 | 96 | 0 | PASS |
+| Combat14 | 8 | 8 | 128 | 0 | PASS |
+| Combat15 | 3 | 3 | 48 | 0 | PASS |
+| DragonRepulseStart | 6 | 6 | 96 | 0 | PASS |
+| DragonRepulseMiddle | 1 | 1 | 16 | 0 | PASS |
+| DragonRepulseEnd | 2 | 2 | 32 | 0 | PASS |
+| Struck | 3 | 3 | 48 | 0 | PASS |
+| Die | 10 | 10 | 160 | 0 | PASS |
+| Dead | 1 | 1 | 16 | 0 | PASS |
+| FishingCast | 8 | 8 | 128 | 128 | FAIL |
+| FishingWait | 6 | 6 | 96 | 96 | FAIL |
+| FishingReel | 8 | 8 | 128 | 128 | FAIL |
+| HorseStanding | 4 | 4 | 64 | 0 | PASS |
+| HorseWalking | 6 | 6 | 96 | 0 | PASS |
+| HorseRunning | 6 | 6 | 96 | 0 | PASS |
+| HorseStruck | 3 | 3 | 48 | 0 | PASS |
+| ChannellingStart | 4 | 4 | 64 | 0 | PASS |
+| ChannellingMiddle | 1 | 1 | 16 | 0 | PASS |
+| ChannellingEnd | 1 | 1 | 16 | 0 | PASS |
+| TamingCast | 6 | 6 | 96 | 0 | PASS |
+| TamingWait | 1 | 1 | 16 | 0 | PASS |
 
-## Missing references
+## Fishing coverage across the 11 internal body-shape banks
+
+| Library | ArmourShape % 11 | Shift | References | Missing | Result |
+|---|---:|---:|---:|---:|---|
+| M_Hum | 0 | 0 | 176 | 176 | EMPTY |
+| M_Hum | 1 | 5000 | 176 | 176 | EMPTY |
+| M_Hum | 2 | 10000 | 176 | 176 | EMPTY |
+| M_Hum | 3 | 15000 | 176 | 176 | EMPTY |
+| M_Hum | 4 | 20000 | 176 | 176 | EMPTY |
+| M_Hum | 5 | 25000 | 176 | 0 | PASS |
+| M_Hum | 6 | 30000 | 176 | 176 | EMPTY |
+| M_Hum | 7 | 35000 | 176 | 176 | EMPTY |
+| M_Hum | 8 | 40000 | 176 | 176 | EMPTY |
+| M_Hum | 9 | 45000 | 176 | 176 | EMPTY |
+| M_Hum | 10 | 50000 | 176 | 176 | EMPTY |
+| WM_Hum | 0 | 0 | 176 | 176 | EMPTY |
+| WM_Hum | 1 | 5000 | 176 | 176 | EMPTY |
+| WM_Hum | 2 | 10000 | 176 | 176 | EMPTY |
+| WM_Hum | 3 | 15000 | 176 | 176 | EMPTY |
+| WM_Hum | 4 | 20000 | 176 | 176 | EMPTY |
+| WM_Hum | 5 | 25000 | 176 | 176 | EMPTY |
+| WM_Hum | 6 | 30000 | 176 | 176 | EMPTY |
+| WM_Hum | 7 | 35000 | 176 | 176 | EMPTY |
+| WM_Hum | 8 | 40000 | 176 | 176 | EMPTY |
+| WM_Hum | 9 | 45000 | 176 | 176 | EMPTY |
+| WM_Hum | 10 | 50000 | 176 | 176 | EMPTY |
+
+## Missing runtime-draw references
 
 - `M_Hum` / `FishingCast` / dir 0 / local 0 → index **2000**
 - `M_Hum` / `FishingCast` / dir 0 / local 1 → index **2001**
@@ -263,6 +296,7 @@
 
 ## Boundary
 
-- PASS means every body frame referenced by the pinned Zircon `FrameSet.Players` contract exists in both real base-human atlas manifests for all 8 directions.
-- This gate validates sprite availability; action/server synchronization remains governed by the already-audited Zircon runtime contracts.
+- `Pushed` is evaluated using the exact pinned Zircon player special case, not by requiring unused source-frame slots.
+- Fishing is not waived: the report probes the actual `BodyLibrary/ArmourFrame` banks used by Zircon so empty source banks remain visible as evidence.
+- PASS means every body frame that the pinned Zircon player runtime can actually request from base bank 0 exists for both genders.
 - No Crystal or placeholder frames are accepted.
