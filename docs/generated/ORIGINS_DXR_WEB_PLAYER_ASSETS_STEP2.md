@@ -3,7 +3,7 @@
 - Pipeline gate: **PASS**
 - Real Zircon player payload: **BLOCKED_MISSING_ZL**
 - Real sprite binding status: **BLOCKED_MISSING_ZL**
-- Origins-DxR HEAD tested: 68061a6b10aa10614e5eb106f461a3de43ee9c4d
+- Origins-DxR HEAD tested: b9d2c70302c80bd6faab26cd323be4475f47ab50
 - Zircon authority: cbf1aa919083bc13fc3f23f93772a8ab8370632d
 
 ## What is implemented
@@ -14,6 +14,7 @@
 - Player action resolver covers the direct native `PlayerObject.SetAnimation` actions and deliberately refuses fabricated direct Show/Hide/Mount/Idle mappings.
 - Attack resolver preserves Zircon class/weapon/magic animation choices.
 - Assassin armour shifts and body/hair/helmet/weapon/shield/horse frame composition are represented.
+- PlayerObject library selectors and direction-aware layer ordering are preserved, including dual weapons, shields and costume weapon-hiding rules.
 - `.Zl` exporter uses pinned `LibraryEditor.Mir3Library`, creates transparent PNG atlas pages, and preserves image index + OffSetX/OffSetY.
 - Browser sprite store consumes those atlas manifests and applies the original offsets.
 
@@ -34,6 +35,7 @@
 - Player animations: **42**
 - Magic-to-body-animation cases: **124**
 - Player-related Zircon libraries: **137**
+- PlayerObject selector entries: **122**
 - Required `.Zl` present in repository/runtime payload: **0 / 137**
 
 ## Source parity audit
