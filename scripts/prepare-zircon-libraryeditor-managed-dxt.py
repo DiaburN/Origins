@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# Shared ORIGINS-DxR player-asset CI retrigger: 2026-08-20.
 from __future__ import annotations
 
 import argparse
