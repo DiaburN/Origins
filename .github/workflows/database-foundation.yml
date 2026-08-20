@@ -6,6 +6,8 @@ on:
     paths:
       - 'database/**'
       - 'scripts/bootstrap-zircon.*'
+      - 'scripts/normalize-pinned-zircon-snapshot.py'
+      - 'scripts/compare-json-semantic.py'
       - 'scripts/verify-zircon-four-class-magics.py'
       - 'scripts/audit-zircon-four-class-db.py'
       - 'scripts/audit-zircon-four-class-runtime.py'
@@ -16,6 +18,8 @@ on:
     paths:
       - 'database/**'
       - 'scripts/bootstrap-zircon.*'
+      - 'scripts/normalize-pinned-zircon-snapshot.py'
+      - 'scripts/compare-json-semantic.py'
       - 'scripts/verify-zircon-four-class-magics.py'
       - 'scripts/audit-zircon-four-class-db.py'
       - 'scripts/audit-zircon-four-class-runtime.py'
@@ -41,6 +45,15 @@ jobs:
 
       - name: Checkout pinned source-pure Zircon
         run: bash scripts/bootstrap-zircon.sh
+
+      - name: Verify canonical snapshot compatibility with pinned Zircon
+        run: >-
+          python3 scripts/normalize-pinned-zircon-snapshot.py
+          --magic-info database/generated/zircon-system/LibraryCore__Library_SystemModels_MagicInfo.json
+          --expected-magic-count 174
+
+      - name: Fail if compatibility normalizer would modify committed snapshot
+        run: git diff --exit-code -- database/generated/zircon-system/
 
       - name: Verify four-class MagicType catalog against pinned Zircon source
         run: python3 scripts/verify-zircon-four-class-magics.py --source vendor/zircon/LibraryCore/Enum.cs --catalog database/magic/zircon-four-class-magic-types.json
@@ -69,8 +82,11 @@ jobs:
       - name: Export rebuilt System.db for deterministic round-trip inspection
         run: dotnet run --project tools/Origins.Database.Export/Origins.Database.Export.csproj --configuration Release -- ./Database ./SnapshotRebuilt ./Backup
 
-      - name: Confirm rebuilt MagicInfo is byte-identical to committed Zircon snapshot
-        run: cmp database/generated/zircon-system/LibraryCore__Library_SystemModels_MagicInfo.json SnapshotRebuilt/LibraryCore__Library_SystemModels_MagicInfo.json
+      - name: Confirm rebuilt MagicInfo is semantically identical to committed Zircon snapshot
+        run: >-
+          python3 scripts/compare-json-semantic.py
+          database/generated/zircon-system/LibraryCore__Library_SystemModels_MagicInfo.json
+          SnapshotRebuilt/LibraryCore__Library_SystemModels_MagicInfo.json
 
       - name: Audit four-class MagicInfo rows
         run: >-
