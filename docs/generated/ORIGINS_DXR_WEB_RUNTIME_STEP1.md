@@ -1,7 +1,7 @@
 # ORIGINS-DxR — Web Runtime Foundation
 
-- Gate: **PASS**
-- Origins-DxR HEAD tested: `7c899a5dc4ff71be08bf26fc6e7e53f89f95e53d`
+- Gate: **FAIL**
+- Origins-DxR HEAD tested: `d5fb1a38755fa469b05cc8b15350a67aaf9b7cba`
 - Zircon authority: `cbf1aa919083bc13fc3f23f93772a8ab8370632d`
 - Runtime mode: `PREVIEW_LOCAL` (server-authoritative transport is a later vertical-slice step).
 
@@ -11,7 +11,7 @@
 |---|---|
 | Bootstrap pinned Zircon | success |
 | JavaScript syntax | success |
-| Runtime unit tests | success |
+| Runtime unit tests | failure |
 | Pinned source audit | success |
 | Static HTTP smoke | success |
 
