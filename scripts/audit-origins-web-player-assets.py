@@ -43,6 +43,7 @@ def main() -> int:
     magic_map = contract.get("magicAnimationMap", {})
     libraries = contract.get("playerLibraries", [])
     selectors = contract.get("playerLibrarySelectors", {})
+    hide_weapon_shapes = contract.get("costumeShapeHideWeapon", [])
     lib_names = {row.get("libraryFile") for row in libraries}
 
     check(rows, "Generated contract schema", contract.get("schema") == "origins.zircon.web-player-assets.v1", contract.get("schema", "missing"))
@@ -61,6 +62,7 @@ def main() -> int:
     check(rows, "Male/female body selectors", selectors.get("ArmourList", {}).get("0") == "M_Hum" and selectors.get("ArmourList", {}).get("5000") == "WM_Hum", "M_Hum / WM_Hum")
     check(rows, "Assassin body selectors", selectors.get("ArmourList", {}).get("50000") == "M_HumA" and selectors.get("ArmourList", {}).get("55000") == "WM_HumA", "M_HumA / WM_HumA")
     check(rows, "Assassin dual weapon selectors", selectors.get("WeaponList", {}).get("120") == "M_WeaponADL1" and selectors.get("WeaponList", {}).get("170") == "M_WeaponADR1", "ADL/ADR")
+    check(rows, "Costume weapon-hide list", hide_weapon_shapes == [6, 7, 8, 9, 10, 11, 12, 13, 16, 17, 18], str(hide_weapon_shapes))
     check(rows, "Web PlayerObject library selection", "resolvePlayerLibrarySelection" in runtime and "ZIRCON_PLAYER_LIBRARY_SELECTORS" in runtime and "rightHandOffset" in runtime, "body/hair/helmet/weapon/shield/horse selection")
 
     formula = "DrawFrame = FrameIndex + CurrentFrame.StartIndex + CurrentFrame.OffSet * (int)Direction;"
@@ -83,6 +85,15 @@ def main() -> int:
 
     check(rows, "Assassin ArmourShift support", "ASSASSIN_ARMOUR_SHIFT" in runtime and "ArmourShift = -960" in player, "native shifts + Combat2 carry-over")
     check(rows, "Layer frame composition", all(token in runtime for token in ["armourShapeOffset", "weaponShapeOffset", "hairTypeOffset", "horseType"]), "body/hair/helmet/weapon/shield/horse")
+
+    draw_tokens = [
+        "case MirDirection.Up:", "case MirDirection.DownLeft:", "case MirDirection.Left:", "case MirDirection.UpLeft:",
+        "case MirDirection.UpRight:", "case MirDirection.Right:", "case MirDirection.DownRight:",
+        "bool hideWeapon = CostumeShapeHideWeapon.Contains(CostumeShape);",
+    ]
+    check(rows, "Pinned direction-aware DrawBody order", all(token in player for token in draw_tokens), "weapon/shield before/after body branches present")
+    check(rows, "Web direction-aware draw plan", "resolvePlayerDrawPlan" in runtime and "behindWeapon1Directions" in runtime and "frontWeapon1Directions" in runtime and "ZIRCON_COSTUME_HIDE_WEAPON.includes" in runtime, "weapon/shield/body/head depth plan")
+    check(rows, "Horse draw-order support", "HORSE_ANIMATIONS" in runtime and "horseShapeEffect" in runtime and "frameMode" in runtime, "horse first + dark/royal overlay")
 
     check(rows, "Exporter reads Zircon Mir3Library", "Mir3Library library = new(source)" in exporter, "LibraryEditor.Mir3Library")
     check(rows, "Exporter preserves image offsets", "OffsetX = image.OffSetX" in exporter and "OffsetY = image.OffSetY" in exporter, "OffSetX/OffSetY -> manifest")
