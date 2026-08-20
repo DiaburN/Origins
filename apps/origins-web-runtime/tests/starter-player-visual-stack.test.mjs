@@ -11,6 +11,7 @@ const BASE={
   armourShape:0,
   costumeShape:-1,
   libraryWeaponShape:0,
+  weaponEquipped:true,
   shieldShape:0,
   horseShape:0,
   horseType:0,
@@ -29,6 +30,9 @@ for(const gender of ['Male','Female']){
       `${prefix}_Hum`,`${prefix}_Hair`,`${prefix}_Weapon1`,`${prefix}_Shield1`,
     ]);
     assert.deepEqual(c.layers.map(x=>x.imageIndex),[40,40,40,40]);
+    assert.equal(c.equipment.weapon,true);
+    assert.equal(c.equipment.helmet,false);
+    assert.equal(c.equipment.shield,true);
   });
 
   test(`${gender} starter helmet stack replaces hair and keeps weapon shield order`,()=>{
@@ -40,5 +44,8 @@ for(const gender of ['Male','Female']){
     ]);
     assert.deepEqual(c.layers.map(x=>x.imageIndex),[40,40,40,40]);
     assert.ok(!c.layers.some(x=>x.layer==='hair'));
+    assert.equal(c.equipment.weapon,true);
+    assert.equal(c.equipment.helmet,true);
+    assert.equal(c.equipment.shield,true);
   });
 }
