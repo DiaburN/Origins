@@ -1,0 +1,8 @@
+{
+  "name": "origins-web-runtime",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test tests/runtime-core.test.mjs"
+  }
+}
