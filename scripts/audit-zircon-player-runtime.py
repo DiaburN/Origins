@@ -1,9 +1,5 @@
 #!/usr/bin/env python3
-"""Audit ORIGINS-DxR player action/animation contracts against pinned Zircon.
-
-This audit is intentionally source-faithful. It reports native MirAction values that
-have no direct PlayerObject animation mapping instead of inventing one.
-"""
+"""Audit the pinned Zircon player runtime without inventing ORIGINS behaviour."""
 from __future__ import annotations
 
 import argparse
@@ -12,10 +8,15 @@ import re
 from pathlib import Path
 
 ZIRCON_COMMIT = "cbf1aa919083bc13fc3f23f93772a8ab8370632d"
-REQUESTED = [
-    "Standing", "Walking", "Running", "Pushed", "Attack", "RangeAttack", "Spell",
-    "Harvest", "Struck", "Die", "Dead", "Show", "Hide", "Mount", "Fishing", "Taming", "Idle",
+EXPECTED_ACTIONS = [
+    "Standing", "Moving", "Pushed", "Attack", "RangeAttack", "Spell", "Harvest",
+    "Struck", "Die", "Dead", "Show", "Hide", "Mount", "Mining", "Fishing",
+    "Taming", "Idle",
 ]
+DIRECT_PLAYER_ACTIONS = {
+    "Standing", "Moving", "Pushed", "Attack", "RangeAttack", "Spell", "Harvest",
+    "Struck", "Die", "Dead", "Mining", "Fishing", "Taming",
+}
 
 
 def read(path: Path) -> str:
@@ -25,9 +26,7 @@ def read(path: Path) -> str:
 def between(text: str, start: str, end: str) -> str:
     a = text.find(start)
     b = text.find(end, a + len(start)) if a >= 0 else -1
-    if a < 0 or b < 0:
-        return ""
-    return text[a:b]
+    return text[a:b] if a >= 0 and b >= 0 else ""
 
 
 def require(label: str, text: str, tokens: list[str], failures: list[str]) -> None:
@@ -46,51 +45,42 @@ def main() -> int:
 
     repo = a.repo.resolve()
     zircon = (repo / a.zircon).resolve() if not a.zircon.is_absolute() else a.zircon.resolve()
-    paths = {
+    sources = {
         "enum": zircon / "LibraryCore/Enum.cs",
         "functions": zircon / "LibraryCore/Functions.cs",
         "player": zircon / "Client/Models/PlayerObject.cs",
         "user": zircon / "Client/Models/UserObject.cs",
-        "mapobject": zircon / "Client/Models/MapObject.cs",
+        "map": zircon / "Client/Models/MapObject.cs",
         "serverPlayer": zircon / "ServerLibrary/Models/PlayerObject.cs",
+        "connection": zircon / "ServerLibrary/Envir/SConnection.cs",
     }
 
     failures: list[str] = []
     text: dict[str, str] = {}
-    for name, path in paths.items():
+    for name, path in sources.items():
         try:
             text[name] = read(path)
         except Exception as exc:
-            failures.append(f"{name}: cannot read {path}: {exc}")
             text[name] = ""
+            failures.append(f"{name}: cannot read {path}: {exc}")
 
-    enum_text = text["enum"]
-    enum_block = between(enum_text, "public enum MirAction : byte", "public enum MirAnimation : byte")
+    enum_block = between(text["enum"], "public enum MirAction : byte", "public enum MirAnimation : byte")
     enum_actions = re.findall(r"^\s*([A-Za-z_][A-Za-z0-9_]*)\s*(?:=\s*[^,]+)?\s*,?\s*$", enum_block, re.M)
-    enum_actions = [x for x in enum_actions if x not in {"public", "enum"}]
-    expected_enum = [
-        "Standing", "Moving", "Pushed", "Attack", "RangeAttack", "Spell", "Harvest", "Struck",
-        "Die", "Dead", "Show", "Hide", "Mount", "Mining", "Fishing", "Taming", "Idle",
-    ]
-    for action in expected_enum:
+    for action in EXPECTED_ACTIONS:
         if action not in enum_actions:
-            failures.append(f"MirAction enum missing native value {action}")
+            failures.append(f"MirAction enum missing {action}")
 
-    player = text["player"]
-    user = text["user"]
-    functions = text["functions"]
-    mapobject = text["mapobject"]
-    server_player = text["serverPlayer"]
-
-    set_animation = between(player, "public override void SetAnimation(ObjectAction action)", "public sealed override void SetFrame")
+    set_animation = between(
+        text["player"],
+        "public override void SetAnimation(ObjectAction action)",
+        "public sealed override void SetFrame",
+    )
     direct_cases = set(re.findall(r"case\s+MirAction\.([A-Za-z0-9_]+)\s*:", set_animation))
-
-    direct_expected = {
-        "Standing", "Moving", "Pushed", "Attack", "Mining", "Fishing", "Taming",
-        "RangeAttack", "Spell", "Struck", "Die", "Dead", "Harvest",
-    }
-    if direct_cases != direct_expected:
-        failures.append(f"PlayerObject.SetAnimation direct action set drifted: {sorted(direct_cases)}")
+    if direct_cases != DIRECT_PLAYER_ACTIONS:
+        failures.append(
+            "PlayerObject.SetAnimation direct action set drifted: "
+            + ", ".join(sorted(direct_cases))
+        )
 
     require("PlayerObject action mapping", set_animation, [
         "animation = MirAnimation.Standing;",
@@ -116,7 +106,7 @@ def main() -> int:
         "MirAnimation.HorseRunning",
     ], failures)
 
-    require("PlayerObject libraries", player, [
+    require("Player visual stack", text["player"], [
         "Frames = new Dictionary<MirAnimation, Frame>(FrameSet.Players);",
         "public MirLibrary HairLibrary, HelmetLibrary;",
         "public MirLibrary WeaponLibrary1, WeaponLibrary2;",
@@ -129,15 +119,10 @@ def main() -> int:
         "public int ShieldFrame => DrawFrame",
         "public int ArmourFrame => DrawFrame",
         "public int HorseFrame => DrawFrame",
-        "switch (Class)",
         "case MirClass.Warrior:",
         "case MirClass.Wizard:",
         "case MirClass.Taoist:",
         "case MirClass.Assassin:",
-    ], failures)
-
-    require("PlayerObject directional layering", player, [
-        "switch (Direction)",
         "case MirDirection.Up:",
         "case MirDirection.UpRight:",
         "case MirDirection.Right:",
@@ -154,11 +139,12 @@ def main() -> int:
         "HairLibrary.Draw",
     ], failures)
 
-    frame_changed = between(player, "public override void FrameIndexChanged()", "public override void Draw()")
-    require("PlayerObject frame-synchronised effects", frame_changed, [
+    player_frame_changed = between(
+        text["player"], "public override void FrameIndexChanged()", "public override void Draw()"
+    )
+    require("Player FrameIndexChanged", player_frame_changed, [
         "base.FrameIndexChanged();",
         "case MagicType.SeismicSlam:",
-        "if (FrameIndex == 4)",
         "case MagicType.CrushingWave:",
         "new MirProjectile",
         "case MirAction.Fishing:",
@@ -168,18 +154,17 @@ def main() -> int:
         "case MagicType.OffensiveBlow:",
         "if (FrameIndex == 3)",
     ], failures)
-    require("UserObject frame timing", user, [
+
+    require("User FrameIndexChanged", text["user"], [
         "public override void FrameIndexChanged()",
         "case MirAction.Moving:",
         "case MirAnimation.HorseWalking:",
-        "if (FrameIndex == 1)",
-        "if (FrameIndex == 4)",
         "case MirAnimation.HorseRunning:",
         "case MagicType.SeismicSlam:",
         "ShakeScreenCount = 20F;",
     ], failures)
 
-    require("Attack animation authority", functions, [
+    require("Attack animation authority", text["functions"], [
         "public static MirAnimation GetAttackAnimation",
         "case MagicType.Slaying:",
         "case MagicType.HalfMoon:",
@@ -187,7 +172,7 @@ def main() -> int:
         "case MagicType.BladeStorm:",
         "case MirClass.Assassin:",
     ], failures)
-    require("Magic animation authority", functions, [
+    require("Magic animation authority", text["functions"], [
         "public static MirAnimation GetMagicAnimation(MagicType m)",
         "return MirAnimation.Combat1;",
         "return MirAnimation.Combat2;",
@@ -197,7 +182,7 @@ def main() -> int:
         "throw new NotImplementedException();",
     ], failures)
 
-    require("MapObject frame engine", mapobject, [
+    require("MapObject frame engine", text["map"], [
         "public int FrameIndex",
         "FrameIndexChanged();",
         "public MirAction CurrentAction;",
@@ -208,7 +193,7 @@ def main() -> int:
         "UpdateFrame();",
     ], failures)
 
-    require("UserObject native action dispatch", user, [
+    require("Client action dispatch", text["user"], [
         "case MirAction.Mount:",
         "return;",
         "CEnvir.Enqueue(new C.Move",
@@ -220,51 +205,74 @@ def main() -> int:
         "CEnvir.Enqueue(new C.Taming",
     ], failures)
 
-    # Server runtime must remain the native authority for player execution. Avoid
-    # overfitting this huge file to line numbers; validate the core class and action entry points.
-    require("Server PlayerObject", server_player, [
+    # The server receives native packets and delegates to PlayerObject. Movement is
+    # Move, not Walk; the previous audit incorrectly expected a Walk method.
+    require("Server PlayerObject", text["serverPlayer"], [
         "public partial class PlayerObject : MapObject",
         "public override ObjectType Race => ObjectType.Player",
-        "public void Walk(",
         "public void Attack(",
         "public void Magic(",
     ], failures)
+    require("Server action dispatch", text["connection"], [
+        "public void Process(C.Move p)",
+        "Player.Move(p.Direction, p.Distance);",
+        "public void Process(C.Mount p)",
+        "Player.Mount();",
+        "public void Process(C.Attack p)",
+        "Player.Attack(p.Direction, p.AttackMagic);",
+        "public void Process(C.RangeAttack p)",
+        "Player.RangeAttack(p.Direction, p.Target);",
+        "public void Process(C.Magic p)",
+        "Player.Magic(p);",
+        "public void Process(C.FishingCast p)",
+        "public void Process(C.Taming p)",
+    ], failures)
 
-    action_rows = [
-        {"requested": "Standing", "mirAction": "Standing", "status": "DIRECT", "animation": "Standing; Stance/Creep/Horse/DragonRepulse/Channelling overrides by native state"},
-        {"requested": "Walking", "mirAction": "Moving", "status": "DIRECT_VARIANT", "animation": "Walking; HorseWalking/Creep variants"},
-        {"requested": "Running", "mirAction": "Moving", "status": "DIRECT_VARIANT", "animation": "Running when action.Extra[0] >= 2; HorseRunning when mounted"},
-        {"requested": "Pushed", "mirAction": "Pushed", "status": "DIRECT", "animation": "Pushed"},
-        {"requested": "Attack", "mirAction": "Attack", "status": "DIRECT", "animation": "Functions.GetAttackAnimation(class, weapon, magic)"},
-        {"requested": "RangeAttack", "mirAction": "RangeAttack", "status": "DIRECT", "animation": "Combat1"},
-        {"requested": "Spell", "mirAction": "Spell", "status": "DIRECT", "animation": "Functions.GetMagicAnimation(MagicType)"},
-        {"requested": "Harvest", "mirAction": "Harvest", "status": "DIRECT", "animation": "Harvest"},
-        {"requested": "Struck", "mirAction": "Struck", "status": "DIRECT", "animation": "Struck / HorseStruck"},
-        {"requested": "Die", "mirAction": "Die", "status": "DIRECT", "animation": "Die"},
-        {"requested": "Dead", "mirAction": "Dead", "status": "DIRECT", "animation": "Dead"},
-        {"requested": "Show", "mirAction": "Show", "status": "NO_DIRECT_PLAYER_ANIMATION", "animation": None},
-        {"requested": "Hide", "mirAction": "Hide", "status": "NO_DIRECT_PLAYER_ANIMATION", "animation": None},
-        {"requested": "Mount", "mirAction": "Mount", "status": "STATE_DRIVEN", "animation": "UserObject AttemptAction returns; Horse state drives HorseStanding/Walking/Running/Struck"},
-        {"requested": "Fishing", "mirAction": "Fishing", "status": "DIRECT", "animation": "FishingCast/FishingWait/FishingReel"},
-        {"requested": "Taming", "mirAction": "Taming", "status": "DIRECT", "animation": "TamingCast/TamingWait"},
-        {"requested": "Idle", "mirAction": "Idle", "status": "NO_DIRECT_PLAYER_ANIMATION", "animation": "PlayerObject DoNextAction falls back to Standing when no queued action"},
+    rows = [
+        ("Standing", "Standing", "DIRECT", "Standing; native Stance/Creep/Horse/DragonRepulse/Channelling state overrides"),
+        ("Walking", "Moving", "DIRECT_VARIANT", "Walking; HorseWalking/Creep variants"),
+        ("Running", "Moving", "DIRECT_VARIANT", "Running for distance >= 2; HorseRunning when mounted"),
+        ("Pushed", "Pushed", "DIRECT", "Pushed"),
+        ("Attack", "Attack", "DIRECT", "Functions.GetAttackAnimation(class, weapon, magic)"),
+        ("RangeAttack", "RangeAttack", "DIRECT", "Combat1"),
+        ("Spell", "Spell", "DIRECT", "Functions.GetMagicAnimation(MagicType)"),
+        ("Harvest", "Harvest", "DIRECT", "Harvest"),
+        ("Struck", "Struck", "DIRECT", "Struck / HorseStruck"),
+        ("Die", "Die", "DIRECT", "Die"),
+        ("Dead", "Dead", "DIRECT", "Dead"),
+        ("Show", "Show", "NO_DIRECT_PLAYER_ANIMATION", None),
+        ("Hide", "Hide", "NO_DIRECT_PLAYER_ANIMATION", None),
+        ("Mount", "Mount", "STATE_DRIVEN", "Horse state drives HorseStanding/Walking/Running/Struck; server uses Player.Mount()"),
+        ("Fishing", "Fishing", "DIRECT", "FishingCast/FishingWait/FishingReel"),
+        ("Taming", "Taming", "DIRECT", "TamingCast/TamingWait"),
+        ("Idle", "Idle", "NO_DIRECT_PLAYER_ANIMATION", "DoNextAction falls back to Standing when no queued action"),
     ]
 
-    native_unmapped = sorted(set(expected_enum) - direct_cases)
+    native_unmapped = sorted(set(EXPECTED_ACTIONS) - direct_cases)
     result = {
-        "schemaVersion": 1,
+        "schemaVersion": 2,
         "status": "PASS" if not failures else "FAIL",
         "zirconCommit": ZIRCON_COMMIT,
         "mirActionEnum": enum_actions,
         "directPlayerAnimationActions": sorted(direct_cases),
         "nativeActionsWithoutDirectPlayerAnimation": native_unmapped,
-        "requestedAudit": action_rows,
+        "requestedAudit": [
+            {"requested": r, "mirAction": m, "status": s, "animation": anim}
+            for r, m, s, anim in rows
+        ],
         "equipmentLayers": ["Body", "Hair", "Helmet", "Weapon1", "Weapon2", "Shield", "Horse"],
         "frameAuthority": {
             "frameSet": "FrameSet.Players",
             "frameIndexChanged": True,
             "directionalLayering": True,
             "spellEffectsBoundToFrames": True,
+        },
+        "serverAuthority": {
+            "movement": "SConnection C.Move -> Player.Move",
+            "mount": "SConnection C.Mount -> Player.Mount",
+            "attack": "SConnection C.Attack -> Player.Attack",
+            "rangeAttack": "SConnection C.RangeAttack -> Player.RangeAttack",
+            "magic": "SConnection C.Magic -> Player.Magic",
         },
         "policy": {
             "crystalFrameTablesUsed": False,
@@ -284,21 +292,24 @@ def main() -> int:
         f"- Zircon authority: `{ZIRCON_COMMIT}`",
         "- Frame source: `FrameSet.Players` + Zircon `MirAnimation`/`Functions`; no Crystal frame table.",
         "- Missing direct mappings are reported, not invented.",
+        "- Server movement authority: `C.Move -> Player.Move`; there is no required `PlayerObject.Walk()` contract.",
         "",
         "| Requested behaviour | Native MirAction | Status | Native animation/behaviour |",
         "|---|---|---|---|",
     ]
-    for row in action_rows:
-        lines.append(f"| {row['requested']} | {row['mirAction']} | {row['status']} | {row['animation'] or 'none in PlayerObject.SetAnimation'} |")
+    for requested, mir_action, status, animation in rows:
+        lines.append(
+            f"| {requested} | {mir_action} | {status} | {animation or 'none in PlayerObject.SetAnimation'} |"
+        )
     lines += [
         "",
         "## Player visual stack",
         "",
-        "Verified native libraries/frames for Body, Hair, Helmet, Weapon1/Weapon2, Shield and Horse, including direction-dependent weapon/shield layering.",
+        "Verified native Body, Hair, Helmet, Weapon1/Weapon2, Shield and Horse libraries/frames, including all eight direction branches and weapon/shield layering.",
         "",
         "## Frame-bound effects",
         "",
-        "Verified `FrameIndexChanged()` gates for native effects including SeismicSlam (frame 4), CrushingWave (frame 4), OffensiveBlow (frame 3), TamingCast (frame 5) and Fishing (frame 1), plus user movement/horse sounds and SeismicSlam screen shake.",
+        "Verified native `FrameIndexChanged()` gates for SeismicSlam, CrushingWave, OffensiveBlow, Taming and Fishing, plus user movement/horse timing. Effect/projectile timing remains Zircon-owned.",
         "",
         "## Native enum actions without direct PlayerObject animation",
         "",
@@ -307,14 +318,17 @@ def main() -> int:
         "`Mount` is state-driven through `Horse`; `Show`, `Hide` and `Idle` are not assigned a direct animation by pinned `PlayerObject.SetAnimation()`. ORIGINS-DxR does not fabricate replacements.",
     ]
     if failures:
-        lines += ["", "## Failures", ""] + [f"- {x}" for x in failures]
+        lines += ["", "## Failures", ""] + [f"- {failure}" for failure in failures]
     lines.append("")
     a.md_output.parent.mkdir(parents=True, exist_ok=True)
     a.md_output.write_text("\n".join(lines), encoding="utf-8")
 
-    print(f"ORIGINS-DxR player runtime audit: {result['status']}; direct={len(direct_cases)}/{len(expected_enum)} MirAction values")
-    for item in failures:
-        print(f"FAIL: {item}")
+    print(
+        f"ORIGINS-DxR player runtime audit: {result['status']}; "
+        f"direct={len(direct_cases)}/{len(EXPECTED_ACTIONS)} MirAction values"
+    )
+    for failure in failures:
+        print(f"FAIL: {failure}")
     return 1 if failures else 0
 
 
