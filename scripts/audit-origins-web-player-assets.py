@@ -22,6 +22,7 @@ def main() -> int:
     parser.add_argument("--contract", type=Path, required=True)
     parser.add_argument("--runtime", type=Path, required=True)
     parser.add_argument("--sprite-runtime", type=Path, required=True)
+    parser.add_argument("--main-runtime", type=Path, required=True)
     parser.add_argument("--exporter", type=Path, required=True)
     parser.add_argument("--player-source", type=Path, required=True)
     parser.add_argument("--map-source", type=Path, required=True)
@@ -32,6 +33,7 @@ def main() -> int:
     contract = json.loads(args.contract.read_text(encoding="utf-8"))
     runtime = args.runtime.read_text(encoding="utf-8")
     sprite = args.sprite_runtime.read_text(encoding="utf-8")
+    main_runtime = args.main_runtime.read_text(encoding="utf-8")
     exporter = args.exporter.read_text(encoding="utf-8")
     player = args.player_source.read_text(encoding="utf-8-sig")
     map_source = args.map_source.read_text(encoding="utf-8-sig")
@@ -105,8 +107,19 @@ def main() -> int:
     check(rows, "Browser applies Zircon offsets", "anchorX + frame.offsetX" in sprite and "anchorY + frame.offsetY" in sprite, "atlas frame offsets used at draw time")
     check(rows, "Browser uses pixel rendering", "imageSmoothingEnabled = false" in sprite, "nearest/pixel rendering")
 
+    main_tokens = [
+        "new ZirconPlayerSpriteStore", "spriteStore.getBaseHumanPairStatus()",
+        "visualState.pairStatus === PLAYER_ASSET_STATUS.Ready",
+        "resolveBaseHumanLibrary(visualState.gender)", "spriteStore.peekFrame",
+        "spriteStore.requestFrame", "drawResolvedFrame",
+    ]
+    check(rows, "Main runtime auto-binds real base humans", all(token in main_runtime for token in main_tokens), "READY pair -> native atlas frame; otherwise diagnostic fallback")
+    check(rows, "Main runtime uses native player frame timing", "resolvePlayerFrameAtElapsed" in main_runtime and "getPlayerFrameDefinition" in main_runtime and "definition.delaysMs.reduce" in main_runtime, "FrameSet.Players timing drives displayed image index")
+    check(rows, "Main runtime supports gender switch without duplicate animation logic", "setPreviewGender" in main_runtime and "visualState.gender = gender" in main_runtime and "resolveBaseHumanLibrary(gender)" in main_runtime, "one animation runtime, library selected by gender")
+    check(rows, "Main runtime prewarms both base genders", "for (const gender of ['Male', 'Female'])" in main_runtime and "requestBaseHumanFrame" in main_runtime, "M_Hum + WM_Hum Standing/Walking frames")
+
     forbidden = ["vendor/crystal", "crystal-spells", "Crystal-Monk", "crystal-player-actions"]
-    active_text = "\n".join([runtime, sprite, exporter])
+    active_text = "\n".join([runtime, sprite, main_runtime, exporter])
     check(rows, "No Crystal runtime fallback", not any(token.lower() in active_text.lower() for token in forbidden), "no Crystal paths or archive runtime references")
 
     result = {
