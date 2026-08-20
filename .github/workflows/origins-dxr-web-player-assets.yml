@@ -7,8 +7,6 @@ on:
       - 'apps/origins-web-runtime/player-animation-runtime.js'
       - 'apps/origins-web-runtime/player-sprite-runtime.js'
       - 'apps/origins-web-runtime/tests/player-animation-runtime.test.mjs'
-      - 'apps/origins-web-runtime/generated/zircon-player-asset-contract.json'
-      - 'apps/origins-web-runtime/generated/zircon-player-asset-contract.generated.js'
       - 'scripts/generate-zircon-web-player-contract.py'
       - 'scripts/audit-origins-web-player-assets.py'
       - 'tools/zircon-web-asset-exporter/**'
@@ -166,6 +164,7 @@ jobs:
               '- Player action resolver covers the direct native `PlayerObject.SetAnimation` actions and deliberately refuses fabricated direct Show/Hide/Mount/Idle mappings.',
               '- Attack resolver preserves Zircon class/weapon/magic animation choices.',
               '- Assassin armour shifts and body/hair/helmet/weapon/shield/horse frame composition are represented.',
+              '- PlayerObject library selectors and direction-aware layer ordering are preserved, including dual weapons, shields and costume weapon-hiding rules.',
               '- `.Zl` exporter uses pinned `LibraryEditor.Mir3Library`, creates transparent PNG atlas pages, and preserves image index + OffSetX/OffSetY.',
               '- Browser sprite store consumes those atlas manifests and applies the original offsets.',
               '',
@@ -184,6 +183,7 @@ jobs:
               f'- Player animations: **{audit.get("frameCount", 0)}**',
               f'- Magic-to-body-animation cases: **{audit.get("magicAnimationCases", 0)}**',
               f'- Player-related Zircon libraries: **{audit.get("playerLibraryCount", 0)}**',
+              f'- PlayerObject selector entries: **{audit.get("selectorCount", 0)}**',
               f'- Required `.Zl` present in repository/runtime payload: **{probe.get("present", 0)} / {probe.get("required", 0)}**',
               '',
               '## Source parity audit',
