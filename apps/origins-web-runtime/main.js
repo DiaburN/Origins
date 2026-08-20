@@ -6,6 +6,17 @@ import {
   RUNTIME_MODE,
   ZIRCON_SOURCE_COMMIT,
 } from './runtime-core.js';
+import {
+  getPlayerFrameDefinition,
+  resolvePlayerAnimation,
+  resolvePlayerFrameAtElapsed,
+} from './player-animation-runtime.js';
+import {
+  PLAYER_ASSET_STATUS,
+  ZirconPlayerSpriteStore,
+  drawResolvedFrame,
+  resolveBaseHumanLibrary,
+} from './player-sprite-runtime.js';
 
 const canvas = document.querySelector('#game-canvas');
 const ctx = canvas.getContext('2d', { alpha: false });
@@ -25,15 +36,57 @@ const WORLD = Object.freeze({
 });
 
 const player = new PreviewPlayerObject({ x: 32, y: 24 });
+const spriteStore = new ZirconPlayerSpriteStore({ rootUrl: './assets/player/' });
 const input = { x: 0, y: 0 };
 const keyboard = new Set();
 const touchDirections = new Map();
 const camera = { x: 0, y: 0 };
+const visualState = {
+  gender: 'Male',
+  actionName: null,
+  animation: 'Standing',
+  animationStartedAt: performance.now(),
+  pairStatus: PLAYER_ASSET_STATUS.Missing,
+};
 
 runtimeValue.textContent = RUNTIME_MODE.PreviewLocal;
 sourceValue.textContent = ZIRCON_SOURCE_COMMIT.slice(0, 12);
-assetValue.textContent = 'diagnostic marker — asset pipeline pending';
-serverValue.textContent = 'disconnected by design (Step 1)';
+assetValue.textContent = 'probing M-Hum + WM-Hum';
+serverValue.textContent = 'disconnected by design (local visual runtime)';
+
+void initializePlayerAssets();
+
+async function initializePlayerAssets() {
+  const status = await spriteStore.load();
+  visualState.pairStatus = spriteStore.getBaseHumanPairStatus();
+
+  if (status !== PLAYER_ASSET_STATUS.Ready || visualState.pairStatus !== PLAYER_ASSET_STATUS.Ready) {
+    assetValue.textContent = visualState.pairStatus === PLAYER_ASSET_STATUS.Partial
+      ? 'M-Hum / WM-Hum incomplete pair'
+      : 'M-Hum + WM-Hum pending real Zircon .Zl';
+    return;
+  }
+
+  assetValue.textContent = 'M-Hum + WM-Hum READY';
+  await prewarmBaseHumanPreviewFrames();
+}
+
+async function prewarmBaseHumanPreviewFrames() {
+  const animations = ['Standing', 'Walking'];
+  const requests = [];
+  for (const gender of ['Male', 'Female']) {
+    for (const animation of animations) {
+      const frame = getPlayerFrameDefinition(animation);
+      for (let direction = 0; direction < 8; direction += 1) {
+        for (let localFrame = 0; localFrame < frame.frameCount; localFrame += 1) {
+          const imageIndex = frame.startIndex + frame.offset * direction + localFrame;
+          requests.push(spriteStore.requestBaseHumanFrame(gender, imageIndex));
+        }
+      }
+    }
+  }
+  await Promise.allSettled(requests);
+}
 
 const keyVectors = new Map([
   ['ArrowUp', [0, -1]], ['KeyW', [0, -1]],
@@ -170,10 +223,52 @@ function directionUnit(direction) {
   }
 }
 
-function drawDiagnosticPlayer() {
+function updateVisualAnimation(snapshot, timestamp) {
+  if (visualState.actionName === snapshot.actionName) return;
+  visualState.actionName = snapshot.actionName;
+  visualState.animation = resolvePlayerAnimation({
+    action: snapshot.actionName,
+    moveDistance: 1,
+    playerClass: 'Warrior',
+  }).animation;
+  visualState.animationStartedAt = timestamp;
+}
+
+function resolvePreviewBodyFrame(snapshot, timestamp) {
+  updateVisualAnimation(snapshot, timestamp);
+  const definition = getPlayerFrameDefinition(visualState.animation);
+  const duration = definition.delaysMs.reduce((sum, delay) => sum + delay, 0);
+  const elapsedMs = duration > 0 ? (timestamp - visualState.animationStartedAt) % duration : 0;
+  return resolvePlayerFrameAtElapsed(
+    visualState.animation,
+    snapshot.direction,
+    elapsedMs,
+    { action: snapshot.actionName },
+  ).drawFrame;
+}
+
+function drawPlayer(snapshot, timestamp) {
   const x = player.x * WORLD.tile - camera.x;
   const y = player.y * WORLD.tile - camera.y;
-  const [dx, dy] = directionUnit(player.direction);
+
+  if (visualState.pairStatus === PLAYER_ASSET_STATUS.Ready) {
+    const imageIndex = resolvePreviewBodyFrame(snapshot, timestamp);
+    if (imageIndex !== null) {
+      const library = resolveBaseHumanLibrary(visualState.gender);
+      const resolved = spriteStore.peekFrame(library, imageIndex);
+      if (resolved) {
+        drawResolvedFrame(ctx, resolved, x, y);
+        return;
+      }
+      void spriteStore.requestFrame(library, imageIndex);
+    }
+  }
+
+  drawDiagnosticPlayer(snapshot, x, y);
+}
+
+function drawDiagnosticPlayer(snapshot, x, y) {
+  const [dx, dy] = directionUnit(snapshot.direction);
 
   ctx.save();
   ctx.translate(x, y);
@@ -201,9 +296,9 @@ function drawDiagnosticPlayer() {
   ctx.fillStyle = '#e9d7a0';
   ctx.font = '11px ui-monospace, SFMono-Regular, Menlo, monospace';
   ctx.textAlign = 'center';
-  ctx.fillText('PLAYER', 0, -28);
+  ctx.fillText(`PLAYER ${visualState.gender.toUpperCase()}`, 0, -28);
   ctx.fillStyle = '#81755c';
-  ctx.fillText('NO SPRITE BOUND', 0, 35);
+  ctx.fillText('REAL ZL PAIR NOT BOUND', 0, 35);
   ctx.restore();
 }
 
@@ -215,28 +310,29 @@ function drawHud(viewWidth) {
 
   ctx.fillStyle = '#e7c875';
   ctx.font = 'bold 13px ui-monospace, SFMono-Regular, Menlo, monospace';
-  ctx.fillText('ORIGINS WEB RUNTIME — STEP 1', 24, 35);
+  ctx.fillText('ORIGINS WEB RUNTIME — PLAYER ASSETS STEP 2', 24, 35);
   ctx.fillStyle = '#aaa397';
   ctx.font = '11px ui-monospace, SFMono-Regular, Menlo, monospace';
-  ctx.fillText('Fixed 60 Hz simulation • 8 Zircon directions • local visual preview only', 24, 55);
-  ctx.fillText('Server authority and real assets are intentionally not emulated here.', 24, 70);
+  ctx.fillText('Native Zircon frame timing • M-Hum male • WM-Hum female • 8 directions', 24, 55);
+  ctx.fillText('Real atlas is used automatically when the complete base-human pair is present.', 24, 70);
 }
 
-function render() {
+function render(timestamp) {
   const { cssWidth, cssHeight, dpr } = resizeCanvas();
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
   ctx.imageSmoothingEnabled = false;
   updateCamera(cssWidth, cssHeight);
   drawGrid(cssWidth, cssHeight);
   drawWorldBounds(cssWidth, cssHeight);
-  drawDiagnosticPlayer();
-  drawHud(cssWidth);
 
   const snapshot = player.snapshot();
+  drawPlayer(snapshot, timestamp);
+  drawHud(cssWidth);
+
   actionValue.textContent = `${snapshot.actionName} (${snapshot.action})`;
   directionValue.textContent = `${snapshot.directionName} (${snapshot.direction})`;
   positionValue.textContent = `${snapshot.x.toFixed(2)}, ${snapshot.y.toFixed(2)}`;
-  frameValue.textContent = String(snapshot.frameIndex);
+  frameValue.textContent = String(resolvePreviewBodyFrame(snapshot, timestamp));
 }
 
 const runtime = new FixedStepRuntime(delta => {
@@ -250,16 +346,24 @@ const runtime = new FixedStepRuntime(delta => {
 
 function loop(timestamp) {
   runtime.tick(timestamp);
-  render();
+  render(timestamp);
   requestAnimationFrame(loop);
 }
 
 requestAnimationFrame(loop);
 
+function setPreviewGender(gender) {
+  resolveBaseHumanLibrary(gender);
+  visualState.gender = gender;
+}
+
 window.ORIGINS_WEB_RUNTIME = Object.freeze({
   mode: RUNTIME_MODE.PreviewLocal,
   sourceCommit: ZIRCON_SOURCE_COMMIT,
   getPlayerSnapshot: () => player.snapshot(),
+  getPreviewGender: () => visualState.gender,
+  setPreviewGender,
+  getBaseHumanPairStatus: () => visualState.pairStatus,
   MirAction: MIR_ACTION_BY_VALUE,
   MirDirection: MIR_DIRECTION_BY_VALUE,
 });
