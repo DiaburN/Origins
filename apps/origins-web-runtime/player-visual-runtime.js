@@ -17,6 +17,7 @@ export function resolvePlayerVisualComposition(context = {}) {
     helmetShape = 0,
     hairType = 0,
     libraryWeaponShape = 0,
+    weaponEquipped = false,
     shieldShape = -1,
     horseShape = 0,
     horseType = 0,
@@ -31,6 +32,13 @@ export function resolvePlayerVisualComposition(context = {}) {
   if (!Number.isInteger(direction) || direction < 0 || direction > 7) {
     throw new RangeError(`MirDirection must be 0..7: ${direction}`);
   }
+
+  const equipment = Object.freeze({
+    weapon: Boolean(weaponEquipped),
+    helmet: helmetShape > 0,
+    shield: shieldShape >= 0,
+    mounted: horseType > 0,
+  });
 
   const libraries = resolvePlayerLibrarySelection({
     playerClass,
@@ -69,8 +77,8 @@ export function resolvePlayerVisualComposition(context = {}) {
     helmetShape,
     hairType,
     shieldShape,
-    weapon1Available: Boolean(libraries.weapon1),
-    weapon2Available: Boolean(libraries.weapon2),
+    weapon1Available: equipment.weapon && Boolean(libraries.weapon1),
+    weapon2Available: equipment.weapon && Boolean(libraries.weapon2),
     horseShape,
   });
 
@@ -84,6 +92,7 @@ export function resolvePlayerVisualComposition(context = {}) {
     direction,
     animation,
     armourShift,
+    equipment,
     libraries,
     frames,
     layers: Object.freeze(layers),
