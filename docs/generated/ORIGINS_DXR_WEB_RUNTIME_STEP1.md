@@ -1,10 +1,9 @@
-# ORIGINS-DxR — Web Runtime Step 1
+# ORIGINS-DxR — Web Runtime Foundation
 
 - Gate: **PASS**
-- Origins-DxR HEAD tested: 3ba24c1277925b1916984b2f1bd62b87e7c7bf1a
-- Zircon authority: cbf1aa919083bc13fc3f23f93772a8ab8370632d
-- Client target: browser / mobile web
-- Runtime mode: `PREVIEW_LOCAL` (not server-authoritative yet)
+- Origins-DxR HEAD tested: `04ae7aae7ad027d622ea3373d2ef4b9823dbb0b2`
+- Zircon authority: `cbf1aa919083bc13fc3f23f93772a8ab8370632d`
+- Runtime mode: `PREVIEW_LOCAL` (server-authoritative transport is a later vertical-slice step).
 
 ## CI
 
@@ -18,17 +17,13 @@
 
 ## Runtime contract
 
-- Dedicated app: `apps/origins-web-runtime/`.
-- Closed UI reference remains separate at `apps/zircon-ui-reference/`.
-- Fixed simulation step: 60 Hz.
-- Keyboard: WASD/arrows.
-- Touch: eight directional controls.
-- Camera follows the preview PlayerObject.
-- MirDirection and MirAction values are audited against pinned Zircon `LibraryCore/Enum.cs`.
-- Browser does not open `System.db` or `Users.db` directly.
-- No Crystal runtime dependency.
-- No WebSocket/gameplay authority is fabricated in Step 1.
-- The PLAYER marker is diagnostic only; real Zircon frames enter in Step 2/4.
+- Dedicated runtime: `apps/origins-web-runtime/`; the closed Zircon UI reference remains separate.
+- Fixed 60 Hz simulation with keyboard and touch movement.
+- `MirDirection` and `MirAction` remain audited against pinned Zircon.
+- Real M-Hum/WM-Hum atlases are consumed through the sprite store when present.
+- Player visual composition now resolves native body/hair/helmet/weapon1/weapon2/shield/horse libraries, frame indices and direction-dependent draw order.
+- Normal W/W/T body banks use the Zircon +5000 stride; Assassin bodies use +3000 and animation-specific `ArmourShift` values, including Fishing +80.
+- Browser does not open `System.db`/`Users.db` and no Crystal runtime fallback exists.
 
 ## Source audit checks
 
@@ -49,8 +44,7 @@
 | No fake network authority in Step 1 | PASS | WebSocket deliberately absent until transport step |
 | Preview-only mode explicit | PASS | PREVIEW_LOCAL visible in runtime |
 
-## What this PASS proves
+## Boundary
 
-A browser runtime exists and can execute a deterministic local PlayerObject preview with the native Zircon action/direction contract. It does **not** yet prove real map rendering, native sprite rendering, WebSocket transport, server-authoritative movement, combat or login.
-
-Next approved runtime block: **Step 2 — Zircon asset pipeline**.
+- This PASS validates the browser runtime and visual-composition contracts. It does not claim server-authoritative movement, a real map, combat, or login.
+- Asset availability is audited separately; a correct requested frame can still be an upstream empty slot.
