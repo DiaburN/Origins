@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import shutil
 from pathlib import Path
@@ -22,17 +23,25 @@ def safe_child(root: Path, relative: str) -> Path:
     return candidate
 
 
-def fingerprint(manifest: dict) -> tuple:
-    return (
-        manifest.get("libraryFile"),
-        manifest.get("sourceSha256"),
-        int(manifest.get("imageCount", -1)),
-        int(manifest.get("exportedImageCount", -1)),
-        int(manifest.get("atlasSize", -1)),
-    )
+def file_sha256(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as handle:
+        for chunk in iter(lambda: handle.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest().upper()
 
 
-def validate_library(bundle_root: Path, entry: dict) -> tuple[dict, Path]:
+def library_tree_fingerprint(manifest: dict, manifest_path: Path) -> str:
+    digest = hashlib.sha256()
+    digest.update(json.dumps(manifest, sort_keys=True, separators=(",", ":")).encode("utf-8"))
+    for page in sorted(manifest.get("pages", [])):
+        page_path = safe_child(manifest_path.parent, page)
+        digest.update(page.encode("utf-8"))
+        digest.update(file_sha256(page_path).encode("ascii"))
+    return digest.hexdigest().upper()
+
+
+def validate_library(bundle_root: Path, entry: dict) -> tuple[dict, Path, str]:
     library = entry.get("libraryFile")
     manifest_rel = entry.get("manifest")
     if not isinstance(library, str) or not library:
@@ -60,7 +69,7 @@ def validate_library(bundle_root: Path, entry: dict) -> tuple[dict, Path]:
         page_path = safe_child(manifest_path.parent, page)
         if not page_path.is_file() or page_path.stat().st_size <= 0:
             raise FileNotFoundError(f"{library}: missing/empty atlas page: {page_path}")
-    return manifest, manifest_path
+    return manifest, manifest_path, library_tree_fingerprint(manifest, manifest_path)
 
 
 def merge(input_roots: list[Path], output_root: Path) -> dict:
@@ -69,7 +78,7 @@ def merge(input_roots: list[Path], output_root: Path) -> dict:
 
     zircon_commit: str | None = None
     atlas_size: int | None = None
-    selected: dict[str, tuple[dict, Path, Path]] = {}
+    selected: dict[str, tuple[dict, Path, Path, str]] = {}
     duplicates: list[dict] = []
     input_summary: list[dict] = []
 
@@ -101,23 +110,24 @@ def merge(input_roots: list[Path], output_root: Path) -> dict:
         input_summary.append({"root": str(bundle_root), "profile": master.get("profile"), "libraryCount": len(entries)})
 
         for entry in entries:
-            manifest, manifest_path = validate_library(bundle_root, entry)
+            manifest, manifest_path, tree_fingerprint = validate_library(bundle_root, entry)
             library = manifest["libraryFile"]
             current = selected.get(library)
             if current is None:
-                selected[library] = (manifest, manifest_path, bundle_root)
+                selected[library] = (manifest, manifest_path, bundle_root, tree_fingerprint)
                 continue
-            current_manifest, current_path, current_root = current
-            if fingerprint(current_manifest) != fingerprint(manifest):
+            current_manifest, current_path, current_root, current_fingerprint = current
+            if current_fingerprint != tree_fingerprint:
                 raise ValueError(
                     f"Conflicting duplicate library {library}: {current_path} vs {manifest_path}; "
-                    f"fingerprints {fingerprint(current_manifest)!r} != {fingerprint(manifest)!r}"
+                    f"tree hashes {current_fingerprint} != {tree_fingerprint}"
                 )
             duplicates.append({
                 "libraryFile": library,
                 "keptRoot": str(current_root),
                 "duplicateRoot": str(bundle_root),
                 "sourceSha256": manifest.get("sourceSha256"),
+                "treeSha256": tree_fingerprint,
             })
 
     if not selected:
@@ -133,7 +143,7 @@ def merge(input_roots: list[Path], output_root: Path) -> dict:
     total_bytes = 0
     try:
         for library in sorted(selected, key=str.casefold):
-            manifest, manifest_path, _ = selected[library]
+            manifest, manifest_path, _, _ = selected[library]
             source_dir = manifest_path.parent
             destination = staging / library
             shutil.copytree(source_dir, destination)
