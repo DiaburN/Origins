@@ -18,13 +18,65 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  player-runtime:
-    runs-on: windows-latest
+  player-source-contract:
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout Origins-DxR
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+
+      - name: Bootstrap pinned Zircon
+        run: bash scripts/bootstrap-zircon.sh
+
+      - name: Verify pinned Zircon HEAD
+        run: test "$(git -C vendor/zircon rev-parse HEAD)" = "cbf1aa919083bc13fc3f23f93772a8ab8370632d"
+
+      - name: Audit native player action/animation contracts
+        id: audit
+        continue-on-error: true
+        run: >-
+          python3 scripts/audit-zircon-player-runtime.py
+          --repo .
+          --zircon vendor/zircon
+          --json-output artifacts/player-runtime/player-runtime-audit.json
+          --md-output docs/generated/ORIGINS_DXR_PLAYER_RUNTIME_STATUS.md
+
+      - name: Publish player source audit
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: origins-dxr-player-runtime-source
+          path: |
+            artifacts/player-runtime/player-runtime-audit.json
+            docs/generated/ORIGINS_DXR_PLAYER_RUNTIME_STATUS.md
+          if-no-files-found: warn
+
+      - name: Commit generated audit report
+        if: always() && steps.audit.outcome != 'skipped'
+        run: |
+          test -f docs/generated/ORIGINS_DXR_PLAYER_RUNTIME_STATUS.md || exit 0
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -- docs/generated/ORIGINS_DXR_PLAYER_RUNTIME_STATUS.md
+          if git diff --cached --quiet; then exit 0; fi
+          if [ "${{ steps.audit.outcome }}" = "success" ]; then
+            git commit -m "audit(dxr): record native Zircon player runtime"
+          else
+            git commit -m "audit(dxr): record player runtime audit failure"
+          fi
+          git push origin HEAD:Origins-DxR
+
+      - name: Enforce player source audit
+        if: always()
+        run: |
+          test "${{ steps.audit.outcome }}" = "success"
+
+  player-windows-compile:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout Origins-DxR
+        uses: actions/checkout@v4
 
       - name: Install .NET 10
         uses: actions/setup-dotnet@v4
@@ -52,47 +104,3 @@ jobs:
       - name: Build Client
         shell: pwsh
         run: dotnet build vendor/zircon/Client/Client.csproj --configuration Release --nologo
-
-      - name: Audit native player action/animation contracts
-        id: audit
-        continue-on-error: true
-        shell: pwsh
-        run: >-
-          python scripts/audit-zircon-player-runtime.py
-          --repo .
-          --zircon vendor/zircon
-          --json-output artifacts/player-runtime/player-runtime-audit.json
-          --md-output docs/generated/ORIGINS_DXR_PLAYER_RUNTIME_STATUS.md
-
-      - name: Publish player runtime audit
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: origins-dxr-player-runtime
-          path: |
-            artifacts/player-runtime/player-runtime-audit.json
-            docs/generated/ORIGINS_DXR_PLAYER_RUNTIME_STATUS.md
-          if-no-files-found: warn
-
-      - name: Commit generated audit report
-        if: always() && steps.audit.outcome != 'skipped'
-        shell: pwsh
-        run: |
-          if (-not (Test-Path 'docs/generated/ORIGINS_DXR_PLAYER_RUNTIME_STATUS.md')) { exit 0 }
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -- docs/generated/ORIGINS_DXR_PLAYER_RUNTIME_STATUS.md
-          git diff --cached --quiet
-          if ($LASTEXITCODE -eq 0) { exit 0 }
-          $message = if ('${{ steps.audit.outcome }}' -eq 'success') { 'audit(dxr): record native Zircon player runtime' } else { 'audit(dxr): record player runtime audit failure' }
-          git commit -m $message
-          git push origin HEAD:Origins-DxR
-
-      - name: Enforce player runtime audit
-        if: always()
-        shell: pwsh
-        run: |
-          if ('${{ steps.audit.outcome }}' -ne 'success') {
-            Write-Error "Player runtime audit outcome: ${{ steps.audit.outcome }}"
-            exit 1
-          }
