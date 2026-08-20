@@ -1,8 +1,8 @@
 # ORIGINS-DxR — Zircon Base Human Import
 
-- Import gate: **PASS**
+- Import gate: **FAIL**
 - Zircon authority: `cbf1aa919083bc13fc3f23f93772a8ab8370632d`
-- Origins-DxR HEAD tested: `30b9271208ec48a4919ff15d6b3891a1e3e0c71c`
+- Origins-DxR HEAD tested: `39c9895ebd830ea47bb16d4747a552385106b414`
 - Primary patch host from Zircon: `https://mirfiles.com/resources/mir3/zircon/patch/`
 - Fetch status: **PASS**
 - Export decode path: **managed BCnEncoder BC1/BC3**
@@ -19,6 +19,7 @@
 | Export browser atlases | success |
 | Validate generated pair | success |
 | Build runnable preview | success |
+| Browser-render Male + Female | failure |
 
 ## Downloaded ZL files
 
@@ -31,13 +32,7 @@
 - DXT5 is decoded as `BCnEncoder.Net CompressionFormat.Bc3`.
 - The patch exists only in the transient pinned `vendor/zircon` checkout used by the exporter; no Zircon runtime source is committed or altered.
 
-- Runtime pair: **M_Hum + WM_Hum READY**
+## Boundary
 
-## Browser atlases
-
-- `M_Hum`: 16152/55000 images, 15 atlas pages, 30165114 PNG bytes
-- `WM_Hum`: 12216/55000 images, 14 atlas pages, 27919891 PNG bytes
-
-- Total generated browser payload: **64311476 bytes**
-- Runnable preview artifact includes both real genders.
-- Raw `.Zl` files remain transient build inputs; no Crystal fallback.
+- No real-import PASS is claimed until download, export, validation and browser rendering all succeed.
+- No Crystal or placeholder art is substituted.
