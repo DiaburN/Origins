@@ -6,6 +6,7 @@ on:
     paths:
       - 'scripts/fetch-zircon-base-humans.ps1'
       - 'scripts/fetch-zircon-base-humans.py'
+      - 'scripts/prepare-zircon-libraryeditor-managed-dxt.py'
       - 'tools/zircon-web-asset-exporter/**'
       - 'apps/origins-web-runtime/player-sprite-runtime.js'
       - 'apps/origins-web-runtime/player-animation-runtime.js'
@@ -58,9 +59,19 @@ jobs:
             -OutputRoot $env:RAW_ROOT `
             -ReportPath artifacts/base-human-import/fetch.json
 
+      - name: Prepare exporter-only managed DXT decoder
+        id: manageddxt
+        if: steps.fetch.outcome == 'success'
+        continue-on-error: true
+        shell: pwsh
+        run: |
+          python scripts/prepare-zircon-libraryeditor-managed-dxt.py `
+            --zircon-root vendor/zircon `
+            --report artifacts/base-human-import/managed-dxt.json
+
       - name: Build ZL atlas exporter
         id: build
-        if: steps.fetch.outcome == 'success'
+        if: steps.manageddxt.outcome == 'success'
         continue-on-error: true
         shell: pwsh
         run: |
@@ -141,6 +152,7 @@ jobs:
           outcomes={
             'Bootstrap pinned Zircon':'${{ steps.bootstrap.outcome }}',
             'Fetch M-Hum + WM-Hum':'${{ steps.fetch.outcome }}',
+            'Prepare managed DXT decoder':'${{ steps.manageddxt.outcome }}',
             'Build ZL exporter':'${{ steps.build.outcome }}',
             'Export browser atlases':'${{ steps.export.outcome }}',
             'Validate generated pair':'${{ steps.validate.outcome }}',
@@ -149,6 +161,7 @@ jobs:
           def load(p):
               p=Path(p); return json.loads(p.read_text(encoding='utf-8-sig')) if p.exists() else {}
           fetch=load('artifacts/base-human-import/fetch.json')
+          dxt=load('artifacts/base-human-import/managed-dxt.json')
           val=load('artifacts/base-human-import/validation.json')
           logp=Path('artifacts/base-human-import/export.log')
           lines=['# ORIGINS-DxR — Zircon Base Human Import','',f'- Import gate: **{gate}**',
@@ -157,12 +170,19 @@ jobs:
             f'- Primary patch host from Zircon: `{fetch.get("primaryPatchHost","not reached")}`',
             f'- Fetch status: **{fetch.get("status","NO_REPORT")}**']
           if fetch.get('error'): lines += [f'- Fetch error: `{fetch["error"]}`']
+          if dxt:
+              lines += [f'- Export decode path: **managed BCnEncoder BC1/BC3**',
+                        f'- Exporter patch scope: `{dxt.get("scope","unknown")}`']
           lines += ['','## CI','','| Check | Result |','|---|---|']
           lines += [f'| {k} | {v} |' for k,v in outcomes.items()]
           if fetch.get('libraries'):
               lines += ['','## Downloaded ZL files','']
               for f in fetch['libraries']:
                   lines += [f'- `{f["libraryFile"]}` from `{f["patchUrl"]}` — {f["compressedBytes"]} gzip bytes → {f["bytes"]} raw bytes — SHA-256 `{f["sha256"]}`']
+          if dxt:
+              lines += ['','## Exporter DXT decode','','- DXT1 is decoded as `BCnEncoder.Net CompressionFormat.Bc1`.',
+                        '- DXT5 is decoded as `BCnEncoder.Net CompressionFormat.Bc3`.',
+                        '- The patch exists only in the transient pinned `vendor/zircon` checkout used by the exporter; no Zircon runtime source is committed or altered.']
           if outcomes['Export browser atlases'] != 'success' and logp.exists():
               tail=logp.read_text(encoding='utf-8',errors='replace').splitlines()[-80:]
               lines += ['','## Exporter error log','', '```text', *tail, '```']
