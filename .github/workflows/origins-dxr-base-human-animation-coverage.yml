@@ -60,7 +60,7 @@ jobs:
           unzip -q .coverage/preview.zip -d .coverage/preview
           test -f .coverage/preview/assets/player/player-assets.json
 
-      - name: Audit all FrameSet.Players references for both genders
+      - name: Audit pinned runtime draw references for both genders
         id: audit
         continue-on-error: true
         shell: bash
@@ -90,6 +90,7 @@ jobs:
           path=Path('.coverage/animation-coverage.json')
           data=json.loads(path.read_text(encoding='utf-8-sig')) if path.exists() else {}
           gate='PASS' if os.environ.get('AUDIT_OUTCOME')=='success' and data.get('status')=='PASS' else 'FAIL'
+          sem=data.get('runtimeSemantics',{})
           lines=[
             '# ORIGINS-DxR — M-Hum + WM-Hum Animation Coverage','',
             f'- Coverage gate: **{gate}**',
@@ -99,24 +100,38 @@ jobs:
             f'- Source preview commit: `{os.environ.get("SOURCE_RUN_SHA","unknown")}`',
             f'- Animations audited: **{data.get("animationCount","unknown")}**',
             f'- Directions per animation: **{data.get("directionCount","unknown")}**',
-            f'- Real frame references checked: **{data.get("totalFrameReferences","unknown")}**',
-            f'- Missing referenced frames: **{data.get("missingFrameReferences","unknown")}**',
+            f'- Runtime-draw frame references checked: **{data.get("totalFrameReferences","unknown")}**',
+            f'- Missing runtime-draw references: **{data.get("missingFrameReferences","unknown")}**',
+            '', '## Native runtime semantics','',
+            f'- Player `Pushed`: pinned `MapObject.UpdateFrame()` forces local frame(s) **{sem.get("pushedPlayerLocalFrames","unknown")}**.',
+            f'- Fishing body draw: `{sem.get("fishingBodySource","unknown")}`.',
+            f'- Normal W/W/T body bank offset: **{sem.get("bodyShapeOffset","unknown")}**; banks per `.Zl`: **{sem.get("bodyShapeBankCount","unknown")}**.',
             '', '## Per-animation result','',
-            '| Animation | Frames | References M+F / 8 dirs | Missing | Result |',
-            '|---|---:|---:|---:|---|',
+            '| Animation | Source Frames | Runtime Local Frames | References M+F / 8 dirs | Missing | Result |',
+            '|---|---:|---:|---:|---:|---|',
           ]
           for row in data.get('animations',[]):
-              lines.append(f'| {row["animation"]} | {row["frameCount"]} | {row["references"]} | {row["missing"]} | {row["status"]} |')
+              lines.append(f'| {row["animation"]} | {row["frameCount"]} | {row.get("runtimeLocalFrameCount",row["frameCount"])} | {row["references"]} | {row["missing"]} | {row["status"]} |')
+
+          fish=data.get('fishingShapeCoverage',[])
+          if fish:
+              lines += ['', '## Fishing coverage across the 11 internal body-shape banks','',
+                        '| Library | ArmourShape % 11 | Shift | References | Missing | Result |',
+                        '|---|---:|---:|---:|---:|---|']
+              for row in fish:
+                  lines.append(f'| {row["libraryFile"]} | {row["armourShapeModulo11"]} | {row["shapeShift"]} | {row["references"]} | {row["missing"]} | {row["status"]} |')
+
           missing=data.get('missing',[])
           if missing:
-              lines += ['', '## Missing references', '']
+              lines += ['', '## Missing runtime-draw references', '']
               for row in missing[:200]:
                   lines.append(f'- `{row["libraryFile"]}` / `{row["animation"]}` / dir {row["direction"]} / local {row["localFrame"]} → index **{row["imageIndex"]}**')
               if len(missing)>200:
                   lines.append(f'- … {len(missing)-200} additional missing references are in the JSON artifact.')
           lines += ['', '## Boundary','',
-                    '- PASS means every body frame referenced by the pinned Zircon `FrameSet.Players` contract exists in both real base-human atlas manifests for all 8 directions.',
-                    '- This gate validates sprite availability; action/server synchronization remains governed by the already-audited Zircon runtime contracts.',
+                    '- `Pushed` is evaluated using the exact pinned Zircon player special case, not by requiring unused source-frame slots.',
+                    '- Fishing is not waived: the report probes the actual `BodyLibrary/ArmourFrame` banks used by Zircon so empty source banks remain visible as evidence.',
+                    '- PASS means every body frame that the pinned Zircon player runtime can actually request from base bank 0 exists for both genders.',
                     '- No Crystal or placeholder frames are accepted.']
           Path('docs/generated/ORIGINS_DXR_BASE_HUMAN_ANIMATION_COVERAGE.md').write_text('\n'.join(lines)+'\n',encoding='utf-8')
           Path('.coverage/gate.txt').write_text(gate+'\n',encoding='utf-8')
