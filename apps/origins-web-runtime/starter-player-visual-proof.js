@@ -45,7 +45,7 @@ function background(){
   ctx.fillStyle='#121416';ctx.fillRect(0,0,canvas.width,canvas.height);
   ctx.strokeStyle='#25292b';ctx.lineWidth=1;
   for(let x=0;x<canvas.width;x+=40){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,canvas.height);ctx.stroke();}
-  for(let y=0;y<canvas.height;y+=40){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(0,y);ctx.stroke();}
+  for(let y=0;y<canvas.height;y+=40){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(canvas.width,y);ctx.stroke();}
   ctx.fillStyle='#e7c875';ctx.font='bold 16px ui-monospace,monospace';ctx.fillText(`${gender} — pinned Zircon`,24,34);
   ctx.fillStyle='#aaa397';ctx.font='13px ui-monospace,monospace';
   ctx.fillText('EQUIPPED: HAIR + WEAPON + SHIELD',95,72);ctx.fillText('EQUIPPED: HELMET + WEAPON + SHIELD',455,72);
