@@ -2,8 +2,9 @@
 """Generate the browser player animation/asset contract from pinned Zircon source.
 
 This script does not read Crystal and does not invent missing frames. It extracts the
-actual FrameSet.Players table, magic-to-animation mapping, and player-related
-LibraryList entries from the bootstrapped pinned Zircon checkout.
+actual FrameSet.Players table, magic-to-animation mapping, PlayerObject library
+selectors, and player-related LibraryList entries from the bootstrapped pinned Zircon
+checkout.
 """
 from __future__ import annotations
 
@@ -148,6 +149,28 @@ def parse_player_libraries(libraries_text: str) -> list[dict]:
     return rows
 
 
+def evaluate_selector_expression(expression: str, constants: dict[str, int]) -> int:
+    normalized = expression
+    for name, value in constants.items():
+        normalized = re.sub(rf"\b{re.escape(name)}\b", str(value), normalized)
+    if not re.fullmatch(r"[0-9+\-\s]+", normalized):
+        raise RuntimeError(f"unsupported PlayerObject selector expression: {expression}")
+    return int(eval(normalized, {"__builtins__": {}}, {}))
+
+
+def parse_selector_map(player_text: str, name: str, constants: dict[str, int]) -> dict[str, str]:
+    marker = f"Dictionary<int, LibraryFile> {name}"
+    block = extract_block(player_text, marker)
+    pattern = re.compile(r"\[(?P<expr>[^\]]+)\]\s*=\s*LibraryFile\.(?P<library>\w+)")
+    result: dict[str, str] = {}
+    for match in pattern.finditer(block):
+        key = evaluate_selector_expression(match.group("expr").strip(), constants)
+        result[str(key)] = match.group("library")
+    if not result:
+        raise RuntimeError(f"PlayerObject selector map is empty: {name}")
+    return result
+
+
 def build_contract(zroot: Path, commit: str) -> dict:
     enum_path = zroot / "LibraryCore" / "Enum.cs"
     frame_path = zroot / "LibraryCore" / "FrameSet.cs"
@@ -173,12 +196,17 @@ def build_contract(zroot: Path, commit: str) -> dict:
     if "if (Race == ObjectType.Player && CurrentAction == MirAction.Pushed)" not in map_text:
         raise RuntimeError("pinned Player Pushed frame override changed")
 
-    constants = {}
+    constants: dict[str, int] = {}
     for name in ("FemaleOffSet", "AssassinOffSet", "RightHandOffSet"):
         match = re.search(rf"\b{name}\s*=\s*(\d+)", player_text)
         if not match:
             raise RuntimeError(f"PlayerObject constant not found: {name}")
         constants[name] = int(match.group(1))
+
+    selector_maps = {
+        name: parse_selector_map(player_text, name, constants)
+        for name in ("ArmourList", "CostumeList", "WeaponList", "ShieldList", "HelmetList")
+    }
 
     return {
         "schema": "origins.zircon.web-player-assets.v1",
@@ -196,11 +224,13 @@ def build_contract(zroot: Path, commit: str) -> dict:
         "magicAnimationMap": parse_magic_animation_map(functions_text),
         "playerLibraries": parse_player_libraries(libraries_text),
         "playerConstants": constants,
+        "playerLibrarySelectors": selector_maps,
         "drawFrameFormula": "frameIndex + startIndex + offset * direction",
         "pushedPlayerFrameOverride": 0,
         "notes": [
             "All player frame definitions are extracted from FrameSet.Players.",
             "Magic-to-body-animation cases are extracted from Functions.GetMagicAnimation.",
+            "Armour/Costume/Weapon/Shield/Helmet selectors are extracted from PlayerObject dictionaries.",
             "Real PNG/atlas payload is generated only when the corresponding Zircon .Zl files are supplied.",
             "No Crystal fallback is permitted.",
         ],
@@ -218,7 +248,8 @@ def write_outputs(contract: dict, json_path: Path, js_path: Path) -> None:
         f"export const ZIRCON_PLAYER_ASSET_CONTRACT = Object.freeze({js_payload});\n"
         "export const ZIRCON_PLAYER_FRAMESET = ZIRCON_PLAYER_ASSET_CONTRACT.playerFrames;\n"
         "export const ZIRCON_MIR_ANIMATION = ZIRCON_PLAYER_ASSET_CONTRACT.mirAnimation;\n"
-        "export const ZIRCON_MAGIC_ANIMATION_MAP = ZIRCON_PLAYER_ASSET_CONTRACT.magicAnimationMap;\n",
+        "export const ZIRCON_MAGIC_ANIMATION_MAP = ZIRCON_PLAYER_ASSET_CONTRACT.magicAnimationMap;\n"
+        "export const ZIRCON_PLAYER_LIBRARY_SELECTORS = ZIRCON_PLAYER_ASSET_CONTRACT.playerLibrarySelectors;\n",
         encoding="utf-8",
     )
 
@@ -234,8 +265,9 @@ def main() -> int:
     write_outputs(contract, args.json_output, args.js_output)
     print(
         f"Generated {len(contract['playerFrames'])} player animations, "
-        f"{len(contract['magicAnimationMap'])} magic mappings and "
-        f"{len(contract['playerLibraries'])} player libraries."
+        f"{len(contract['magicAnimationMap'])} magic mappings, "
+        f"{len(contract['playerLibraries'])} player libraries and "
+        f"{sum(len(v) for v in contract['playerLibrarySelectors'].values())} selector entries."
     )
     return 0
 
