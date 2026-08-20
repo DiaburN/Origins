@@ -3,7 +3,7 @@
 - Pipeline gate: **FAIL**
 - Real Zircon player payload: **UNKNOWN**
 - Real sprite binding status: **BLOCKED_MISSING_ZL**
-- Origins-DxR HEAD tested: e7f5a569bcb80b439a0875eef9988c0695d53a50
+- Origins-DxR HEAD tested: d18a60c5797b9f14f3cd7aa6a152e732fe555ae3
 - Zircon authority: cbf1aa919083bc13fc3f23f93772a8ab8370632d
 
 ## What is implemented
@@ -21,8 +21,8 @@
 
 | Check | Result |
 |---|---|
-| Bootstrap pinned Zircon | success |
-| Generate source-faithful contract | cancelled |
+| Bootstrap pinned Zircon | skipped |
+| Generate source-faithful contract | skipped |
 | JavaScript syntax | skipped |
 | Player animation tests | skipped |
 | Pinned PlayerObject audit | skipped |
