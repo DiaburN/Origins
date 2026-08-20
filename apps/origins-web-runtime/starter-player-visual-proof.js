@@ -15,7 +15,7 @@ const EXPECTED_BY_GENDER={
   Female:['WM_Hum','WM_Hair','WM_Weapon1','WM_Helmet1','WM_Shield1'],
 };
 
-function composition({helmetShape,hairType}){
+function composition({helmetShape=0,hairType=1,weaponEquipped=false,shieldShape=-1}){
   return resolvePlayerVisualComposition({
     drawFrame,
     direction,
@@ -27,8 +27,8 @@ function composition({helmetShape,hairType}){
     helmetShape,
     hairType,
     libraryWeaponShape:0,
-    weaponEquipped:true,
-    shieldShape:0,
+    weaponEquipped,
+    shieldShape,
     horseShape:0,
     horseType:0,
     drawWeapon:true,
@@ -47,8 +47,10 @@ function background(){
   for(let x=0;x<canvas.width;x+=40){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,canvas.height);ctx.stroke();}
   for(let y=0;y<canvas.height;y+=40){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(canvas.width,y);ctx.stroke();}
   ctx.fillStyle='#e7c875';ctx.font='bold 16px ui-monospace,monospace';ctx.fillText(`${gender} — pinned Zircon`,24,34);
-  ctx.fillStyle='#aaa397';ctx.font='13px ui-monospace,monospace';
-  ctx.fillText('EQUIPPED: HAIR + WEAPON + SHIELD',95,72);ctx.fillText('EQUIPPED: HELMET + WEAPON + SHIELD',455,72);
+  ctx.fillStyle='#aaa397';ctx.font='12px ui-monospace,monospace';
+  ctx.fillText('NO EQUIPMENT',90,72);
+  ctx.fillText('EQUIPPED: HAIR + WEAPON + SHIELD',335,72);
+  ctx.fillText('EQUIPPED: HELMET + WEAPON + SHIELD',665,72);
 }
 
 async function drawComposition(comp,anchorX,anchorY){
@@ -71,24 +73,35 @@ async function run(){
     const absent=expected.filter(name=>!store.hasLibrary(name));
     if(absent.length) throw new Error(`missing required libraries: ${absent.join(', ')}`);
 
-    const hair=composition({helmetShape:0,hairType:1});
-    const helmet=composition({helmetShape:1,hairType:1});
-    const hairLayers=await drawComposition(hair,245,285);
-    const helmetLayers=await drawComposition(helmet,615,285);
+    const unequipped=composition({weaponEquipped:false,helmetShape:0,shieldShape:-1,hairType:1});
+    const hair=composition({weaponEquipped:true,helmetShape:0,shieldShape:0,hairType:1});
+    const helmet=composition({weaponEquipped:true,helmetShape:1,shieldShape:0,hairType:1});
 
+    const unequippedLayers=await drawComposition(unequipped,155,285);
+    const hairLayers=await drawComposition(hair,490,285);
+    const helmetLayers=await drawComposition(helmet,820,285);
+
+    const unequippedNames=unequipped.layers.map(x=>x.libraryFile);
     const hairNames=hair.layers.map(x=>x.libraryFile);
     const helmetNames=helmet.layers.map(x=>x.libraryFile);
+    const requiredUnequipped=[expected[0],expected[1]];
     const requiredHair=[expected[0],expected[1],expected[2],expected[4]];
     const requiredHelmet=[expected[0],expected[3],expected[2],expected[4]];
+
+    if(unequipped.layers.some(x=>['weapon1','weapon2','helmet','shield'].includes(x.layer))) throw new Error('unequipped composition leaked equipment layer');
+    if(unequippedNames.length!==2||requiredUnequipped.some(name=>!unequippedNames.includes(name))) throw new Error(`unequipped composition mismatch: ${unequippedNames.join(', ')}`);
     for(const name of requiredHair) if(!hairNames.includes(name)) throw new Error(`hair composition omitted ${name}`);
     for(const name of requiredHelmet) if(!helmetNames.includes(name)) throw new Error(`helmet composition omitted ${name}`);
+    if(unequipped.equipment.weapon||unequipped.equipment.helmet||unequipped.equipment.shield) throw new Error('unequipped equipment state mismatch');
     if(!hair.equipment.weapon||!hair.equipment.shield||hair.equipment.helmet) throw new Error('hair equipment state mismatch');
     if(!helmet.equipment.weapon||!helmet.equipment.shield||!helmet.equipment.helmet) throw new Error('helmet equipment state mismatch');
 
     const report={
       status:'PASS',gender,direction,drawFrame,
+      unequippedEquipment:unequipped.equipment,
       hairEquipment:hair.equipment,
       helmetEquipment:helmet.equipment,
+      unequippedComposition:unequipped.layers.map(x=>({layer:x.layer,libraryFile:x.libraryFile,imageIndex:x.imageIndex,phase:x.phase})),
       hairComposition:hair.layers.map(x=>({layer:x.layer,libraryFile:x.libraryFile,imageIndex:x.imageIndex,phase:x.phase})),
       helmetComposition:helmet.layers.map(x=>({layer:x.layer,libraryFile:x.libraryFile,imageIndex:x.imageIndex,phase:x.phase})),
     };
@@ -97,10 +110,13 @@ async function run(){
       starterVisualStatus:'PASS',
       starterVisualGender:gender,
       starterVisualDrawFrame:drawFrame,
+      starterVisualUnequippedLibraries:unequippedNames.join(','),
       starterVisualHairLibraries:hairNames.join(','),
       starterVisualHelmetLibraries:helmetNames.join(','),
+      starterVisualUnequippedLayerCount:unequippedLayers.length,
       starterVisualHairLayerCount:hairLayers.length,
       starterVisualHelmetLayerCount:helmetLayers.length,
+      starterVisualUnequippedEquipment:'false',
       starterVisualWeaponEquipped:'true',
       starterVisualShieldEquipped:'true',
     });
