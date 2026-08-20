@@ -22,7 +22,9 @@ export class ZirconPlayerSpriteStore {
     this.status = PLAYER_ASSET_STATUS.Missing;
     this.master = null;
     this.libraries = new Map();
+    this.libraryPromises = new Map();
     this.pages = new Map();
+    this.pagePromises = new Map();
     this.frames = new Map();
     this.framePromises = new Map();
   }
@@ -65,17 +67,28 @@ export class ZirconPlayerSpriteStore {
   async getLibrary(libraryFile) {
     if (this.status !== PLAYER_ASSET_STATUS.Ready || !this.master) return null;
     if (this.libraries.has(libraryFile)) return this.libraries.get(libraryFile);
+    if (this.libraryPromises.has(libraryFile)) return this.libraryPromises.get(libraryFile);
 
     const entry = this.master.libraries.find(row => row.libraryFile === libraryFile);
     if (!entry) return null;
-    const manifestUrl = new URL(entry.manifest, this.rootUrl);
-    const response = await fetch(manifestUrl, { cache: 'no-store' });
-    if (!response.ok) return null;
-    const manifest = await response.json();
-    if (!manifest || manifest.libraryFile !== libraryFile || !Array.isArray(manifest.images)) return null;
-    manifest.__url = manifestUrl;
-    this.libraries.set(libraryFile, manifest);
-    return manifest;
+
+    const promise = (async () => {
+      const manifestUrl = new URL(entry.manifest, this.rootUrl);
+      const response = await fetch(manifestUrl, { cache: 'no-store' });
+      if (!response.ok) return null;
+      const manifest = await response.json();
+      if (!manifest || manifest.libraryFile !== libraryFile || !Array.isArray(manifest.images)) return null;
+      manifest.__url = manifestUrl;
+      this.libraries.set(libraryFile, manifest);
+      return manifest;
+    })();
+
+    this.libraryPromises.set(libraryFile, promise);
+    try {
+      return await promise;
+    } finally {
+      this.libraryPromises.delete(libraryFile);
+    }
   }
 
   async getFrame(libraryFile, imageIndex) {
@@ -88,14 +101,29 @@ export class ZirconPlayerSpriteStore {
     if (!frame) return null;
 
     const pageKey = `${libraryFile}:${frame.page}`;
-    let page = this.pages.get(pageKey);
-    if (!page) {
-      page = await loadImage(new URL(frame.page, manifest.__url));
-      this.pages.set(pageKey, page);
-    }
+    const page = await this.getPage(pageKey, new URL(frame.page, manifest.__url));
+    if (!page) return null;
+
     const resolved = Object.freeze({ ...frame, image: page, libraryFile });
     this.frames.set(frameKey, resolved);
     return resolved;
+  }
+
+  async getPage(pageKey, pageUrl) {
+    if (this.pages.has(pageKey)) return this.pages.get(pageKey);
+    if (this.pagePromises.has(pageKey)) return this.pagePromises.get(pageKey);
+
+    const promise = loadImage(pageUrl).then(image => {
+      this.pages.set(pageKey, image);
+      return image;
+    });
+
+    this.pagePromises.set(pageKey, promise);
+    try {
+      return await promise;
+    } finally {
+      this.pagePromises.delete(pageKey);
+    }
   }
 
   peekFrame(libraryFile, imageIndex) {
