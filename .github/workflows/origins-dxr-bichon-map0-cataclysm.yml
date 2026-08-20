@@ -38,6 +38,8 @@ jobs:
 
       - name: Bootstrap pinned Zircon source authority
         id: bootstrap
+        continue-on-error: true
+        shell: bash
         run: |
           set -euo pipefail
           ./scripts/bootstrap-zircon.sh
@@ -51,10 +53,13 @@ jobs:
 
       - name: Validate Bichon builder syntax
         id: syntax
+        continue-on-error: true
         run: python -m py_compile scripts/build-origins-bichon-cataclysm.py
 
       - name: Fetch official Zircon map payloads
         id: fetch
+        if: steps.bootstrap.outcome == 'success' && steps.syntax.outcome == 'success'
+        continue-on-error: true
         shell: bash
         run: |
           set -euo pipefail
@@ -62,12 +67,10 @@ jobs:
           python - <<'PY'
           import gzip,hashlib,json,os,urllib.parse,urllib.request
           from pathlib import Path
-
-          # The mirror index is independently verified to expose Map-0/1/7.map.gz.
-          # Fail over to the pinned Launcher's primary host if the mirror is unavailable.
           hosts=[os.environ['MIRROR_PATCH'],os.environ['PRIMARY_PATCH']]
           targets=[('Map/0.map','0.map'),('Map/1.map','1.map'),('Map/7.map','7.map')]
           rows=[]
+          all_ready=True
           for relative,name in targets:
               patch=relative.replace('\\','/').replace('/','-')+'.gz'
               destination=Path('artifacts/bichon/source')/name
@@ -76,8 +79,8 @@ jobs:
               for host in hosts:
                   url=host+urllib.parse.quote(patch, safe='-_.()')
                   try:
-                      req=urllib.request.Request(url,headers={'User-Agent':'ORIGINS-DxR-BichonMapBuilder/1.1'})
-                      with urllib.request.urlopen(req,timeout=60) as response:
+                      req=urllib.request.Request(url,headers={'User-Agent':'ORIGINS-DxR-BichonMapBuilder/1.2'})
+                      with urllib.request.urlopen(req,timeout=45) as response:
                           compressed=response.read()
                       if not compressed.startswith(b'\x1f\x8b'):
                           raise RuntimeError('response is not gzip')
@@ -86,20 +89,26 @@ jobs:
                           raise RuntimeError('decompressed map is too short')
                       destination.write_bytes(payload)
                       attempts.append({'url':url,'success':True,'compressedBytes':len(compressed)})
-                      rows.append({'relativePath':relative,'file':name,'url':url,'bytes':len(payload),'sha256':hashlib.sha256(payload).hexdigest().upper(),'attempts':attempts})
+                      rows.append({'relativePath':relative,'file':name,'status':'READY','url':url,'bytes':len(payload),'sha256':hashlib.sha256(payload).hexdigest().upper(),'attempts':attempts})
                       ready=True
                       break
                   except Exception as exc:
                       attempts.append({'url':url,'success':False,'error':f'{type(exc).__name__}: {exc}'})
               if not ready:
+                  all_ready=False
                   rows.append({'relativePath':relative,'file':name,'status':'MISSING_REMOTE','attempts':attempts})
-                  Path('artifacts/bichon/fetch.json').write_text(json.dumps({'status':'FAIL','maps':rows},indent=2)+'\n',encoding='utf-8')
-                  raise SystemExit(f'Unable to fetch approved Zircon map payload: {relative}')
-          Path('artifacts/bichon/fetch.json').write_text(json.dumps({'status':'PASS','maps':rows},indent=2)+'\n',encoding='utf-8')
+          payload={'status':'PASS' if all_ready else 'FAIL','maps':rows}
+          Path('artifacts/bichon/fetch.json').write_text(json.dumps(payload,indent=2)+'\n',encoding='utf-8')
+          print(json.dumps(payload,indent=2))
+          if not all_ready:
+              raise SystemExit('One or more approved Zircon map payloads are unavailable')
           PY
 
       - name: Build native ORIGINS Bichon Cataclysm map
         id: build
+        if: steps.fetch.outcome == 'success'
+        continue-on-error: true
+        shell: bash
         run: |
           set -euo pipefail
           mkdir -p maps/origins docs/generated artifacts/bichon
@@ -114,8 +123,11 @@ jobs:
             --walkway-width 12 \
             --coast-variation 2
 
-      - name: Verify native map integrity and write evidence
+      - name: Verify native map integrity and write PASS evidence
         id: evidence
+        if: steps.build.outcome == 'success'
+        continue-on-error: true
+        shell: bash
         run: |
           set -euo pipefail
           python - <<'PY'
@@ -131,8 +143,7 @@ jobs:
           assert struct.unpack_from('<H',source,24)==struct.unpack_from('<H',output,24)
           assert report['mutation']['seaCellsBlocked'] is True
           assert report['mutation']['promenadeCellsPassable'] is True
-          assert report['tiles']['promenade']['library'] != report['tiles']['sea']['library'] or report['tiles']['promenade']['backImage'] != report['tiles']['sea']['backImage']
-
+          assert (report['tiles']['promenade']['backFile'],report['tiles']['promenade']['backImage']) != (report['tiles']['sea']['backFile'],report['tiles']['sea']['backImage'])
           town=report['townArea']; geom=report['geometry']; prom=report['tiles']['promenade']; sea=report['tiles']['sea']; mut=report['mutation']
           lines=[
             '# ORIGINS-DxR — Bichon Town (0.map) Cataclysm Hub','',
@@ -154,8 +165,8 @@ jobs:
             f'- Promenade: `BackFile={prom["backFile"]}` → `{prom["library"]}`, `BackImage={prom["backImage"]}`.',
             '- Promenade selection: dominant non-empty passable ground already used inside Bichon `Town Area`.',
             f'- Sea: `BackFile={sea["backFile"]}` → `{sea["library"]}`, `BackImage={sea["backImage"]}`.',
-            '- Sea selection: dominant blocked perimeter BackTile sampled from official Zircon maps `1` and `7`; no generated art.',
-            '', '## Native binary / collision guarantees','',
+            '- Sea selection: dominant blocked perimeter BackTile sampled from official Zircon maps `1` and `7`; no generated art.','',
+            '## Native binary / collision guarantees','',
             f'- Back blocks changed: **{mut["changedBackBlocks"]}**.',
             f'- Cell records changed: **{mut["changedCells"]}**.',
             f'- Original passable cells: **{mut["originalPassableCells"]}**.',
@@ -163,24 +174,60 @@ jobs:
             '- Ocean cells have Zircon movement bits cleared, so the **server blocks movement over water**.',
             '- Promenade cells have Zircon movement bits enabled and Middle/Front clutter removed.',
             '- Width/height, 28-byte header and total binary length are preserved.',
-            '- Everything inside the preserve box is left byte-for-byte as in official Bichon.',
-            '', '## Intent','',
-            '- Bichon becomes the permanent ORIGINS social/hub city.',
+            '- Everything inside the preserve box is left byte-for-byte as in official Bichon.','',
+            '## Intent','',
+            '- Bichon is the permanent ORIGINS social/hub city.',
             '- The fortified central city survives the catastrophe.',
-            '- Immediately outside the native wall context is a walkable promenade.',
-            '- Everything beyond the promenade is ocean, using only real Zircon map tiles.',
-            '- Future dungeon/world access will be driven from a central teleport hub rather than overland province exits.',
-            '', '## Next validation boundary','',
-            '- This gate proves native map structure, source provenance and server collision semantics.',
-            '- A source-tile renderer/Chrome map slice is the next visual gate before NPC/teleport placement.'
+            '- Outside the native wall context is a walkable promenade; everything beyond it is ocean.',
+            '- Future dungeon/world access comes from a central teleport hub, not overland province exits.','',
+            '## Next validation boundary','',
+            '- Native structure/collision is proven here. Real Zircon `.Zl` rendering is the next visual gate before NPC/teleport placement.'
           ]
           Path('docs/generated/ORIGINS_DXR_BICHON_CATACLYSM.md').write_text('\n'.join(lines)+'\n',encoding='utf-8')
           Path('maps/origins/README.md').write_text(
             '# ORIGINS native maps\n\n'
-            '`0.map` is the ORIGINS Bichon Cataclysm hub, derived from the official pinned-Zircon `Map/0.map`.\n\n'
-            'It preserves the central Bichon town/wall context, creates a native-tile promenade around it, and replaces the remaining exterior with blocked native Zircon sea tiles. No painted/generated map art is used.\n'
-            'See `docs/generated/ORIGINS_DXR_BICHON_CATACLYSM.md` for the exact build evidence and hashes.\n',
-            encoding='utf-8')
+            '`0.map` is the ORIGINS Bichon Cataclysm hub, derived from pinned Zircon `Map/0.map`. It preserves the central Bichon town/wall context, adds a native-tile promenade, and replaces the remaining exterior with blocked native Zircon sea tiles. No painted/generated map art is used.\n',encoding='utf-8')
+          PY
+
+      - name: Write pipeline diagnostics
+        id: diagnostics
+        if: always()
+        shell: bash
+        env:
+          BOOTSTRAP_OUTCOME: ${{ steps.bootstrap.outcome }}
+          SYNTAX_OUTCOME: ${{ steps.syntax.outcome }}
+          FETCH_OUTCOME: ${{ steps.fetch.outcome }}
+          BUILD_OUTCOME: ${{ steps.build.outcome }}
+          EVIDENCE_OUTCOME: ${{ steps.evidence.outcome }}
+        run: |
+          mkdir -p docs/generated artifacts/bichon
+          python - <<'PY'
+          import json,os
+          from pathlib import Path
+          def load(path):
+              p=Path(path)
+              return json.loads(p.read_text()) if p.exists() else None
+          outcomes={
+              'Bootstrap pinned Zircon':os.environ.get('BOOTSTRAP_OUTCOME','unknown'),
+              'Builder syntax':os.environ.get('SYNTAX_OUTCOME','unknown'),
+              'Fetch Map 0/1/7':os.environ.get('FETCH_OUTCOME','unknown'),
+              'Build native 0.map':os.environ.get('BUILD_OUTCOME','unknown'),
+              'Binary integrity evidence':os.environ.get('EVIDENCE_OUTCOME','unknown'),
+          }
+          gate='PASS' if all(v=='success' for v in outcomes.values()) else 'FAIL'
+          fetch=load('artifacts/bichon/fetch.json') or {}
+          build=load('artifacts/bichon/build.json') or {}
+          lines=['# ORIGINS-DxR — Bichon Map 0 Pipeline Status','',f'- Gate: **{gate}**',f'- HEAD: `{os.environ.get("GITHUB_SHA","unknown")}`','', '## Steps','', '| Step | Outcome |','|---|---|']
+          lines += [f'| {name} | {value} |' for name,value in outcomes.items()]
+          lines += ['','## Fetch detail','']
+          for row in fetch.get('maps',[]):
+              lines.append(f'- `{row.get("file")}`: **{row.get("status","UNKNOWN")}**; bytes `{row.get("bytes","—")}`; source `{row.get("url","—")}`.')
+              for attempt in row.get('attempts',[]):
+                  if not attempt.get('success'):
+                      lines.append(f'  - failed `{attempt.get("url")}` → `{attempt.get("error")}`')
+          if build:
+              lines += ['','## Build detail','',f'- Builder status: **{build.get("status","UNKNOWN")}**',f'- Output: `{build.get("output",{}).get("path","—")}`',f'- Output SHA-256: `{build.get("output",{}).get("sha256","—")}`']
+          Path('docs/generated/ORIGINS_DXR_BICHON_PIPELINE_STATUS.md').write_text('\n'.join(lines)+'\n',encoding='utf-8')
           PY
 
       - name: Upload Bichon map evidence
@@ -192,27 +239,32 @@ jobs:
             maps/origins/0.map
             maps/origins/README.md
             docs/generated/ORIGINS_DXR_BICHON_CATACLYSM.md
+            docs/generated/ORIGINS_DXR_BICHON_PIPELINE_STATUS.md
             artifacts/bichon/fetch.json
             artifacts/bichon/build.json
           if-no-files-found: warn
 
-      - name: Commit non-stale native Bichon map
-        if: steps.evidence.outcome == 'success'
+      - name: Commit non-stale Bichon result or diagnostics
+        if: always() && steps.diagnostics.outcome == 'success'
         shell: bash
         run: |
           set -euo pipefail
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add -- maps/origins/0.map maps/origins/README.md docs/generated/ORIGINS_DXR_BICHON_CATACLYSM.md
+          git add -- docs/generated/ORIGINS_DXR_BICHON_PIPELINE_STATUS.md
+          if [[ -f maps/origins/0.map && -f maps/origins/README.md && -f docs/generated/ORIGINS_DXR_BICHON_CATACLYSM.md ]]; then
+            git add -- maps/origins/0.map maps/origins/README.md docs/generated/ORIGINS_DXR_BICHON_CATACLYSM.md
+          fi
           if git diff --cached --quiet; then exit 0; fi
-          git commit -m 'feat(map): add native Bichon cataclysm hub'
+          if [[ -f maps/origins/0.map ]]; then msg='feat(map): add native Bichon cataclysm hub'; else msg='audit(map): record Bichon build failure'; fi
+          git commit -m "$msg"
           git fetch origin Origins-DxR
           remote="$(git rev-parse origin/Origins-DxR)"
           if [[ "$remote" != "$GITHUB_SHA" ]]; then
             meaningful="$(git diff --name-only "$GITHUB_SHA" "$remote" | grep -v '^docs/generated/' || true)"
             if [[ -n "$meaningful" ]]; then
-              echo "Skipping stale Bichon push because newer functional changes exist: $meaningful"
-              exit 1
+              echo "Skipping stale Bichon result; newer functional changes exist: $meaningful"
+              exit 0
             fi
           fi
           git pull --rebase origin Origins-DxR
