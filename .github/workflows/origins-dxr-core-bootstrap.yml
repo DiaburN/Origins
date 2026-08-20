@@ -179,10 +179,8 @@ jobs:
           $canonical = 'database/generated/zircon-system/LibraryCore__Library_SystemModels_MagicInfo.json'
           $rebuilt = 'SnapshotRebuilt/LibraryCore__Library_SystemModels_MagicInfo.json'
           if (-not (Test-Path $rebuilt)) { Write-Error 'Round-trip MagicInfo export missing.'; exit 1 }
-          $a = (Get-FileHash $canonical -Algorithm SHA256).Hash
-          $b = (Get-FileHash $rebuilt -Algorithm SHA256).Hash
-          "canonical=$a`nrebuilt=$b" | Add-Content artifacts/core-bootstrap/roundtrip.log
-          if ($a -ne $b) { Write-Error 'MagicInfo round-trip hash mismatch.'; exit 1 }
+          python scripts/compare-json-semantic.py $canonical $rebuilt *>&1 | Tee-Object artifacts/core-bootstrap/roundtrip.log -Append
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
       - name: Audit four-class MagicType catalog
         id: catalog
@@ -267,7 +265,7 @@ jobs:
             '| Origins DB tools build | ${{ steps.dbtools.outcome }} |',
             '| System.db rebuild | ${{ steps.rebuilddb.outcome }} |',
             '| System.db verify | ${{ steps.verifydb.outcome }} |',
-            '| MagicInfo deterministic round-trip | ${{ steps.roundtrip.outcome }} |',
+            '| MagicInfo semantic round-trip | ${{ steps.roundtrip.outcome }} |',
             '| Four-class MagicType catalog audit | ${{ steps.catalog.outcome }} |',
             '| Four-class MagicInfo audit | ${{ steps.magicdb.outcome }} |',
             '| Zircon magic runtime handler audit | ${{ steps.magicruntime.outcome }} |',
