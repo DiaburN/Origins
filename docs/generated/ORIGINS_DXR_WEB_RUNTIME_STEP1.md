@@ -1,7 +1,7 @@
 # ORIGINS-DxR — Web Runtime Step 1
 
 - Gate: **PASS**
-- Origins-DxR HEAD tested: e233d039a3cee8fda8220de829cc536baf63302c
+- Origins-DxR HEAD tested: 4fceed1cf4af98df09493f65c3eb66af608a50ab
 - Zircon authority: cbf1aa919083bc13fc3f23f93772a8ab8370632d
 - Client target: browser / mobile web
 - Runtime mode: `PREVIEW_LOCAL` (not server-authoritative yet)
