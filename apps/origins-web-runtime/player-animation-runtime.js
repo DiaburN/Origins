@@ -1,4 +1,5 @@
 import {
+  ZIRCON_COSTUME_HIDE_WEAPON,
   ZIRCON_MAGIC_ANIMATION_MAP,
   ZIRCON_PLAYER_ASSET_CONTRACT,
   ZIRCON_PLAYER_FRAMESET,
@@ -11,6 +12,7 @@ const ATTACK_COMBAT3 = new Set(['Slaying', 'Thrusting', 'FlamingSword', 'Defensi
 const ATTACK_COMBAT4 = new Set(['HalfMoon', 'DestructiveSurge', 'OffensiveBlow']);
 const LOTUS_ATTACKS = new Set(['FullBloom', 'WhiteLotus', 'RedLotus', 'DanceOfSwallow']);
 const BRIER_ATTACKS = new Set(['SweetBrier', 'Karma']);
+const HORSE_ANIMATIONS = new Set(['HorseStanding', 'HorseWalking', 'HorseRunning', 'HorseStruck']);
 
 const HORSE_SHAPE_LIBRARIES = Object.freeze({
   1: ['HorseIron', null],
@@ -369,6 +371,76 @@ export function resolvePlayerLayerFrames({
     shield: shieldShape >= 0 ? drawFrame + (shieldShape % 10) * armourShapeOffset + armourShift : null,
     horse: horseType > 0 ? drawFrame + (horseType - 1) * 5000 : null,
   });
+}
+
+export function resolvePlayerDrawPlan({
+  direction,
+  animation = 'Standing',
+  costumeShape = -1,
+  drawWeapon = true,
+  hideHead = false,
+  helmetShape = 0,
+  hairType = 0,
+  shieldShape = -1,
+  weapon1Available = true,
+  weapon2Available = false,
+  horseShape = 0,
+} = {}) {
+  if (!Number.isInteger(direction) || direction < 0 || direction > 7) {
+    throw new RangeError(`Invalid Zircon MirDirection: ${direction}`);
+  }
+
+  const plan = [];
+  const mountedAnimation = HORSE_ANIMATIONS.has(animation);
+  if (mountedAnimation) {
+    const horseFrameMode = horseShape >= 4 ? 'drawFrame' : 'horseFrame';
+    plan.push(Object.freeze({ layer: 'horse', phase: 'behind', frameMode: horseFrameMode }));
+  }
+
+  const hideWeaponAndShield = ZIRCON_COSTUME_HIDE_WEAPON.includes(costumeShape);
+  const behindWeapon1Directions = new Set([0, 5, 6, 7]);
+  const behindShieldDirections = new Set([1, 2, 3]);
+  const frontWeapon1Directions = new Set([1, 2, 3, 4]);
+  const frontShieldDirections = new Set([0, 4, 5, 6, 7]);
+
+  if (!hideWeaponAndShield) {
+    if (drawWeapon) {
+      if (behindWeapon1Directions.has(direction) && weapon1Available) {
+        plan.push(Object.freeze({ layer: 'weapon1', phase: 'behind' }));
+      } else if (!behindWeapon1Directions.has(direction) && weapon2Available) {
+        plan.push(Object.freeze({ layer: 'weapon2', phase: 'behind' }));
+      }
+    }
+    if (shieldShape >= 0 && behindShieldDirections.has(direction)) {
+      plan.push(Object.freeze({ layer: 'shield', phase: 'behind' }));
+    }
+  }
+
+  plan.push(Object.freeze({ layer: 'body', phase: 'body' }));
+
+  if (!hideHead) {
+    if (helmetShape > 0) plan.push(Object.freeze({ layer: 'helmet', phase: 'body' }));
+    else if (hairType > 0) plan.push(Object.freeze({ layer: 'hair', phase: 'body' }));
+  }
+
+  if (!hideWeaponAndShield) {
+    if (drawWeapon) {
+      if (frontWeapon1Directions.has(direction) && weapon1Available) {
+        plan.push(Object.freeze({ layer: 'weapon1', phase: 'front' }));
+      } else if (!frontWeapon1Directions.has(direction) && weapon2Available) {
+        plan.push(Object.freeze({ layer: 'weapon2', phase: 'front' }));
+      }
+    }
+    if (shieldShape >= 0 && frontShieldDirections.has(direction)) {
+      plan.push(Object.freeze({ layer: 'shield', phase: 'front' }));
+    }
+  }
+
+  if (mountedAnimation && (horseShape === 5 || horseShape === 6)) {
+    plan.push(Object.freeze({ layer: 'horseShapeEffect', phase: 'overlay', frameMode: 'drawFrame' }));
+  }
+
+  return Object.freeze(plan);
 }
 
 export const PLAYER_ANIMATION_SOURCE = Object.freeze({
