@@ -1,12 +1,12 @@
 # ORIGINS-DxR core bootstrap status
 
 - Gate: **FAIL**
-- Origins-DxR source HEAD tested: $sourceHead
+- Origins-DxR source HEAD tested: 6e535ca42c2a333f5a8b20c2c5a2422d50ffaf5a
 - Zircon expected: cbf1aa919083bc13fc3f23f93772a8ab8370632d
-- Zircon actual: $zirconHead
-- Runner: Windows / GitHub Actions 1000002686
-- UTC: 2026-08-20T00:10:31Z
-- Rebuilt Database/System.db: 0 bytes
+- Zircon actual: cbf1aa919083bc13fc3f23f93772a8ab8370632d
+- Runner: Windows / GitHub Actions 1000002687
+- UTC: 2026-08-20T00:14:28Z
+- Rebuilt database/System.db: 0 bytes
 
 | Check | Result |
 |---|---|
@@ -21,82 +21,21 @@
 | System.db rebuild | failure |
 | System.db verify | failure |
 | MagicInfo deterministic round-trip | failure |
-| Four-class MagicType catalog audit | failure |
-| Four-class MagicInfo audit | failure |
-| Zircon magic runtime handler audit | failure |
+| Four-class MagicType catalog audit | success |
+| Four-class MagicInfo audit | success |
+| Zircon magic runtime handler audit | success |
 | Runtime entrypoint/config preflight | failure |
 
 ## Scope note
 
-This gate proves source bootstrap, compilation, canonical System.db reconstruction/verification, four-class selection wiring and static runtime entrypoint/config presence. It does **not** claim a successful interactive GUI login on a hosted Actions runner; entering the world additionally requires the runtime client data/libraries, server runtime configuration and writable user database to be staged.
+This gate proves source bootstrap, compilation, canonical System.db reconstruction/verification, four-class selection wiring and static runtime entrypoint/config presence. It does not claim a successful interactive GUI login on a hosted Actions runner; entering the world additionally requires runtime client data/libraries, server runtime configuration and a writable user database to be staged.
 
-## Failure tail: magicruntime
-
-```text
-Traceback (most recent call last):
-  File "D:\a\Origins\Origins\scripts\audit-zircon-four-class-runtime.py", line 231, in <module>
-    raise SystemExit(main())
-                     ^^^^^^
-  File "D:\a\Origins\Origins\scripts\audit-zircon-four-class-runtime.py", line 72, in main
-    catalog = json.loads(args.catalog.read_text(encoding="utf-8"))
-                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "C:\hostedtoolcache\windows\Python\3.12.10\x64\Lib\pathlib.py", line 1027, in read_text
-    with self.open(mode='r', encoding=encoding, errors=errors) as f:
-         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "C:\hostedtoolcache\windows\Python\3.12.10\x64\Lib\pathlib.py", line 1013, in open
-    return io.open(self, mode, buffering, encoding, errors, newline)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-FileNotFoundError: [Errno 2] No such file or directory: 'database\\magic\\zircon-four-class-magic-types.json'
-```
-
-## Failure tail: magicdb
+## Failure tail: rebuild
 
 ```text
-Traceback (most recent call last):
-  File "D:\a\Origins\Origins\scripts\audit-zircon-four-class-db.py", line 134, in <module>
-    raise SystemExit(main())
-                     ^^^^^^
-  File "D:\a\Origins\Origins\scripts\audit-zircon-four-class-db.py", line 29, in main
-    catalog = json.loads(args.catalog.read_text(encoding="utf-8"))
-                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "C:\hostedtoolcache\windows\Python\3.12.10\x64\Lib\pathlib.py", line 1027, in read_text
-    with self.open(mode='r', encoding=encoding, errors=errors) as f:
-         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "C:\hostedtoolcache\windows\Python\3.12.10\x64\Lib\pathlib.py", line 1013, in open
-    return io.open(self, mode, buffering, encoding, errors, newline)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-FileNotFoundError: [Errno 2] No such file or directory: 'database\\magic\\zircon-four-class-magic-types.json'
-```
-
-## Failure tail: runtime
-
-```text
-missing Database/System.db
-```
-
-## Failure tail: catalog
-
-```text
-Traceback (most recent call last):
-  File "D:\a\Origins\Origins\scripts\verify-zircon-four-class-magics.py", line 124, in <module>
-    raise SystemExit(main())
-                     ^^^^^^
-  File "D:\a\Origins\Origins\scripts\verify-zircon-four-class-magics.py", line 74, in main
-    catalog = json.loads(args.catalog.read_text(encoding="utf-8"))
-                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "C:\hostedtoolcache\windows\Python\3.12.10\x64\Lib\pathlib.py", line 1027, in read_text
-    with self.open(mode='r', encoding=encoding, errors=errors) as f:
-         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "C:\hostedtoolcache\windows\Python\3.12.10\x64\Lib\pathlib.py", line 1013, in open
-    return io.open(self, mode, buffering, encoding, errors, newline)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-FileNotFoundError: [Errno 2] No such file or directory: 'database\\magic\\zircon-four-class-magic-types.json'
-```
-
-## Failure tail: roundtrip
-
-```text
-System.db not found: D:\a\Origins\Origins\Database\System.db
+ORIGINS SYSTEM.DB IMPORT: ERROR
+System.InvalidOperationException: Library.SystemModels.MagicInfo.LevelDelayReduction: property not found in pinned Zircon model.
+   at Program.<Main>$(String[] args) in D:\a\Origins\Origins\tools\Origins.Database.Import\Program.cs:line 159
 ```
 
 ## Failure tail: verify
@@ -120,8 +59,14 @@ ORIGINS DB PREFLIGHT: FAIL
 - CurrencyType.Gold is missing; current Zircon server startup expects it.
 ```
 
-## Failure tail: rebuild
+## Failure tail: runtime
 
 ```text
-Snapshot manifest not found: D:\a\Origins\Origins\database\generated\zircon-system\manifest.json
+missing database/System.db
+```
+
+## Failure tail: roundtrip
+
+```text
+System.db not found: D:\a\Origins\Origins\database\System.db
 ```
