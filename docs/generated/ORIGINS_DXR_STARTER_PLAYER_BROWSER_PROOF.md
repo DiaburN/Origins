@@ -2,7 +2,7 @@
 
 - Gate: **FAIL**
 - Zircon authority: `cbf1aa919083bc13fc3f23f93772a8ab8370632d`
-- Browser-proof HEAD: `3ba9a1788ca56b6d69b4e4b5fe9a10469dc5373a`
+- Browser-proof HEAD: `270824db3e2d73d47309128aa1079fb45d8835b3`
 - Source import run: **not resolved**
 - Source import commit: `not resolved`
 
