@@ -16,6 +16,7 @@ permissions:
 env:
   SOURCE_WORKFLOW: origins-dxr-base-human-import.yml
   ZIRCON_COMMIT: cbf1aa919083bc13fc3f23f93772a8ab8370632d
+  REQUIRED_RUNTIME_COMMIT: 86a501a63f7f1990f49085e1464742e45ae61927
 
 jobs:
   browser-proof:
@@ -29,14 +30,14 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Locate latest base-human preview artifact
+      - name: Locate compatible base-human preview artifact
         id: source
         continue-on-error: true
         shell: bash
         run: |
           set -euo pipefail
           mkdir -p .qa
-          payload="$(gh api "repos/${GITHUB_REPOSITORY}/actions/workflows/${SOURCE_WORKFLOW}/runs?branch=Origins-DxR&per_page=30")"
+          payload="$(gh api "repos/${GITHUB_REPOSITORY}/actions/workflows/${SOURCE_WORKFLOW}/runs?branch=Origins-DxR&per_page=40")"
           python3 -c 'import json,sys; d=json.load(sys.stdin); [print(r.get("id",""),r.get("head_sha",""),r.get("status",""),r.get("conclusion","")) for r in d.get("workflow_runs",[])]' <<<"$payload" > .qa/source-candidates.txt
 
           run_id=""
@@ -45,6 +46,9 @@ jobs:
           while read -r candidate_id candidate_sha candidate_status candidate_conclusion; do
             [[ -n "$candidate_id" ]] || continue
             [[ "$candidate_status" == "completed" ]] || continue
+            if ! git merge-base --is-ancestor "$REQUIRED_RUNTIME_COMMIT" "$candidate_sha" 2>/dev/null; then
+              continue
+            fi
             artifacts="$(gh api "repos/${GITHUB_REPOSITORY}/actions/runs/${candidate_id}/artifacts")"
             candidate_artifact_id="$(python3 -c 'import json,sys; d=json.load(sys.stdin); xs=[a for a in d.get("artifacts",[]) if a.get("name")=="origins-dxr-base-humans-preview" and not a.get("expired")]; print(xs[0]["id"] if xs else "")' <<<"$artifacts")"
             if [[ -n "$candidate_artifact_id" ]]; then
@@ -57,7 +61,8 @@ jobs:
 
           if [[ -z "$run_id" ]]; then
             {
-              echo "No completed import run with preview artifact found"
+              echo "No completed compatible import run with preview artifact found."
+              echo "Required runtime ancestor: $REQUIRED_RUNTIME_COMMIT"
               cat .qa/source-candidates.txt
             } > .qa/source-error.txt
             cat .qa/source-error.txt
@@ -66,7 +71,7 @@ jobs:
           echo "run_id=$run_id" >> "$GITHUB_OUTPUT"
           echo "run_sha=$run_sha" >> "$GITHUB_OUTPUT"
           echo "artifact_id=$artifact_id" >> "$GITHUB_OUTPUT"
-          echo "Using import run ${run_id} at ${run_sha}, artifact ${artifact_id}"
+          echo "Using compatible import run ${run_id} at ${run_sha}, artifact ${artifact_id}"
 
       - name: Download exact generated preview
         id: download
@@ -81,6 +86,8 @@ jobs:
           test -f .qa/preview/index.html
           test -f .qa/preview/main.js
           test -f .qa/preview/assets/player/player-assets.json
+          grep -q 'playerArmourShape' .qa/preview/main.js
+          grep -q 'forcedAnimation' .qa/preview/main.js
           python3 - <<'PY'
           import json
           from pathlib import Path
@@ -89,10 +96,10 @@ jobs:
           names={r['libraryFile'] for r in master['libraries']}
           if names != {'M_Hum','WM_Hum'}:
               raise SystemExit(f'Unexpected base-human pair: {names}')
-          print('Preview contains exact M_Hum + WM_Hum pair')
+          print('Preview contains exact M_Hum + WM_Hum pair and body-bank QA runtime')
           PY
 
-      - name: Render Male and Female in Chrome
+      - name: Render base genders and male FishingCast in Chrome
         id: chrome
         if: steps.download.outcome == 'success'
         continue-on-error: true
@@ -121,18 +128,25 @@ jobs:
             exit 1
           fi
 
+          cat > .qa/browser/cases.tsv <<'EOF'
+          MaleBase	gender=Male	Male	M_Hum	0	Standing	4
+          FemaleBase	gender=Female	Female	WM_Hum	0	Standing	4
+          MaleFishing	gender=Male&armourShape=5&animation=FishingCast&direction=4	Male	M_Hum	5	FishingCast	4
+          EOF
+
           failed=0
-          for gender in Male Female; do
-            url="http://127.0.0.1:8765/index.html?gender=${gender}"
-            dom=".qa/browser/${gender}-dom.html"
-            log=".qa/browser/${gender}-chrome.log"
-            shot="$(pwd)/.qa/browser/${gender}.png"
+          while IFS=$'\t' read -r case_id query gender library armour animation direction; do
+            [[ -n "$case_id" ]] || continue
+            url="http://127.0.0.1:8765/index.html?${query}"
+            dom=".qa/browser/${case_id}-dom.html"
+            log=".qa/browser/${case_id}-chrome.log"
+            shot="$(pwd)/.qa/browser/${case_id}.png"
 
             "$chrome" --headless=new --no-sandbox --disable-gpu --hide-scrollbars \
               --window-size=960,720 --virtual-time-budget=60000 --dump-dom "$url" > "$dom" 2> "$log"
             code=$?
             if [[ $code -ne 0 ]]; then
-              echo "${gender}: Chrome DOM exit code ${code}" >> "$browser_error"
+              echo "${case_id}: Chrome DOM exit code ${code}" >> "$browser_error"
               tail -80 "$log" >> "$browser_error" || true
               failed=1
               continue
@@ -142,11 +156,11 @@ jobs:
               --window-size=960,720 --virtual-time-budget=60000 --screenshot="$shot" "$url" >> "$log" 2>&1
             code=$?
             if [[ $code -ne 0 || ! -s "$shot" ]]; then
-              echo "${gender}: Chrome screenshot failed, exit=${code}" >> "$browser_error"
+              echo "${case_id}: Chrome screenshot failed, exit=${code}" >> "$browser_error"
               tail -80 "$log" >> "$browser_error" || true
               failed=1
             fi
-          done
+          done < .qa/browser/cases.tsv
 
           if [[ $failed -ne 0 ]]; then
             exit 1
@@ -156,31 +170,45 @@ jobs:
           import json,re
           from pathlib import Path
           root=Path('.qa/browser')
-          expected={'Male':'M_Hum','Female':'WM_Hum'}
+          cases=[
+              ('MaleBase','Male','M_Hum','0','Standing','4'),
+              ('FemaleBase','Female','WM_Hum','0','Standing','4'),
+              ('MaleFishing','Male','M_Hum','5','FishingCast','4'),
+          ]
           rows=[]
-          for gender,library in expected.items():
-              text=(root/f'{gender}-dom.html').read_text(encoding='utf-8',errors='replace')
+          for case_id,gender,library,armour,animation,direction in cases:
+              text=(root/f'{case_id}-dom.html').read_text(encoding='utf-8',errors='replace')
               match=re.search(r'<html\b([^>]*)>', text, re.I|re.S)
               if not match:
-                  raise SystemExit(f'{gender}: rendered DOM has no html element')
+                  raise SystemExit(f'{case_id}: rendered DOM has no html element')
               attrs=dict(re.findall(r'([:\w-]+)="([^"]*)"', match.group(1)))
               checks={
                   'data-preview-gender':gender,
                   'data-player-asset-pair':'READY',
                   'data-player-library':library,
+                  'data-player-armour-shape':armour,
+                  'data-player-animation':animation,
+                  'data-player-direction':direction,
                   'data-real-frame-drawn':'true',
               }
               for key,value in checks.items():
                   if attrs.get(key) != value:
-                      raise SystemExit(f'{gender}: {key}={attrs.get(key)!r}, expected {value!r}; html attrs={attrs}')
+                      raise SystemExit(f'{case_id}: {key}={attrs.get(key)!r}, expected {value!r}; html attrs={attrs}')
               idx=attrs.get('data-player-image-index')
               if idx is None or not idx.isdigit():
-                  raise SystemExit(f'{gender}: data-player-image-index={idx!r}')
-              shot=root/f'{gender}.png'
+                  raise SystemExit(f'{case_id}: data-player-image-index={idx!r}')
+              image_index=int(idx)
+              if case_id=='MaleFishing' and image_index < 27000:
+                  raise SystemExit(f'{case_id}: image index {image_index} does not include M_Hum armour bank 5 shift')
+              shot=root/f'{case_id}.png'
               if not shot.is_file() or shot.stat().st_size <= 0:
-                  raise SystemExit(f'{gender}: screenshot missing')
-              rows.append({'gender':gender,'libraryFile':library,'imageIndex':int(idx),'screenshotBytes':shot.stat().st_size})
-          result={'schema':'origins.zircon.base-human-browser-proof.v1','status':'PASS','renders':rows}
+                  raise SystemExit(f'{case_id}: screenshot missing')
+              rows.append({
+                  'case':case_id,'gender':gender,'libraryFile':library,'armourShape':int(armour),
+                  'animation':animation,'direction':int(direction),'imageIndex':image_index,
+                  'screenshotBytes':shot.stat().st_size,
+              })
+          result={'schema':'origins.zircon.base-human-browser-proof.v2','status':'PASS','renders':rows}
           (root/'browser-proof.json').write_text(json.dumps(result,indent=2)+'\n',encoding='utf-8')
           print(json.dumps(result,indent=2))
           PY
@@ -188,12 +216,13 @@ jobs:
           if [[ $code -ne 0 ]]; then
             echo "DOM validation failed" >> "$browser_error"
             cat .qa/browser/validation.err >> "$browser_error" || true
-            for gender in Male Female; do
-              echo "--- ${gender} html tag ---" >> "$browser_error"
-              grep -o -m1 '<html[^>]*>' ".qa/browser/${gender}-dom.html" >> "$browser_error" 2>/dev/null || true
-              echo "--- ${gender} chrome log ---" >> "$browser_error"
-              tail -40 ".qa/browser/${gender}-chrome.log" >> "$browser_error" 2>/dev/null || true
-            done
+            while IFS=$'\t' read -r case_id _; do
+              [[ -n "$case_id" ]] || continue
+              echo "--- ${case_id} html tag ---" >> "$browser_error"
+              grep -o -m1 '<html[^>]*>' ".qa/browser/${case_id}-dom.html" >> "$browser_error" 2>/dev/null || true
+              echo "--- ${case_id} chrome log ---" >> "$browser_error"
+              tail -40 ".qa/browser/${case_id}-chrome.log" >> "$browser_error" 2>/dev/null || true
+            done < .qa/browser/cases.tsv
             exit 1
           fi
           cat .qa/browser/validation.out
@@ -227,6 +256,7 @@ jobs:
             f'- Browser gate: **{gate}**',
             f'- Zircon authority: `{os.environ["ZIRCON_COMMIT"]}`',
             f'- Browser-proof commit: `{os.environ.get("GITHUB_SHA","unknown")}`',
+            f'- Required runtime ancestor: `{os.environ["REQUIRED_RUNTIME_COMMIT"]}`',
             f'- Source artifact lookup: **{source_outcome}**',
             f'- Preview download: **{download_outcome}**',
             f'- Chrome render: **{chrome_outcome}**',
@@ -237,7 +267,7 @@ jobs:
           ]
           if result.get('renders'):
               for row in result['renders']:
-                  lines.append(f'- `{row["gender"]}` → `{row["libraryFile"]}` → image index **{row["imageIndex"]}** → screenshot **{row["screenshotBytes"]} bytes**')
+                  lines.append(f'- `{row["case"]}`: {row["gender"]} → `{row["libraryFile"]}` → armourShape **{row["armourShape"]}** → `{row["animation"]}` dir **{row["direction"]}** → image index **{row["imageIndex"]}** → screenshot **{row["screenshotBytes"]} bytes**')
           source_err=Path('.qa/source-error.txt')
           if gate!='PASS' and source_err.exists():
               lines += ['','## Source artifact diagnostics','', '```text', *source_err.read_text(encoding='utf-8',errors='replace').splitlines()[-120:], '```']
@@ -246,7 +276,9 @@ jobs:
               text=err.read_text(encoding='utf-8',errors='replace').splitlines()[-120:]
               lines += ['','## Failure diagnostics','', '```text', *text, '```']
           lines += ['','## Boundary','',
-                    '- PASS requires Chrome to load the generated preview, resolve the complete `M_Hum + WM_Hum` pair, and record a real atlas frame draw for each gender.',
+                    '- PASS requires Chrome to render real base male and female body frames and the official male `FishingCast` body bank without placeholders.',
+                    '- The male Fishing proof specifically uses `M_Hum`, `armourShape=5`, the exact Zircon `FishingCast` animation, and a real atlas image index in the +25000 body bank.',
+                    '- Female Fishing remains governed by the separate official female-body discovery gate until a valid source bank is identified.',
                     '- No Crystal or placeholder sprite can satisfy this gate.']
           Path('docs/generated/ORIGINS_DXR_BASE_HUMAN_BROWSER_STATUS.md').write_text('\n'.join(lines)+'\n',encoding='utf-8')
           Path('.qa/browser-gate.txt').write_text(gate+'\n',encoding='utf-8')
@@ -263,7 +295,7 @@ jobs:
           if-no-files-found: warn
           include-hidden-files: true
 
-      - name: Commit browser-proof evidence
+      - name: Commit non-stale browser-proof evidence
         if: always()
         shell: bash
         run: |
@@ -271,11 +303,20 @@ jobs:
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add -- docs/generated/ORIGINS_DXR_BASE_HUMAN_BROWSER_STATUS.md
-          if ! git diff --cached --quiet; then
-            git commit -m 'audit(dxr): record real base-human browser proof'
-            git pull --rebase origin Origins-DxR
-            git push origin HEAD:Origins-DxR
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m 'audit(dxr): record real base-human browser proof'
+          git fetch origin Origins-DxR
+          remote="$(git rev-parse origin/Origins-DxR)"
+          if [[ "$remote" != "$GITHUB_SHA" ]]; then
+            meaningful="$(git diff --name-only "$GITHUB_SHA" "$remote" | grep -v '^docs/generated/' || true)"
+            if [[ -n "$meaningful" ]]; then
+              echo "Skipping stale browser evidence; newer functional changes exist:"
+              echo "$meaningful"
+              exit 0
+            fi
           fi
+          git pull --rebase origin Origins-DxR
+          git push origin HEAD:Origins-DxR
 
       - name: Enforce browser gate
         if: always()
