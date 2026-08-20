@@ -1,7 +1,7 @@
 # ORIGINS-DxR — Bichon Map 0 Pipeline Status
 
 - Gate: **FAIL**
-- HEAD: `c49eff5f86e17b039e08cd85c96b1a145345696f`
+- HEAD: `66eb10925b9c1efd5a46cb81193318d6a3a59499`
 
 ## Steps
 
