@@ -23,6 +23,7 @@ export class ZirconPlayerSpriteStore {
     this.master = null;
     this.libraries = new Map();
     this.pages = new Map();
+    this.frames = new Map();
     this.framePromises = new Map();
   }
 
@@ -78,6 +79,9 @@ export class ZirconPlayerSpriteStore {
   }
 
   async getFrame(libraryFile, imageIndex) {
+    const frameKey = `${libraryFile}:${imageIndex}`;
+    if (this.frames.has(frameKey)) return this.frames.get(frameKey);
+
     const manifest = await this.getLibrary(libraryFile);
     if (!manifest || !Number.isInteger(imageIndex) || imageIndex < 0 || imageIndex >= manifest.images.length) return null;
     const frame = manifest.images[imageIndex];
@@ -89,11 +93,18 @@ export class ZirconPlayerSpriteStore {
       page = await loadImage(new URL(frame.page, manifest.__url));
       this.pages.set(pageKey, page);
     }
-    return Object.freeze({ ...frame, image: page, libraryFile });
+    const resolved = Object.freeze({ ...frame, image: page, libraryFile });
+    this.frames.set(frameKey, resolved);
+    return resolved;
+  }
+
+  peekFrame(libraryFile, imageIndex) {
+    return this.frames.get(`${libraryFile}:${imageIndex}`) ?? null;
   }
 
   requestFrame(libraryFile, imageIndex) {
     const key = `${libraryFile}:${imageIndex}`;
+    if (this.frames.has(key)) return Promise.resolve(this.frames.get(key));
     if (!this.framePromises.has(key)) {
       this.framePromises.set(key, this.getFrame(libraryFile, imageIndex).finally(() => {
         this.framePromises.delete(key);
@@ -104,6 +115,14 @@ export class ZirconPlayerSpriteStore {
 
   async getBaseHumanFrame(gender, imageIndex) {
     return this.getFrame(resolveBaseHumanLibrary(gender), imageIndex);
+  }
+
+  peekBaseHumanFrame(gender, imageIndex) {
+    return this.peekFrame(resolveBaseHumanLibrary(gender), imageIndex);
+  }
+
+  requestBaseHumanFrame(gender, imageIndex) {
+    return this.requestFrame(resolveBaseHumanLibrary(gender), imageIndex);
   }
 
   async drawFrame(ctx, libraryFile, imageIndex, anchorX, anchorY, options = {}) {
