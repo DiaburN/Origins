@@ -1,22 +1,19 @@
 # ORIGINS-DxR — Real M-Hum + WM-Hum Browser Proof
 
-- Browser gate: **FAIL**
+- Browser gate: **PASS**
 - Zircon authority: `cbf1aa919083bc13fc3f23f93772a8ab8370632d`
-- Browser-proof commit: `34d77feb40d52e6e78382577f1159cc0026dad2e`
+- Browser-proof commit: `aaa82dfc05e771c5579e4a6a5fc59c84f601d7ea`
 - Source artifact lookup: **success**
 - Preview download: **success**
-- Chrome render: **failure**
+- Chrome render: **success**
 - Source import workflow run: **32392632203**
 - Source preview commit: `cbe40cbde1efea9b9c0dd423a41b97607907851d`
-- GitHub Actions proof run: **32393053303**
+- GitHub Actions proof run: **32393237067**
 
 ## Browser result
 
-
-## Failure diagnostics
-
-```text
-```
+- `Male` → `M_Hum` → image index **41** → screenshot **79040 bytes**
+- `Female` → `WM_Hum` → image index **40** → screenshot **78456 bytes**
 
 ## Boundary
 
