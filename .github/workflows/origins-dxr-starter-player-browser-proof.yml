@@ -1,0 +1,240 @@
+name: Origins DxR - Starter Player Browser Proof
+
+on:
+  push:
+    branches: [Origins-DxR]
+    paths:
+      - 'apps/origins-web-runtime/starter-player-visual-proof.html'
+      - 'apps/origins-web-runtime/starter-player-visual-proof.js'
+      - 'docs/generated/ORIGINS_DXR_STARTER_PLAYER_VISUAL_IMPORT.md'
+      - '.github/workflows/origins-dxr-starter-player-browser-proof.yml'
+  workflow_dispatch:
+
+permissions:
+  actions: read
+  contents: write
+
+env:
+  SOURCE_WORKFLOW: origins-dxr-starter-player-visual-import.yml
+  ZIRCON_COMMIT: cbf1aa919083bc13fc3f23f93772a8ab8370632d
+
+jobs:
+  browser-proof:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - name: Checkout Origins-DxR
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Locate latest equipped preview artifact
+        id: source
+        continue-on-error: true
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p artifacts/starter-player-browser-proof
+          payload="$(gh api "repos/${GITHUB_REPOSITORY}/actions/workflows/${SOURCE_WORKFLOW}/runs?branch=Origins-DxR&per_page=30")"
+          python3 -c 'import json,sys; d=json.load(sys.stdin); [print(r.get("id",""),r.get("head_sha",""),r.get("status",""),r.get("conclusion","")) for r in d.get("workflow_runs",[])]' <<<"$payload" > artifacts/starter-player-browser-proof/source-candidates.txt
+          run_id=""; run_sha=""; artifact_id=""
+          while read -r candidate_id candidate_sha candidate_status candidate_conclusion; do
+            [[ -n "$candidate_id" && "$candidate_status" == "completed" ]] || continue
+            artifacts="$(gh api "repos/${GITHUB_REPOSITORY}/actions/runs/${candidate_id}/artifacts")"
+            candidate_artifact_id="$(python3 -c 'import json,sys; d=json.load(sys.stdin); xs=[a for a in d.get("artifacts",[]) if a.get("name")=="origins-dxr-starter-player-visual-preview" and not a.get("expired")]; print(xs[0]["id"] if xs else "")' <<<"$artifacts")"
+            if [[ -n "$candidate_artifact_id" ]]; then
+              run_id="$candidate_id"; run_sha="$candidate_sha"; artifact_id="$candidate_artifact_id"; break
+            fi
+          done < artifacts/starter-player-browser-proof/source-candidates.txt
+          if [[ -z "$run_id" ]]; then
+            echo 'No completed starter-player import run with preview artifact found.' > artifacts/starter-player-browser-proof/source-error.txt
+            exit 1
+          fi
+          echo "run_id=$run_id" >> "$GITHUB_OUTPUT"
+          echo "run_sha=$run_sha" >> "$GITHUB_OUTPUT"
+          echo "artifact_id=$artifact_id" >> "$GITHUB_OUTPUT"
+          echo "Using starter import run $run_id at $run_sha, artifact $artifact_id"
+
+      - name: Download exact equipped preview
+        id: download
+        if: steps.source.outcome == 'success'
+        continue-on-error: true
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p artifacts/starter-player-browser-proof/preview
+          gh api "repos/${GITHUB_REPOSITORY}/actions/artifacts/${{ steps.source.outputs.artifact_id }}/zip" > artifacts/starter-player-browser-proof/preview.zip
+          unzip -q artifacts/starter-player-browser-proof/preview.zip -d artifacts/starter-player-browser-proof/preview
+          root=artifacts/starter-player-browser-proof/preview
+          test -f "$root/starter-player-visual-proof.html"
+          test -f "$root/starter-player-visual-proof.js"
+          test -f "$root/assets/player/player-assets.json"
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          root=Path('artifacts/starter-player-browser-proof/preview/assets/player')
+          master=json.loads((root/'player-assets.json').read_text(encoding='utf-8-sig'))
+          expected={'M_Hum','WM_Hum','M_Hair','WM_Hair','M_Weapon1','WM_Weapon1','M_Helmet1','WM_Helmet1','M_Shield1','WM_Shield1'}
+          names={r['libraryFile'] for r in master.get('libraries',[])}
+          if names != expected: raise SystemExit(f'Unexpected starter library set: {sorted(names)}')
+          print('Exact 10-library starter visual stack present.')
+          PY
+
+      - name: Render both equipped genders in Chrome
+        id: chrome
+        if: steps.download.outcome == 'success'
+        continue-on-error: true
+        shell: bash
+        run: |
+          set -uo pipefail
+          root=artifacts/starter-player-browser-proof
+          mkdir -p "$root/browser"
+          error="$root/browser/browser-error.txt"
+          : > "$error"
+          chrome="$(command -v google-chrome || command -v google-chrome-stable || command -v chromium || true)"
+          if [[ -z "$chrome" ]]; then echo 'Chrome/Chromium missing' > "$error"; exit 1; fi
+          "$chrome" --version > "$root/browser/chrome-version.txt" 2>&1
+          python3 -m http.server 8765 --bind 127.0.0.1 --directory "$root/preview" > "$root/browser/http.out.log" 2> "$root/browser/http.err.log" &
+          server_pid=$!
+          trap 'kill "$server_pid" 2>/dev/null || true' EXIT
+          sleep 2
+          curl --fail --silent --show-error http://127.0.0.1:8765/starter-player-visual-proof.html >/dev/null || { echo 'HTTP preview unavailable' >> "$error"; exit 1; }
+
+          failed=0
+          set +e
+          for gender in Male Female; do
+            url="http://127.0.0.1:8765/starter-player-visual-proof.html?gender=${gender}"
+            dom="$root/browser/${gender}-dom.html"
+            log="$root/browser/${gender}-chrome.log"
+            shot="$(pwd)/$root/browser/${gender}.png"
+            "$chrome" --headless=new --no-sandbox --disable-gpu --hide-scrollbars --window-size=960,640 --virtual-time-budget=60000 --dump-dom "$url" > "$dom" 2> "$log"
+            code=$?
+            if [[ $code -ne 0 ]]; then echo "${gender}: DOM exit $code" >> "$error"; tail -80 "$log" >> "$error"; failed=1; continue; fi
+            "$chrome" --headless=new --no-sandbox --disable-gpu --hide-scrollbars --window-size=960,640 --virtual-time-budget=60000 --screenshot="$shot" "$url" >> "$log" 2>&1
+            code=$?
+            if [[ $code -ne 0 || ! -s "$shot" ]]; then echo "${gender}: screenshot failure $code" >> "$error"; tail -80 "$log" >> "$error"; failed=1; fi
+          done
+          set -e
+          [[ $failed -eq 0 ]] || exit 1
+
+          python3 - <<'PY'
+          import json,re
+          from pathlib import Path
+          root=Path('artifacts/starter-player-browser-proof/browser')
+          expected={
+            'Male':{
+              'hair':'M_Hum,M_Hair,M_Weapon1,M_Shield1',
+              'helmet':'M_Hum,M_Helmet1,M_Weapon1,M_Shield1'},
+            'Female':{
+              'hair':'WM_Hum,WM_Hair,WM_Weapon1,WM_Shield1',
+              'helmet':'WM_Hum,WM_Helmet1,WM_Weapon1,WM_Shield1'},
+          }
+          rows=[]
+          for gender,want in expected.items():
+              text=(root/f'{gender}-dom.html').read_text(encoding='utf-8',errors='replace')
+              match=re.search(r'<html\b([^>]*)>',text,re.I|re.S)
+              if not match: raise SystemExit(f'{gender}: html tag missing')
+              attrs=dict(re.findall(r'([:\w-]+)="([^"]*)"',match.group(1)))
+              checks={
+                'data-starter-visual-status':'PASS',
+                'data-starter-visual-gender':gender,
+                'data-starter-visual-draw-frame':'40',
+                'data-starter-visual-hair-libraries':want['hair'],
+                'data-starter-visual-helmet-libraries':want['helmet'],
+                'data-starter-visual-hair-layer-count':'4',
+                'data-starter-visual-helmet-layer-count':'4',
+              }
+              for key,value in checks.items():
+                  if attrs.get(key)!=value: raise SystemExit(f'{gender}: {key}={attrs.get(key)!r}, expected {value!r}; attrs={attrs}')
+              shot=root/f'{gender}.png'
+              if not shot.is_file() or shot.stat().st_size<=0: raise SystemExit(f'{gender}: screenshot missing')
+              rows.append({'gender':gender,'drawFrame':40,'hairLibraries':want['hair'].split(','),'helmetLibraries':want['helmet'].split(','),'screenshotBytes':shot.stat().st_size})
+          report={'schema':'origins.zircon.starter-player-browser-proof.v1','status':'PASS','renders':rows}
+          (root/'browser-proof.json').write_text(json.dumps(report,indent=2)+'\n',encoding='utf-8')
+          print(json.dumps(report,indent=2))
+          PY
+
+      - name: Write browser evidence
+        if: always()
+        shell: bash
+        env:
+          SOURCE_OUTCOME: ${{ steps.source.outcome }}
+          DOWNLOAD_OUTCOME: ${{ steps.download.outcome }}
+          CHROME_OUTCOME: ${{ steps.chrome.outcome }}
+          SOURCE_RUN_ID: ${{ steps.source.outputs.run_id }}
+          SOURCE_RUN_SHA: ${{ steps.source.outputs.run_sha }}
+        run: |
+          set -euo pipefail
+          mkdir -p docs/generated artifacts/starter-player-browser-proof/browser
+          python3 - <<'PY'
+          import json,os
+          from pathlib import Path
+          root=Path('artifacts/starter-player-browser-proof/browser')
+          report={}
+          rp=root/'browser-proof.json'
+          if rp.exists(): report=json.loads(rp.read_text(encoding='utf-8-sig'))
+          outcomes={
+            'Locate source artifact':os.environ.get('SOURCE_OUTCOME','unknown'),
+            'Download exact preview':os.environ.get('DOWNLOAD_OUTCOME','unknown'),
+            'Chrome composition proof':os.environ.get('CHROME_OUTCOME','unknown'),
+          }
+          gate='PASS' if all(v=='success' for v in outcomes.values()) and report.get('status')=='PASS' else 'FAIL'
+          lines=['# ORIGINS-DxR — Starter Player Browser Proof','',
+            f'- Gate: **{gate}**',f'- Zircon authority: `{os.environ["ZIRCON_COMMIT"]}`',
+            f'- Browser-proof HEAD: `{os.environ.get("GITHUB_SHA","unknown")}`',
+            f'- Source import run: **{os.environ.get("SOURCE_RUN_ID") or "not resolved"}**',
+            f'- Source import commit: `{os.environ.get("SOURCE_RUN_SHA") or "not resolved"}`','',
+            '## CI','','| Check | Result |','|---|---|']
+          lines += [f'| {k} | {v} |' for k,v in outcomes.items()]
+          if report.get('renders'):
+              lines += ['','## Real Chrome renders','']
+              for row in report['renders']:
+                  lines.append(f'- `{row["gender"]}` — hair stack `{", ".join(row["hairLibraries"])}`; helmet stack `{", ".join(row["helmetLibraries"])}`; screenshot **{row["screenshotBytes"]} bytes**.')
+          err=root/'browser-error.txt'
+          if gate!='PASS' and err.exists(): lines += ['','## Diagnostics','', '```text', *err.read_text(encoding='utf-8',errors='replace').splitlines()[-120:], '```']
+          lines += ['','## Boundary','',
+            '- PASS means Chrome drew official Zircon body + hair/helmet + weapon + shield compositions for both genders using exact runtime layer order.',
+            '- Hair and helmet are intentionally separate variants because native Zircon displays helmet instead of hair when a helmet is equipped.',
+            '- No Crystal, placeholder or copied cross-gender layer can satisfy this gate.']
+          Path('docs/generated/ORIGINS_DXR_STARTER_PLAYER_BROWSER_PROOF.md').write_text('\n'.join(lines)+'\n',encoding='utf-8')
+          Path('artifacts/starter-player-browser-proof/gate.txt').write_text(gate+'\n',encoding='utf-8')
+          PY
+
+      - name: Upload browser evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: origins-dxr-starter-player-browser-proof
+          path: |
+            artifacts/starter-player-browser-proof/
+            docs/generated/ORIGINS_DXR_STARTER_PLAYER_BROWSER_PROOF.md
+          if-no-files-found: warn
+
+      - name: Commit non-stale browser report
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -- docs/generated/ORIGINS_DXR_STARTER_PLAYER_BROWSER_PROOF.md
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m 'audit(dxr): record starter player browser proof'
+          git fetch origin Origins-DxR
+          remote="$(git rev-parse origin/Origins-DxR)"
+          if [[ "$remote" != "$GITHUB_SHA" ]]; then
+            meaningful="$(git diff --name-only "$GITHUB_SHA" "$remote" | grep -v '^docs/generated/' || true)"
+            if [[ -n "$meaningful" ]]; then echo "Skipping stale browser evidence push; newer functional changes exist: $meaningful"; exit 0; fi
+          fi
+          git pull --rebase origin Origins-DxR
+          git push origin HEAD:Origins-DxR
+
+      - name: Enforce browser gate
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -f artifacts/starter-player-browser-proof/gate.txt
+          [[ "$(tr -d '\r\n' < artifacts/starter-player-browser-proof/gate.txt)" == 'PASS' ]]
