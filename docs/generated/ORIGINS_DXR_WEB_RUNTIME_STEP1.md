@@ -1,7 +1,7 @@
 # ORIGINS-DxR — Web Runtime Foundation
 
 - Gate: **PASS**
-- Origins-DxR HEAD tested: `0f7f23cbcebdf3d56949834b031b9c4e89d3f6af`
+- Origins-DxR HEAD tested: `0b7a0922b10a9fb72e24a0f8eef0e786f65f16ad`
 - Zircon authority: `cbf1aa919083bc13fc3f23f93772a8ab8370632d`
 - Runtime mode: `PREVIEW_LOCAL` (server-authoritative transport is a later vertical-slice step).
 
