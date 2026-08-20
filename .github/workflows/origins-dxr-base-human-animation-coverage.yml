@@ -1,0 +1,155 @@
+name: Origins DxR - Base Human Animation Coverage
+
+on:
+  push:
+    branches: [Origins-DxR]
+    paths:
+      - 'scripts/audit-zircon-base-human-animation-coverage.py'
+      - 'apps/origins-web-runtime/generated/zircon-player-asset-contract.json'
+      - '.github/workflows/origins-dxr-base-human-animation-coverage.yml'
+  workflow_dispatch:
+
+permissions:
+  actions: read
+  contents: write
+
+env:
+  SOURCE_WORKFLOW: origins-dxr-base-human-import.yml
+  CONTRACT_JSON: apps/origins-web-runtime/generated/zircon-player-asset-contract.json
+  ZIRCON_COMMIT: cbf1aa919083bc13fc3f23f93772a8ab8370632d
+
+jobs:
+  animation-coverage:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - name: Checkout Origins-DxR
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Locate latest generated base-human preview
+        id: source
+        shell: bash
+        run: |
+          set -euo pipefail
+          payload="$(gh api "repos/${GITHUB_REPOSITORY}/actions/workflows/${SOURCE_WORKFLOW}/runs?branch=Origins-DxR&per_page=30")"
+          python3 -c 'import json,sys; d=json.load(sys.stdin); [print(r.get("id",""),r.get("head_sha",""),r.get("status","")) for r in d.get("workflow_runs",[])]' <<<"$payload" > /tmp/runs.txt
+          while read -r run_id run_sha run_status; do
+            [[ "$run_status" == "completed" ]] || continue
+            artifacts="$(gh api "repos/${GITHUB_REPOSITORY}/actions/runs/${run_id}/artifacts")"
+            artifact_id="$(python3 -c 'import json,sys; d=json.load(sys.stdin); xs=[a for a in d.get("artifacts",[]) if a.get("name")=="origins-dxr-base-humans-preview" and not a.get("expired")]; print(xs[0]["id"] if xs else "")' <<<"$artifacts")"
+            if [[ -n "$artifact_id" ]]; then
+              echo "run_id=$run_id" >> "$GITHUB_OUTPUT"
+              echo "run_sha=$run_sha" >> "$GITHUB_OUTPUT"
+              echo "artifact_id=$artifact_id" >> "$GITHUB_OUTPUT"
+              exit 0
+            fi
+          done < /tmp/runs.txt
+          echo 'No base-human preview artifact found.' >&2
+          exit 1
+
+      - name: Download generated preview
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p .coverage/preview
+          gh api "repos/${GITHUB_REPOSITORY}/actions/artifacts/${{ steps.source.outputs.artifact_id }}/zip" > .coverage/preview.zip
+          unzip -q .coverage/preview.zip -d .coverage/preview
+          test -f .coverage/preview/assets/player/player-assets.json
+
+      - name: Audit all FrameSet.Players references for both genders
+        id: audit
+        continue-on-error: true
+        shell: bash
+        run: |
+          set +e
+          python3 scripts/audit-zircon-base-human-animation-coverage.py \
+            --contract "$CONTRACT_JSON" \
+            --asset-root .coverage/preview/assets/player \
+            --output .coverage/animation-coverage.json
+          code=$?
+          echo "exit_code=$code" >> "$GITHUB_OUTPUT"
+          exit $code
+
+      - name: Write animation coverage evidence
+        if: always()
+        shell: bash
+        env:
+          AUDIT_OUTCOME: ${{ steps.audit.outcome }}
+          SOURCE_RUN_ID: ${{ steps.source.outputs.run_id }}
+          SOURCE_RUN_SHA: ${{ steps.source.outputs.run_sha }}
+        run: |
+          set -euo pipefail
+          mkdir -p docs/generated .coverage
+          python3 - <<'PY'
+          import json,os
+          from pathlib import Path
+          path=Path('.coverage/animation-coverage.json')
+          data=json.loads(path.read_text(encoding='utf-8-sig')) if path.exists() else {}
+          gate='PASS' if os.environ.get('AUDIT_OUTCOME')=='success' and data.get('status')=='PASS' else 'FAIL'
+          lines=[
+            '# ORIGINS-DxR — M-Hum + WM-Hum Animation Coverage','',
+            f'- Coverage gate: **{gate}**',
+            f'- Zircon authority: `{os.environ["ZIRCON_COMMIT"]}`',
+            f'- Coverage commit: `{os.environ.get("GITHUB_SHA","unknown")}`',
+            f'- Source import run: **{os.environ.get("SOURCE_RUN_ID","unknown")}**',
+            f'- Source preview commit: `{os.environ.get("SOURCE_RUN_SHA","unknown")}`',
+            f'- Animations audited: **{data.get("animationCount","unknown")}**',
+            f'- Directions per animation: **{data.get("directionCount","unknown")}**',
+            f'- Real frame references checked: **{data.get("totalFrameReferences","unknown")}**',
+            f'- Missing referenced frames: **{data.get("missingFrameReferences","unknown")}**',
+            '', '## Per-animation result','',
+            '| Animation | Frames | References M+F / 8 dirs | Missing | Result |',
+            '|---|---:|---:|---:|---|',
+          ]
+          for row in data.get('animations',[]):
+              lines.append(f'| {row["animation"]} | {row["frameCount"]} | {row["references"]} | {row["missing"]} | {row["status"]} |')
+          missing=data.get('missing',[])
+          if missing:
+              lines += ['', '## Missing references', '']
+              for row in missing[:200]:
+                  lines.append(f'- `{row["libraryFile"]}` / `{row["animation"]}` / dir {row["direction"]} / local {row["localFrame"]} → index **{row["imageIndex"]}**')
+              if len(missing)>200:
+                  lines.append(f'- … {len(missing)-200} additional missing references are in the JSON artifact.')
+          lines += ['', '## Boundary','',
+                    '- PASS means every body frame referenced by the pinned Zircon `FrameSet.Players` contract exists in both real base-human atlas manifests for all 8 directions.',
+                    '- This gate validates sprite availability; action/server synchronization remains governed by the already-audited Zircon runtime contracts.',
+                    '- No Crystal or placeholder frames are accepted.']
+          Path('docs/generated/ORIGINS_DXR_BASE_HUMAN_ANIMATION_COVERAGE.md').write_text('\n'.join(lines)+'\n',encoding='utf-8')
+          Path('.coverage/gate.txt').write_text(gate+'\n',encoding='utf-8')
+          PY
+
+      - name: Upload animation coverage
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: origins-dxr-base-human-animation-coverage
+          path: |
+            .coverage/animation-coverage.json
+            docs/generated/ORIGINS_DXR_BASE_HUMAN_ANIMATION_COVERAGE.md
+          if-no-files-found: warn
+
+      - name: Commit animation coverage evidence
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -- docs/generated/ORIGINS_DXR_BASE_HUMAN_ANIMATION_COVERAGE.md
+          if ! git diff --cached --quiet; then
+            git commit -m 'audit(dxr): record base-human animation coverage'
+            git pull --rebase origin Origins-DxR
+            git push origin HEAD:Origins-DxR
+          fi
+
+      - name: Enforce animation coverage gate
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -f .coverage/gate.txt
+          [[ "$(tr -d '\r\n' < .coverage/gate.txt)" == 'PASS' ]]
