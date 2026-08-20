@@ -1,10 +1,10 @@
 # ORIGINS-DxR — Web Player Assets Step 2
 
-- Pipeline gate: **FAIL**
-- Base humans M-Hum + WM-Hum: **UNKNOWN**
-- Full Zircon player payload: **UNKNOWN**
+- Pipeline gate: **PASS**
+- Base humans M-Hum + WM-Hum: **BLOCKED_MISSING_ZL**
+- Full Zircon player payload: **BLOCKED_MISSING_ZL**
 - Real base sprite binding status: **BLOCKED_MISSING_ZL**
-- Origins-DxR HEAD tested: 542f448935fb4fcbd50d948368ce55f7b2a6b3ec
+- Origins-DxR HEAD tested: 9ac307df45b1f910b8d21994e8aa7cb0932eb7fd
 - Zircon authority: cbf1aa919083bc13fc3f23f93772a8ab8370632d
 
 ## What is implemented
@@ -25,31 +25,83 @@
 
 | Check | Result |
 |---|---|
-| Bootstrap pinned Zircon | skipped |
-| Generate source-faithful contract | skipped |
-| JavaScript syntax | skipped |
-| Player animation + sprite tests | skipped |
-| Pinned PlayerObject audit | skipped |
-| ZL atlas exporter build | skipped |
-| M-Hum + WM-Hum pair probe | skipped |
-| All-player payload probe | skipped |
+| Bootstrap pinned Zircon | success |
+| Generate source-faithful contract | success |
+| JavaScript syntax | success |
+| Player animation + sprite tests | success |
+| Pinned PlayerObject audit | success |
+| ZL atlas exporter build | success |
+| M-Hum + WM-Hum pair probe | success |
+| All-player payload probe | success |
 
 ## Contract totals
 
-- Player animations: **0**
-- Magic-to-body-animation cases: **0**
-- Player-related Zircon libraries: **0**
-- PlayerObject selector entries: **0**
-- Base human `.Zl` present: **0 / 0**
-- All player `.Zl` present: **0 / 0**
+- Player animations: **42**
+- Magic-to-body-animation cases: **124**
+- Player-related Zircon libraries: **137**
+- PlayerObject selector entries: **122**
+- Base human `.Zl` present: **0 / 2**
+- All player `.Zl` present: **0 / 137**
 
 ## Base human pair
 
+- `M_Hum` → `Data/M-Hum.Zl`: **MISSING**
+- `WM_Hum` → `Data/WM-Hum.Zl`: **MISSING**
 
 ## Source parity audit
 
 | Check | Result | Details |
 |---|---|---|
+| Generated contract schema | PASS | origins.zircon.web-player-assets.v1 |
+| All FrameSet.Players entries | PASS | count=42 |
+| Player frames are MirAnimation values | PASS | frames=42, enum=46 |
+| Magic animation map extracted | PASS | cases=124 |
+| Core body libraries | PASS | M_Hum, M_HumA, WM_Hum, WM_HumA |
+| Paired base human libraries | PASS | Male=M_Hum, Female=WM_Hum |
+| Player layer library families | PASS | libraries=137 |
+| Female offset | PASS | 5000 |
+| Assassin offset | PASS | 50000 |
+| Right-hand offset | PASS | 50 |
+| All PlayerObject selector dictionaries extracted | PASS | ArmourList=30, CostumeList=6, WeaponList=52, ShieldList=4, HelmetList=30 |
+| Male/female body selectors | PASS | M_Hum / WM_Hum |
+| Assassin body selectors | PASS | M_HumA / WM_HumA |
+| Assassin dual weapon selectors | PASS | ADL/ADR |
+| Costume weapon-hide list | PASS | [6, 7, 8, 9, 10, 11, 12, 13, 16, 17, 18] |
+| Web PlayerObject library selection | PASS | body/hair/helmet/weapon/shield/horse selection |
+| Pinned DrawFrame formula | PASS | DrawFrame = FrameIndex + CurrentFrame.StartIndex + CurrentFrame.OffSet * (int)Direction; |
+| Web DrawFrame formula | PASS | start + local + offset*direction |
+| Pinned Player Pushed override | PASS | Player Pushed -> frame 0 |
+| Web Player Pushed override | PASS | Player Pushed -> contract frame 0 |
+| Action mapping Standing | PASS | pinned PlayerObject + web resolver |
+| Action mapping Moving | PASS | pinned PlayerObject + web resolver |
+| Action mapping Pushed | PASS | pinned PlayerObject + web resolver |
+| Action mapping Attack | PASS | pinned PlayerObject + web resolver |
+| Action mapping Mining | PASS | pinned PlayerObject + web resolver |
+| Action mapping Fishing | PASS | pinned PlayerObject + web resolver |
+| Action mapping Taming | PASS | pinned PlayerObject + web resolver |
+| Action mapping RangeAttack | PASS | pinned PlayerObject + web resolver |
+| Action mapping Spell | PASS | pinned PlayerObject + web resolver |
+| Action mapping Struck | PASS | pinned PlayerObject + web resolver |
+| Action mapping Die | PASS | pinned PlayerObject + web resolver |
+| Action mapping Dead | PASS | pinned PlayerObject + web resolver |
+| Action mapping Harvest | PASS | pinned PlayerObject + web resolver |
+| No fabricated direct Show/Hide/Mount/Idle | PASS | Show, Hide, Mount, Idle |
+| Pinned attack animation branches | PASS | GetAttackAnimation branches present |
+| Web attack animation resolver | PASS | weapon/class conditional resolver present |
+| Assassin ArmourShift support | PASS | native shifts + Combat2 carry-over |
+| Layer frame composition | PASS | body/hair/helmet/weapon/shield/horse |
+| Pinned direction-aware DrawBody order | PASS | weapon/shield before/after body branches present |
+| Web direction-aware draw plan | PASS | weapon/shield/body/head depth plan |
+| Horse draw-order support | PASS | horse first + dark/royal overlay |
+| Exporter reads Zircon Mir3Library | PASS | LibraryEditor.Mir3Library |
+| Exporter preserves image offsets | PASS | OffSetX/OffSetY -> manifest |
+| Exporter writes PNG atlas | PASS | RGBA atlas pages |
+| Paired base-human exporter profile | PASS | one export profile for both genders |
+| Browser base-human gender mapping | PASS | gender selects body library only |
+| Browser base-human pair readiness | PASS | partial pair is detectable and not READY |
+| Browser applies Zircon offsets | PASS | atlas frame offsets used at draw time |
+| Browser uses pixel rendering | PASS | nearest/pixel rendering |
+| No Crystal runtime fallback | PASS | no Crystal paths or archive runtime references |
 
 ## Real payload boundary
 
