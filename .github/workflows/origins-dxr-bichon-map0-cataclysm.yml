@@ -56,7 +56,8 @@ jobs:
           assert 'Width = fileBytes[23] << 8 | fileBytes[22];' in map_source
           assert 'Height = fileBytes[25] << 8 | fileBytes[24];' in map_source
           assert 'int offSet = 28 + Width * Height / 4 * 3;' in map_source
-          assert '(fileBytes[offSet] & 0x01) != 0x01 || (fileBytes[offSet] & 0x02) != 0x02' in map_source
+          assert 'byte flag = fileBytes[offSet + (x * Height + y) * 14];' in map_source
+          assert 'if ((flag & 0x02) != 2 || (flag & 0x01) != 1) continue;' in map_source
           print('Pinned Zircon native map source contract: PASS')
           PY
 
@@ -88,7 +89,7 @@ jobs:
               for host in hosts:
                   url=host+urllib.parse.quote(patch, safe='-_.()')
                   try:
-                      req=urllib.request.Request(url,headers={'User-Agent':'ORIGINS-DxR-BichonMapBuilder/1.3'})
+                      req=urllib.request.Request(url,headers={'User-Agent':'ORIGINS-DxR-BichonMapBuilder/1.4'})
                       with urllib.request.urlopen(req,timeout=45) as response:
                           compressed=response.read()
                       if not compressed.startswith(b'\x1f\x8b'):
@@ -193,9 +194,7 @@ jobs:
             '- Native structure/collision is proven here. Real Zircon `.Zl` rendering is the next visual gate before NPC/teleport placement.'
           ]
           Path('docs/generated/ORIGINS_DXR_BICHON_CATACLYSM.md').write_text('\n'.join(lines)+'\n',encoding='utf-8')
-          Path('maps/origins/README.md').write_text(
-            '# ORIGINS native maps\n\n'
-            '`0.map` is the ORIGINS Bichon Cataclysm hub, derived from pinned Zircon `Map/0.map`. It preserves the central Bichon town/wall context, adds a native-tile promenade, and replaces the remaining exterior with blocked native Zircon sea tiles. No painted/generated map art is used.\n',encoding='utf-8')
+          Path('maps/origins/README.md').write_text('# ORIGINS native maps\n\n`0.map` is the ORIGINS Bichon Cataclysm hub, derived from pinned Zircon `Map/0.map`. It preserves the central Bichon town/wall context, adds a native-tile promenade, and replaces the remaining exterior with blocked native Zircon sea tiles. No painted/generated map art is used.\n',encoding='utf-8')
           PY
 
       - name: Write pipeline diagnostics
@@ -216,26 +215,17 @@ jobs:
           def load(path):
               p=Path(path)
               return json.loads(p.read_text()) if p.exists() else None
-          outcomes={
-              'Bootstrap pinned Zircon':os.environ.get('BOOTSTRAP_OUTCOME','unknown'),
-              'Builder syntax':os.environ.get('SYNTAX_OUTCOME','unknown'),
-              'Fetch Map 0/1/7':os.environ.get('FETCH_OUTCOME','unknown'),
-              'Build native 0.map':os.environ.get('BUILD_OUTCOME','unknown'),
-              'Binary integrity evidence':os.environ.get('EVIDENCE_OUTCOME','unknown'),
-          }
+          outcomes={'Bootstrap pinned Zircon':os.environ.get('BOOTSTRAP_OUTCOME','unknown'),'Builder syntax':os.environ.get('SYNTAX_OUTCOME','unknown'),'Fetch Map 0/1/7':os.environ.get('FETCH_OUTCOME','unknown'),'Build native 0.map':os.environ.get('BUILD_OUTCOME','unknown'),'Binary integrity evidence':os.environ.get('EVIDENCE_OUTCOME','unknown')}
           gate='PASS' if all(v=='success' for v in outcomes.values()) else 'FAIL'
-          fetch=load('artifacts/bichon/fetch.json') or {}
-          build=load('artifacts/bichon/build.json') or {}
+          fetch=load('artifacts/bichon/fetch.json') or {}; build=load('artifacts/bichon/build.json') or {}
           lines=['# ORIGINS-DxR — Bichon Map 0 Pipeline Status','',f'- Gate: **{gate}**',f'- HEAD: `{os.environ.get("GITHUB_SHA","unknown")}`','', '## Steps','', '| Step | Outcome |','|---|---|']
           lines += [f'| {name} | {value} |' for name,value in outcomes.items()]
           lines += ['','## Fetch detail','']
           for row in fetch.get('maps',[]):
               lines.append(f'- `{row.get("file")}`: **{row.get("status","UNKNOWN")}**; bytes `{row.get("bytes","—")}`; source `{row.get("url","—")}`.')
               for attempt in row.get('attempts',[]):
-                  if not attempt.get('success'):
-                      lines.append(f'  - failed `{attempt.get("url")}` → `{attempt.get("error")}`')
-          if build:
-              lines += ['','## Build detail','',f'- Builder status: **{build.get("status","UNKNOWN")}**',f'- Output: `{build.get("output",{}).get("path","—")}`',f'- Output SHA-256: `{build.get("output",{}).get("sha256","—")}`']
+                  if not attempt.get('success'): lines.append(f'  - failed `{attempt.get("url")}` → `{attempt.get("error")}`')
+          if build: lines += ['','## Build detail','',f'- Builder status: **{build.get("status","UNKNOWN")}**',f'- Output: `{build.get("output",{}).get("path","—")}`',f'- Output SHA-256: `{build.get("output",{}).get("sha256","—")}`']
           Path('docs/generated/ORIGINS_DXR_BICHON_PIPELINE_STATUS.md').write_text('\n'.join(lines)+'\n',encoding='utf-8')
           PY
 
@@ -261,9 +251,7 @@ jobs:
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add -- docs/generated/ORIGINS_DXR_BICHON_PIPELINE_STATUS.md
-          if [[ -f maps/origins/0.map && -f maps/origins/README.md && -f docs/generated/ORIGINS_DXR_BICHON_CATACLYSM.md ]]; then
-            git add -- maps/origins/0.map maps/origins/README.md docs/generated/ORIGINS_DXR_BICHON_CATACLYSM.md
-          fi
+          if [[ -f maps/origins/0.map && -f maps/origins/README.md && -f docs/generated/ORIGINS_DXR_BICHON_CATACLYSM.md ]]; then git add -- maps/origins/0.map maps/origins/README.md docs/generated/ORIGINS_DXR_BICHON_CATACLYSM.md; fi
           if git diff --cached --quiet; then exit 0; fi
           if [[ -f maps/origins/0.map ]]; then msg='feat(map): add native Bichon cataclysm hub'; else msg='audit(map): record Bichon build failure'; fi
           git commit -m "$msg"
@@ -271,10 +259,7 @@ jobs:
           remote="$(git rev-parse origin/Origins-DxR)"
           if [[ "$remote" != "$GITHUB_SHA" ]]; then
             meaningful="$(git diff --name-only "$GITHUB_SHA" "$remote" | grep -v '^docs/generated/' || true)"
-            if [[ -n "$meaningful" ]]; then
-              echo "Skipping stale Bichon result; newer functional changes exist: $meaningful"
-              exit 0
-            fi
+            if [[ -n "$meaningful" ]]; then echo "Skipping stale Bichon result; newer functional changes exist: $meaningful"; exit 0; fi
           fi
           git pull --rebase origin Origins-DxR
           git push origin HEAD:Origins-DxR
