@@ -9,6 +9,7 @@ on:
       - 'scripts/prepare-zircon-libraryeditor-managed-dxt.py'
       - 'tools/zircon-web-asset-exporter/**'
       - 'apps/origins-web-runtime/main.js'
+      - 'apps/origins-web-runtime/runtime-core.js'
       - 'apps/origins-web-runtime/player-sprite-runtime.js'
       - 'apps/origins-web-runtime/player-animation-runtime.js'
       - '.github/workflows/origins-dxr-base-human-import.yml'
@@ -38,6 +39,16 @@ jobs:
       - uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '10.0.x'
+
+      - name: Validate web runtime syntax
+        id: syntax
+        continue-on-error: true
+        shell: pwsh
+        run: |
+          node --check apps/origins-web-runtime/main.js
+          node --check apps/origins-web-runtime/runtime-core.js
+          node --check apps/origins-web-runtime/player-animation-runtime.js
+          node --check apps/origins-web-runtime/player-sprite-runtime.js
 
       - name: Bootstrap pinned Zircon
         id: bootstrap
@@ -139,106 +150,42 @@ jobs:
           $dest=Join-Path $preview 'assets/player'
           New-Item -ItemType Directory -Force $dest | Out-Null
           Copy-Item "$env:WEB_ASSET_ROOT/*" $dest -Recurse -Force
+          if (-not (Test-Path "$preview/index.html")) { throw 'Preview index.html missing.' }
+          if (-not (Test-Path "$preview/assets/player/player-assets.json")) { throw 'Preview player-assets.json missing.' }
 
-      - name: Browser-render real male and female frames
-        id: browser
-        if: steps.preview.outcome == 'success'
-        continue-on-error: true
-        shell: pwsh
-        run: |
-          $candidates = @(
-            'C:\Program Files\Google\Chrome\Application\chrome.exe',
-            'C:\Program Files (x86)\Google\Chrome\Application\chrome.exe'
-          )
-          $chrome = $candidates | Where-Object { Test-Path $_ } | Select-Object -First 1
-          if (-not $chrome) { throw 'Chrome executable not found on windows-latest.' }
-
-          $qa = 'artifacts/base-human-import/browser-smoke'
-          New-Item -ItemType Directory -Force $qa | Out-Null
-          $server = Start-Process -FilePath python -ArgumentList @('-m','http.server','8765','--bind','127.0.0.1','--directory','artifacts/base-human-import/preview') -PassThru -WindowStyle Hidden
-          try {
-            Start-Sleep -Seconds 2
-            foreach ($gender in @('Male','Female')) {
-              $url = "http://127.0.0.1:8765/index.html?gender=$gender"
-              $dom = Join-Path $qa ("$gender-dom.html")
-              $shot = (Resolve-Path $qa).Path + "\$gender.png"
-              & $chrome --headless=new --no-sandbox --disable-gpu --hide-scrollbars --window-size=960,720 --virtual-time-budget=15000 --dump-dom $url | Set-Content -Encoding UTF8 $dom
-              if ($LASTEXITCODE -ne 0) { throw "Chrome DOM render failed for $gender" }
-              & $chrome --headless=new --no-sandbox --disable-gpu --hide-scrollbars --window-size=960,720 --virtual-time-budget=15000 "--screenshot=$shot" $url
-              if ($LASTEXITCODE -ne 0 -or -not (Test-Path $shot) -or (Get-Item $shot).Length -le 0) { throw "Chrome screenshot failed for $gender" }
-            }
-          }
-          finally {
-            if ($server -and -not $server.HasExited) { Stop-Process -Id $server.Id -Force }
-          }
-
-          @'
-          import json,re
-          from pathlib import Path
-
-          root=Path('artifacts/base-human-import/browser-smoke')
-          expected={'Male':'M_Hum','Female':'WM_Hum'}
-          rows=[]
-          for gender,library in expected.items():
-              text=(root/f'{gender}-dom.html').read_text(encoding='utf-8-sig',errors='replace')
-              match=re.search(r'<html\b([^>]*)>',text,re.I|re.S)
-              if not match:
-                  raise SystemExit(f'{gender}: rendered DOM has no html element')
-              attrs=dict(re.findall(r'([:\w-]+)="([^"]*)"',match.group(1)))
-              required={
-                  'data-preview-gender':gender,
-                  'data-player-asset-pair':'READY',
-                  'data-player-library':library,
-                  'data-real-frame-drawn':'true',
-              }
-              for key,value in required.items():
-                  if attrs.get(key) != value:
-                      raise SystemExit(f'{gender}: {key}={attrs.get(key)!r}, expected {value!r}')
-              image_index=attrs.get('data-player-image-index')
-              if image_index is None or not image_index.isdigit():
-                  raise SystemExit(f'{gender}: real image index was not recorded')
-              shot=root/f'{gender}.png'
-              if not shot.is_file() or shot.stat().st_size <= 0:
-                  raise SystemExit(f'{gender}: screenshot missing')
-              rows.append({'gender':gender,'libraryFile':library,'imageIndex':int(image_index),'screenshotBytes':shot.stat().st_size})
-          report={'schema':'origins.zircon.base-human-browser-smoke.v1','status':'PASS','renders':rows}
-          (root/'browser-smoke.json').write_text(json.dumps(report,indent=2)+'\n',encoding='utf-8')
-          print(json.dumps(report,indent=2))
-          '@ | python -
-
-      - name: Write evidence
+      - name: Write import evidence
         id: evidence
         if: always()
         shell: pwsh
         run: |
-          New-Item -ItemType Directory -Force docs/generated | Out-Null
-          New-Item -ItemType Directory -Force artifacts/base-human-import | Out-Null
+          New-Item -ItemType Directory -Force docs/generated artifacts/base-human-import | Out-Null
           @'
-          import json, os
+          import json,os
           from pathlib import Path
           outcomes={
+            'Validate web runtime syntax':'${{ steps.syntax.outcome }}',
             'Bootstrap pinned Zircon':'${{ steps.bootstrap.outcome }}',
             'Fetch M-Hum + WM-Hum':'${{ steps.fetch.outcome }}',
             'Prepare managed DXT decoder':'${{ steps.manageddxt.outcome }}',
             'Build ZL exporter':'${{ steps.build.outcome }}',
             'Export browser atlases':'${{ steps.export.outcome }}',
             'Validate generated pair':'${{ steps.validate.outcome }}',
-            'Build runnable preview':'${{ steps.preview.outcome }}',
-            'Browser-render Male + Female':'${{ steps.browser.outcome }}'}
+            'Build runnable preview':'${{ steps.preview.outcome }}'}
           gate='PASS' if all(v=='success' for v in outcomes.values()) else 'FAIL'
           def load(p):
-              p=Path(p); return json.loads(p.read_text(encoding='utf-8-sig')) if p.exists() else {}
+              p=Path(p)
+              return json.loads(p.read_text(encoding='utf-8-sig')) if p.exists() else {}
           fetch=load('artifacts/base-human-import/fetch.json')
           dxt=load('artifacts/base-human-import/managed-dxt.json')
           val=load('artifacts/base-human-import/validation.json')
-          browser=load('artifacts/base-human-import/browser-smoke/browser-smoke.json')
           logp=Path('artifacts/base-human-import/export.log')
-          lines=['# ORIGINS-DxR — Zircon Base Human Import','',f'- Import gate: **{gate}**',
+          lines=['# ORIGINS-DxR — Zircon Base Human Import','',
+            f'- Import gate: **{gate}**',
             f'- Zircon authority: `{os.environ["ZIRCON_COMMIT"]}`',
             f'- Origins-DxR HEAD tested: `{os.environ.get("GITHUB_SHA","unknown")}`',
             f'- Primary patch host from Zircon: `{fetch.get("primaryPatchHost","not reached")}`',
-            f'- Fetch status: **{fetch.get("status","NO_REPORT")}**']
-          if fetch.get('error'): lines += [f'- Fetch error: `{fetch["error"]}`']
+            f'- Fetch status: **{fetch.get("status","NO_REPORT")}**',
+            '- Browser rendering is validated separately by `origins-dxr-base-human-browser-proof.yml`.']
           if dxt:
               lines += ['- Export decode path: **managed BCnEncoder BC1/BC3**',
                         f'- Exporter patch scope: `{dxt.get("scope","unknown")}`']
@@ -247,28 +194,24 @@ jobs:
           if fetch.get('libraries'):
               lines += ['','## Downloaded ZL files','']
               for f in fetch['libraries']:
-                  lines += [f'- `{f["libraryFile"]}` from `{f["patchUrl"]}` — {f["compressedBytes"]} gzip bytes → {f["bytes"]} raw bytes — SHA-256 `{f["sha256"]}`']
-          if dxt:
-              lines += ['','## Exporter DXT decode','','- DXT1 is decoded as `BCnEncoder.Net CompressionFormat.Bc1`.',
-                        '- DXT5 is decoded as `BCnEncoder.Net CompressionFormat.Bc3`.',
-                        '- The patch exists only in the transient pinned `vendor/zircon` checkout used by the exporter; no Zircon runtime source is committed or altered.']
+                  lines += [f'- `{f["libraryFile"]}` — {f["compressedBytes"]} gzip bytes → {f["bytes"]} raw bytes — SHA-256 `{f["sha256"]}`']
           if outcomes['Export browser atlases'] != 'success' and logp.exists():
               tail=logp.read_text(encoding='utf-8',errors='replace').splitlines()[-80:]
               lines += ['','## Exporter error log','', '```text', *tail, '```']
-          if browser.get('renders'):
-              lines += ['','## Real browser render','']
-              for row in browser['renders']:
-                  lines += [f'- `{row["gender"]}` → `{row["libraryFile"]}` → real image index **{row["imageIndex"]}** → screenshot **{row["screenshotBytes"]} bytes**']
           if gate=='PASS':
               by={r['libraryFile']:r for r in val['libraries']}
-              lines += ['','- Runtime pair: **M_Hum + WM_Hum READY AND BROWSER-RENDERED**','','## Browser atlases','']
+              lines += ['','- Runtime pair: **M_Hum + WM_Hum READY**','','## Browser atlases','']
               for n in ['M_Hum','WM_Hum']:
-                  v=by[n]; lines += [f'- `{n}`: {v["exportedImageCount"]}/{v["imageCount"]} images, {v["pageCount"]} atlas pages, {v["atlasBytes"]} PNG bytes']
+                  v=by[n]
+                  lines += [f'- `{n}`: {v["exportedImageCount"]}/{v["imageCount"]} images, {v["pageCount"]} atlas pages, {v["atlasBytes"]} PNG bytes']
               lines += ['',f'- Total generated browser payload: **{val["webAssetBytes"]} bytes**',
-                        '- Runnable preview artifact includes both real genders.',
+                        '- Runnable preview artifact includes both real genders and the current web runtime.',
                         '- Raw `.Zl` files remain transient build inputs; no Crystal fallback.']
           else:
-              lines += ['','## Boundary','', '- No real-import PASS is claimed until download, export, validation and browser rendering all succeed.', '- No Crystal or placeholder art is substituted.']
+              lines += ['','## Boundary','',
+                        '- No import PASS is claimed until download, export, pair validation and preview packaging all succeed.',
+                        '- Browser-render PASS is intentionally a separate gate.',
+                        '- No Crystal or placeholder art is substituted.']
           Path('docs/generated/ORIGINS_DXR_BASE_HUMAN_IMPORT.md').write_text('\n'.join(lines)+'\n',encoding='utf-8')
           Path('artifacts/base-human-import/import-gate.txt').write_text(gate+'\n',encoding='utf-8')
           '@ | python -
@@ -291,20 +234,29 @@ jobs:
             docs/generated/ORIGINS_DXR_BASE_HUMAN_IMPORT.md
           if-no-files-found: warn
 
-      - name: Commit evidence report
+      - name: Commit non-stale evidence report
         if: always()
         shell: pwsh
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add -- docs/generated/ORIGINS_DXR_BASE_HUMAN_IMPORT.md
-          if (-not (git diff --cached --quiet)) {
-            git commit -m 'audit(dxr): record real M-Hum and WM-Hum import'
-            git pull --rebase origin Origins-DxR
-            git push origin HEAD:Origins-DxR
+          if (git diff --cached --quiet) { exit 0 }
+          git commit -m 'audit(dxr): record real M-Hum and WM-Hum import'
+          git fetch origin Origins-DxR
+          $remote=(git rev-parse origin/Origins-DxR).Trim()
+          if ($remote -ne $env:GITHUB_SHA) {
+            $changed=@(git diff --name-only $env:GITHUB_SHA $remote)
+            $meaningful=@($changed | Where-Object { $_ -notlike 'docs/generated/*' })
+            if ($meaningful.Count -gt 0) {
+              Write-Host "Skipping stale evidence push; newer functional changes exist: $($meaningful -join ', ')"
+              exit 0
+            }
           }
+          git pull --rebase origin Origins-DxR
+          git push origin HEAD:Origins-DxR
 
-      - name: Enforce real import gate
+      - name: Enforce import gate
         if: always()
         shell: pwsh
         run: |
