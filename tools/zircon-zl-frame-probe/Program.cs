@@ -6,6 +6,7 @@ namespace ZirconZlFrameProbe;
 internal static class Program
 {
     private static readonly string[] FishingAnimations = ["FishingCast", "FishingWait", "FishingReel"];
+    private const int AssassinFishingArmourShift = 80;
 
     [STAThread]
     private static int Main(string[] args)
@@ -64,7 +65,7 @@ internal static class Program
                 report.MaleFullFishingBanks,
                 report.FemaleFullFishingBanks,
                 Matches = report.Libraries.SelectMany(l => l.Banks.Where(b => b.Status == "PASS")
-                    .Select(b => $"{l.LibraryFile}:{b.Bank}"))
+                    .Select(b => $"{l.LibraryFile}:bank{b.Bank}:shift{b.Shift}:armourShift{l.FishingArmourShift}"))
             }, JsonOptions.Pretty));
             return report.Status == "PASS" ? 0 : 1;
         }
@@ -77,7 +78,9 @@ internal static class Program
 
     private static LibraryResult ProbeLibrary(string name, string sourcePath, string source, Dictionary<string, FrameDefinition> frames)
     {
-        int bankOffset = IsAssassinBodyLibrary(name) ? 3000 : 5000;
+        bool assassin = IsAssassinBodyLibrary(name);
+        int bankOffset = assassin ? 3000 : 5000;
+        int fishingArmourShift = assassin ? AssassinFishingArmourShift : 0;
         Mir3Library library = new(source);
         try
         {
@@ -87,19 +90,25 @@ internal static class Program
                 SourcePath = sourcePath,
                 Status = "READY",
                 Gender = name.StartsWith("WM_", StringComparison.OrdinalIgnoreCase) ? "Female" : "Male",
-                PlayerClassFamily = IsAssassinBodyLibrary(name) ? "Assassin" : "WarriorWizardTaoist",
+                PlayerClassFamily = assassin ? "Assassin" : "WarriorWizardTaoist",
                 ImageCount = library.Images.Count,
                 BankOffset = bankOffset,
+                FishingArmourShift = fishingArmourShift,
             };
 
             int maxRelativeIndex = FishingAnimations
                 .Select(animation => frames[animation])
-                .Max(frame => frame.StartIndex + frame.Offset * 7 + frame.FrameCount - 1);
+                .Max(frame => fishingArmourShift + frame.StartIndex + frame.Offset * 7 + frame.FrameCount - 1);
 
             for (int bank = 0; bank * bankOffset + maxRelativeIndex < library.Images.Count; bank++)
             {
-                int shift = bank * bankOffset;
-                BankResult bankResult = new() { Bank = bank, Shift = shift };
+                int bankShift = bank * bankOffset;
+                BankResult bankResult = new()
+                {
+                    Bank = bank,
+                    Shift = bankShift,
+                    EffectiveFishingShift = bankShift + fishingArmourShift,
+                };
                 foreach (string animation in FishingAnimations)
                 {
                     FrameDefinition frame = frames[animation];
@@ -108,7 +117,7 @@ internal static class Program
                     {
                         for (int local = 0; local < frame.FrameCount; local++)
                         {
-                            int index = shift + frame.StartIndex + frame.Offset * direction + local;
+                            int index = bankShift + fishingArmourShift + frame.StartIndex + frame.Offset * direction + local;
                             animationResult.References++;
                             Mir3Library.Mir3Image? image = library.GetImage(index);
                             bool present = image?.Image is not null && image.Width > 0 && image.Height > 0;
@@ -200,7 +209,7 @@ internal sealed class LibraryRequirement
 }
 internal sealed class ProbeReport
 {
-    public string Schema { get; set; } = "origins.zircon.body-fishing-probe.v1";
+    public string Schema { get; set; } = "origins.zircon.body-fishing-probe.v2";
     public string Status { get; set; } = string.Empty;
     public string ZirconCommit { get; set; } = string.Empty;
     public int Selected { get; set; }
@@ -220,12 +229,14 @@ internal sealed class LibraryResult
     public string PlayerClassFamily { get; set; } = string.Empty;
     public int ImageCount { get; set; }
     public int BankOffset { get; set; }
+    public int FishingArmourShift { get; set; }
     public List<BankResult> Banks { get; set; } = [];
 }
 internal sealed class BankResult
 {
     public int Bank { get; set; }
     public int Shift { get; set; }
+    public int EffectiveFishingShift { get; set; }
     public int References { get; set; }
     public int Present { get; set; }
     public int Missing { get; set; }
