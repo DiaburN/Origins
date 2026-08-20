@@ -129,9 +129,11 @@ test('Assassin dual weapons resolve exact left/right libraries for both genders'
   const female = resolvePlayerLibrarySelection({ playerClass: 'Assassin', gender: 'Female', libraryWeaponShape: 1200 });
   assert.equal(female.weapon1, 'WM_WeaponADL1');
   assert.equal(female.weapon2, 'WM_WeaponADR1');
+});
 
+test('Chaotic Heaven Blade 1263 preserves the pinned dictionary miss instead of inventing a library', () => {
   const chaotic = resolvePlayerLibrarySelection({ playerClass: 'Assassin', gender: 'Male', libraryWeaponShape: 1263 });
-  assert.equal(chaotic.weapon1, 'M_WeaponADR1');
+  assert.equal(chaotic.weapon1, null);
   assert.equal(chaotic.weapon2, null);
 });
 
