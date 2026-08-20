@@ -99,6 +99,7 @@ jobs:
         shell: bash
         run: |
           set -uo pipefail
+          set +e
           mkdir -p .qa/browser
           browser_error=.qa/browser/browser-error.txt
           : > "$browser_error"
@@ -196,6 +197,7 @@ jobs:
             exit 1
           fi
           cat .qa/browser/validation.out
+          exit 0
 
       - name: Write browser-proof evidence
         if: always()
@@ -259,6 +261,7 @@ jobs:
             .qa/
             docs/generated/ORIGINS_DXR_BASE_HUMAN_BROWSER_STATUS.md
           if-no-files-found: warn
+          include-hidden-files: true
 
       - name: Commit browser-proof evidence
         if: always()
