@@ -1,8 +1,20 @@
 export const PLAYER_ASSET_STATUS = Object.freeze({
   Ready: 'READY',
+  Partial: 'PARTIAL_BASE_HUMANS',
   Missing: 'BLOCKED_MISSING_ZL',
   Invalid: 'INVALID_ASSET_MANIFEST',
 });
+
+export const BASE_HUMAN_LIBRARY_BY_GENDER = Object.freeze({
+  Male: 'M_Hum',
+  Female: 'WM_Hum',
+});
+
+export function resolveBaseHumanLibrary(gender) {
+  const library = BASE_HUMAN_LIBRARY_BY_GENDER[gender];
+  if (!library) throw new RangeError(`Unsupported Zircon gender for base human body: ${gender}`);
+  return library;
+}
 
 export class ZirconPlayerSpriteStore {
   constructor({ rootUrl = './assets/player/' } = {}) {
@@ -11,6 +23,7 @@ export class ZirconPlayerSpriteStore {
     this.master = null;
     this.libraries = new Map();
     this.pages = new Map();
+    this.framePromises = new Map();
   }
 
   async load() {
@@ -33,6 +46,19 @@ export class ZirconPlayerSpriteStore {
       this.status = PLAYER_ASSET_STATUS.Missing;
       return this.status;
     }
+  }
+
+  hasLibrary(libraryFile) {
+    return Boolean(this.master?.libraries?.some(row => row.libraryFile === libraryFile));
+  }
+
+  getBaseHumanPairStatus() {
+    if (this.status !== PLAYER_ASSET_STATUS.Ready || !this.master) return this.status;
+    const male = this.hasLibrary(BASE_HUMAN_LIBRARY_BY_GENDER.Male);
+    const female = this.hasLibrary(BASE_HUMAN_LIBRARY_BY_GENDER.Female);
+    if (male && female) return PLAYER_ASSET_STATUS.Ready;
+    if (male || female) return PLAYER_ASSET_STATUS.Partial;
+    return PLAYER_ASSET_STATUS.Missing;
   }
 
   async getLibrary(libraryFile) {
@@ -66,27 +92,49 @@ export class ZirconPlayerSpriteStore {
     return Object.freeze({ ...frame, image: page, libraryFile });
   }
 
+  requestFrame(libraryFile, imageIndex) {
+    const key = `${libraryFile}:${imageIndex}`;
+    if (!this.framePromises.has(key)) {
+      this.framePromises.set(key, this.getFrame(libraryFile, imageIndex).finally(() => {
+        this.framePromises.delete(key);
+      }));
+    }
+    return this.framePromises.get(key);
+  }
+
+  async getBaseHumanFrame(gender, imageIndex) {
+    return this.getFrame(resolveBaseHumanLibrary(gender), imageIndex);
+  }
+
   async drawFrame(ctx, libraryFile, imageIndex, anchorX, anchorY, options = {}) {
     const frame = await this.getFrame(libraryFile, imageIndex);
     if (!frame) return false;
-    const opacity = Number.isFinite(options.opacity) ? options.opacity : 1;
-    ctx.save();
-    ctx.globalAlpha *= opacity;
-    ctx.imageSmoothingEnabled = false;
-    ctx.drawImage(
-      frame.image,
-      frame.x,
-      frame.y,
-      frame.width,
-      frame.height,
-      Math.round(anchorX + frame.offsetX),
-      Math.round(anchorY + frame.offsetY),
-      frame.width,
-      frame.height,
-    );
-    ctx.restore();
+    drawResolvedFrame(ctx, frame, anchorX, anchorY, options);
     return true;
   }
+
+  async drawBaseHumanFrame(ctx, gender, imageIndex, anchorX, anchorY, options = {}) {
+    return this.drawFrame(ctx, resolveBaseHumanLibrary(gender), imageIndex, anchorX, anchorY, options);
+  }
+}
+
+export function drawResolvedFrame(ctx, frame, anchorX, anchorY, options = {}) {
+  const opacity = Number.isFinite(options.opacity) ? options.opacity : 1;
+  ctx.save();
+  ctx.globalAlpha *= opacity;
+  ctx.imageSmoothingEnabled = false;
+  ctx.drawImage(
+    frame.image,
+    frame.x,
+    frame.y,
+    frame.width,
+    frame.height,
+    Math.round(anchorX + frame.offsetX),
+    Math.round(anchorY + frame.offsetY),
+    frame.width,
+    frame.height,
+  );
+  ctx.restore();
 }
 
 function loadImage(url) {
