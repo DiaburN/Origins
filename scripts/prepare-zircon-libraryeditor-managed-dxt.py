@@ -6,8 +6,6 @@ import hashlib
 import json
 from pathlib import Path
 
-PINNED_SOURCE_SHA256 = "5DE33F83659AB9B615E9C3CD083CC131FEC13835"  # git blob is different; this is file-byte SHA256 checked at runtime below only if supplied by report
-
 OLD_BLOCK = r'''                SquishFlags flags = codec == ZlImageCodec.Dxt1 ? SquishFlags.Dxt1 : SquishFlags.Dxt5;
                 int expectedSize = Squish.GetStorageRequirements(width, height, flags);
                 if (bytes.Length < expectedSize)
@@ -111,7 +109,8 @@ def main() -> int:
     before = sha256(source)
     text = source.read_text(encoding="utf-8-sig")
 
-    # Exact source-contract checks: this is intentionally narrow and exporter-only.
+    # Bootstrap already pins the exact Zircon commit. These narrow source-contract
+    # checks make the transient exporter-only patch fail closed if upstream layout changes.
     if OLD_BLOCK not in text:
         raise SystemExit("Pinned Zircon DXT decode block no longer matches expected source contract.")
     if MARKER not in text:
@@ -121,7 +120,7 @@ def main() -> int:
 
     patched = text.replace(OLD_BLOCK, NEW_BLOCK, 1)
     patched = patched.replace(MARKER, HELPER + MARKER, 1)
-    source.write_text(patched, encoding="utf-8-sig", newline="")
+    source.write_text(patched, encoding="utf-8-sig")
     after = sha256(source)
 
     report = {
@@ -134,8 +133,8 @@ def main() -> int:
         "decoder": {
             "Dxt1": "BCnEncoder.Net CompressionFormat.Bc1",
             "Dxt5": "BCnEncoder.Net CompressionFormat.Bc3",
-            "nativeSquishRequiredForDecode": False,
-        },
+            "nativeSquishRequiredForDecode": False
+        }
     }
     report_path.write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
     print(json.dumps(report, indent=2))
