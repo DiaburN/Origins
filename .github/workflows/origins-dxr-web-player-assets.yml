@@ -7,6 +7,7 @@ on:
       - 'apps/origins-web-runtime/player-animation-runtime.js'
       - 'apps/origins-web-runtime/player-sprite-runtime.js'
       - 'apps/origins-web-runtime/tests/player-animation-runtime.test.mjs'
+      - 'apps/origins-web-runtime/tests/player-sprite-runtime.test.mjs'
       - 'scripts/generate-zircon-web-player-contract.py'
       - 'scripts/audit-origins-web-player-assets.py'
       - 'tools/zircon-web-asset-exporter/**'
@@ -73,12 +74,12 @@ jobs:
           node --check apps/origins-web-runtime/player-animation-runtime.js
           node --check apps/origins-web-runtime/player-sprite-runtime.js
 
-      - name: Full player animation unit tests
+      - name: Full player animation and sprite unit tests
         id: tests
         continue-on-error: true
         shell: pwsh
         run: |
-          node --test apps/origins-web-runtime/tests/player-animation-runtime.test.mjs
+          node --test apps/origins-web-runtime/tests/player-animation-runtime.test.mjs apps/origins-web-runtime/tests/player-sprite-runtime.test.mjs
 
       - name: Audit Step 2 against pinned PlayerObject
         id: audit
@@ -104,7 +105,21 @@ jobs:
           dotnet build tools/zircon-web-asset-exporter/ZirconWebAssetExporter.csproj `
             -c Release -p:Platform=AnyCPU
 
-      - name: Probe real Zircon player payload
+      - name: Probe paired M-Hum and WM-Hum payload
+        id: basehumans
+        continue-on-error: true
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force artifacts/web-player-assets | Out-Null
+          dotnet run --project tools/zircon-web-asset-exporter/ZirconWebAssetExporter.csproj `
+            -c Release -p:Platform=AnyCPU --no-build -- `
+            --contract $env:CONTRACT_JSON `
+            --source-root runtime-assets/zircon `
+            --base-humans `
+            --probe `
+            --report artifacts/web-player-assets/base-human-payload-probe.json
+
+      - name: Probe all real Zircon player payload
         id: payload
         continue-on-error: true
         shell: pwsh
@@ -133,31 +148,37 @@ jobs:
               'Bootstrap pinned Zircon': '${{ steps.bootstrap.outcome }}',
               'Generate source-faithful contract': '${{ steps.generate.outcome }}',
               'JavaScript syntax': '${{ steps.syntax.outcome }}',
-              'Player animation tests': '${{ steps.tests.outcome }}',
+              'Player animation + sprite tests': '${{ steps.tests.outcome }}',
               'Pinned PlayerObject audit': '${{ steps.audit.outcome }}',
               'ZL atlas exporter build': '${{ steps.exporter.outcome }}',
-              'Player payload probe': '${{ steps.payload.outcome }}',
+              'M-Hum + WM-Hum pair probe': '${{ steps.basehumans.outcome }}',
+              'All-player payload probe': '${{ steps.payload.outcome }}',
           }
           pipeline_gate = 'PASS' if all(value == 'success' for value in outcomes.values()) else 'FAIL'
 
           audit_path = Path('artifacts/web-player-assets/audit.json')
           probe_path = Path('artifacts/web-player-assets/payload-probe.json')
+          base_probe_path = Path('artifacts/web-player-assets/base-human-payload-probe.json')
           audit = json.loads(audit_path.read_text(encoding='utf-8')) if audit_path.exists() else {'checks': []}
           probe = json.loads(probe_path.read_text(encoding='utf-8')) if probe_path.exists() else {}
+          base_probe = json.loads(base_probe_path.read_text(encoding='utf-8')) if base_probe_path.exists() else {}
           payload_status = probe.get('status', 'UNKNOWN')
-          visual_status = 'READY' if payload_status == 'READY' else 'BLOCKED_MISSING_ZL'
+          base_status = base_probe.get('status', 'UNKNOWN')
+          visual_status = 'READY' if base_status == 'READY' else 'BLOCKED_MISSING_ZL'
 
           lines = [
               '# ORIGINS-DxR — Web Player Assets Step 2',
               '',
               f'- Pipeline gate: **{pipeline_gate}**',
-              f'- Real Zircon player payload: **{payload_status}**',
-              f'- Real sprite binding status: **{visual_status}**',
+              f'- Base humans M-Hum + WM-Hum: **{base_status}**',
+              f'- Full Zircon player payload: **{payload_status}**',
+              f'- Real base sprite binding status: **{visual_status}**',
               f'- Origins-DxR HEAD tested: {os.environ.get("GITHUB_SHA", "unknown")}',
               f'- Zircon authority: {os.environ["ZIRCON_COMMIT"]}',
               '',
               '## What is implemented',
               '',
+              '- `M_Hum` (male) and `WM_Hum` (female) are one paired base-human import profile. They share the same native player animation contract; gender selects only the body library.',
               '- `FrameSet.Players` is generated directly from pinned Zircon source, not transcribed from Crystal.',
               '- All 42 native player animation frame definitions are represented with exact start indices, direction offsets, frame counts, per-frame delays, `Reversed` and `StaticSpeed`.',
               '- `Functions.GetMagicAnimation` cases are generated from pinned source.',
@@ -166,7 +187,8 @@ jobs:
               '- Assassin armour shifts and body/hair/helmet/weapon/shield/horse frame composition are represented.',
               '- PlayerObject library selectors and direction-aware layer ordering are preserved, including dual weapons, shields and costume weapon-hiding rules.',
               '- `.Zl` exporter uses pinned `LibraryEditor.Mir3Library`, creates transparent PNG atlas pages, and preserves image index + OffSetX/OffSetY.',
-              '- Browser sprite store consumes those atlas manifests and applies the original offsets.',
+              '- `--base-humans` exports M_Hum and WM_Hum together and refuses a partial pair.',
+              '- Browser sprite store maps `Male -> M_Hum` and `Female -> WM_Hum` and exposes pair readiness.',
               '',
               '## CI',
               '',
@@ -184,7 +206,16 @@ jobs:
               f'- Magic-to-body-animation cases: **{audit.get("magicAnimationCases", 0)}**',
               f'- Player-related Zircon libraries: **{audit.get("playerLibraryCount", 0)}**',
               f'- PlayerObject selector entries: **{audit.get("selectorCount", 0)}**',
-              f'- Required `.Zl` present in repository/runtime payload: **{probe.get("present", 0)} / {probe.get("required", 0)}**',
+              f'- Base human `.Zl` present: **{base_probe.get("present", 0)} / {base_probe.get("required", 0)}**',
+              f'- All player `.Zl` present: **{probe.get("present", 0)} / {probe.get("required", 0)}**',
+              '',
+              '## Base human pair',
+              '',
+          ])
+          for item in base_probe.get('libraries', []):
+              lines.append(f'- `{item.get("libraryFile")}` → `{item.get("sourcePath")}`: **{"PRESENT" if item.get("present") else "MISSING"}**')
+
+          lines.extend([
               '',
               '## Source parity audit',
               '',
@@ -200,14 +231,14 @@ jobs:
               '',
               '## Real payload boundary',
               '',
-              'The repository does not currently contain the native Zircon player `.Zl` payload. This is not replaced with Crystal or placeholder art. Therefore the importer/exporter pipeline can be validated and compiled now, but a real `M-Hum` sprite cannot honestly be marked imported until the matching `.Zl` files are supplied under the runtime asset source root.',
+              'The source repository defines both native base body libraries as `Data/M-Hum.Zl` and `Data/WM-Hum.Zl`, but those binary payloads are not committed to Origins-DxR. They are never replaced with Crystal or invented art.',
               '',
-              'When the payload is present, the same exporter can process `M_Hum` first or `--all-player-libraries` without rewriting the player animation runtime.',
+              'As soon as both files exist under `runtime-assets/zircon/Data/`, the exact same `--base-humans` exporter generates the male and female web atlases in one operation. No second female animation implementation is required.',
           ])
 
           Path('docs/generated/ORIGINS_DXR_WEB_PLAYER_ASSETS_STEP2.md').write_text('\n'.join(lines) + '\n', encoding='utf-8')
           Path('artifacts/web-player-assets/pipeline-gate.txt').write_text(pipeline_gate + '\n', encoding='utf-8')
-          print(pipeline_gate, payload_status)
+          print(pipeline_gate, base_status, payload_status)
           '@ | python -
 
       - name: Upload Step 2 evidence
