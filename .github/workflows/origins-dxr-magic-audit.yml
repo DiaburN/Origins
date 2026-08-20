@@ -1,0 +1,103 @@
+name: Origins DxR - Final Zircon Magic Audit
+
+on:
+  push:
+    branches: [Origins-DxR]
+    paths:
+      - '.github/workflows/origins-dxr-magic-audit.yml'
+      - 'scripts/bootstrap-zircon.*'
+      - 'scripts/verify-zircon-four-class-magics.py'
+      - 'scripts/audit-zircon-four-class-runtime.py'
+      - 'scripts/render-zircon-four-class-magic-audit.py'
+      - 'database/magic/zircon-four-class-magic-types.json'
+      - 'database/generated/zircon-system/LibraryCore__Library_SystemModels_MagicInfo.json'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: origins-dxr-final-magic-audit-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  ZIRCON_COMMIT: cbf1aa919083bc13fc3f23f93772a8ab8370632d
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Origins-DxR
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Bootstrap pinned Zircon
+        run: bash scripts/bootstrap-zircon.sh
+
+      - name: Verify pinned Zircon HEAD
+        run: test "$(git -C vendor/zircon rev-parse HEAD)" = "$ZIRCON_COMMIT"
+
+      - name: Verify four-class MagicType catalog
+        run: >-
+          python3 scripts/verify-zircon-four-class-magics.py
+          --source vendor/zircon/LibraryCore/Enum.cs
+          --catalog database/magic/zircon-four-class-magic-types.json
+
+      - name: Build definitive enum -> DB -> handler audit
+        run: >-
+          python3 scripts/audit-zircon-four-class-runtime.py
+          --catalog database/magic/zircon-four-class-magic-types.json
+          --magic-info database/generated/zircon-system/LibraryCore__Library_SystemModels_MagicInfo.json
+          --magics-root vendor/zircon/ServerLibrary/Models/Magics
+          --output database/magic/generated/zircon-four-class-runtime-audit.json
+
+      - name: Render readable final report
+        run: >-
+          python3 scripts/render-zircon-four-class-magic-audit.py
+          --input database/magic/generated/zircon-four-class-runtime-audit.json
+          --output docs/generated/ORIGINS_DXR_MAGIC_AUDIT.md
+
+      - name: Assert audit has no consistency errors
+        run: |
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          path = Path('database/magic/generated/zircon-four-class-runtime-audit.json')
+          report = json.loads(path.read_text(encoding='utf-8'))
+          errors = report.get('errors', [])
+          if errors:
+              raise SystemExit('\n'.join(errors))
+          total = report['totals']
+          classified = (
+              total['playable'] + total['enumOnly'] + total['dbWithoutHandler'] +
+              total['handlerWithoutDb'] + total['upstreamNotCoded'] + total['upstreamUnused']
+          )
+          if classified != total['enum']:
+              raise SystemExit(f"classification mismatch: enum={total['enum']} classified={classified}")
+          print(json.dumps(total, sort_keys=True))
+          PY
+
+      - name: Upload final magic audit evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: origins-dxr-final-magic-audit-${{ github.run_number }}
+          path: |
+            database/magic/generated/zircon-four-class-runtime-audit.json
+            docs/generated/ORIGINS_DXR_MAGIC_AUDIT.md
+          if-no-files-found: error
+
+      - name: Commit final audit to Origins-DxR
+        shell: bash
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -- \
+            database/magic/generated/zircon-four-class-runtime-audit.json \
+            docs/generated/ORIGINS_DXR_MAGIC_AUDIT.md
+          if git diff --cached --quiet; then
+            echo 'Final magic audit unchanged.'
+            exit 0
+          fi
+          git commit -m 'audit(dxr): record final four-class Zircon magic coverage'
+          git push origin HEAD:Origins-DxR
