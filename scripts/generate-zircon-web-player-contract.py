@@ -2,8 +2,8 @@
 """Generate the browser player animation/asset contract from pinned Zircon source.
 
 This script does not read Crystal and does not invent missing frames. It extracts the
-actual FrameSet.Players table and the player-related LibraryList entries from the
-bootstrapped pinned Zircon checkout.
+actual FrameSet.Players table, magic-to-animation mapping, and player-related
+LibraryList entries from the bootstrapped pinned Zircon checkout.
 """
 from __future__ import annotations
 
@@ -102,6 +102,26 @@ def parse_player_frames(frame_text: str) -> dict[str, dict]:
     return frames
 
 
+def parse_magic_animation_map(functions_text: str) -> dict[str, str]:
+    block = extract_block(functions_text, "public static MirAnimation GetMagicAnimation")
+    mapping: dict[str, str] = {}
+    cursor = 0
+    return_pattern = re.compile(r"return\s+MirAnimation\.(?P<animation>\w+)\s*;")
+    case_pattern = re.compile(r"case\s+MagicType\.(?P<magic>\w+)\s*:")
+    for match in return_pattern.finditer(block):
+        segment = block[cursor:match.start()]
+        animation = match.group("animation")
+        for case in case_pattern.finditer(segment):
+            magic = case.group("magic")
+            if magic in mapping:
+                raise RuntimeError(f"duplicate GetMagicAnimation case: {magic}")
+            mapping[magic] = animation
+        cursor = match.end()
+    if len(mapping) < 100:
+        raise RuntimeError(f"unexpected GetMagicAnimation case count: {len(mapping)}")
+    return mapping
+
+
 def parse_player_libraries(libraries_text: str) -> list[dict]:
     pattern = re.compile(
         r"\[LibraryFile\.(?P<key>\w+)\]\s*=\s*@\"(?P<path>Data\\[^\"]+\.Zl)\""
@@ -145,10 +165,13 @@ def build_contract(zroot: Path, commit: str) -> dict:
     libraries_text = libraries_path.read_text(encoding="utf-8-sig")
     player_text = player_path.read_text(encoding="utf-8-sig")
     map_text = map_object_path.read_text(encoding="utf-8-sig")
+    functions_text = functions_path.read_text(encoding="utf-8-sig")
 
     draw_formula = "DrawFrame = FrameIndex + CurrentFrame.StartIndex + CurrentFrame.OffSet * (int)Direction;"
     if draw_formula not in map_text:
         raise RuntimeError("pinned MapObject draw-frame formula changed")
+    if "if (Race == ObjectType.Player && CurrentAction == MirAction.Pushed)" not in map_text:
+        raise RuntimeError("pinned Player Pushed frame override changed")
 
     constants = {}
     for name in ("FemaleOffSet", "AssassinOffSet", "RightHandOffSet"):
@@ -170,12 +193,14 @@ def build_contract(zroot: Path, commit: str) -> dict:
         },
         "mirAnimation": {name: index for index, name in enumerate(parse_mir_animation(enum_text))},
         "playerFrames": parse_player_frames(frame_text),
+        "magicAnimationMap": parse_magic_animation_map(functions_text),
         "playerLibraries": parse_player_libraries(libraries_text),
         "playerConstants": constants,
         "drawFrameFormula": "frameIndex + startIndex + offset * direction",
         "pushedPlayerFrameOverride": 0,
         "notes": [
             "All player frame definitions are extracted from FrameSet.Players.",
+            "Magic-to-body-animation cases are extracted from Functions.GetMagicAnimation.",
             "Real PNG/atlas payload is generated only when the corresponding Zircon .Zl files are supplied.",
             "No Crystal fallback is permitted.",
         ],
@@ -192,7 +217,8 @@ def write_outputs(contract: dict, json_path: Path, js_path: Path) -> None:
         "// GENERATED from pinned Suprcode/Zircon. Do not edit by hand.\n"
         f"export const ZIRCON_PLAYER_ASSET_CONTRACT = Object.freeze({js_payload});\n"
         "export const ZIRCON_PLAYER_FRAMESET = ZIRCON_PLAYER_ASSET_CONTRACT.playerFrames;\n"
-        "export const ZIRCON_MIR_ANIMATION = ZIRCON_PLAYER_ASSET_CONTRACT.mirAnimation;\n",
+        "export const ZIRCON_MIR_ANIMATION = ZIRCON_PLAYER_ASSET_CONTRACT.mirAnimation;\n"
+        "export const ZIRCON_MAGIC_ANIMATION_MAP = ZIRCON_PLAYER_ASSET_CONTRACT.magicAnimationMap;\n",
         encoding="utf-8",
     )
 
@@ -206,7 +232,11 @@ def main() -> int:
     args = parser.parse_args()
     contract = build_contract(args.zircon_root, args.commit)
     write_outputs(contract, args.json_output, args.js_output)
-    print(f"Generated {len(contract['playerFrames'])} player animations and {len(contract['playerLibraries'])} player libraries.")
+    print(
+        f"Generated {len(contract['playerFrames'])} player animations, "
+        f"{len(contract['magicAnimationMap'])} magic mappings and "
+        f"{len(contract['playerLibraries'])} player libraries."
+    )
     return 0
 
 
