@@ -49,6 +49,18 @@ const visualState = {
   pairStatus: PLAYER_ASSET_STATUS.Missing,
 };
 
+const requestedPreviewGender = new URLSearchParams(window.location.search).get('gender');
+if (requestedPreviewGender === 'Male' || requestedPreviewGender === 'Female') {
+  visualState.gender = requestedPreviewGender;
+}
+
+setRenderDiagnostics({
+  previewGender: visualState.gender,
+  pairStatus: visualState.pairStatus,
+  playerLibrary: resolveBaseHumanLibrary(visualState.gender),
+  realFrameDrawn: false,
+});
+
 runtimeValue.textContent = RUNTIME_MODE.PreviewLocal;
 sourceValue.textContent = ZIRCON_SOURCE_COMMIT.slice(0, 12);
 assetValue.textContent = 'probing M-Hum + WM-Hum';
@@ -59,6 +71,7 @@ void initializePlayerAssets();
 async function initializePlayerAssets() {
   const status = await spriteStore.load();
   visualState.pairStatus = spriteStore.getBaseHumanPairStatus();
+  setRenderDiagnostics({ pairStatus: visualState.pairStatus });
 
   if (status !== PLAYER_ASSET_STATUS.Ready || visualState.pairStatus !== PLAYER_ASSET_STATUS.Ready) {
     assetValue.textContent = visualState.pairStatus === PLAYER_ASSET_STATUS.Partial
@@ -258,12 +271,20 @@ function drawPlayer(snapshot, timestamp) {
       const resolved = spriteStore.peekFrame(library, imageIndex);
       if (resolved) {
         drawResolvedFrame(ctx, resolved, x, y);
+        setRenderDiagnostics({
+          previewGender: visualState.gender,
+          pairStatus: visualState.pairStatus,
+          playerLibrary: library,
+          realFrameDrawn: true,
+          imageIndex,
+        });
         return;
       }
       void spriteStore.requestFrame(library, imageIndex);
     }
   }
 
+  setRenderDiagnostics({ realFrameDrawn: false });
   drawDiagnosticPlayer(snapshot, x, y);
 }
 
@@ -353,8 +374,24 @@ function loop(timestamp) {
 requestAnimationFrame(loop);
 
 function setPreviewGender(gender) {
-  resolveBaseHumanLibrary(gender);
+  const library = resolveBaseHumanLibrary(gender);
   visualState.gender = gender;
+  visualState.actionName = null;
+  visualState.animationStartedAt = performance.now();
+  setRenderDiagnostics({
+    previewGender: gender,
+    playerLibrary: library,
+    realFrameDrawn: false,
+  });
+}
+
+function setRenderDiagnostics({ previewGender, pairStatus, playerLibrary, realFrameDrawn, imageIndex } = {}) {
+  const dataset = document.documentElement.dataset;
+  if (previewGender !== undefined) dataset.previewGender = String(previewGender);
+  if (pairStatus !== undefined) dataset.playerAssetPair = String(pairStatus);
+  if (playerLibrary !== undefined) dataset.playerLibrary = String(playerLibrary);
+  if (realFrameDrawn !== undefined) dataset.realFrameDrawn = String(Boolean(realFrameDrawn));
+  if (imageIndex !== undefined) dataset.playerImageIndex = String(imageIndex);
 }
 
 window.ORIGINS_WEB_RUNTIME = Object.freeze({
