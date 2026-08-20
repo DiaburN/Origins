@@ -2,7 +2,7 @@
 
 - Import gate: **FAIL**
 - Zircon authority: `cbf1aa919083bc13fc3f23f93772a8ab8370632d`
-- Origins-DxR HEAD tested: `aeabbb1e23411bc515f6e9246328af8e5d65308c`
+- Origins-DxR HEAD tested: `66b2e1f1b83fb26b438253075a470255bfc9dfe8`
 - Primary patch host from Zircon: `https://mirfiles.com/resources/mir3/zircon/patch/`
 - Fetch status: **PASS**
 
@@ -27,8 +27,8 @@
 ```text
 Exporting M_Hum: D:\a\Origins\Origins\runtime-assets\zircon\Data\M-Hum.Zl
 System.TypeInitializationException: The type initializer for 'ManagedSquish.Squish' threw an exception.
- ---> System.IO.FileNotFoundException: Could not load file or assembly 'NativeSquish_x64, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null'. The system cannot find the file specified.
-File name: 'NativeSquish_x64, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null'
+ ---> System.IO.FileNotFoundException: Could not load file or assembly 'D:\a\Origins\Origins\tools\zircon-web-asset-exporter\bin\Release\net10.0-windows8.0\win-x64\NativeSquish_x64.dll'. The specified module could not be found.
+File name: 'D:\a\Origins\Origins\tools\zircon-web-asset-exporter\bin\Release\net10.0-windows8.0\win-x64\NativeSquish_x64.dll'
    at ManagedSquish.Squish.Getx64Delegates()
    at ManagedSquish.Squish.Getx64Delegates()
    at ManagedSquish.Squish..cctor()
