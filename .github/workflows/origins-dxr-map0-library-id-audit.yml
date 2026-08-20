@@ -1,0 +1,56 @@
+name: Origins DxR - Map0 KROrder Audit
+
+on:
+  push:
+    branches: [Origins-DxR]
+    paths:
+      - 'maps/origins/0.map'
+      - '.github/workflows/origins-dxr-map0-library-id-audit.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Audit native map library ids
+        run: |
+          python - <<'PY'
+          import struct
+          from pathlib import Path
+          p=Path('maps/origins/0.map'); data=p.read_bytes()
+          w=struct.unpack_from('<H',data,22)[0]; h=struct.unpack_from('<H',data,24)[0]
+          ids=set(); back=set(); middle=set(); front=set(); off=28
+          for x in range(w//2):
+              for y in range(h//2):
+                  fid=data[off]; back.add(fid); ids.add(fid); off+=3
+          for x in range(w):
+              for y in range(h):
+                  front_id=data[off+3]; middle_id=data[off+4]
+                  if middle_id: middle.add(middle_id); ids.add(middle_id)
+                  if front_id: front.add(front_id); ids.add(front_id)
+                  off+=14
+          mapping={0:'Tilesc',1:'Tiles30c',2:'Tiles5c',3:'SmTilesc',4:'Housesc',5:'Cliffsc',6:'Dungeonsc',7:'Innersc',8:'Furnituresc',9:'Wallsc',10:'SmObjectsc',11:'Animationsc',12:'Object1c',13:'Object2c',15:'Wood_Tilesc',16:'Wood_Tiles30c',17:'Wood_Tiles5c',18:'Wood_SmTilesc',19:'Wood_Housesc',20:'Wood_Cliffsc',21:'Wood_Dungeonsc',22:'Wood_Innersc',23:'Wood_Furnituresc',24:'Wood_Wallsc',25:'Wood_SmObjectsc',26:'Wood_Animationsc',30:'Sand_Tilesc',31:'Sand_Tiles30c',32:'Sand_Tiles5c',33:'Sand_SmTilesc',34:'Sand_Housesc',35:'Sand_Cliffsc',36:'Sand_Dungeonsc',37:'Sand_Innersc',38:'Sand_Furnituresc',39:'Sand_Wallsc',40:'Sand_SmObjectsc',41:'Sand_Animationsc',45:'Snow_Tilesc',46:'Snow_Tiles30c',47:'Snow_Tiles5c',48:'Snow_SmTilesc',49:'Snow_Housesc',50:'Snow_Cliffsc',51:'Snow_Dungeonsc',52:'Snow_Innersc',53:'Snow_Furnituresc',54:'Snow_Wallsc',55:'Snow_SmObjectsc',56:'Snow_Animationsc',60:'Forest_Tilesc',61:'Forest_Tiles30c',62:'Forest_Tiles5c',63:'Forest_SmTilesc',64:'Forest_Housesc',65:'Forest_Cliffsc',66:'Forest_Dungeonsc',67:'Forest_Innersc',68:'Forest_Furnituresc',69:'Forest_Wallsc',70:'Forest_SmObjectsc',71:'Forest_Animationsc'}
+          lines=['# ORIGINS-DxR — Map0 KROrder Audit','',f'- Map: **{w}×{h}**',f'- Used KROrder ids: **{sorted(ids)}**','', '## Back','']
+          lines += [f'- `{i}` → `{mapping.get(i,"UNKNOWN")}`' for i in sorted(back)]
+          lines += ['','## Middle','']+[f'- `{i}` → `{mapping.get(i,"UNKNOWN")}`' for i in sorted(middle)]
+          lines += ['','## Front','']+[f'- `{i}` → `{mapping.get(i,"UNKNOWN")}`' for i in sorted(front)]
+          unknown=[i for i in sorted(ids) if i not in mapping]
+          lines += ['',f'- Unknown ids: **{unknown}**']
+          Path('docs/generated/ORIGINS_DXR_MAP0_KRORDER_AUDIT.md').write_text('\n'.join(lines)+'\n',encoding='utf-8')
+          print('\n'.join(lines))
+          PY
+      - name: Commit audit
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add docs/generated/ORIGINS_DXR_MAP0_KRORDER_AUDIT.md
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m 'audit(map): record map0 KROrder libraries'
+          git pull --rebase origin Origins-DxR
+          git push origin HEAD:Origins-DxR
