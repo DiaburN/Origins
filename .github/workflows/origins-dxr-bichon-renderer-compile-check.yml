@@ -39,7 +39,10 @@ jobs:
         if: steps.dxt.outcome == 'success'
         continue-on-error: true
         shell: pwsh
-        run: dotnet build tools/zircon-map-renderer/ZirconMapRenderer.csproj -c Release -p:Platform=AnyCPU
+        run: |
+          New-Item -ItemType Directory -Force artifacts/render-compile | Out-Null
+          dotnet build tools/zircon-map-renderer/ZirconMapRenderer.csproj -c Release -p:Platform=AnyCPU 2>&1 | Tee-Object -FilePath artifacts/render-compile/build.log
+          if ($LASTEXITCODE -ne 0) { throw "Renderer build failed with $LASTEXITCODE" }
       - name: Write and commit status
         if: always()
         shell: pwsh
@@ -50,6 +53,10 @@ jobs:
         run: |
           New-Item -ItemType Directory -Force docs/generated | Out-Null
           $gate = if ($env:BOOTSTRAP -eq 'success' -and $env:DXT -eq 'success' -and $env:BUILD -eq 'success') { 'PASS' } else { 'FAIL' }
+          $tail = ''
+          if (Test-Path artifacts/render-compile/build.log) {
+            $tail = (Get-Content artifacts/render-compile/build.log | Select-Object -Last 40) -join "`n"
+          }
           @"
           # ORIGINS-DxR — Bichon Renderer Compile Check
 
@@ -58,6 +65,12 @@ jobs:
           - Bootstrap: **$env:BOOTSTRAP**
           - Managed DXT: **$env:DXT**
           - Renderer build: **$env:BUILD**
+
+          ## Compiler tail
+
+          ```text
+          $tail
+          ```
           "@ | Set-Content docs/generated/ORIGINS_DXR_BICHON_RENDERER_COMPILE.md -Encoding utf8
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
