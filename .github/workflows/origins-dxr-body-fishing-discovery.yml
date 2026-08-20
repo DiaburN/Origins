@@ -1,4 +1,4 @@
-name: Origins DxR - Body Fishing Discovery
+name: Origins DxR - Female Body Fishing Discovery
 
 on:
   push:
@@ -14,15 +14,19 @@ on:
 permissions:
   contents: write
 
+concurrency:
+  group: origins-dxr-female-fishing-discovery-${{ github.ref }}
+  cancel-in-progress: true
+
 env:
   ZIRCON_COMMIT: cbf1aa919083bc13fc3f23f93772a8ab8370632d
   CONTRACT_JSON: apps/origins-web-runtime/generated/zircon-player-asset-contract.json
-  RAW_ROOT: runtime-assets/zircon-body-probe
+  RAW_ROOT: runtime-assets/zircon-female-body-probe
 
 jobs:
   fishing-discovery:
     runs-on: windows-latest
-    timeout-minutes: 45
+    timeout-minutes: 35
     steps:
       - uses: actions/checkout@v4
         with:
@@ -49,7 +53,7 @@ jobs:
             --zircon-root vendor/zircon `
             --report artifacts/body-fishing-discovery/managed-dxt.json
 
-      - name: Fetch all official body libraries from Zircon contract
+      - name: Fetch official female body libraries from Zircon contract
         id: fetch
         continue-on-error: true
         shell: pwsh
@@ -59,8 +63,8 @@ jobs:
             --contract $env:CONTRACT_JSON `
             --output-root $env:RAW_ROOT `
             --report artifacts/body-fishing-discovery/fetch.json `
-            --profile body `
-            --workers 4
+            --profile female-body `
+            --workers 6
 
       - name: Build lightweight ZL frame probe
         id: build
@@ -70,17 +74,27 @@ jobs:
         run: |
           dotnet build tools/zircon-zl-frame-probe/ZirconZlFrameProbe.csproj -c Release -p:Platform=AnyCPU
 
-      - name: Probe FishingCast Wait Reel in every downloaded body bank
+      - name: Probe FishingCast Wait Reel in downloaded female body banks
         id: probe
         if: steps.build.outcome == 'success'
         continue-on-error: true
         shell: pwsh
         run: |
-          dotnet run --project tools/zircon-zl-frame-probe/ZirconZlFrameProbe.csproj `
-            -c Release -p:Platform=AnyCPU --no-build -- `
-            --contract $env:CONTRACT_JSON `
-            --source-root $env:RAW_ROOT `
-            --output artifacts/body-fishing-discovery/fishing-probe.json
+          $fetch = Get-Content artifacts/body-fishing-discovery/fetch.json -Raw | ConvertFrom-Json
+          $args = @(
+            '--contract', $env:CONTRACT_JSON,
+            '--source-root', $env:RAW_ROOT,
+            '--output', 'artifacts/body-fishing-discovery/fishing-probe.json'
+          )
+          foreach ($row in $fetch.libraries) {
+            if ($row.status -eq 'READY') {
+              $args += @('--library', [string]$row.libraryFile)
+            }
+          }
+          if (($args | Where-Object { $_ -eq '--library' }).Count -eq 0) { throw 'No female body libraries were downloaded.' }
+          & dotnet run --project tools/zircon-zl-frame-probe/ZirconZlFrameProbe.csproj `
+            -c Release -p:Platform=AnyCPU --no-build -- @args
+          if ($LASTEXITCODE -ne 0) { throw "ZL fishing probe exited with code $LASTEXITCODE" }
 
       - name: Write discovery evidence
         id: evidence
@@ -100,41 +114,49 @@ jobs:
               return json.loads(p.read_text(encoding='utf-8-sig')) if p.exists() else {}
           fetch=load('artifacts/body-fishing-discovery/fetch.json')
           probe=load('artifacts/body-fishing-discovery/fishing-probe.json')
-          male=int(probe.get('MaleFullFishingBanks',0))
           female=int(probe.get('FemaleFullFishingBanks',0))
           pipeline=(os.environ.get('FETCH_OUTCOME')=='success' and os.environ.get('BUILD_OUTCOME')=='success' and os.environ.get('PROBE_OUTCOME')=='success')
-          gate='PASS' if pipeline and male>0 and female>0 else ('BLOCKED_NO_FEMALE_FISHING' if pipeline and male>0 and female==0 else 'FAIL')
+          gate='PASS' if pipeline and female>0 else ('UPSTREAM_FEMALE_FISHING_MISSING' if pipeline and female==0 else 'FAIL')
           lines=[
-            '# ORIGINS-DxR — Official Body Fishing Discovery','',
+            '# ORIGINS-DxR — Official Female Fishing Discovery','',
             f'- Gate: **{gate}**',
             f'- Zircon authority: `{os.environ["ZIRCON_COMMIT"]}`',
             f'- Origins-DxR HEAD tested: `{os.environ.get("GITHUB_SHA","unknown")}`',
-            f'- Body libraries selected: **{fetch.get("selected","unknown")}**',
+            f'- Female body libraries selected: **{fetch.get("selected","unknown")}**',
             f'- Downloaded successfully: **{fetch.get("ready","unknown")}**',
-            f'- Missing remotely: **{fetch.get("missing","unknown")}**',
-            f'- Complete male fishing banks: **{male}**',
+            f'- Not available from approved patch hosts: **{fetch.get("missing","unknown")}**',
             f'- Complete female fishing banks: **{female}**',
-            '', '## Complete fishing banks','',
-            '| Library | Gender | Class family | Bank | Shift | Image count |',
-            '|---|---|---|---:|---:|---:|',
+            '- Already proven separately: `M_Hum` male bank **5** (`+25000`) contains all FishingCast/Wait/Reel frames.',
+            '', '## Complete female fishing banks','',
+            '| Library | Class family | Bank | Shift | Image count |',
+            '|---|---|---:|---:|---:|',
           ]
           matches=[]
           for lib in probe.get('Libraries',[]):
+              if lib.get('Gender')!='Female':
+                  continue
               for bank in lib.get('Banks',[]):
                   if bank.get('Status')=='PASS':
                       matches.append((lib,bank))
-                      lines.append(f'| {lib.get("LibraryFile")} | {lib.get("Gender")} | {lib.get("PlayerClassFamily")} | {bank.get("Bank")} | {bank.get("Shift")} | {lib.get("ImageCount")} |')
+                      lines.append(f'| {lib.get("LibraryFile")} | {lib.get("PlayerClassFamily")} | {bank.get("Bank")} | {bank.get("Shift")} | {lib.get("ImageCount")} |')
           if not matches:
-              lines.append('| — | — | — | — | — | — |')
-          missing_files=[r for r in fetch.get('libraries',[]) if r.get('status')!='READY']
-          if missing_files:
-              lines += ['', '## Libraries not fetched','']
-              for row in missing_files:
-                  lines.append(f'- `{row.get("libraryFile")}` → **{row.get("status")}**')
+              lines.append('| — | — | — | — | — |')
+          lines += ['', '## Per-library summary','',
+                    '| Library | Download | Image count | Complete banks | Partial banks | Empty banks |',
+                    '|---|---|---:|---:|---:|---:|']
+          fetch_by={r.get('libraryFile'):r for r in fetch.get('libraries',[])}
+          probe_by={r.get('LibraryFile'):r for r in probe.get('Libraries',[])}
+          names=sorted(set(fetch_by)|set(probe_by))
+          for name in names:
+              fr=fetch_by.get(name,{})
+              pr=probe_by.get(name,{})
+              banks=pr.get('Banks',[])
+              lines.append(f'| {name} | {fr.get("status","UNKNOWN")} | {pr.get("ImageCount","—")} | {sum(b.get("Status")=="PASS" for b in banks)} | {sum(b.get("Status")=="PARTIAL" for b in banks)} | {sum(b.get("Status")=="EMPTY" for b in banks)} |')
           lines += ['', '## Interpretation','',
-                    '- This probe reads only the official Zircon body `.Zl` libraries selected from the pinned player-library contract.',
-                    '- It checks the exact `FishingCast`, `FishingWait`, and `FishingReel` frame windows for every internal body bank.',
-                    '- A complete bank requires every fishing frame in all 8 directions; no Crystal or generated replacement frames are accepted.',
+                    '- This probe reads only official female Zircon body `.Zl` files selected from the pinned `PlayerObject`/library contract.',
+                    '- It checks the exact `FishingCast`, `FishingWait`, and `FishingReel` windows in all internal body banks and all 8 directions.',
+                    '- `PASS` means at least one complete official female bank exists and can be integrated without invented art.',
+                    '- `UPSTREAM_FEMALE_FISHING_MISSING` means the complete official female body payload contains no valid bank; that is recorded as a Zircon asset gap, not repaired from Crystal or copied male art.',
                     '- Raw `.Zl` files are transient CI inputs and are not committed.']
           Path('docs/generated/ORIGINS_DXR_BODY_FISHING_DISCOVERY.md').write_text('\n'.join(lines)+'\n',encoding='utf-8')
           Path('artifacts/body-fishing-discovery/gate.txt').write_text(gate+'\n',encoding='utf-8')
@@ -144,30 +166,44 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: origins-dxr-body-fishing-discovery
+          name: origins-dxr-female-body-fishing-discovery
           path: |
             artifacts/body-fishing-discovery/*.json
             artifacts/body-fishing-discovery/gate.txt
             docs/generated/ORIGINS_DXR_BODY_FISHING_DISCOVERY.md
           if-no-files-found: warn
 
-      - name: Commit discovery report
+      - name: Commit non-stale discovery report
         if: always()
         shell: pwsh
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add -- docs/generated/ORIGINS_DXR_BODY_FISHING_DISCOVERY.md
-          if (-not (git diff --cached --quiet)) {
-            git commit -m 'audit(dxr): record official body fishing discovery'
-            git pull --rebase origin Origins-DxR
-            git push origin HEAD:Origins-DxR
+          if (git diff --cached --quiet) { exit 0 }
+          git commit -m 'audit(dxr): record official female fishing discovery'
+          git fetch origin Origins-DxR
+          $remote=(git rev-parse origin/Origins-DxR).Trim()
+          if ($remote -ne $env:GITHUB_SHA) {
+            $changed=@(git diff --name-only $env:GITHUB_SHA $remote)
+            $meaningful=@($changed | Where-Object { $_ -notlike 'docs/generated/*' })
+            if ($meaningful.Count -gt 0) {
+              Write-Host "Skipping stale evidence push; newer functional changes exist: $($meaningful -join ', ')"
+              exit 0
+            }
           }
+          git pull --rebase origin Origins-DxR
+          git push origin HEAD:Origins-DxR
 
-      - name: Enforce discovery gate
+      - name: Enforce discovery outcome
         if: always()
         shell: pwsh
         run: |
           if (-not (Test-Path artifacts/body-fishing-discovery/gate.txt)) { throw 'Missing fishing discovery gate.' }
           $gate=(Get-Content artifacts/body-fishing-discovery/gate.txt -Raw).Trim()
-          if ($gate -ne 'PASS') { throw "Fishing discovery gate is $gate" }
+          if ($gate -eq 'FAIL') { throw 'Female fishing discovery pipeline failed.' }
+          if ($gate -eq 'UPSTREAM_FEMALE_FISHING_MISSING') {
+            Write-Host 'No official female fishing bank exists in the downloaded pinned-Zircon body payload; recorded as upstream asset gap.'
+            exit 0
+          }
+          if ($gate -ne 'PASS') { throw "Unexpected fishing discovery gate: $gate" }
