@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>ORIGINS Web Runtime — Step 1</title>
+  <link rel="stylesheet" href="runtime.css" />
+</head>
+<body>
+  <main class="runtime-shell">
+    <header class="runtime-header">
+      <div>
+        <strong>ORIGINS WEB — Runtime mínimo</strong>
+        <span>Vertical técnica para sustituir el cliente visual SharpDX sin sustituir la autoridad Zircon.</span>
+      </div>
+      <div class="runtime-badge">STEP 1 · PREVIEW_LOCAL</div>
+    </header>
+
+    <section class="runtime-main">
+      <div class="stage-wrap">
+        <canvas id="game-canvas" aria-label="ORIGINS web game runtime preview"></canvas>
+      </div>
+
+      <aside class="runtime-panel">
+        <h2>Runtime state</h2>
+        <dl>
+          <dt>Mode</dt><dd id="runtime-mode-value">—</dd>
+          <dt>Zircon source</dt><dd id="source-value">—</dd>
+          <dt>Server</dt><dd id="server-value">—</dd>
+          <dt>Assets</dt><dd id="asset-value">—</dd>
+          <dt>Action</dt><dd id="action-value">—</dd>
+          <dt>Direction</dt><dd id="direction-value">—</dd>
+          <dt>Position</dt><dd id="position-value">—</dd>
+          <dt>Frame</dt><dd id="frame-value">—</dd>
+        </dl>
+
+        <p class="warning">
+          Esta pantalla no simula un servidor ni inventa sprites. El marcador PLAYER existe únicamente para validar loop, input, cámara, estado y las 8 direcciones. Los assets Zircon reales entran en el Step 2; mapa real en Step 3; autoridad de movimiento del servidor en Step 5.
+        </p>
+
+        <div class="controls">
+          <strong>Teclado: WASD / flechas · táctil:</strong>
+          <div class="dpad" aria-label="controles de movimiento táctiles">
+            <button data-vector="-1,-1" aria-label="arriba izquierda">↖</button>
+            <button data-vector="0,-1" aria-label="arriba">↑</button>
+            <button data-vector="1,-1" aria-label="arriba derecha">↗</button>
+            <button data-vector="-1,0" aria-label="izquierda">←</button>
+            <span class="empty"></span>
+            <button data-vector="1,0" aria-label="derecha">→</button>
+            <button data-vector="-1,1" aria-label="abajo izquierda">↙</button>
+            <button data-vector="0,1" aria-label="abajo">↓</button>
+            <button data-vector="1,1" aria-label="abajo derecha">↘</button>
+          </div>
+        </div>
+      </aside>
+    </section>
+
+    <footer class="runtime-footer">
+      UI cerrada permanece separada en <code>apps/zircon-ui-reference/</code>. Este directorio es el cliente jugable web incremental.
+    </footer>
+  </main>
+  <script type="module" src="main.js"></script>
+</body>
+</html>
