@@ -10,6 +10,7 @@ namespace ZirconWebAssetExporter;
 internal static class Program
 {
     private const string Schema = "origins.zircon.web-atlas.v1";
+    private static readonly string[] BaseHumanLibraries = ["M_Hum", "WM_Hum"];
 
     [STAThread]
     private static int Main(string[] args)
@@ -18,10 +19,11 @@ internal static class Program
         {
             Options options = Options.Parse(args);
             Contract contract = Contract.Load(options.ContractPath);
+            List<LibraryRequirement> selected = SelectLibraries(contract, options, allowImplicitAll: options.Probe);
 
             if (options.Probe)
             {
-                ProbeResult probe = ProbeResult.Build(contract, options.SourceRoot);
+                ProbeResult probe = ProbeResult.Build(selected, contract.ZirconCommit, options.SourceRoot);
                 string json = JsonSerializer.Serialize(probe, JsonOptions.Pretty);
                 if (options.ReportPath is not null)
                 {
@@ -35,9 +37,8 @@ internal static class Program
             if (options.OutputRoot is null)
                 throw new ArgumentException("--output-root is required when exporting.");
 
-            List<LibraryRequirement> selected = SelectLibraries(contract, options);
             if (selected.Count == 0)
-                throw new ArgumentException("Select --all-player-libraries or at least one --library <LibraryFile>.");
+                throw new ArgumentException("Select --base-humans, --all-player-libraries or at least one --library <LibraryFile>.");
 
             Directory.CreateDirectory(options.OutputRoot);
             List<MasterLibraryEntry> master = new();
@@ -64,6 +65,7 @@ internal static class Program
                 Schema = Schema,
                 ZirconCommit = contract.ZirconCommit,
                 AtlasSize = options.AtlasSize,
+                Profile = options.BaseHumans ? "BASE_HUMANS_MALE_FEMALE" : "PLAYER_LIBRARIES",
                 Libraries = master,
             };
             File.WriteAllText(
@@ -80,10 +82,25 @@ internal static class Program
         }
     }
 
-    private static List<LibraryRequirement> SelectLibraries(Contract contract, Options options)
+    private static List<LibraryRequirement> SelectLibraries(Contract contract, Options options, bool allowImplicitAll = false)
     {
-        if (options.AllPlayerLibraries)
+        if (options.AllPlayerLibraries || (allowImplicitAll && !options.BaseHumans && options.Libraries.Count == 0))
             return contract.PlayerLibraries.ToList();
+
+        if (options.BaseHumans)
+        {
+            List<LibraryRequirement> pair = contract.PlayerLibraries
+                .Where(row => BaseHumanLibraries.Contains(row.LibraryFile, StringComparer.OrdinalIgnoreCase))
+                .OrderBy(row => Array.FindIndex(BaseHumanLibraries, name => name.Equals(row.LibraryFile, StringComparison.OrdinalIgnoreCase)))
+                .ToList();
+
+            foreach (string required in BaseHumanLibraries)
+            {
+                if (pair.All(row => !row.LibraryFile.Equals(required, StringComparison.OrdinalIgnoreCase)))
+                    throw new InvalidDataException($"Pinned Zircon contract is missing required base human library: {required}");
+            }
+            return pair;
+        }
 
         HashSet<string> requested = new(options.Libraries, StringComparer.OrdinalIgnoreCase);
         List<LibraryRequirement> selected = contract.PlayerLibraries
@@ -272,6 +289,7 @@ internal sealed class Options
     public int AtlasSize { get; init; } = 2048;
     public bool Probe { get; init; }
     public bool AllPlayerLibraries { get; init; }
+    public bool BaseHumans { get; init; }
     public List<string> Libraries { get; init; } = new();
 
     public static Options Parse(string[] args)
@@ -283,6 +301,7 @@ internal sealed class Options
         int atlasSize = 2048;
         bool probe = false;
         bool all = false;
+        bool baseHumans = false;
         List<string> libraries = new();
 
         for (int i = 0; i < args.Length; i++)
@@ -303,6 +322,7 @@ internal sealed class Options
                 case "--atlas-size": atlasSize = int.Parse(NeedValue()); break;
                 case "--library": libraries.Add(NeedValue()); break;
                 case "--all-player-libraries": all = true; break;
+                case "--base-humans": baseHumans = true; break;
                 case "--probe": probe = true; break;
                 default: throw new ArgumentException($"Unknown argument: {arg}");
             }
@@ -311,6 +331,8 @@ internal sealed class Options
         if (string.IsNullOrWhiteSpace(contract)) throw new ArgumentException("--contract is required.");
         if (string.IsNullOrWhiteSpace(sourceRoot)) throw new ArgumentException("--source-root is required.");
         if (atlasSize is < 256 or > 8192) throw new ArgumentOutOfRangeException(nameof(atlasSize));
+        if (all && baseHumans) throw new ArgumentException("Use either --all-player-libraries or --base-humans, not both.");
+        if ((all || baseHumans) && libraries.Count > 0) throw new ArgumentException("Do not combine profile switches with --library.");
 
         return new Options
         {
@@ -321,6 +343,7 @@ internal sealed class Options
             AtlasSize = atlasSize,
             Probe = probe,
             AllPlayerLibraries = all,
+            BaseHumans = baseHumans,
             Libraries = libraries,
         };
     }
@@ -359,15 +382,15 @@ internal sealed class ProbeResult
     public string Status { get; set; } = string.Empty;
     public List<ProbeLibrary> Libraries { get; set; } = new();
 
-    public static ProbeResult Build(Contract contract, string sourceRoot)
+    public static ProbeResult Build(IReadOnlyList<LibraryRequirement> requirements, string zirconCommit, string sourceRoot)
     {
         ProbeResult result = new()
         {
-            ZirconCommit = contract.ZirconCommit,
+            ZirconCommit = zirconCommit,
             SourceRoot = Path.GetFullPath(sourceRoot),
-            Required = contract.PlayerLibraries.Count,
+            Required = requirements.Count,
         };
-        foreach (LibraryRequirement requirement in contract.PlayerLibraries)
+        foreach (LibraryRequirement requirement in requirements)
         {
             string fullPath = Path.GetFullPath(Path.Combine(
                 sourceRoot,
@@ -426,6 +449,7 @@ internal sealed class MasterManifest
     public string Schema { get; set; } = string.Empty;
     public string ZirconCommit { get; set; } = string.Empty;
     public int AtlasSize { get; set; }
+    public string Profile { get; set; } = string.Empty;
     public List<MasterLibraryEntry> Libraries { get; set; } = new();
 }
 
