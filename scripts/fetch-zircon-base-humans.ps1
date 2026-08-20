@@ -11,120 +11,142 @@ param(
 
 $ErrorActionPreference = 'Stop'
 
-$configPath = Join-Path $ZirconRoot 'Launcher/Config.cs'
-if (-not (Test-Path $configPath)) { throw "Missing pinned Zircon Launcher/Config.cs: $configPath" }
-
-$configText = Get-Content $configPath -Raw
-$match = [regex]::Match($configText, 'Host\s*\{\s*get;\s*set;\s*\}\s*=\s*@"([^"]+)"')
-if (-not $match.Success) { throw 'Could not extract Launcher.Config.Host from pinned Zircon source.' }
-
-$primaryHost = $match.Groups[1].Value
 $expectedHost = 'https://mirfiles.com/resources/mir3/zircon/patch/'
-if ($primaryHost -ne $expectedHost) { throw "Unexpected Zircon patch host: $primaryHost" }
+$mirrorHost = 'https://mirfiles.co.uk/resources/mir3/zircon/patch/'
+$rows = @()
+$currentLibrary = $null
 
-# MirFiles exposes the same public Zircon patch directory on its .co.uk host.
-# Always try the exact host embedded in pinned Zircon first; use the mirror only
-# if the primary host is unavailable from the runner.
-$hosts = @(
-    $primaryHost,
-    'https://mirfiles.co.uk/resources/mir3/zircon/patch/'
-) | Select-Object -Unique
-
-$dataRoot = Join-Path $OutputRoot 'Data'
-New-Item -ItemType Directory -Force $dataRoot | Out-Null
 New-Item -ItemType Directory -Force (Split-Path -Parent $ReportPath) | Out-Null
 
-$targets = @(
-    @{ Library = 'M_Hum'; FileName = 'M-Hum.Zl'; WebName = 'Data-M-Hum.Zl.gz' },
-    @{ Library = 'WM_Hum'; FileName = 'WM-Hum.Zl'; WebName = 'Data-WM-Hum.Zl.gz' }
-)
+function Write-FetchReport {
+    param(
+        [string]$Status,
+        [string]$ErrorMessage = $null,
+        [object[]]$Attempts = @()
+    )
 
-$rows = @()
+    $report = [ordered]@{
+        schema = 'origins.zircon.base-human-fetch.v1'
+        status = $Status
+        primaryPatchHost = $expectedHost
+        approvedPatchHosts = @($expectedHost, $mirrorHost)
+        patchHostSource = 'vendor/zircon/Launcher/Config.cs'
+        currentLibrary = $currentLibrary
+        error = $ErrorMessage
+        attempts = $Attempts
+        libraries = $rows
+    }
+    $report | ConvertTo-Json -Depth 12 | Set-Content -Encoding UTF8 $ReportPath
+}
 
-foreach ($target in $targets) {
-    $gzPath = Join-Path $env:RUNNER_TEMP $target.WebName
-    $destPath = Join-Path $dataRoot $target.FileName
-    $downloadedFrom = $null
-    $attempts = @()
+Write-FetchReport -Status 'STARTED'
 
-    if (Test-Path $gzPath) { Remove-Item -Force $gzPath }
+try {
+    $configPath = Join-Path $ZirconRoot 'Launcher/Config.cs'
+    if (-not (Test-Path $configPath)) { throw "Missing pinned Zircon Launcher/Config.cs: $configPath" }
 
-    foreach ($host in $hosts) {
-        $url = $host + $target.WebName
-        Write-Host "Downloading $($target.Library) from $url"
-        try {
-            Invoke-WebRequest `
-                -Uri $url `
-                -OutFile $gzPath `
-                -UseBasicParsing `
-                -MaximumRedirection 10 `
-                -TimeoutSec 180 `
-                -Headers @{ 'User-Agent' = 'ORIGINS-DxR-ZirconAssetImporter/1.0' }
+    $configText = Get-Content $configPath -Raw
+    if (-not $configText.Contains($expectedHost)) {
+        throw "Pinned Zircon Launcher/Config.cs does not contain the expected patch host: $expectedHost"
+    }
 
-            if ((Test-Path $gzPath) -and (Get-Item $gzPath).Length -gt 0) {
+    $hosts = @($expectedHost, $mirrorHost)
+    $dataRoot = Join-Path $OutputRoot 'Data'
+    New-Item -ItemType Directory -Force $dataRoot | Out-Null
+
+    $targets = @(
+        @{ Library = 'M_Hum'; FileName = 'M-Hum.Zl'; WebName = 'Data-M-Hum.Zl.gz' },
+        @{ Library = 'WM_Hum'; FileName = 'WM-Hum.Zl'; WebName = 'Data-WM-Hum.Zl.gz' }
+    )
+
+    foreach ($target in $targets) {
+        $currentLibrary = $target.Library
+        $gzPath = Join-Path $env:RUNNER_TEMP $target.WebName
+        $destPath = Join-Path $dataRoot $target.FileName
+        $downloadedFrom = $null
+        $attempts = @()
+
+        if (Test-Path $gzPath) { Remove-Item -Force $gzPath }
+        if (Test-Path $destPath) { Remove-Item -Force $destPath }
+
+        foreach ($host in $hosts) {
+            $url = $host + $target.WebName
+            Write-Host "Downloading $($target.Library) from $url"
+
+            & curl.exe `
+                --fail `
+                --location `
+                --retry 2 `
+                --retry-delay 2 `
+                --connect-timeout 30 `
+                --max-time 300 `
+                --user-agent 'ORIGINS-DxR-ZirconAssetImporter/1.0' `
+                --output $gzPath `
+                $url
+            $curlExit = $LASTEXITCODE
+
+            if ($curlExit -eq 0 -and (Test-Path $gzPath) -and (Get-Item $gzPath).Length -gt 0) {
                 $downloadedFrom = $url
-                $attempts += [ordered]@{ url = $url; success = $true; error = $null }
+                $attempts += [ordered]@{ url = $url; success = $true; exitCode = $curlExit; error = $null }
                 break
             }
-            throw "Downloaded file is missing or empty."
-        }
-        catch {
-            $attempts += [ordered]@{ url = $url; success = $false; error = $_.Exception.Message }
-            Write-Warning "Download failed from $url : $($_.Exception.Message)"
+
+            $attempts += [ordered]@{
+                url = $url
+                success = $false
+                exitCode = $curlExit
+                error = "curl exit code $curlExit"
+            }
             if (Test-Path $gzPath) { Remove-Item -Force $gzPath }
         }
-    }
 
-    if (-not $downloadedFrom) {
-        $failure = [ordered]@{
-            schema = 'origins.zircon.base-human-fetch.v1'
-            status = 'FAIL_DOWNLOAD'
-            primaryPatchHost = $primaryHost
-            patchHostSource = 'vendor/zircon/Launcher/Config.cs'
-            failedLibrary = $target.Library
-            attempts = $attempts
-            libraries = $rows
+        if (-not $downloadedFrom) {
+            Write-FetchReport -Status 'FAIL_DOWNLOAD' -ErrorMessage "No approved MirFiles host returned $($target.WebName)." -Attempts $attempts
+            throw "Unable to download $($target.Library) from approved MirFiles Zircon patch hosts."
         }
-        $failure | ConvertTo-Json -Depth 10 | Set-Content -Encoding UTF8 $ReportPath
-        throw "Unable to download $($target.Library) from any approved MirFiles Zircon patch host."
-    }
 
-    $input = [System.IO.File]::OpenRead($gzPath)
-    try {
-        $gzip = New-Object System.IO.Compression.GZipStream($input, [System.IO.Compression.CompressionMode]::Decompress)
+        $input = [System.IO.File]::OpenRead($gzPath)
         try {
-            $output = [System.IO.File]::Create($destPath)
-            try { $gzip.CopyTo($output) } finally { $output.Dispose() }
-        } finally { $gzip.Dispose() }
-    } finally { $input.Dispose() }
+            $gzip = New-Object System.IO.Compression.GZipStream($input, [System.IO.Compression.CompressionMode]::Decompress)
+            try {
+                $output = [System.IO.File]::Create($destPath)
+                try { $gzip.CopyTo($output) } finally { $output.Dispose() }
+            } finally { $gzip.Dispose() }
+        } finally { $input.Dispose() }
 
-    $item = Get-Item $destPath
-    if ($item.Length -le 0) { throw "Decompressed Zircon library is empty: $destPath" }
+        $item = Get-Item $destPath
+        if ($item.Length -le 0) { throw "Decompressed Zircon library is empty: $destPath" }
 
-    $sha = (Get-FileHash -Path $destPath -Algorithm SHA256).Hash
-    $gzSha = (Get-FileHash -Path $gzPath -Algorithm SHA256).Hash
+        $rows += [ordered]@{
+            libraryFile = $target.Library
+            sourcePath = "Data/$($target.FileName)"
+            patchUrl = $downloadedFrom
+            attempts = $attempts
+            compressedBytes = (Get-Item $gzPath).Length
+            compressedSha256 = (Get-FileHash -Path $gzPath -Algorithm SHA256).Hash
+            bytes = $item.Length
+            sha256 = (Get-FileHash -Path $destPath -Algorithm SHA256).Hash
+        }
 
-    $rows += [ordered]@{
-        libraryFile = $target.Library
-        sourcePath = "Data/$($target.FileName)"
-        patchUrl = $downloadedFrom
-        attempts = $attempts
-        compressedBytes = (Get-Item $gzPath).Length
-        compressedSha256 = $gzSha
-        bytes = $item.Length
-        sha256 = $sha
+        Write-FetchReport -Status 'IN_PROGRESS'
     }
-}
 
-$report = [ordered]@{
-    schema = 'origins.zircon.base-human-fetch.v1'
-    status = 'PASS'
-    primaryPatchHost = $primaryHost
-    approvedPatchHosts = $hosts
-    patchHostSource = 'vendor/zircon/Launcher/Config.cs'
-    source = 'official-zircon-launcher-patch-host-or-mirfiles-public-mirror'
-    libraries = $rows
+    $currentLibrary = $null
+    Write-FetchReport -Status 'PASS'
+    Get-Content $ReportPath -Raw | Write-Host
 }
+catch {
+    $existing = $null
+    if (Test-Path $ReportPath) {
+        try { $existing = Get-Content $ReportPath -Raw | ConvertFrom-Json } catch { $existing = $null }
+    }
 
-$report | ConvertTo-Json -Depth 10 | Set-Content -Encoding UTF8 $ReportPath
-Write-Host ($report | ConvertTo-Json -Depth 10)
+    if ($existing -and $existing.status -eq 'FAIL_DOWNLOAD') {
+        Write-Host (Get-Content $ReportPath -Raw)
+    }
+    else {
+        Write-FetchReport -Status 'FAIL_SCRIPT' -ErrorMessage $_.Exception.Message
+        Write-Host (Get-Content $ReportPath -Raw)
+    }
+    throw
+}
