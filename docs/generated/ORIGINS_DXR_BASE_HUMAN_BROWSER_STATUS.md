@@ -2,13 +2,21 @@
 
 - Browser gate: **FAIL**
 - Zircon authority: `cbf1aa919083bc13fc3f23f93772a8ab8370632d`
-- Browser-proof commit: `d35fa3a913bc4f1ce796711b299627c87eaa3d93`
-- Source import workflow run: ****
-- Source preview commit: ``
-- GitHub Actions proof run: **32392900408**
+- Browser-proof commit: `34d77feb40d52e6e78382577f1159cc0026dad2e`
+- Source artifact lookup: **success**
+- Preview download: **success**
+- Chrome render: **failure**
+- Source import workflow run: **32392632203**
+- Source preview commit: `cbe40cbde1efea9b9c0dd423a41b97607907851d`
+- GitHub Actions proof run: **32393053303**
 
 ## Browser result
 
+
+## Failure diagnostics
+
+```text
+```
 
 ## Boundary
 
