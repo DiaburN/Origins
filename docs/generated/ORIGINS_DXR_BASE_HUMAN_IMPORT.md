@@ -2,9 +2,9 @@
 
 - Import gate: **FAIL**
 - Zircon authority: `cbf1aa919083bc13fc3f23f93772a8ab8370632d`
-- Origins-DxR HEAD tested: `97443df69e2569ddf1e46808379aa687c0b1bf1e`
-- Primary patch host from Zircon: `not reached`
-- Fetch status: **NO_REPORT**
+- Origins-DxR HEAD tested: `d2afe5fad88108a93e13a720b94c80a21a4cd76c`
+- Primary patch host from Zircon: `https://mirfiles.com/resources/mir3/zircon/patch/`
+- Fetch status: **FAIL_SCRIPT**
 
 ## CI
 
