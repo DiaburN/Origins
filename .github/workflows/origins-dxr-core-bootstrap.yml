@@ -50,6 +50,30 @@ jobs:
           $actual = (git -C vendor/zircon rev-parse HEAD).Trim()
           if ($actual -ne $env:ZIRCON_COMMIT) { Write-Error "Pinned Zircon mismatch: $actual"; exit 1 }
 
+      - name: Normalize canonical snapshot to pinned Zircon model
+        id: snapshotcompat
+        continue-on-error: true
+        shell: pwsh
+        run: |
+          python scripts/normalize-pinned-zircon-snapshot.py --magic-info database/generated/zircon-system/LibraryCore__Library_SystemModels_MagicInfo.json --expected-count 174 *>&1 | Tee-Object artifacts/core-bootstrap/snapshot-compatibility.log
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+      - name: Commit canonical snapshot compatibility correction
+        id: commitsnapshot
+        if: steps.snapshotcompat.outcome == 'success'
+        continue-on-error: true
+        shell: pwsh
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -- database/generated/zircon-system/LibraryCore__Library_SystemModels_MagicInfo.json
+          git diff --cached --quiet
+          if ($LASTEXITCODE -eq 0) { Write-Host 'Snapshot already compatible.'; exit 0 }
+          git commit -m 'fix(dxr): align MagicInfo snapshot with pinned Zircon'
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          git push origin HEAD:Origins-DxR
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
       - name: Reject active Crystal build dependencies
         id: crystal
         continue-on-error: true
@@ -215,10 +239,10 @@ jobs:
           $zirconHead = if (Test-Path vendor/zircon/.git) { (git -C vendor/zircon rev-parse HEAD).Trim() } else { 'unavailable' }
           $systemDb = if (Test-Path database/System.db) { (Get-Item database/System.db).Length } else { 0 }
           $required = @(
-            '${{ steps.bootstrap.outcome }}','${{ steps.crystal.outcome }}','${{ steps.librarycore.outcome }}','${{ steps.serverlibrary.outcome }}',
-            '${{ steps.server.outcome }}','${{ steps.client.outcome }}','${{ steps.classes.outcome }}','${{ steps.dbtools.outcome }}',
-            '${{ steps.rebuilddb.outcome }}','${{ steps.verifydb.outcome }}','${{ steps.roundtrip.outcome }}','${{ steps.catalog.outcome }}',
-            '${{ steps.magicdb.outcome }}','${{ steps.magicruntime.outcome }}','${{ steps.runtimepreflight.outcome }}'
+            '${{ steps.bootstrap.outcome }}','${{ steps.snapshotcompat.outcome }}','${{ steps.commitsnapshot.outcome }}','${{ steps.crystal.outcome }}',
+            '${{ steps.librarycore.outcome }}','${{ steps.serverlibrary.outcome }}','${{ steps.server.outcome }}','${{ steps.client.outcome }}',
+            '${{ steps.classes.outcome }}','${{ steps.dbtools.outcome }}','${{ steps.rebuilddb.outcome }}','${{ steps.verifydb.outcome }}',
+            '${{ steps.roundtrip.outcome }}','${{ steps.catalog.outcome }}','${{ steps.magicdb.outcome }}','${{ steps.magicruntime.outcome }}','${{ steps.runtimepreflight.outcome }}'
           )
           $gate = if ($required -contains 'failure' -or $required -contains 'cancelled' -or $required -contains 'skipped') { 'FAIL' } else { 'PASS' }
           $lines = @(
@@ -232,6 +256,8 @@ jobs:
             "- Rebuilt database/System.db: $systemDb bytes",'',
             '| Check | Result |','|---|---|',
             '| Bootstrap pinned Zircon | ${{ steps.bootstrap.outcome }} |',
+            '| Snapshot compatibility | ${{ steps.snapshotcompat.outcome }} |',
+            '| Snapshot compatibility commit | ${{ steps.commitsnapshot.outcome }} |',
             '| No active Crystal build/bootstrap refs | ${{ steps.crystal.outcome }} |',
             '| LibraryCore build | ${{ steps.librarycore.outcome }} |',
             '| ServerLibrary build | ${{ steps.serverlibrary.outcome }} |',
@@ -252,9 +278,10 @@ jobs:
           $lines | Set-Content docs/generated/ORIGINS_DXR_CORE_BOOTSTRAP_STATUS.md -Encoding utf8
 
           $map = @{
-            bootstrap=@('${{ steps.bootstrap.outcome }}','bootstrap.log'); crystal=@('${{ steps.crystal.outcome }}','crystal-active-dependencies.log');
-            librarycore=@('${{ steps.librarycore.outcome }}','librarycore.log'); serverlibrary=@('${{ steps.serverlibrary.outcome }}','serverlibrary.log');
-            server=@('${{ steps.server.outcome }}','server.log'); client=@('${{ steps.client.outcome }}','client.log'); classes=@('${{ steps.classes.outcome }}','class-selection.log');
+            bootstrap=@('${{ steps.bootstrap.outcome }}','bootstrap.log'); snapshot=@('${{ steps.snapshotcompat.outcome }}','snapshot-compatibility.log');
+            crystal=@('${{ steps.crystal.outcome }}','crystal-active-dependencies.log'); librarycore=@('${{ steps.librarycore.outcome }}','librarycore.log');
+            serverlibrary=@('${{ steps.serverlibrary.outcome }}','serverlibrary.log'); server=@('${{ steps.server.outcome }}','server.log');
+            client=@('${{ steps.client.outcome }}','client.log'); classes=@('${{ steps.classes.outcome }}','class-selection.log');
             dbtools=@('${{ steps.dbtools.outcome }}','dbtools.log'); rebuild=@('${{ steps.rebuilddb.outcome }}','rebuild-system-db.log');
             verify=@('${{ steps.verifydb.outcome }}','verify-system-db.log'); roundtrip=@('${{ steps.roundtrip.outcome }}','roundtrip.log');
             catalog=@('${{ steps.catalog.outcome }}','magic-catalog.log'); magicdb=@('${{ steps.magicdb.outcome }}','magic-db-audit.log');
@@ -294,7 +321,7 @@ jobs:
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add docs/generated/ORIGINS_DXR_CORE_BOOTSTRAP_STATUS.md
+          git add -- docs/generated/ORIGINS_DXR_CORE_BOOTSTRAP_STATUS.md
           git diff --cached --quiet
           if ($LASTEXITCODE -eq 0) { exit 0 }
           git commit -m 'ci(dxr): record core bootstrap status'
@@ -307,10 +334,11 @@ jobs:
         shell: pwsh
         run: |
           $outcomes = @(
-            '${{ steps.bootstrap.outcome }}','${{ steps.crystal.outcome }}','${{ steps.librarycore.outcome }}','${{ steps.serverlibrary.outcome }}',
-            '${{ steps.server.outcome }}','${{ steps.client.outcome }}','${{ steps.classes.outcome }}','${{ steps.dbtools.outcome }}',
-            '${{ steps.rebuilddb.outcome }}','${{ steps.verifydb.outcome }}','${{ steps.roundtrip.outcome }}','${{ steps.catalog.outcome }}',
-            '${{ steps.magicdb.outcome }}','${{ steps.magicruntime.outcome }}','${{ steps.runtimepreflight.outcome }}','${{ steps.report.outcome }}','${{ steps.commitreport.outcome }}'
+            '${{ steps.bootstrap.outcome }}','${{ steps.snapshotcompat.outcome }}','${{ steps.commitsnapshot.outcome }}','${{ steps.crystal.outcome }}',
+            '${{ steps.librarycore.outcome }}','${{ steps.serverlibrary.outcome }}','${{ steps.server.outcome }}','${{ steps.client.outcome }}',
+            '${{ steps.classes.outcome }}','${{ steps.dbtools.outcome }}','${{ steps.rebuilddb.outcome }}','${{ steps.verifydb.outcome }}',
+            '${{ steps.roundtrip.outcome }}','${{ steps.catalog.outcome }}','${{ steps.magicdb.outcome }}','${{ steps.magicruntime.outcome }}',
+            '${{ steps.runtimepreflight.outcome }}','${{ steps.report.outcome }}','${{ steps.commitreport.outcome }}'
           )
           if ($outcomes -contains 'failure' -or $outcomes -contains 'cancelled' -or $outcomes -contains 'skipped') {
             Write-Error "Phase 1 gate failed: $($outcomes -join ', ')"
