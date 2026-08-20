@@ -55,7 +55,7 @@ jobs:
         continue-on-error: true
         shell: pwsh
         run: |
-          python scripts/normalize-pinned-zircon-snapshot.py --magic-info database/generated/zircon-system/LibraryCore__Library_SystemModels_MagicInfo.json --expected-count 174 *>&1 | Tee-Object artifacts/core-bootstrap/snapshot-compatibility.log
+          python scripts/normalize-pinned-zircon-snapshot.py --magic-info database/generated/zircon-system/LibraryCore__Library_SystemModels_MagicInfo.json --expected-magic-count 174 *>&1 | Tee-Object artifacts/core-bootstrap/snapshot-compatibility.log
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
       - name: Commit canonical snapshot compatibility correction
@@ -66,10 +66,10 @@ jobs:
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add -- database/generated/zircon-system/LibraryCore__Library_SystemModels_MagicInfo.json
+          git add -- database/generated/zircon-system/LibraryCore__Library_SystemModels_MagicInfo.json database/generated/zircon-system/LibraryCore__Library_SystemModels_MapInfo.json
           git diff --cached --quiet
           if ($LASTEXITCODE -eq 0) { Write-Host 'Snapshot already compatible.'; exit 0 }
-          git commit -m 'fix(dxr): align MagicInfo snapshot with pinned Zircon'
+          git commit -m 'fix(dxr): align Zircon snapshot with pinned model'
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           git push origin HEAD:Origins-DxR
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
