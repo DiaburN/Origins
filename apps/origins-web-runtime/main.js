@@ -10,6 +10,7 @@ import {
   getPlayerFrameDefinition,
   resolvePlayerAnimation,
   resolvePlayerFrameAtElapsed,
+  resolvePlayerLayerFrames,
 } from './player-animation-runtime.js';
 import {
   PLAYER_ASSET_STATUS,
@@ -35,29 +36,40 @@ const WORLD = Object.freeze({
   tile: 48,
 });
 
-const player = new PreviewPlayerObject({ x: 32, y: 24 });
+const previewParams = new URLSearchParams(window.location.search);
+const requestedPreviewGender = previewParams.get('gender');
+const requestedDirection = parseIntegerInRange(previewParams.get('direction'), 0, 7, null);
+const requestedArmourShape = parseIntegerInRange(previewParams.get('armourShape'), 0, 10, 0);
+const requestedAnimation = validateAnimationName(previewParams.get('animation'));
+
+const player = new PreviewPlayerObject({
+  x: 32,
+  y: 24,
+  direction: requestedDirection ?? 4,
+});
 const spriteStore = new ZirconPlayerSpriteStore({ rootUrl: './assets/player/' });
 const input = { x: 0, y: 0 };
 const keyboard = new Set();
 const touchDirections = new Map();
 const camera = { x: 0, y: 0 };
 const visualState = {
-  gender: 'Male',
+  gender: requestedPreviewGender === 'Female' ? 'Female' : 'Male',
+  armourShape: requestedArmourShape,
+  forcedAnimation: requestedAnimation,
+  forcedDirection: requestedDirection,
   actionName: null,
-  animation: 'Standing',
+  animation: requestedAnimation ?? 'Standing',
   animationStartedAt: performance.now(),
   pairStatus: PLAYER_ASSET_STATUS.Missing,
 };
-
-const requestedPreviewGender = new URLSearchParams(window.location.search).get('gender');
-if (requestedPreviewGender === 'Male' || requestedPreviewGender === 'Female') {
-  visualState.gender = requestedPreviewGender;
-}
 
 setRenderDiagnostics({
   previewGender: visualState.gender,
   pairStatus: visualState.pairStatus,
   playerLibrary: resolveBaseHumanLibrary(visualState.gender),
+  armourShape: visualState.armourShape,
+  animation: visualState.animation,
+  direction: visualState.forcedDirection ?? player.direction,
   realFrameDrawn: false,
 });
 
@@ -92,7 +104,8 @@ async function prewarmBaseHumanPreviewFrames() {
       const frame = getPlayerFrameDefinition(animation);
       for (let direction = 0; direction < 8; direction += 1) {
         for (let localFrame = 0; localFrame < frame.frameCount; localFrame += 1) {
-          const imageIndex = frame.startIndex + frame.offset * direction + localFrame;
+          const drawFrame = frame.startIndex + frame.offset * direction + localFrame;
+          const imageIndex = resolveBodyImageIndex(drawFrame, visualState.armourShape);
           requests.push(spriteStore.requestBaseHumanFrame(gender, imageIndex));
         }
       }
@@ -237,6 +250,15 @@ function directionUnit(direction) {
 }
 
 function updateVisualAnimation(snapshot, timestamp) {
+  if (visualState.forcedAnimation) {
+    if (visualState.animation !== visualState.forcedAnimation) {
+      visualState.animation = visualState.forcedAnimation;
+      visualState.animationStartedAt = timestamp;
+    }
+    visualState.actionName = `FORCED:${visualState.forcedAnimation}`;
+    return;
+  }
+
   if (visualState.actionName === snapshot.actionName) return;
   visualState.actionName = snapshot.actionName;
   visualState.animation = resolvePlayerAnimation({
@@ -247,17 +269,34 @@ function updateVisualAnimation(snapshot, timestamp) {
   visualState.animationStartedAt = timestamp;
 }
 
-function resolvePreviewBodyFrame(snapshot, timestamp) {
+function resolvePreviewBaseDrawFrame(snapshot, timestamp) {
   updateVisualAnimation(snapshot, timestamp);
   const definition = getPlayerFrameDefinition(visualState.animation);
   const duration = definition.delaysMs.reduce((sum, delay) => sum + delay, 0);
   const elapsedMs = duration > 0 ? (timestamp - visualState.animationStartedAt) % duration : 0;
+  const direction = visualState.forcedDirection ?? snapshot.direction;
+  const runtimeAction = visualState.animation === 'Pushed' ? 'Pushed' : snapshot.actionName;
   return resolvePlayerFrameAtElapsed(
     visualState.animation,
-    snapshot.direction,
+    direction,
     elapsedMs,
-    { action: snapshot.actionName },
+    { action: runtimeAction },
   ).drawFrame;
+}
+
+function resolveBodyImageIndex(drawFrame, armourShape = visualState.armourShape) {
+  if (drawFrame === null) return null;
+  return resolvePlayerLayerFrames({
+    drawFrame,
+    playerClass: 'Warrior',
+    armourShape,
+    costumeShape: -1,
+    armourShift: 0,
+  }).body;
+}
+
+function resolvePreviewBodyImageIndex(snapshot, timestamp) {
+  return resolveBodyImageIndex(resolvePreviewBaseDrawFrame(snapshot, timestamp));
 }
 
 function drawPlayer(snapshot, timestamp) {
@@ -265,7 +304,7 @@ function drawPlayer(snapshot, timestamp) {
   const y = player.y * WORLD.tile - camera.y;
 
   if (visualState.pairStatus === PLAYER_ASSET_STATUS.Ready) {
-    const imageIndex = resolvePreviewBodyFrame(snapshot, timestamp);
+    const imageIndex = resolvePreviewBodyImageIndex(snapshot, timestamp);
     if (imageIndex !== null) {
       const library = resolveBaseHumanLibrary(visualState.gender);
       const resolved = spriteStore.peekFrame(library, imageIndex);
@@ -275,6 +314,9 @@ function drawPlayer(snapshot, timestamp) {
           previewGender: visualState.gender,
           pairStatus: visualState.pairStatus,
           playerLibrary: library,
+          armourShape: visualState.armourShape,
+          animation: visualState.animation,
+          direction: visualState.forcedDirection ?? snapshot.direction,
           realFrameDrawn: true,
           imageIndex,
         });
@@ -284,12 +326,18 @@ function drawPlayer(snapshot, timestamp) {
     }
   }
 
-  setRenderDiagnostics({ realFrameDrawn: false });
+  setRenderDiagnostics({
+    armourShape: visualState.armourShape,
+    animation: visualState.animation,
+    direction: visualState.forcedDirection ?? snapshot.direction,
+    realFrameDrawn: false,
+  });
   drawDiagnosticPlayer(snapshot, x, y);
 }
 
 function drawDiagnosticPlayer(snapshot, x, y) {
-  const [dx, dy] = directionUnit(snapshot.direction);
+  const direction = visualState.forcedDirection ?? snapshot.direction;
+  const [dx, dy] = directionUnit(direction);
 
   ctx.save();
   ctx.translate(x, y);
@@ -317,25 +365,26 @@ function drawDiagnosticPlayer(snapshot, x, y) {
   ctx.fillStyle = '#e9d7a0';
   ctx.font = '11px ui-monospace, SFMono-Regular, Menlo, monospace';
   ctx.textAlign = 'center';
-  ctx.fillText(`PLAYER ${visualState.gender.toUpperCase()}`, 0, -28);
+  ctx.fillText(`PLAYER ${visualState.gender.toUpperCase()} SHAPE ${visualState.armourShape}`, 0, -28);
   ctx.fillStyle = '#81755c';
-  ctx.fillText('REAL ZL PAIR NOT BOUND', 0, 35);
+  ctx.fillText('REQUESTED ZL FRAME IS EMPTY/NOT LOADED', 0, 35);
   ctx.restore();
 }
 
 function drawHud(viewWidth) {
   ctx.fillStyle = 'rgba(0,0,0,0.72)';
-  ctx.fillRect(12, 12, Math.min(430, viewWidth - 24), 68);
+  ctx.fillRect(12, 12, Math.min(500, viewWidth - 24), 84);
   ctx.strokeStyle = '#604a23';
-  ctx.strokeRect(12.5, 12.5, Math.min(429, viewWidth - 25), 67);
+  ctx.strokeRect(12.5, 12.5, Math.min(499, viewWidth - 25), 83);
 
   ctx.fillStyle = '#e7c875';
   ctx.font = 'bold 13px ui-monospace, SFMono-Regular, Menlo, monospace';
   ctx.fillText('ORIGINS WEB RUNTIME — PLAYER ASSETS STEP 2', 24, 35);
   ctx.fillStyle = '#aaa397';
   ctx.font = '11px ui-monospace, SFMono-Regular, Menlo, monospace';
-  ctx.fillText('Native Zircon frame timing • M-Hum male • WM-Hum female • 8 directions', 24, 55);
-  ctx.fillText('Real atlas is used automatically when the complete base-human pair is present.', 24, 70);
+  ctx.fillText('Native Zircon timing • M-Hum male • WM-Hum female • 8 directions', 24, 55);
+  ctx.fillText(`Body bank: ArmourShape ${visualState.armourShape} (${visualState.armourShape * 5000} shift)`, 24, 70);
+  ctx.fillText(`Animation: ${visualState.animation}${visualState.forcedAnimation ? ' [QA override]' : ''}`, 24, 85);
 }
 
 function render(timestamp) {
@@ -350,10 +399,15 @@ function render(timestamp) {
   drawPlayer(snapshot, timestamp);
   drawHud(cssWidth);
 
-  actionValue.textContent = `${snapshot.actionName} (${snapshot.action})`;
-  directionValue.textContent = `${snapshot.directionName} (${snapshot.direction})`;
+  const effectiveDirection = visualState.forcedDirection ?? snapshot.direction;
+  const baseDrawFrame = resolvePreviewBaseDrawFrame(snapshot, timestamp);
+  const bodyImageIndex = resolveBodyImageIndex(baseDrawFrame);
+  actionValue.textContent = visualState.forcedAnimation
+    ? `QA ${visualState.forcedAnimation}`
+    : `${snapshot.actionName} (${snapshot.action})`;
+  directionValue.textContent = `${MIR_DIRECTION_BY_VALUE[effectiveDirection]} (${effectiveDirection})`;
   positionValue.textContent = `${snapshot.x.toFixed(2)}, ${snapshot.y.toFixed(2)}`;
-  frameValue.textContent = String(resolvePreviewBodyFrame(snapshot, timestamp));
+  frameValue.textContent = `${baseDrawFrame ?? '—'} → ${bodyImageIndex ?? '—'}`;
 }
 
 const runtime = new FixedStepRuntime(delta => {
@@ -385,11 +439,76 @@ function setPreviewGender(gender) {
   });
 }
 
-function setRenderDiagnostics({ previewGender, pairStatus, playerLibrary, realFrameDrawn, imageIndex } = {}) {
+function setPreviewArmourShape(armourShape) {
+  const parsed = parseIntegerInRange(armourShape, 0, 10, null);
+  if (parsed === null) throw new RangeError(`Base M-Hum/WM-Hum armourShape must be 0..10: ${armourShape}`);
+  visualState.armourShape = parsed;
+  visualState.animationStartedAt = performance.now();
+  setRenderDiagnostics({ armourShape: parsed, realFrameDrawn: false });
+}
+
+function setPreviewAnimation(animation) {
+  if (animation === null || animation === undefined || animation === '') {
+    visualState.forcedAnimation = null;
+    visualState.actionName = null;
+    visualState.animationStartedAt = performance.now();
+    return;
+  }
+  const valid = validateAnimationName(String(animation));
+  if (!valid) throw new RangeError(`Unknown pinned Zircon player animation: ${animation}`);
+  visualState.forcedAnimation = valid;
+  visualState.animation = valid;
+  visualState.actionName = `FORCED:${valid}`;
+  visualState.animationStartedAt = performance.now();
+  setRenderDiagnostics({ animation: valid, realFrameDrawn: false });
+}
+
+function setPreviewDirection(direction) {
+  const parsed = parseIntegerInRange(direction, 0, 7, null);
+  if (parsed === null) throw new RangeError(`MirDirection must be 0..7: ${direction}`);
+  visualState.forcedDirection = parsed;
+  visualState.animationStartedAt = performance.now();
+  setRenderDiagnostics({ direction: parsed, realFrameDrawn: false });
+}
+
+function clearPreviewDirectionOverride() {
+  visualState.forcedDirection = null;
+  visualState.animationStartedAt = performance.now();
+}
+
+function parseIntegerInRange(value, min, max, fallback) {
+  if (value === null || value === undefined || value === '') return fallback;
+  const parsed = Number(value);
+  return Number.isInteger(parsed) && parsed >= min && parsed <= max ? parsed : fallback;
+}
+
+function validateAnimationName(value) {
+  if (!value) return null;
+  try {
+    getPlayerFrameDefinition(value);
+    return value;
+  } catch {
+    return null;
+  }
+}
+
+function setRenderDiagnostics({
+  previewGender,
+  pairStatus,
+  playerLibrary,
+  armourShape,
+  animation,
+  direction,
+  realFrameDrawn,
+  imageIndex,
+} = {}) {
   const dataset = document.documentElement.dataset;
   if (previewGender !== undefined) dataset.previewGender = String(previewGender);
   if (pairStatus !== undefined) dataset.playerAssetPair = String(pairStatus);
   if (playerLibrary !== undefined) dataset.playerLibrary = String(playerLibrary);
+  if (armourShape !== undefined) dataset.playerArmourShape = String(armourShape);
+  if (animation !== undefined) dataset.playerAnimation = String(animation);
+  if (direction !== undefined) dataset.playerDirection = String(direction);
   if (realFrameDrawn !== undefined) dataset.realFrameDrawn = String(Boolean(realFrameDrawn));
   if (imageIndex !== undefined) dataset.playerImageIndex = String(imageIndex);
 }
@@ -400,6 +519,12 @@ window.ORIGINS_WEB_RUNTIME = Object.freeze({
   getPlayerSnapshot: () => player.snapshot(),
   getPreviewGender: () => visualState.gender,
   setPreviewGender,
+  getPreviewArmourShape: () => visualState.armourShape,
+  setPreviewArmourShape,
+  getPreviewAnimation: () => visualState.forcedAnimation ?? visualState.animation,
+  setPreviewAnimation,
+  setPreviewDirection,
+  clearPreviewDirectionOverride,
   getBaseHumanPairStatus: () => visualState.pairStatus,
   MirAction: MIR_ACTION_BY_VALUE,
   MirDirection: MIR_DIRECTION_BY_VALUE,
