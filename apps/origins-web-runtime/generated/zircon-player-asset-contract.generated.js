@@ -1625,12 +1625,26 @@ export const ZIRCON_PLAYER_ASSET_CONTRACT = Object.freeze({
       "55020": "WM_HelmetACx1"
     }
   },
+  "costumeShapeHideWeapon": [
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    16,
+    17,
+    18
+  ],
   "drawFrameFormula": "frameIndex + startIndex + offset * direction",
   "pushedPlayerFrameOverride": 0,
   "notes": [
     "All player frame definitions are extracted from FrameSet.Players.",
     "Magic-to-body-animation cases are extracted from Functions.GetMagicAnimation.",
     "Armour/Costume/Weapon/Shield/Helmet selectors are extracted from PlayerObject dictionaries.",
+    "Costume weapon-hiding shapes are extracted from PlayerObject.",
     "Real PNG/atlas payload is generated only when the corresponding Zircon .Zl files are supplied.",
     "No Crystal fallback is permitted."
   ]
@@ -1639,3 +1653,4 @@ export const ZIRCON_PLAYER_FRAMESET = ZIRCON_PLAYER_ASSET_CONTRACT.playerFrames;
 export const ZIRCON_MIR_ANIMATION = ZIRCON_PLAYER_ASSET_CONTRACT.mirAnimation;
 export const ZIRCON_MAGIC_ANIMATION_MAP = ZIRCON_PLAYER_ASSET_CONTRACT.magicAnimationMap;
 export const ZIRCON_PLAYER_LIBRARY_SELECTORS = ZIRCON_PLAYER_ASSET_CONTRACT.playerLibrarySelectors;
+export const ZIRCON_COSTUME_HIDE_WEAPON = ZIRCON_PLAYER_ASSET_CONTRACT.costumeShapeHideWeapon;
