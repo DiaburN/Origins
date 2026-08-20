@@ -4,7 +4,7 @@
 - Base humans M-Hum + WM-Hum: **BLOCKED_MISSING_ZL**
 - Full Zircon player payload: **BLOCKED_MISSING_ZL**
 - Real base sprite binding status: **BLOCKED_MISSING_ZL**
-- Origins-DxR HEAD tested: cd368bdb4ff307a20d7470b40bcbb81e0d46c4f2
+- Origins-DxR HEAD tested: cbe40cbde1efea9b9c0dd423a41b97607907851d
 - Zircon authority: cbf1aa919083bc13fc3f23f93772a8ab8370632d
 
 ## What is implemented
