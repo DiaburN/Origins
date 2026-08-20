@@ -12,6 +12,10 @@ on:
 permissions:
   contents: write
 
+concurrency:
+  group: origins-dxr-bichon-real-render-final-${{ github.ref }}
+  cancel-in-progress: true
+
 env:
   ZIRCON_COMMIT: cbf1aa919083bc13fc3f23f93772a8ab8370632d
   MIRROR_PATCH: https://mirfiles.co.uk/resources/mir3/zircon/patch/
@@ -72,7 +76,7 @@ jobs:
               for host in hosts:
                   url=host+urllib.parse.quote(patch,safe='-_.()')
                   try:
-                      req=urllib.request.Request(url,headers={'User-Agent':'ORIGINS-DxR-MapRenderDiagnostic/1.1'})
+                      req=urllib.request.Request(url,headers={'User-Agent':'ORIGINS-DxR-MapRenderDiagnostic/1.2'})
                       with urllib.request.urlopen(req,timeout=75) as r: compressed=r.read()
                       payload=gzip.decompress(compressed); dest.write_bytes(payload)
                       rows.append({'relativePath':rel,'status':'READY','url':url,'bytes':len(payload)}); ready=True; break
