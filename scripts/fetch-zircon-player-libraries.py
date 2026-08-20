@@ -51,7 +51,8 @@ def fetch_one(row: dict, output_root: Path) -> dict:
             try:
                 download(url, archive)
                 size = archive.stat().st_size if archive.exists() else 0
-                magic = archive.read_bytes()[:2] if size else b""
+                with archive.open("rb") as handle:
+                    magic = handle.read(2)
                 if size <= 0:
                     raise RuntimeError("empty response")
                 if magic != b"\x1f\x8b":
@@ -99,13 +100,24 @@ def fetch_one(row: dict, output_root: Path) -> dict:
         }
 
 
+def select_profile(rows: list[dict], profile: str) -> list[dict]:
+    bodies = [row for row in rows if BODY_LIBRARY_RE.fullmatch(row.get("libraryFile", ""))]
+    if profile == "body":
+        return bodies
+    if profile == "female-body":
+        return [row for row in bodies if row.get("libraryFile", "").startswith("WM_")]
+    if profile == "male-body":
+        return [row for row in bodies if row.get("libraryFile", "").startswith("M_")]
+    raise ValueError(profile)
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description="Fetch selected pinned-Zircon player libraries from the official patch host.")
     parser.add_argument("--zircon-root", type=Path, required=True)
     parser.add_argument("--contract", type=Path, required=True)
     parser.add_argument("--output-root", type=Path, required=True)
     parser.add_argument("--report", type=Path, required=True)
-    parser.add_argument("--profile", choices=["body"], default=None)
+    parser.add_argument("--profile", choices=["body", "female-body", "male-body"], default=None)
     parser.add_argument("--library", action="append", default=[])
     parser.add_argument("--workers", type=int, default=4)
     args = parser.parse_args()
@@ -120,15 +132,15 @@ def main() -> int:
     rows = contract.get("playerLibraries", [])
     by_name = {row["libraryFile"]: row for row in rows}
 
-    if args.profile == "body":
-        selected = [row for row in rows if BODY_LIBRARY_RE.fullmatch(row.get("libraryFile", ""))]
+    if args.profile:
+        selected = select_profile(rows, args.profile)
     elif args.library:
         missing_names = [name for name in args.library if name not in by_name]
         if missing_names:
             raise SystemExit(f"Unknown contract player libraries: {missing_names}")
         selected = [by_name[name] for name in args.library]
     else:
-        raise SystemExit("Use --profile body or at least one --library.")
+        raise SystemExit("Use --profile body/female-body/male-body or at least one --library.")
 
     selected.sort(key=lambda row: row["libraryFile"])
     args.output_root.mkdir(parents=True, exist_ok=True)
