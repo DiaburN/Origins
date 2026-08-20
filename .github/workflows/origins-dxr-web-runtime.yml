@@ -1,4 +1,4 @@
-name: Origins DxR - Web Runtime Step 1
+name: Origins DxR - Web Runtime Foundation
 
 on:
   push:
@@ -7,9 +7,12 @@ on:
       - 'apps/origins-web-runtime/index.html'
       - 'apps/origins-web-runtime/main.js'
       - 'apps/origins-web-runtime/runtime-core.js'
+      - 'apps/origins-web-runtime/player-animation-runtime.js'
+      - 'apps/origins-web-runtime/player-sprite-runtime.js'
+      - 'apps/origins-web-runtime/player-visual-runtime.js'
       - 'apps/origins-web-runtime/runtime.css'
       - 'apps/origins-web-runtime/package.json'
-      - 'apps/origins-web-runtime/tests/runtime-core.test.mjs'
+      - 'apps/origins-web-runtime/tests/**'
       - 'scripts/audit-origins-web-runtime.py'
       - '.github/workflows/origins-dxr-web-runtime.yml'
   workflow_dispatch:
@@ -25,7 +28,7 @@ env:
   ZIRCON_COMMIT: cbf1aa919083bc13fc3f23f93772a8ab8370632d
 
 jobs:
-  web-runtime-step1:
+  web-runtime-foundation:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Origins-DxR
@@ -51,6 +54,9 @@ jobs:
         continue-on-error: true
         run: |
           node --check apps/origins-web-runtime/runtime-core.js
+          node --check apps/origins-web-runtime/player-animation-runtime.js
+          node --check apps/origins-web-runtime/player-sprite-runtime.js
+          node --check apps/origins-web-runtime/player-visual-runtime.js
           node --check apps/origins-web-runtime/main.js
 
       - name: Runtime unit tests
@@ -85,100 +91,76 @@ jobs:
           done
           grep -q 'ORIGINS WEB — Runtime mínimo' /tmp/index.html
           curl --fail --silent http://127.0.0.1:4173/apps/origins-web-runtime/runtime-core.js | grep -q 'MIR_DIRECTION'
+          curl --fail --silent http://127.0.0.1:4173/apps/origins-web-runtime/player-visual-runtime.js | grep -q 'resolvePlayerVisualComposition'
           curl --fail --silent http://127.0.0.1:4173/apps/origins-web-runtime/main.js | grep -q 'requestAnimationFrame'
 
-      - name: Write Step 1 evidence report
+      - name: Write runtime foundation evidence report
         id: report
         if: always()
         shell: bash
         run: |
-          mkdir -p docs/generated
+          mkdir -p docs/generated artifacts/web-runtime
           python - <<'PY'
-          import json
-          import os
+          import json,os
           from pathlib import Path
-
-          outcomes = {
-              'Bootstrap pinned Zircon': '${{ steps.bootstrap.outcome }}',
-              'JavaScript syntax': '${{ steps.syntax.outcome }}',
-              'Runtime unit tests': '${{ steps.tests.outcome }}',
-              'Pinned source audit': '${{ steps.audit.outcome }}',
-              'Static HTTP smoke': '${{ steps.smoke.outcome }}',
-          }
-          gate = 'PASS' if all(value == 'success' for value in outcomes.values()) else 'FAIL'
-          audit_path = Path('artifacts/web-runtime/audit.json')
-          audit = json.loads(audit_path.read_text()) if audit_path.exists() else {'checks': []}
-          lines = [
-              '# ORIGINS-DxR — Web Runtime Step 1',
-              '',
-              f'- Gate: **{gate}**',
-              f'- Origins-DxR HEAD tested: {os.environ.get("GITHUB_SHA", "unknown")}',
-              f'- Zircon authority: {os.environ["ZIRCON_COMMIT"]}',
-              '- Client target: browser / mobile web',
-              '- Runtime mode: `PREVIEW_LOCAL` (not server-authoritative yet)',
-              '',
-              '## CI',
-              '',
-              '| Check | Result |',
-              '|---|---|',
-          ]
-          for name, value in outcomes.items():
-              lines.append(f'| {name} | {value} |')
-          lines.extend([
-              '',
-              '## Runtime contract',
-              '',
-              '- Dedicated app: `apps/origins-web-runtime/`.',
-              '- Closed UI reference remains separate at `apps/zircon-ui-reference/`.',
-              '- Fixed simulation step: 60 Hz.',
-              '- Keyboard: WASD/arrows.',
-              '- Touch: eight directional controls.',
-              '- Camera follows the preview PlayerObject.',
-              '- MirDirection and MirAction values are audited against pinned Zircon `LibraryCore/Enum.cs`.',
-              '- Browser does not open `System.db` or `Users.db` directly.',
-              '- No Crystal runtime dependency.',
-              '- No WebSocket/gameplay authority is fabricated in Step 1.',
-              '- The PLAYER marker is diagnostic only; real Zircon frames enter in Step 2/4.',
-              '',
-              '## Source audit checks',
-              '',
-              '| Check | Result | Details |',
-              '|---|---|---|',
-          ])
-          for item in audit.get('checks', []):
-              detail = str(item.get('details', '')).replace('|', '\\|')
-              result = 'PASS' if item.get('pass') else 'FAIL'
-              lines.append(f'| {item.get("name", "unknown")} | {result} | {detail} |')
-          lines.extend([
-              '',
-              '## What this PASS proves',
-              '',
-              'A browser runtime exists and can execute a deterministic local PlayerObject preview with the native Zircon action/direction contract. It does **not** yet prove real map rendering, native sprite rendering, WebSocket transport, server-authoritative movement, combat or login.',
-              '',
-              'Next approved runtime block: **Step 2 — Zircon asset pipeline**.',
-          ])
-          Path('docs/generated/ORIGINS_DXR_WEB_RUNTIME_STEP1.md').write_text('\n'.join(lines) + '\n', encoding='utf-8')
-          Path('artifacts/web-runtime/gate.txt').write_text(gate + '\n', encoding='utf-8')
-          print(gate)
+          outcomes={
+            'Bootstrap pinned Zircon':'${{ steps.bootstrap.outcome }}',
+            'JavaScript syntax':'${{ steps.syntax.outcome }}',
+            'Runtime unit tests':'${{ steps.tests.outcome }}',
+            'Pinned source audit':'${{ steps.audit.outcome }}',
+            'Static HTTP smoke':'${{ steps.smoke.outcome }}'}
+          gate='PASS' if all(v=='success' for v in outcomes.values()) else 'FAIL'
+          ap=Path('artifacts/web-runtime/audit.json')
+          audit=json.loads(ap.read_text()) if ap.exists() else {'checks':[]}
+          lines=['# ORIGINS-DxR — Web Runtime Foundation','',
+            f'- Gate: **{gate}**',
+            f'- Origins-DxR HEAD tested: `{os.environ.get("GITHUB_SHA","unknown")}`',
+            f'- Zircon authority: `{os.environ["ZIRCON_COMMIT"]}`',
+            '- Runtime mode: `PREVIEW_LOCAL` (server-authoritative transport is a later vertical-slice step).','',
+            '## CI','','| Check | Result |','|---|---|']
+          lines += [f'| {k} | {v} |' for k,v in outcomes.items()]
+          lines += ['','## Runtime contract','',
+            '- Dedicated runtime: `apps/origins-web-runtime/`; the closed Zircon UI reference remains separate.',
+            '- Fixed 60 Hz simulation with keyboard and touch movement.',
+            '- `MirDirection` and `MirAction` remain audited against pinned Zircon.',
+            '- Real M-Hum/WM-Hum atlases are consumed through the sprite store when present.',
+            '- Player visual composition now resolves native body/hair/helmet/weapon1/weapon2/shield/horse libraries, frame indices and direction-dependent draw order.',
+            '- Normal W/W/T body banks use the Zircon +5000 stride; Assassin bodies use +3000 and animation-specific `ArmourShift` values, including Fishing +80.',
+            '- Browser does not open `System.db`/`Users.db` and no Crystal runtime fallback exists.',
+            '', '## Source audit checks','', '| Check | Result | Details |','|---|---|---|']
+          for item in audit.get('checks',[]):
+              detail=str(item.get('details','')).replace('|','\\|')
+              lines.append(f'| {item.get("name","unknown")} | {"PASS" if item.get("pass") else "FAIL"} | {detail} |')
+          lines += ['','## Boundary','',
+            '- This PASS validates the browser runtime and visual-composition contracts. It does not claim server-authoritative movement, a real map, combat, or login.',
+            '- Asset availability is audited separately; a correct requested frame can still be an upstream empty slot.']
+          Path('docs/generated/ORIGINS_DXR_WEB_RUNTIME_STEP1.md').write_text('\n'.join(lines)+'\n',encoding='utf-8')
+          Path('artifacts/web-runtime/gate.txt').write_text(gate+'\n',encoding='utf-8')
           PY
 
-      - name: Commit evidence report
+      - name: Commit non-stale evidence report
         if: always()
         shell: bash
         run: |
+          set -euo pipefail
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add -- docs/generated/ORIGINS_DXR_WEB_RUNTIME_STEP1.md
-          if git diff --cached --quiet; then
-            echo 'Evidence report unchanged.'
-          else
-            git commit -m 'audit(dxr): record web runtime Step 1'
-            git push origin HEAD:Origins-DxR
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m 'audit(dxr): record web runtime foundation'
+          git fetch origin Origins-DxR
+          remote="$(git rev-parse origin/Origins-DxR)"
+          if [[ "$remote" != "$GITHUB_SHA" ]]; then
+            meaningful="$(git diff --name-only "$GITHUB_SHA" "$remote" | grep -v '^docs/generated/' || true)"
+            if [[ -n "$meaningful" ]]; then echo "Skipping stale runtime evidence: $meaningful"; exit 0; fi
           fi
+          git pull --rebase origin Origins-DxR
+          git push origin HEAD:Origins-DxR
 
-      - name: Enforce Step 1 gate
+      - name: Enforce runtime gate
         if: always()
         shell: bash
         run: |
+          set -euo pipefail
           test -f artifacts/web-runtime/gate.txt
-          test "$(cat artifacts/web-runtime/gate.txt | tr -d '\r\n')" = 'PASS'
+          [[ "$(tr -d '\r\n' < artifacts/web-runtime/gate.txt)" == 'PASS' ]]
