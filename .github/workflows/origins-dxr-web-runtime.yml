@@ -1,0 +1,179 @@
+name: Origins DxR - Web Runtime Step 1
+
+on:
+  push:
+    branches: [Origins-DxR]
+    paths:
+      - 'apps/origins-web-runtime/**'
+      - 'scripts/audit-origins-web-runtime.py'
+      - '.github/workflows/origins-dxr-web-runtime.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: origins-dxr-web-runtime-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  ZIRCON_COMMIT: cbf1aa919083bc13fc3f23f93772a8ab8370632d
+
+jobs:
+  web-runtime-step1:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Origins-DxR
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Bootstrap pinned Zircon
+        id: bootstrap
+        continue-on-error: true
+        run: |
+          ./scripts/bootstrap-zircon.sh
+          actual="$(git -C vendor/zircon rev-parse HEAD)"
+          test "$actual" = "$ZIRCON_COMMIT"
+
+      - name: JavaScript syntax checks
+        id: syntax
+        continue-on-error: true
+        run: |
+          node --check apps/origins-web-runtime/runtime-core.js
+          node --check apps/origins-web-runtime/main.js
+
+      - name: Runtime unit tests
+        id: tests
+        continue-on-error: true
+        working-directory: apps/origins-web-runtime
+        run: npm test
+
+      - name: Audit web runtime against pinned Zircon
+        id: audit
+        continue-on-error: true
+        run: |
+          mkdir -p artifacts/web-runtime
+          python scripts/audit-origins-web-runtime.py \
+            --enum-source vendor/zircon/LibraryCore/Enum.cs \
+            --app-root apps/origins-web-runtime \
+            --output artifacts/web-runtime/audit.json
+
+      - name: Static HTTP smoke test
+        id: smoke
+        continue-on-error: true
+        shell: bash
+        run: |
+          python -m http.server 4173 --directory . > /tmp/origins-web-runtime-http.log 2>&1 &
+          server_pid=$!
+          trap 'kill $server_pid 2>/dev/null || true' EXIT
+          for attempt in {1..20}; do
+            if curl --fail --silent http://127.0.0.1:4173/apps/origins-web-runtime/ > /tmp/index.html; then
+              break
+            fi
+            sleep 0.25
+          done
+          grep -q 'ORIGINS WEB — Runtime mínimo' /tmp/index.html
+          curl --fail --silent http://127.0.0.1:4173/apps/origins-web-runtime/runtime-core.js | grep -q 'MIR_DIRECTION'
+          curl --fail --silent http://127.0.0.1:4173/apps/origins-web-runtime/main.js | grep -q 'requestAnimationFrame'
+
+      - name: Write Step 1 evidence report
+        id: report
+        if: always()
+        shell: bash
+        run: |
+          mkdir -p docs/generated
+          python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          outcomes = {
+              'Bootstrap pinned Zircon': '${{ steps.bootstrap.outcome }}',
+              'JavaScript syntax': '${{ steps.syntax.outcome }}',
+              'Runtime unit tests': '${{ steps.tests.outcome }}',
+              'Pinned source audit': '${{ steps.audit.outcome }}',
+              'Static HTTP smoke': '${{ steps.smoke.outcome }}',
+          }
+          gate = 'PASS' if all(value == 'success' for value in outcomes.values()) else 'FAIL'
+          audit_path = Path('artifacts/web-runtime/audit.json')
+          audit = json.loads(audit_path.read_text()) if audit_path.exists() else {'checks': []}
+          lines = [
+              '# ORIGINS-DxR — Web Runtime Step 1',
+              '',
+              f'- Gate: **{gate}**',
+              f'- Origins-DxR HEAD tested: {os.environ.get("GITHUB_SHA", "unknown")}',
+              f'- Zircon authority: {os.environ["ZIRCON_COMMIT"]}',
+              '- Client target: browser / mobile web',
+              '- Runtime mode: `PREVIEW_LOCAL` (not server-authoritative yet)',
+              '',
+              '## CI',
+              '',
+              '| Check | Result |',
+              '|---|---|',
+          ]
+          for name, value in outcomes.items():
+              lines.append(f'| {name} | {value} |')
+          lines.extend([
+              '',
+              '## Runtime contract',
+              '',
+              '- Dedicated app: `apps/origins-web-runtime/`.',
+              '- Closed UI reference remains separate at `apps/zircon-ui-reference/`.',
+              '- Fixed simulation step: 60 Hz.',
+              '- Keyboard: WASD/arrows.',
+              '- Touch: eight directional controls.',
+              '- Camera follows the preview PlayerObject.',
+              '- MirDirection and MirAction values are audited against pinned Zircon `LibraryCore/Enum.cs`.',
+              '- Browser does not open `System.db` or `Users.db` directly.',
+              '- No Crystal runtime dependency.',
+              '- No WebSocket/gameplay authority is fabricated in Step 1.',
+              '- The PLAYER marker is diagnostic only; real Zircon frames enter in Step 2/4.',
+              '',
+              '## Source audit checks',
+              '',
+              '| Check | Result | Details |',
+              '|---|---|---|',
+          ])
+          for item in audit.get('checks', []):
+              detail = str(item.get('details', '')).replace('|', '\\|')
+              result = 'PASS' if item.get('pass') else 'FAIL'
+              lines.append(f'| {item.get("name", "unknown")} | {result} | {detail} |')
+          lines.extend([
+              '',
+              '## What this PASS proves',
+              '',
+              'A browser runtime exists and can execute a deterministic local PlayerObject preview with the native Zircon action/direction contract. It does **not** yet prove real map rendering, native sprite rendering, WebSocket transport, server-authoritative movement, combat or login.',
+              '',
+              'Next approved runtime block: **Step 2 — Zircon asset pipeline**.',
+          ])
+          Path('docs/generated/ORIGINS_DXR_WEB_RUNTIME_STEP1.md').write_text('\n'.join(lines) + '\n', encoding='utf-8')
+          Path('artifacts/web-runtime/gate.txt').write_text(gate + '\n', encoding='utf-8')
+          print(gate)
+          PY
+
+      - name: Commit evidence report
+        if: always()
+        shell: bash
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -- docs/generated/ORIGINS_DXR_WEB_RUNTIME_STEP1.md
+          if git diff --cached --quiet; then
+            echo 'Evidence report unchanged.'
+          else
+            git commit -m 'audit(dxr): record web runtime Step 1'
+            git push origin HEAD:Origins-DxR
+          fi
+
+      - name: Enforce Step 1 gate
+        if: always()
+        shell: bash
+        run: |
+          test -f artifacts/web-runtime/gate.txt
+          test "$(cat artifacts/web-runtime/gate.txt | tr -d '\r\n')" = 'PASS'
