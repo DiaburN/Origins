@@ -1,0 +1,69 @@
+name: Origins DxR - Bichon Renderer Compile Check
+
+on:
+  push:
+    branches: [Origins-DxR]
+    paths:
+      - 'tools/zircon-map-renderer/**'
+      - '.github/workflows/origins-dxr-bichon-renderer-compile-check.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  check:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+      - name: Bootstrap
+        id: bootstrap
+        continue-on-error: true
+        shell: pwsh
+        run: ./scripts/bootstrap-zircon.ps1
+      - name: Managed DXT
+        id: dxt
+        if: steps.bootstrap.outcome == 'success'
+        continue-on-error: true
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force artifacts/render-compile | Out-Null
+          python scripts/prepare-zircon-libraryeditor-managed-dxt.py --zircon-root vendor/zircon --report artifacts/render-compile/dxt.json
+      - name: Build renderer
+        id: build
+        if: steps.dxt.outcome == 'success'
+        continue-on-error: true
+        shell: pwsh
+        run: dotnet build tools/zircon-map-renderer/ZirconMapRenderer.csproj -c Release -p:Platform=AnyCPU
+      - name: Write and commit status
+        if: always()
+        shell: pwsh
+        env:
+          BOOTSTRAP: ${{ steps.bootstrap.outcome }}
+          DXT: ${{ steps.dxt.outcome }}
+          BUILD: ${{ steps.build.outcome }}
+        run: |
+          New-Item -ItemType Directory -Force docs/generated | Out-Null
+          $gate = if ($env:BOOTSTRAP -eq 'success' -and $env:DXT -eq 'success' -and $env:BUILD -eq 'success') { 'PASS' } else { 'FAIL' }
+          @"
+          # ORIGINS-DxR — Bichon Renderer Compile Check
+
+          - Gate: **$gate**
+          - HEAD: ``$env:GITHUB_SHA``
+          - Bootstrap: **$env:BOOTSTRAP**
+          - Managed DXT: **$env:DXT**
+          - Renderer build: **$env:BUILD**
+          "@ | Set-Content docs/generated/ORIGINS_DXR_BICHON_RENDERER_COMPILE.md -Encoding utf8
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add docs/generated/ORIGINS_DXR_BICHON_RENDERER_COMPILE.md
+          if (-not (git diff --cached --quiet)) {
+            git commit -m 'audit(map): record Bichon renderer compile status'
+            git pull --rebase origin Origins-DxR
+            git push origin HEAD:Origins-DxR
+          }
