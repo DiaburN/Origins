@@ -1,0 +1,209 @@
+name: Origins DxR - Import Zircon Base Humans
+
+on:
+  push:
+    branches: [Origins-DxR]
+    paths:
+      - 'scripts/fetch-zircon-base-humans.ps1'
+      - 'tools/zircon-web-asset-exporter/**'
+      - 'apps/origins-web-runtime/player-sprite-runtime.js'
+      - 'apps/origins-web-runtime/player-animation-runtime.js'
+      - '.github/workflows/origins-dxr-base-human-import.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: origins-dxr-base-human-import-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  ZIRCON_COMMIT: cbf1aa919083bc13fc3f23f93772a8ab8370632d
+  CONTRACT_JSON: apps/origins-web-runtime/generated/zircon-player-asset-contract.json
+  RAW_ROOT: runtime-assets/zircon
+  WEB_ASSET_ROOT: artifacts/base-human-import/web-assets/player
+
+jobs:
+  import-base-humans:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout Origins-DxR
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup .NET 10
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Bootstrap pinned Zircon
+        shell: pwsh
+        run: |
+          ./scripts/bootstrap-zircon.ps1
+          $actual = (git -C vendor/zircon rev-parse HEAD).Trim()
+          if ($actual -ne $env:ZIRCON_COMMIT) { throw "Pinned Zircon mismatch: $actual" }
+
+      - name: Fetch official M-Hum + WM-Hum
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force artifacts/base-human-import | Out-Null
+          ./scripts/fetch-zircon-base-humans.ps1 `
+            -ZirconRoot vendor/zircon `
+            -OutputRoot $env:RAW_ROOT `
+            -ReportPath artifacts/base-human-import/fetch.json
+
+      - name: Build ZL atlas exporter
+        shell: pwsh
+        run: |
+          dotnet build tools/zircon-web-asset-exporter/ZirconWebAssetExporter.csproj `
+            -c Release -p:Platform=AnyCPU
+
+      - name: Export both genders to browser atlases
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force $env:WEB_ASSET_ROOT | Out-Null
+          dotnet run --project tools/zircon-web-asset-exporter/ZirconWebAssetExporter.csproj `
+            -c Release -p:Platform=AnyCPU --no-build -- `
+            --contract $env:CONTRACT_JSON `
+            --source-root $env:RAW_ROOT `
+            --output-root $env:WEB_ASSET_ROOT `
+            --base-humans
+
+      - name: Validate generated pair and measure payload
+        shell: pwsh
+        run: |
+          @'
+          import json
+          from pathlib import Path
+
+          root = Path('artifacts/base-human-import/web-assets/player')
+          master = json.loads((root / 'player-assets.json').read_text(encoding='utf-8-sig'))
+          libs = {row['libraryFile']: row for row in master['libraries']}
+          required = {'M_Hum', 'WM_Hum'}
+          if set(libs) != required:
+              raise SystemExit(f'Expected exactly {required}, got {set(libs)}')
+
+          rows = []
+          for name in ['M_Hum', 'WM_Hum']:
+              manifest_path = root / libs[name]['manifest']
+              manifest = json.loads(manifest_path.read_text(encoding='utf-8-sig'))
+              pages = [manifest_path.parent / page for page in manifest['pages']]
+              if not pages or any(not page.exists() or page.stat().st_size == 0 for page in pages):
+                  raise SystemExit(f'{name}: missing/empty atlas page')
+              if manifest['exportedImageCount'] <= 0:
+                  raise SystemExit(f'{name}: no exported images')
+              rows.append({
+                  'libraryFile': name,
+                  'imageCount': manifest['imageCount'],
+                  'exportedImageCount': manifest['exportedImageCount'],
+                  'pageCount': len(pages),
+                  'atlasBytes': sum(page.stat().st_size for page in pages),
+                  'manifestBytes': manifest_path.stat().st_size,
+                  'sourceSha256': manifest['sourceSha256'],
+              })
+
+          total = sum(path.stat().st_size for path in root.rglob('*') if path.is_file())
+          out = {
+              'schema': 'origins.zircon.base-human-import-validation.v1',
+              'status': 'PASS',
+              'libraries': rows,
+              'webAssetBytes': total,
+          }
+          Path('artifacts/base-human-import/validation.json').write_text(json.dumps(out, indent=2) + '\n', encoding='utf-8')
+          print(json.dumps(out, indent=2))
+          '@ | python -
+
+      - name: Build runnable web preview bundle
+        shell: pwsh
+        run: |
+          $preview = 'artifacts/base-human-import/preview'
+          New-Item -ItemType Directory -Force $preview | Out-Null
+          Copy-Item apps/origins-web-runtime/* $preview -Recurse -Force
+          $dest = Join-Path $preview 'assets/player'
+          New-Item -ItemType Directory -Force $dest | Out-Null
+          Copy-Item "$env:WEB_ASSET_ROOT/*" $dest -Recurse -Force
+
+      - name: Write import evidence
+        shell: pwsh
+        run: |
+          @'
+          import json
+          import os
+          from pathlib import Path
+
+          fetch = json.loads(Path('artifacts/base-human-import/fetch.json').read_text(encoding='utf-8-sig'))
+          validation = json.loads(Path('artifacts/base-human-import/validation.json').read_text(encoding='utf-8-sig'))
+          by_name = {row['libraryFile']: row for row in validation['libraries']}
+          fetched = {row['libraryFile']: row for row in fetch['libraries']}
+          lines = [
+              '# ORIGINS-DxR — Zircon Base Human Import',
+              '',
+              '- Import gate: **PASS**',
+              '- Source: **official Zircon launcher patch host**',
+              f'- Patch host: `{fetch["patchHost"]}`',
+              f'- Zircon authority: `{os.environ["ZIRCON_COMMIT"]}`',
+              f'- Origins-DxR HEAD tested: `{os.environ.get("GITHUB_SHA", "unknown")}`',
+              '- Runtime pair: **M_Hum + WM_Hum READY in generated preview artifact**',
+              '',
+              '## Imported libraries',
+              '',
+          ]
+          for name in ['M_Hum', 'WM_Hum']:
+              f = fetched[name]
+              v = by_name[name]
+              lines += [
+                  f'### {name}',
+                  f'- Source path: `{f["sourcePath"]}`',
+                  f'- Raw bytes: **{f["bytes"]}**',
+                  f'- Raw SHA-256: `{f["sha256"]}`',
+                  f'- Images in ZL: **{v["imageCount"]}**',
+                  f'- Exported images: **{v["exportedImageCount"]}**',
+                  f'- Atlas pages: **{v["pageCount"]}**',
+                  f'- Atlas PNG bytes: **{v["atlasBytes"]}**',
+                  '',
+              ]
+          lines += [
+              '## Web result',
+              '',
+              f'- Generated browser asset payload: **{validation["webAssetBytes"]} bytes**',
+              '- `player-assets.json` contains exactly `M_Hum` and `WM_Hum`.',
+              '- The preview bundle contains the current ORIGINS web runtime plus generated `assets/player/` atlases.',
+              '- Raw `.Zl` files are build inputs only and are not committed to the repository.',
+              '- No Crystal fallback is used.',
+          ]
+          Path('docs/generated/ORIGINS_DXR_BASE_HUMAN_IMPORT.md').write_text('\n'.join(lines) + '\n', encoding='utf-8')
+          '@ | python -
+
+      - name: Upload runnable base-human preview
+        uses: actions/upload-artifact@v4
+        with:
+          name: origins-dxr-base-humans-preview
+          path: artifacts/base-human-import/preview/
+          if-no-files-found: error
+          compression-level: 6
+
+      - name: Upload import evidence and manifests
+        uses: actions/upload-artifact@v4
+        with:
+          name: origins-dxr-base-human-import-evidence
+          path: |
+            artifacts/base-human-import/fetch.json
+            artifacts/base-human-import/validation.json
+            artifacts/base-human-import/web-assets/player/player-assets.json
+            artifacts/base-human-import/web-assets/player/M_Hum/manifest.json
+            artifacts/base-human-import/web-assets/player/WM_Hum/manifest.json
+          if-no-files-found: error
+
+      - name: Commit evidence only
+        shell: pwsh
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -- docs/generated/ORIGINS_DXR_BASE_HUMAN_IMPORT.md
+          if (-not (git diff --cached --quiet)) {
+            git commit -m 'audit(dxr): record real M-Hum and WM-Hum import'
+            git pull --rebase origin Origins-DxR
+            git push origin HEAD:Origins-DxR
+          }
