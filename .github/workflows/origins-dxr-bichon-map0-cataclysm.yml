@@ -45,11 +45,20 @@ jobs:
           ./scripts/bootstrap-zircon.sh
           actual="$(git -C vendor/zircon rev-parse HEAD)"
           test "$actual" = "$ZIRCON_COMMIT"
-          grep -F 'public static string MapPath { get; set; } = @".\\Map\\";' vendor/zircon/ServerLibrary/Envir/Config.cs
-          grep -F '[0] = LibraryFile.Tilesc' vendor/zircon/LibraryCore/Libraries.cs
-          grep -F '[9] = LibraryFile.Wallsc' vendor/zircon/LibraryCore/Libraries.cs
-          grep -F 'Width = fileBytes[23] << 8 | fileBytes[22];' vendor/zircon/ServerLibrary/Models/Map.cs
-          grep -F 'int offSet = 28 + Width * Height / 4 * 3;' vendor/zircon/ServerLibrary/Models/Map.cs
+          python - <<'PY'
+          from pathlib import Path
+          config=Path('vendor/zircon/ServerLibrary/Envir/Config.cs').read_text(encoding='utf-8-sig')
+          libraries=Path('vendor/zircon/LibraryCore/Libraries.cs').read_text(encoding='utf-8-sig')
+          map_source=Path('vendor/zircon/ServerLibrary/Models/Map.cs').read_text(encoding='utf-8-sig')
+          assert 'public static string MapPath' in config and 'Map' in config
+          assert '[0] = LibraryFile.Tilesc' in libraries
+          assert '[9] = LibraryFile.Wallsc' in libraries
+          assert 'Width = fileBytes[23] << 8 | fileBytes[22];' in map_source
+          assert 'Height = fileBytes[25] << 8 | fileBytes[24];' in map_source
+          assert 'int offSet = 28 + Width * Height / 4 * 3;' in map_source
+          assert '(fileBytes[offSet] & 0x01) != 0x01 || (fileBytes[offSet] & 0x02) != 0x02' in map_source
+          print('Pinned Zircon native map source contract: PASS')
+          PY
 
       - name: Validate Bichon builder syntax
         id: syntax
@@ -79,7 +88,7 @@ jobs:
               for host in hosts:
                   url=host+urllib.parse.quote(patch, safe='-_.()')
                   try:
-                      req=urllib.request.Request(url,headers={'User-Agent':'ORIGINS-DxR-BichonMapBuilder/1.2'})
+                      req=urllib.request.Request(url,headers={'User-Agent':'ORIGINS-DxR-BichonMapBuilder/1.3'})
                       with urllib.request.urlopen(req,timeout=45) as response:
                           compressed=response.read()
                       if not compressed.startswith(b'\x1f\x8b'):
