@@ -18,6 +18,7 @@ import {
   drawResolvedFrame,
   resolveBaseHumanLibrary,
 } from './player-sprite-runtime.js';
+import { resolvePlayerVisualComposition } from './player-visual-runtime.js';
 
 const canvas = document.querySelector('#game-canvas');
 const ctx = canvas.getContext('2d', { alpha: false });
@@ -41,6 +42,14 @@ const requestedPreviewGender = previewParams.get('gender');
 const requestedDirection = parseIntegerInRange(previewParams.get('direction'), 0, 7, null);
 const requestedArmourShape = parseIntegerInRange(previewParams.get('armourShape'), 0, 10, 0);
 const requestedAnimation = validateAnimationName(previewParams.get('animation'));
+const requestedHairType = parseIntegerInRange(previewParams.get('hairType'), 0, 9999, 0);
+const requestedHelmetShape = parseIntegerInRange(previewParams.get('helmetShape'), 0, 99999, 0);
+const requestedWeaponShape = previewParams.has('weaponShape')
+  ? parseIntegerInRange(previewParams.get('weaponShape'), 0, 99999, null)
+  : null;
+const requestedShieldShape = previewParams.has('shieldShape')
+  ? parseIntegerInRange(previewParams.get('shieldShape'), 0, 99999, -1)
+  : -1;
 
 const player = new PreviewPlayerObject({
   x: 32,
@@ -55,6 +64,11 @@ const camera = { x: 0, y: 0 };
 const visualState = {
   gender: requestedPreviewGender === 'Female' ? 'Female' : 'Male',
   armourShape: requestedArmourShape,
+  hairType: requestedHairType,
+  helmetShape: requestedHelmetShape,
+  libraryWeaponShape: requestedWeaponShape ?? 0,
+  weaponEquipped: requestedWeaponShape !== null,
+  shieldShape: requestedShieldShape,
   forcedAnimation: requestedAnimation,
   forcedDirection: requestedDirection,
   actionName: null,
@@ -71,11 +85,13 @@ setRenderDiagnostics({
   animation: visualState.animation,
   direction: visualState.forcedDirection ?? player.direction,
   realFrameDrawn: false,
+  visibleLayers: [],
+  ...getEquipmentDiagnostics(),
 });
 
 runtimeValue.textContent = RUNTIME_MODE.PreviewLocal;
 sourceValue.textContent = ZIRCON_SOURCE_COMMIT.slice(0, 12);
-assetValue.textContent = 'probing M-Hum + WM-Hum';
+assetValue.textContent = 'probing Zircon player assets';
 serverValue.textContent = 'disconnected by design (local visual runtime)';
 
 void initializePlayerAssets();
@@ -92,7 +108,7 @@ async function initializePlayerAssets() {
     return;
   }
 
-  assetValue.textContent = 'M-Hum + WM-Hum READY';
+  assetValue.textContent = 'Zircon player assets READY • equipment on demand';
   await prewarmBaseHumanPreviewFrames();
 }
 
@@ -295,8 +311,28 @@ function resolveBodyImageIndex(drawFrame, armourShape = visualState.armourShape)
   }).body;
 }
 
-function resolvePreviewBodyImageIndex(snapshot, timestamp) {
-  return resolveBodyImageIndex(resolvePreviewBaseDrawFrame(snapshot, timestamp));
+function resolvePreviewComposition(snapshot, timestamp) {
+  const drawFrame = resolvePreviewBaseDrawFrame(snapshot, timestamp);
+  if (drawFrame === null) return null;
+  const direction = visualState.forcedDirection ?? snapshot.direction;
+  return resolvePlayerVisualComposition({
+    drawFrame,
+    direction,
+    animation: visualState.animation,
+    playerClass: 'Warrior',
+    gender: visualState.gender,
+    armourShape: visualState.armourShape,
+    costumeShape: -1,
+    helmetShape: visualState.helmetShape,
+    hairType: visualState.hairType,
+    libraryWeaponShape: visualState.libraryWeaponShape,
+    weaponEquipped: visualState.weaponEquipped,
+    shieldShape: visualState.shieldShape,
+    horseShape: 0,
+    horseType: 0,
+    drawWeapon: true,
+    hideHead: false,
+  });
 }
 
 function drawPlayer(snapshot, timestamp) {
@@ -304,25 +340,46 @@ function drawPlayer(snapshot, timestamp) {
   const y = player.y * WORLD.tile - camera.y;
 
   if (visualState.pairStatus === PLAYER_ASSET_STATUS.Ready) {
-    const imageIndex = resolvePreviewBodyImageIndex(snapshot, timestamp);
-    if (imageIndex !== null) {
-      const library = resolveBaseHumanLibrary(visualState.gender);
-      const resolved = spriteStore.peekFrame(library, imageIndex);
-      if (resolved) {
+    const composition = resolvePreviewComposition(snapshot, timestamp);
+    if (composition) {
+      let bodyDrawn = false;
+      const visibleLayers = [];
+      const missingLayers = [];
+      let bodyImageIndex = null;
+      let bodyLibrary = resolveBaseHumanLibrary(visualState.gender);
+
+      for (const layer of composition.layers) {
+        const resolved = spriteStore.peekFrame(layer.libraryFile, layer.imageIndex);
+        if (!resolved) {
+          missingLayers.push(layer.layer);
+          void spriteStore.requestFrame(layer.libraryFile, layer.imageIndex);
+          continue;
+        }
         drawResolvedFrame(ctx, resolved, x, y);
+        visibleLayers.push(layer.layer);
+        if (layer.layer === 'body') {
+          bodyDrawn = true;
+          bodyImageIndex = layer.imageIndex;
+          bodyLibrary = layer.libraryFile;
+        }
+      }
+
+      if (bodyDrawn) {
         setRenderDiagnostics({
           previewGender: visualState.gender,
           pairStatus: visualState.pairStatus,
-          playerLibrary: library,
+          playerLibrary: bodyLibrary,
           armourShape: visualState.armourShape,
           animation: visualState.animation,
           direction: visualState.forcedDirection ?? snapshot.direction,
           realFrameDrawn: true,
-          imageIndex,
+          imageIndex: bodyImageIndex,
+          visibleLayers,
+          missingLayers,
+          ...getEquipmentDiagnostics(),
         });
         return;
       }
-      void spriteStore.requestFrame(library, imageIndex);
     }
   }
 
@@ -331,6 +388,8 @@ function drawPlayer(snapshot, timestamp) {
     animation: visualState.animation,
     direction: visualState.forcedDirection ?? snapshot.direction,
     realFrameDrawn: false,
+    visibleLayers: [],
+    ...getEquipmentDiagnostics(),
   });
   drawDiagnosticPlayer(snapshot, x, y);
 }
@@ -355,12 +414,10 @@ function drawDiagnosticPlayer(snapshot, x, y) {
   ctx.fill();
   ctx.stroke();
 
-  ctx.strokeStyle = '#f6efda';
-  ctx.lineWidth = 3;
+  ctx.fillStyle = '#f6efda';
   ctx.beginPath();
-  ctx.moveTo(dx * 12, dy * 12 - 4);
-  ctx.lineTo(dx * 25, dy * 25 - 4);
-  ctx.stroke();
+  ctx.arc(dx * 22, dy * 22 - 4, 3.5, 0, Math.PI * 2);
+  ctx.fill();
 
   ctx.fillStyle = '#e9d7a0';
   ctx.font = '11px ui-monospace, SFMono-Regular, Menlo, monospace';
@@ -373,18 +430,19 @@ function drawDiagnosticPlayer(snapshot, x, y) {
 
 function drawHud(viewWidth) {
   ctx.fillStyle = 'rgba(0,0,0,0.72)';
-  ctx.fillRect(12, 12, Math.min(500, viewWidth - 24), 84);
+  ctx.fillRect(12, 12, Math.min(570, viewWidth - 24), 100);
   ctx.strokeStyle = '#604a23';
-  ctx.strokeRect(12.5, 12.5, Math.min(499, viewWidth - 25), 83);
+  ctx.strokeRect(12.5, 12.5, Math.min(569, viewWidth - 25), 99);
 
   ctx.fillStyle = '#e7c875';
   ctx.font = 'bold 13px ui-monospace, SFMono-Regular, Menlo, monospace';
-  ctx.fillText('ORIGINS WEB RUNTIME — PLAYER ASSETS STEP 2', 24, 35);
+  ctx.fillText('ORIGINS WEB RUNTIME — PLAYER VISUAL COMPOSITION', 24, 35);
   ctx.fillStyle = '#aaa397';
   ctx.font = '11px ui-monospace, SFMono-Regular, Menlo, monospace';
-  ctx.fillText('Native Zircon timing • M-Hum male • WM-Hum female • 8 directions', 24, 55);
+  ctx.fillText('Native Zircon timing • real atlas layers • 8 directions', 24, 55);
   ctx.fillText(`Body bank: ArmourShape ${visualState.armourShape} (${visualState.armourShape * 5000} shift)`, 24, 70);
   ctx.fillText(`Animation: ${visualState.animation}${visualState.forcedAnimation ? ' [QA override]' : ''}`, 24, 85);
+  ctx.fillText(`Equipment: weapon ${visualState.weaponEquipped ? 'ON' : 'OFF'} • helmet ${visualState.helmetShape > 0 ? 'ON' : 'OFF'} • shield ${visualState.shieldShape >= 0 ? 'ON' : 'OFF'}`, 24, 100);
 }
 
 function render(timestamp) {
@@ -447,6 +505,71 @@ function setPreviewArmourShape(armourShape) {
   setRenderDiagnostics({ armourShape: parsed, realFrameDrawn: false });
 }
 
+function setPreviewEquipment(next = {}) {
+  if (!next || typeof next !== 'object') throw new TypeError('equipment state must be an object');
+
+  if (Object.prototype.hasOwnProperty.call(next, 'hairType')) {
+    const parsed = parseIntegerInRange(next.hairType, 0, 9999, null);
+    if (parsed === null) throw new RangeError(`hairType must be 0..9999: ${next.hairType}`);
+    visualState.hairType = parsed;
+  }
+
+  if (Object.prototype.hasOwnProperty.call(next, 'helmetShape')) {
+    const parsed = parseIntegerInRange(next.helmetShape, 0, 99999, null);
+    if (parsed === null) throw new RangeError(`helmetShape must be 0..99999: ${next.helmetShape}`);
+    visualState.helmetShape = parsed;
+  }
+
+  if (Object.prototype.hasOwnProperty.call(next, 'weaponShape')) {
+    if (next.weaponShape === null || next.weaponShape === undefined || next.weaponShape === '') {
+      visualState.weaponEquipped = false;
+    } else {
+      const parsed = parseIntegerInRange(next.weaponShape, 0, 99999, null);
+      if (parsed === null) throw new RangeError(`weaponShape must be 0..99999 or null: ${next.weaponShape}`);
+      visualState.libraryWeaponShape = parsed;
+      visualState.weaponEquipped = true;
+    }
+  }
+
+  if (Object.prototype.hasOwnProperty.call(next, 'shieldShape')) {
+    if (next.shieldShape === null || next.shieldShape === undefined || next.shieldShape === '' || next.shieldShape === -1) {
+      visualState.shieldShape = -1;
+    } else {
+      const parsed = parseIntegerInRange(next.shieldShape, 0, 99999, null);
+      if (parsed === null) throw new RangeError(`shieldShape must be 0..99999, -1 or null: ${next.shieldShape}`);
+      visualState.shieldShape = parsed;
+    }
+  }
+
+  visualState.animationStartedAt = performance.now();
+  setRenderDiagnostics({ realFrameDrawn: false, ...getEquipmentDiagnostics() });
+}
+
+function clearPreviewEquipment() {
+  visualState.helmetShape = 0;
+  visualState.weaponEquipped = false;
+  visualState.shieldShape = -1;
+  visualState.animationStartedAt = performance.now();
+  setRenderDiagnostics({ realFrameDrawn: false, ...getEquipmentDiagnostics() });
+}
+
+function getPreviewEquipment() {
+  return Object.freeze({
+    hairType: visualState.hairType,
+    helmetShape: visualState.helmetShape,
+    weaponShape: visualState.weaponEquipped ? visualState.libraryWeaponShape : null,
+    shieldShape: visualState.shieldShape >= 0 ? visualState.shieldShape : null,
+  });
+}
+
+function getEquipmentDiagnostics() {
+  return {
+    weaponEquipped: visualState.weaponEquipped,
+    helmetEquipped: visualState.helmetShape > 0,
+    shieldEquipped: visualState.shieldShape >= 0,
+  };
+}
+
 function setPreviewAnimation(animation) {
   if (animation === null || animation === undefined || animation === '') {
     visualState.forcedAnimation = null;
@@ -501,6 +624,11 @@ function setRenderDiagnostics({
   direction,
   realFrameDrawn,
   imageIndex,
+  visibleLayers,
+  missingLayers,
+  weaponEquipped,
+  helmetEquipped,
+  shieldEquipped,
 } = {}) {
   const dataset = document.documentElement.dataset;
   if (previewGender !== undefined) dataset.previewGender = String(previewGender);
@@ -511,6 +639,11 @@ function setRenderDiagnostics({
   if (direction !== undefined) dataset.playerDirection = String(direction);
   if (realFrameDrawn !== undefined) dataset.realFrameDrawn = String(Boolean(realFrameDrawn));
   if (imageIndex !== undefined) dataset.playerImageIndex = String(imageIndex);
+  if (visibleLayers !== undefined) dataset.playerVisibleLayers = visibleLayers.join(',');
+  if (missingLayers !== undefined) dataset.playerMissingLayers = missingLayers.join(',');
+  if (weaponEquipped !== undefined) dataset.playerWeaponEquipped = String(Boolean(weaponEquipped));
+  if (helmetEquipped !== undefined) dataset.playerHelmetEquipped = String(Boolean(helmetEquipped));
+  if (shieldEquipped !== undefined) dataset.playerShieldEquipped = String(Boolean(shieldEquipped));
 }
 
 window.ORIGINS_WEB_RUNTIME = Object.freeze({
@@ -521,6 +654,9 @@ window.ORIGINS_WEB_RUNTIME = Object.freeze({
   setPreviewGender,
   getPreviewArmourShape: () => visualState.armourShape,
   setPreviewArmourShape,
+  getPreviewEquipment,
+  setPreviewEquipment,
+  clearPreviewEquipment,
   getPreviewAnimation: () => visualState.forcedAnimation ?? visualState.animation,
   setPreviewAnimation,
   setPreviewDirection,
