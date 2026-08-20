@@ -39,13 +39,18 @@ jobs:
           dotnet-version: '10.0.x'
 
       - name: Bootstrap pinned Zircon
+        id: bootstrap
+        continue-on-error: true
         shell: pwsh
         run: |
           ./scripts/bootstrap-zircon.ps1
           $actual = (git -C vendor/zircon rev-parse HEAD).Trim()
           if ($actual -ne $env:ZIRCON_COMMIT) { throw "Pinned Zircon mismatch: $actual" }
 
-      - name: Fetch official M-Hum + WM-Hum
+      - name: Fetch M-Hum + WM-Hum from approved MirFiles Zircon hosts
+        id: fetch
+        if: steps.bootstrap.outcome == 'success'
+        continue-on-error: true
         shell: pwsh
         run: |
           New-Item -ItemType Directory -Force artifacts/base-human-import | Out-Null
@@ -55,12 +60,18 @@ jobs:
             -ReportPath artifacts/base-human-import/fetch.json
 
       - name: Build ZL atlas exporter
+        id: build
+        if: steps.fetch.outcome == 'success'
+        continue-on-error: true
         shell: pwsh
         run: |
           dotnet build tools/zircon-web-asset-exporter/ZirconWebAssetExporter.csproj `
             -c Release -p:Platform=AnyCPU
 
       - name: Export both genders to browser atlases
+        id: export
+        if: steps.build.outcome == 'success'
+        continue-on-error: true
         shell: pwsh
         run: |
           New-Item -ItemType Directory -Force $env:WEB_ASSET_ROOT | Out-Null
@@ -72,6 +83,9 @@ jobs:
             --base-humans
 
       - name: Validate generated pair and measure payload
+        id: validate
+        if: steps.export.outcome == 'success'
+        continue-on-error: true
         shell: pwsh
         run: |
           @'
@@ -116,6 +130,9 @@ jobs:
           '@ | python -
 
       - name: Build runnable web preview bundle
+        id: preview
+        if: steps.validate.outcome == 'success'
+        continue-on-error: true
         shell: pwsh
         run: |
           $preview = 'artifacts/base-human-import/preview'
@@ -125,58 +142,102 @@ jobs:
           New-Item -ItemType Directory -Force $dest | Out-Null
           Copy-Item "$env:WEB_ASSET_ROOT/*" $dest -Recurse -Force
 
-      - name: Write import evidence
+      - name: Write import evidence even on failure
+        id: evidence
+        if: always()
         shell: pwsh
         run: |
+          New-Item -ItemType Directory -Force docs/generated | Out-Null
+          New-Item -ItemType Directory -Force artifacts/base-human-import | Out-Null
           @'
           import json
           import os
           from pathlib import Path
 
-          fetch = json.loads(Path('artifacts/base-human-import/fetch.json').read_text(encoding='utf-8-sig'))
-          validation = json.loads(Path('artifacts/base-human-import/validation.json').read_text(encoding='utf-8-sig'))
-          by_name = {row['libraryFile']: row for row in validation['libraries']}
-          fetched = {row['libraryFile']: row for row in fetch['libraries']}
+          outcomes = {
+              'Bootstrap pinned Zircon': '${{ steps.bootstrap.outcome }}',
+              'Fetch M-Hum + WM-Hum': '${{ steps.fetch.outcome }}',
+              'Build ZL exporter': '${{ steps.build.outcome }}',
+              'Export browser atlases': '${{ steps.export.outcome }}',
+              'Validate generated pair': '${{ steps.validate.outcome }}',
+              'Build runnable preview': '${{ steps.preview.outcome }}',
+          }
+          gate = 'PASS' if all(value == 'success' for value in outcomes.values()) else 'FAIL'
+
+          def load(path):
+              p = Path(path)
+              return json.loads(p.read_text(encoding='utf-8-sig')) if p.exists() else {}
+
+          fetch = load('artifacts/base-human-import/fetch.json')
+          validation = load('artifacts/base-human-import/validation.json')
+          by_name = {row.get('libraryFile'): row for row in validation.get('libraries', [])}
+          fetched = {row.get('libraryFile'): row for row in fetch.get('libraries', [])}
+
           lines = [
               '# ORIGINS-DxR — Zircon Base Human Import',
               '',
-              '- Import gate: **PASS**',
-              '- Source: **official Zircon launcher patch host**',
-              f'- Patch host: `{fetch["patchHost"]}`',
+              f'- Import gate: **{gate}**',
               f'- Zircon authority: `{os.environ["ZIRCON_COMMIT"]}`',
               f'- Origins-DxR HEAD tested: `{os.environ.get("GITHUB_SHA", "unknown")}`',
-              '- Runtime pair: **M_Hum + WM_Hum READY in generated preview artifact**',
+              f'- Primary patch host from Zircon: `{fetch.get("primaryPatchHost", "not reached")}`',
+              f'- Fetch status: **{fetch.get("status", "NO_REPORT")}**',
               '',
-              '## Imported libraries',
+              '## CI',
               '',
+              '| Check | Result |',
+              '|---|---|',
           ]
-          for name in ['M_Hum', 'WM_Hum']:
-              f = fetched[name]
-              v = by_name[name]
+          for name, value in outcomes.items():
+              lines.append(f'| {name} | {value} |')
+
+          if fetch.get('failedLibrary'):
+              lines += ['', '## Download failure', '', f'- Failed library: `{fetch["failedLibrary"]}`']
+              for attempt in fetch.get('attempts', []):
+                  lines.append(f'- `{attempt.get("url")}` → **{"PASS" if attempt.get("success") else "FAIL"}** — {attempt.get("error") or "ok"}')
+
+          if gate == 'PASS':
+              lines += ['', '- Runtime pair: **M_Hum + WM_Hum READY in generated preview artifact**', '', '## Imported libraries', '']
+              for name in ['M_Hum', 'WM_Hum']:
+                  f = fetched[name]
+                  v = by_name[name]
+                  lines += [
+                      f'### {name}',
+                      f'- Source path: `{f["sourcePath"]}`',
+                      f'- Downloaded from: `{f["patchUrl"]}`',
+                      f'- Compressed bytes: **{f["compressedBytes"]}**',
+                      f'- Raw bytes: **{f["bytes"]}**',
+                      f'- Raw SHA-256: `{f["sha256"]}`',
+                      f'- Images in ZL: **{v["imageCount"]}**',
+                      f'- Exported images: **{v["exportedImageCount"]}**',
+                      f'- Atlas pages: **{v["pageCount"]}**',
+                      f'- Atlas PNG bytes: **{v["atlasBytes"]}**',
+                      '',
+                  ]
               lines += [
-                  f'### {name}',
-                  f'- Source path: `{f["sourcePath"]}`',
-                  f'- Raw bytes: **{f["bytes"]}**',
-                  f'- Raw SHA-256: `{f["sha256"]}`',
-                  f'- Images in ZL: **{v["imageCount"]}**',
-                  f'- Exported images: **{v["exportedImageCount"]}**',
-                  f'- Atlas pages: **{v["pageCount"]}**',
-                  f'- Atlas PNG bytes: **{v["atlasBytes"]}**',
+                  '## Web result',
                   '',
+                  f'- Generated browser asset payload: **{validation["webAssetBytes"]} bytes**',
+                  '- `player-assets.json` contains exactly `M_Hum` and `WM_Hum`.',
+                  '- Preview contains current ORIGINS web runtime plus generated `assets/player/` atlases.',
+                  '- Raw `.Zl` files are transient build inputs and are not committed.',
+                  '- No Crystal fallback is used.',
               ]
-          lines += [
-              '## Web result',
-              '',
-              f'- Generated browser asset payload: **{validation["webAssetBytes"]} bytes**',
-              '- `player-assets.json` contains exactly `M_Hum` and `WM_Hum`.',
-              '- The preview bundle contains the current ORIGINS web runtime plus generated `assets/player/` atlases.',
-              '- Raw `.Zl` files are build inputs only and are not committed to the repository.',
-              '- No Crystal fallback is used.',
-          ]
+          else:
+              lines += [
+                  '',
+                  '## Boundary',
+                  '',
+                  '- This report does not claim a real sprite import unless every download/export/validation step succeeds.',
+                  '- No Crystal or placeholder artwork is substituted on failure.',
+              ]
+
           Path('docs/generated/ORIGINS_DXR_BASE_HUMAN_IMPORT.md').write_text('\n'.join(lines) + '\n', encoding='utf-8')
+          Path('artifacts/base-human-import/import-gate.txt').write_text(gate + '\n', encoding='utf-8')
+          print(gate)
           '@ | python -
 
       - name: Upload runnable base-human preview
+        if: steps.preview.outcome == 'success'
         uses: actions/upload-artifact@v4
         with:
           name: origins-dxr-base-humans-preview
@@ -184,19 +245,18 @@ jobs:
           if-no-files-found: error
           compression-level: 6
 
-      - name: Upload import evidence and manifests
+      - name: Upload import evidence
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: origins-dxr-base-human-import-evidence
           path: |
-            artifacts/base-human-import/fetch.json
-            artifacts/base-human-import/validation.json
-            artifacts/base-human-import/web-assets/player/player-assets.json
-            artifacts/base-human-import/web-assets/player/M_Hum/manifest.json
-            artifacts/base-human-import/web-assets/player/WM_Hum/manifest.json
-          if-no-files-found: error
+            artifacts/base-human-import/
+            docs/generated/ORIGINS_DXR_BASE_HUMAN_IMPORT.md
+          if-no-files-found: warn
 
-      - name: Commit evidence only
+      - name: Commit evidence report
+        if: always()
         shell: pwsh
         run: |
           git config user.name 'github-actions[bot]'
@@ -207,3 +267,11 @@ jobs:
             git pull --rebase origin Origins-DxR
             git push origin HEAD:Origins-DxR
           }
+
+      - name: Enforce real import gate
+        if: always()
+        shell: pwsh
+        run: |
+          if (-not (Test-Path artifacts/base-human-import/import-gate.txt)) { throw 'Missing base-human import gate.' }
+          $gate = (Get-Content artifacts/base-human-import/import-gate.txt -Raw).Trim()
+          if ($gate -ne 'PASS') { throw "Base-human import gate is $gate" }
