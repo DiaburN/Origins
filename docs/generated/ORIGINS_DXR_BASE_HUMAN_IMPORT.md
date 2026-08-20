@@ -2,7 +2,7 @@
 
 - Import gate: **FAIL**
 - Zircon authority: `cbf1aa919083bc13fc3f23f93772a8ab8370632d`
-- Origins-DxR HEAD tested: `cbe40cbde1efea9b9c0dd423a41b97607907851d`
+- Origins-DxR HEAD tested: `86a501a63f7f1990f49085e1464742e45ae61927`
 - Primary patch host from Zircon: `https://mirfiles.com/resources/mir3/zircon/patch/`
 - Fetch status: **PASS**
 - Export decode path: **managed BCnEncoder BC1/BC3**
