@@ -51,6 +51,7 @@ def main() -> int:
     check(rows, "Player frames are MirAnimation values", all(name in animations for name in frames), f"frames={len(frames)}, enum={len(animations)}")
     check(rows, "Magic animation map extracted", len(magic_map) >= 100, f"cases={len(magic_map)}")
     check(rows, "Core body libraries", {"M_Hum", "WM_Hum", "M_HumA", "WM_HumA"}.issubset(lib_names), ", ".join(sorted(name for name in ["M_Hum", "WM_Hum", "M_HumA", "WM_HumA"] if name in lib_names)))
+    check(rows, "Paired base human libraries", {"M_Hum", "WM_Hum"}.issubset(lib_names), "Male=M_Hum, Female=WM_Hum")
     check(rows, "Player layer library families", all(any(name.startswith(prefix) for name in lib_names) for prefix in ["M_Hair", "M_Weapon", "M_Helmet", "M_Shield", "Horse"]), f"libraries={len(libraries)}")
 
     constants = contract.get("playerConstants", {})
@@ -98,6 +99,9 @@ def main() -> int:
     check(rows, "Exporter reads Zircon Mir3Library", "Mir3Library library = new(source)" in exporter, "LibraryEditor.Mir3Library")
     check(rows, "Exporter preserves image offsets", "OffsetX = image.OffSetX" in exporter and "OffsetY = image.OffSetY" in exporter, "OffSetX/OffSetY -> manifest")
     check(rows, "Exporter writes PNG atlas", "ImageFormat.Png" in exporter and "page_{_pageIndex:000}.png" in exporter, "RGBA atlas pages")
+    check(rows, "Paired base-human exporter profile", "--base-humans" in exporter and '"M_Hum", "WM_Hum"' in exporter, "one export profile for both genders")
+    check(rows, "Browser base-human gender mapping", "Male: 'M_Hum'" in sprite and "Female: 'WM_Hum'" in sprite and "resolveBaseHumanLibrary" in sprite, "gender selects body library only")
+    check(rows, "Browser base-human pair readiness", "getBaseHumanPairStatus" in sprite and "PARTIAL_BASE_HUMANS" in sprite, "partial pair is detectable and not READY")
     check(rows, "Browser applies Zircon offsets", "anchorX + frame.offsetX" in sprite and "anchorY + frame.offsetY" in sprite, "atlas frame offsets used at draw time")
     check(rows, "Browser uses pixel rendering", "imageSmoothingEnabled = false" in sprite, "nearest/pixel rendering")
 
