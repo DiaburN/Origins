@@ -10,6 +10,7 @@ DIRECT_ACTIONS = [
     "RangeAttack", "Spell", "Struck", "Die", "Dead", "Harvest",
 ]
 UNMAPPED_ACTIONS = ["Show", "Hide", "Mount", "Idle"]
+SELECTOR_MAPS = ["ArmourList", "CostumeList", "WeaponList", "ShieldList", "HelmetList"]
 
 
 def check(rows: list[dict], name: str, condition: bool, details: str) -> None:
@@ -41,6 +42,7 @@ def main() -> int:
     animations = contract.get("mirAnimation", {})
     magic_map = contract.get("magicAnimationMap", {})
     libraries = contract.get("playerLibraries", [])
+    selectors = contract.get("playerLibrarySelectors", {})
     lib_names = {row.get("libraryFile") for row in libraries}
 
     check(rows, "Generated contract schema", contract.get("schema") == "origins.zircon.web-player-assets.v1", contract.get("schema", "missing"))
@@ -54,6 +56,12 @@ def main() -> int:
     check(rows, "Female offset", constants.get("FemaleOffSet") == 5000, str(constants.get("FemaleOffSet")))
     check(rows, "Assassin offset", constants.get("AssassinOffSet") == 50000, str(constants.get("AssassinOffSet")))
     check(rows, "Right-hand offset", constants.get("RightHandOffSet") == 50, str(constants.get("RightHandOffSet")))
+
+    check(rows, "All PlayerObject selector dictionaries extracted", all(name in selectors and selectors[name] for name in SELECTOR_MAPS), ", ".join(f"{name}={len(selectors.get(name, {}))}" for name in SELECTOR_MAPS))
+    check(rows, "Male/female body selectors", selectors.get("ArmourList", {}).get("0") == "M_Hum" and selectors.get("ArmourList", {}).get("5000") == "WM_Hum", "M_Hum / WM_Hum")
+    check(rows, "Assassin body selectors", selectors.get("ArmourList", {}).get("50000") == "M_HumA" and selectors.get("ArmourList", {}).get("55000") == "WM_HumA", "M_HumA / WM_HumA")
+    check(rows, "Assassin dual weapon selectors", selectors.get("WeaponList", {}).get("120") == "M_WeaponADL1" and selectors.get("WeaponList", {}).get("170") == "M_WeaponADR1", "ADL/ADR")
+    check(rows, "Web PlayerObject library selection", "resolvePlayerLibrarySelection" in runtime and "ZIRCON_PLAYER_LIBRARY_SELECTORS" in runtime and "rightHandOffset" in runtime, "body/hair/helmet/weapon/shield/horse selection")
 
     formula = "DrawFrame = FrameIndex + CurrentFrame.StartIndex + CurrentFrame.OffSet * (int)Direction;"
     check(rows, "Pinned DrawFrame formula", formula in map_source, formula)
@@ -92,6 +100,7 @@ def main() -> int:
         "frameCount": len(frames),
         "magicAnimationCases": len(magic_map),
         "playerLibraryCount": len(libraries),
+        "selectorCount": sum(len(mapping) for mapping in selectors.values()),
         "checks": rows,
     }
     args.output.parent.mkdir(parents=True, exist_ok=True)
