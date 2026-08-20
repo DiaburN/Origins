@@ -3,7 +3,8 @@
 
 Object member order, indentation, BOM and line endings are irrelevant. Array
 order remains significant because Zircon snapshot collection order is part of
-the deterministic export contract.
+the deterministic export contract. Scalar JSON types are compared strictly so
+0, false and strings can never be treated as equivalent values.
 """
 from __future__ import annotations
 
