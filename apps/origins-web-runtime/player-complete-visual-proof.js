@@ -37,14 +37,14 @@ const CASES = [
     expected: ['WM_Hum', 'WM_Helmet1', 'WM_Weapon1', 'WM_Shield1'],
   },
   {
-    id: 'male-costume-hide', label: 'Male costume 6 — weapon/shield hidden', x: 150, y: 470,
-    context: { drawFrame: STANDING_DOWN, direction: 4, animation: 'Standing', playerClass: 'Warrior', gender: 'Male', costumeShape: 6, hairType: 1, libraryWeaponShape: 0, weaponEquipped: true, shieldShape: 0 },
-    expected: ['M_Costume', 'M_Hair'],
+    id: 'male-costume-hide', label: 'Male costume 10 — weapon/shield hidden', x: 150, y: 470,
+    context: { drawFrame: STANDING_DOWN, direction: 4, animation: 'Standing', playerClass: 'Warrior', gender: 'Male', costumeShape: 10, hairType: 1, libraryWeaponShape: 0, weaponEquipped: true, shieldShape: 0 },
+    expected: ['M_CostumeEx1', 'M_Hair'],
   },
   {
-    id: 'female-costume-hide', label: 'Female costume 6 — weapon/shield hidden', x: 420, y: 470,
-    context: { drawFrame: STANDING_DOWN, direction: 4, animation: 'Standing', playerClass: 'Warrior', gender: 'Female', costumeShape: 6, hairType: 1, libraryWeaponShape: 0, weaponEquipped: true, shieldShape: 0 },
-    expected: ['WM_Costume', 'WM_Hair'],
+    id: 'female-costume-hide', label: 'Female costume 10 — weapon/shield hidden', x: 420, y: 470,
+    context: { drawFrame: STANDING_DOWN, direction: 4, animation: 'Standing', playerClass: 'Warrior', gender: 'Female', costumeShape: 10, hairType: 1, libraryWeaponShape: 0, weaponEquipped: true, shieldShape: 0 },
+    expected: ['WM_CostumeEx1', 'WM_Hair'],
   },
   {
     id: 'male-assassin-dual', label: 'Male Assassin — dual weapon', x: 730, y: 470,
