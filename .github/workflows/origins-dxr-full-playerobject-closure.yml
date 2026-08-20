@@ -1,0 +1,562 @@
+name: Origins DxR - Complete PlayerObject Visual Closure
+
+on:
+  push:
+    branches: [Origins-DxR]
+    paths:
+      - 'scripts/fetch-zircon-player-libraries.py'
+      - 'scripts/prepare-zircon-libraryeditor-managed-dxt.py'
+      - 'scripts/audit-zircon-full-player-web-assets.py'
+      - 'scripts/slice-zircon-web-player-assets.py'
+      - 'tools/zircon-web-asset-exporter/**'
+      - 'tools/zircon-zl-frame-probe/**'
+      - 'apps/origins-web-runtime/player-animation-runtime.js'
+      - 'apps/origins-web-runtime/player-visual-runtime.js'
+      - 'apps/origins-web-runtime/player-sprite-runtime.js'
+      - 'apps/origins-web-runtime/player-complete-visual-proof.html'
+      - 'apps/origins-web-runtime/player-complete-visual-proof.js'
+      - 'apps/origins-web-runtime/generated/zircon-player-asset-contract.json'
+      - 'apps/origins-web-runtime/generated/zircon-player-asset-contract.generated.js'
+      - 'apps/origins-web-runtime/tests/**'
+      - '.github/workflows/origins-dxr-full-playerobject-closure.yml'
+  workflow_dispatch:
+
+permissions:
+  actions: read
+  contents: write
+
+concurrency:
+  group: origins-dxr-full-playerobject-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  ZIRCON_COMMIT: cbf1aa919083bc13fc3f23f93772a8ab8370632d
+  CONTRACT_JSON: apps/origins-web-runtime/generated/zircon-player-asset-contract.json
+  RAW_ROOT: runtime-assets/zircon-full-player
+  WEB_ROOT: artifacts/full-player/web-assets/player
+
+jobs:
+  full-player-export:
+    runs-on: windows-latest
+    timeout-minutes: 180
+    steps:
+      - name: Checkout Origins-DxR
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Bootstrap pinned Zircon
+        id: bootstrap
+        continue-on-error: true
+        shell: pwsh
+        run: |
+          ./scripts/bootstrap-zircon.ps1
+          $actual=(git -C vendor/zircon rev-parse HEAD).Trim()
+          if($actual -ne $env:ZIRCON_COMMIT){ throw "Pinned Zircon mismatch: $actual" }
+
+      - name: Validate tooling syntax and runtime contracts
+        id: tests
+        continue-on-error: true
+        shell: pwsh
+        run: |
+          python -m py_compile scripts/fetch-zircon-player-libraries.py scripts/audit-zircon-full-player-web-assets.py scripts/slice-zircon-web-player-assets.py
+          node --check apps/origins-web-runtime/player-animation-runtime.js
+          node --check apps/origins-web-runtime/player-visual-runtime.js
+          node --check apps/origins-web-runtime/player-sprite-runtime.js
+          node --check apps/origins-web-runtime/player-complete-visual-proof.js
+          Push-Location apps/origins-web-runtime
+          npm test
+          Pop-Location
+
+      - name: Prepare managed DXT decoder for exporter tooling
+        id: manageddxt
+        if: steps.bootstrap.outcome == 'success'
+        continue-on-error: true
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force artifacts/full-player | Out-Null
+          python scripts/prepare-zircon-libraryeditor-managed-dxt.py `
+            --zircon-root vendor/zircon `
+            --report artifacts/full-player/managed-dxt.json
+
+      - name: Fetch all official pinned-Zircon player libraries
+        id: fetch
+        if: steps.manageddxt.outcome == 'success'
+        continue-on-error: true
+        shell: pwsh
+        run: |
+          python scripts/fetch-zircon-player-libraries.py `
+            --zircon-root vendor/zircon `
+            --contract $env:CONTRACT_JSON `
+            --output-root $env:RAW_ROOT `
+            --report artifacts/full-player/fetch.json `
+            --profile all-player-libraries `
+            --workers 8
+          if($LASTEXITCODE -ne 0){ throw "Full player fetch exited $LASTEXITCODE" }
+          $fetch=Get-Content artifacts/full-player/fetch.json -Raw | ConvertFrom-Json
+          if([int]$fetch.selected -ne 137 -or [int]$fetch.ready -ne 137 -or [int]$fetch.missing -ne 0){
+            throw "Expected 137/137 official player libraries; selected=$($fetch.selected) ready=$($fetch.ready) missing=$($fetch.missing)"
+          }
+
+      - name: Build ZL exporter
+        id: exporter
+        if: steps.fetch.outcome == 'success'
+        continue-on-error: true
+        shell: pwsh
+        run: |
+          dotnet build tools/zircon-web-asset-exporter/ZirconWebAssetExporter.csproj -c Release -p:Platform=AnyCPU
+
+      - name: Build body-frame probe
+        id: probe_build
+        if: steps.fetch.outcome == 'success'
+        continue-on-error: true
+        shell: pwsh
+        run: |
+          dotnet build tools/zircon-zl-frame-probe/ZirconZlFrameProbe.csproj -c Release -p:Platform=AnyCPU
+
+      - name: Probe official Fishing payload across every body library
+        id: fishing
+        if: steps.probe_build.outcome == 'success'
+        continue-on-error: true
+        shell: pwsh
+        run: |
+          dotnet run --project tools/zircon-zl-frame-probe/ZirconZlFrameProbe.csproj `
+            -c Release -p:Platform=AnyCPU --no-build -- `
+            --contract $env:CONTRACT_JSON `
+            --source-root $env:RAW_ROOT `
+            --output artifacts/full-player/fishing-probe.json
+          if($LASTEXITCODE -ne 0){ throw "Fishing probe exited $LASTEXITCODE" }
+
+      - name: Export all 137 official player libraries to browser atlases
+        id: export
+        if: steps.exporter.outcome == 'success'
+        continue-on-error: true
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force $env:WEB_ROOT | Out-Null
+          dotnet run --project tools/zircon-web-asset-exporter/ZirconWebAssetExporter.csproj `
+            -c Release -p:Platform=AnyCPU --no-build -- `
+            --contract $env:CONTRACT_JSON `
+            --source-root $env:RAW_ROOT `
+            --output-root $env:WEB_ROOT `
+            --all-player-libraries
+          if($LASTEXITCODE -ne 0){ throw "Full player atlas export exited $LASTEXITCODE" }
+
+      - name: Audit complete exported PlayerObject payload
+        id: audit
+        if: steps.export.outcome == 'success' && steps.fishing.outcome == 'success'
+        continue-on-error: true
+        shell: pwsh
+        run: |
+          python scripts/audit-zircon-full-player-web-assets.py `
+            --contract $env:CONTRACT_JSON `
+            --asset-root $env:WEB_ROOT `
+            --fishing-probe artifacts/full-player/fishing-probe.json `
+            --output artifacts/full-player/full-audit.json
+          if($LASTEXITCODE -ne 0){ throw "Full player asset audit exited $LASTEXITCODE" }
+          $audit=Get-Content artifacts/full-player/full-audit.json -Raw | ConvertFrom-Json
+          if($audit.status -ne 'PASS' -or [int]$audit.libraryCount -ne 137 -or [int]$audit.selectorCount -ne 122 -or [int]$audit.playerAnimationCount -ne 42){
+            throw "Unexpected complete player audit result"
+          }
+
+      - name: Build minimal real-pixel browser proof slice
+        id: slice
+        if: steps.audit.outcome == 'success'
+        continue-on-error: true
+        shell: pwsh
+        run: |
+          $slice='artifacts/full-player/proof-assets/player'
+          $args=@(
+            '--input-root',$env:WEB_ROOT,
+            '--output-root',$slice,
+            '--report','artifacts/full-player/proof-slice.json',
+            '--request','M_Hum:40,2360',
+            '--request','WM_Hum:40,2360',
+            '--request','M_Hair:40',
+            '--request','WM_Hair:40',
+            '--request','M_Helmet1:40',
+            '--request','WM_Helmet1:40',
+            '--request','M_Weapon1:40',
+            '--request','WM_Weapon1:40',
+            '--request','M_Shield1:40',
+            '--request','WM_Shield1:40',
+            '--request','M_CostumeEx1:40',
+            '--request','WM_CostumeEx1:40',
+            '--request','M_HumA:40',
+            '--request','WM_HumA:40',
+            '--request','M_HairA:40',
+            '--request','WM_HairA:40',
+            '--request','M_WeaponADL1:40',
+            '--request','M_WeaponADR1:40',
+            '--request','WM_WeaponADL1:40',
+            '--request','WM_WeaponADR1:40',
+            '--request','HorseDark:2360',
+            '--request','HorseDarkEffect:2360',
+            '--request','HorseRoyal:2360',
+            '--request','HorseRoyalEffect:2360',
+            '--request','HorseBlueDragon:2360'
+          )
+          python scripts/slice-zircon-web-player-assets.py @args
+          if($LASTEXITCODE -ne 0){ throw "Player proof slice failed $LASTEXITCODE" }
+
+      - name: Build runnable complete-player browser proof
+        id: preview
+        if: steps.slice.outcome == 'success'
+        continue-on-error: true
+        shell: pwsh
+        run: |
+          $preview='artifacts/full-player/preview'
+          New-Item -ItemType Directory -Force $preview | Out-Null
+          Copy-Item apps/origins-web-runtime/* $preview -Recurse -Force
+          $dest=Join-Path $preview 'assets/player'
+          if(Test-Path $dest){ Remove-Item $dest -Recurse -Force }
+          New-Item -ItemType Directory -Force $dest | Out-Null
+          Copy-Item 'artifacts/full-player/proof-assets/player/*' $dest -Recurse -Force
+          if(-not (Test-Path (Join-Path $preview 'player-complete-visual-proof.html'))){ throw 'Complete visual proof HTML missing' }
+          if(-not (Test-Path (Join-Path $dest 'player-assets.json'))){ throw 'Proof player-assets.json missing' }
+
+      - name: Collect manifest-only full bundle evidence
+        id: manifests
+        if: steps.audit.outcome == 'success'
+        continue-on-error: true
+        shell: pwsh
+        run: |
+          @'
+          import json,shutil
+          from pathlib import Path
+          src=Path('artifacts/full-player/web-assets/player')
+          dst=Path('artifacts/full-player/manifests')
+          if dst.exists(): shutil.rmtree(dst)
+          dst.mkdir(parents=True)
+          shutil.copy2(src/'player-assets.json',dst/'player-assets.json')
+          master=json.loads((src/'player-assets.json').read_text(encoding='utf-8-sig'))
+          for row in master['libraries']:
+              mp=src/row['manifest']
+              out=dst/row['manifest']
+              out.parent.mkdir(parents=True,exist_ok=True)
+              shutil.copy2(mp,out)
+          print(f'Collected {len(master["libraries"])} manifests.')
+          '@ | python -
+
+      - name: Write full-player export evidence
+        id: evidence
+        if: always()
+        shell: pwsh
+        env:
+          BOOTSTRAP_OUTCOME: ${{ steps.bootstrap.outcome }}
+          TESTS_OUTCOME: ${{ steps.tests.outcome }}
+          DXT_OUTCOME: ${{ steps.manageddxt.outcome }}
+          FETCH_OUTCOME: ${{ steps.fetch.outcome }}
+          EXPORTER_OUTCOME: ${{ steps.exporter.outcome }}
+          PROBE_BUILD_OUTCOME: ${{ steps.probe_build.outcome }}
+          FISHING_OUTCOME: ${{ steps.fishing.outcome }}
+          EXPORT_OUTCOME: ${{ steps.export.outcome }}
+          AUDIT_OUTCOME: ${{ steps.audit.outcome }}
+          SLICE_OUTCOME: ${{ steps.slice.outcome }}
+          PREVIEW_OUTCOME: ${{ steps.preview.outcome }}
+          MANIFESTS_OUTCOME: ${{ steps.manifests.outcome }}
+        run: |
+          New-Item -ItemType Directory -Force artifacts/full-player | Out-Null
+          @'
+          import json,os
+          from pathlib import Path
+          def load(path):
+              p=Path(path)
+              return json.loads(p.read_text(encoding='utf-8-sig')) if p.exists() else {}
+          outcomes={
+            'Bootstrap pinned Zircon':os.environ.get('BOOTSTRAP_OUTCOME'),
+            'Runtime/tooling tests':os.environ.get('TESTS_OUTCOME'),
+            'Managed DXT decoder':os.environ.get('DXT_OUTCOME'),
+            'Fetch 137 official libraries':os.environ.get('FETCH_OUTCOME'),
+            'Build atlas exporter':os.environ.get('EXPORTER_OUTCOME'),
+            'Build body probe':os.environ.get('PROBE_BUILD_OUTCOME'),
+            'Probe Fishing payload':os.environ.get('FISHING_OUTCOME'),
+            'Export 137 browser libraries':os.environ.get('EXPORT_OUTCOME'),
+            'Audit full player payload':os.environ.get('AUDIT_OUTCOME'),
+            'Build proof slice':os.environ.get('SLICE_OUTCOME'),
+            'Build browser preview':os.environ.get('PREVIEW_OUTCOME'),
+            'Collect 137 manifests':os.environ.get('MANIFESTS_OUTCOME'),
+          }
+          fetch=load('artifacts/full-player/fetch.json')
+          audit=load('artifacts/full-player/full-audit.json')
+          fishing=load('artifacts/full-player/fishing-probe.json')
+          gate='PASS' if all(v=='success' for v in outcomes.values()) and fetch.get('ready')==137 and audit.get('status')=='PASS' else 'FAIL'
+          evidence={
+            'schema':'origins.zircon.full-player-export-gate.v1',
+            'status':gate,
+            'head':os.environ.get('GITHUB_SHA'),
+            'zirconCommit':os.environ.get('ZIRCON_COMMIT'),
+            'outcomes':outcomes,
+            'librariesReady':fetch.get('ready'),
+            'librariesRequired':fetch.get('selected'),
+            'selectorCount':audit.get('selectorCount'),
+            'playerAnimationCount':audit.get('playerAnimationCount'),
+            'magicAnimationMappingCount':audit.get('magicAnimationMappingCount'),
+            'totalExportedImages':audit.get('totalExportedImages'),
+            'totalAtlasPngBytes':audit.get('totalAtlasPngBytes'),
+            'categoryCounts':audit.get('categoryCounts'),
+            'maleFullFishingBanks':fishing.get('MaleFullFishingBanks'),
+            'femaleFullFishingBanks':fishing.get('FemaleFullFishingBanks'),
+            'fishingPayloadStatus':(audit.get('fishing') or {}).get('payloadStatus'),
+          }
+          Path('artifacts/full-player/export-gate.json').write_text(json.dumps(evidence,indent=2)+'\n',encoding='utf-8')
+          Path('artifacts/full-player/export-gate.txt').write_text(gate+'\n',encoding='utf-8')
+          print(json.dumps(evidence,indent=2))
+          '@ | python -
+
+      - name: Upload complete-player proof preview
+        if: steps.preview.outcome == 'success'
+        uses: actions/upload-artifact@v4
+        with:
+          name: origins-dxr-full-player-proof-preview
+          path: artifacts/full-player/preview/
+          compression-level: 6
+          if-no-files-found: error
+
+      - name: Upload complete-player export evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: origins-dxr-full-player-export-evidence
+          path: |
+            artifacts/full-player/*.json
+            artifacts/full-player/export-gate.txt
+            artifacts/full-player/manifests/**
+          compression-level: 9
+          if-no-files-found: warn
+
+      - name: Enforce complete-player export gate
+        if: always()
+        shell: pwsh
+        run: |
+          if(-not (Test-Path artifacts/full-player/export-gate.txt)){ throw 'Missing complete-player export gate' }
+          $gate=(Get-Content artifacts/full-player/export-gate.txt -Raw).Trim()
+          if($gate -ne 'PASS'){ throw "Complete-player export gate is $gate" }
+
+  browser-proof:
+    needs: full-player-export
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout Origins-DxR
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Download exact proof preview from this workflow run
+        uses: actions/download-artifact@v4
+        with:
+          name: origins-dxr-full-player-proof-preview
+          path: .qa/preview
+
+      - name: Render complete PlayerObject cases in Chrome
+        id: chrome
+        continue-on-error: true
+        shell: bash
+        run: |
+          set -uo pipefail
+          mkdir -p .qa/browser
+          chrome="$(command -v google-chrome || command -v google-chrome-stable || command -v chromium || true)"
+          if [[ -z "$chrome" ]]; then echo 'Chrome/Chromium missing' > .qa/browser/error.txt; exit 1; fi
+          "$chrome" --version > .qa/browser/chrome-version.txt 2>&1
+          python3 -m http.server 8765 --bind 127.0.0.1 --directory .qa/preview > .qa/browser/http.out.log 2> .qa/browser/http.err.log &
+          server_pid=$!
+          trap 'kill "$server_pid" 2>/dev/null || true' EXIT
+          sleep 2
+          curl --fail --silent --show-error http://127.0.0.1:8765/player-complete-visual-proof.html >/dev/null || exit 1
+          set +e
+          "$chrome" --headless=new --no-sandbox --disable-gpu --disable-dev-shm-usage --hide-scrollbars --window-size=1280,900 --virtual-time-budget=120000 --dump-dom http://127.0.0.1:8765/player-complete-visual-proof.html > .qa/browser/dom.html 2> .qa/browser/chrome.log
+          dom_code=$?
+          "$chrome" --headless=new --no-sandbox --disable-gpu --disable-dev-shm-usage --hide-scrollbars --window-size=1280,900 --virtual-time-budget=120000 --screenshot="$(pwd)/.qa/browser/player-complete.png" http://127.0.0.1:8765/player-complete-visual-proof.html >> .qa/browser/chrome.log 2>&1
+          shot_code=$?
+          set -e
+          if [[ $dom_code -ne 0 || $shot_code -ne 0 || ! -s .qa/browser/player-complete.png ]]; then
+            echo "Chrome failed: dom=$dom_code screenshot=$shot_code" > .qa/browser/error.txt
+            tail -120 .qa/browser/chrome.log >> .qa/browser/error.txt
+            exit 1
+          fi
+          python3 - <<'PY'
+          import json,re
+          from pathlib import Path
+          text=Path('.qa/browser/dom.html').read_text(encoding='utf-8',errors='replace')
+          match=re.search(r'<html\b([^>]*)>',text,re.I|re.S)
+          if not match: raise SystemExit('html tag missing')
+          attrs=dict(re.findall(r'([:\w-]+)="([^"]*)"',match.group(1)))
+          expected={
+            'data-player-complete-status':'PASS',
+            'data-player-complete-case-count':'11',
+            'data-player-complete-no-equipment':'PASS',
+            'data-player-complete-equipment':'PASS',
+            'data-player-complete-costume':'PASS',
+            'data-player-complete-assassin':'PASS',
+            'data-player-complete-horse':'PASS',
+          }
+          for key,value in expected.items():
+              if attrs.get(key)!=value: raise SystemExit(f'{key}: {attrs.get(key)!r} != {value!r}')
+          report={'schema':'origins.zircon.full-player-browser-proof.v1','status':'PASS','caseCount':11,'attributes':{k:attrs.get(k) for k in expected}}
+          Path('.qa/browser/browser.json').write_text(json.dumps(report,indent=2)+'\n',encoding='utf-8')
+          print(json.dumps(report,indent=2))
+          PY
+
+      - name: Write browser failure result if needed
+        if: always()
+        shell: bash
+        run: |
+          if [[ -f .qa/browser/browser.json ]]; then exit 0; fi
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          err=Path('.qa/browser/error.txt').read_text(encoding='utf-8',errors='replace') if Path('.qa/browser/error.txt').exists() else 'Chrome proof did not produce PASS JSON.'
+          Path('.qa/browser/browser.json').write_text(json.dumps({'schema':'origins.zircon.full-player-browser-proof.v1','status':'FAIL','error':err},indent=2)+'\n',encoding='utf-8')
+          PY
+
+      - name: Upload complete PlayerObject browser evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: origins-dxr-full-player-browser-evidence
+          path: .qa/browser/
+          if-no-files-found: error
+
+      - name: Enforce Chrome PlayerObject proof
+        if: always()
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          data=json.loads(Path('.qa/browser/browser.json').read_text())
+          if data.get('status')!='PASS': raise SystemExit(data)
+          PY
+
+  close-playerobject:
+    needs: [full-player-export, browser-proof]
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout Origins-DxR
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Download export evidence
+        uses: actions/download-artifact@v4
+        with:
+          name: origins-dxr-full-player-export-evidence
+          path: .qa/export
+
+      - name: Download browser evidence
+        uses: actions/download-artifact@v4
+        with:
+          name: origins-dxr-full-player-browser-evidence
+          path: .qa/browser
+
+      - name: Write final PlayerObject closure evidence
+        id: closure
+        shell: bash
+        run: |
+          mkdir -p docs/generated .qa/closure
+          python3 - <<'PY'
+          import json,os
+          from pathlib import Path
+          export=json.loads(Path('.qa/export/export-gate.json').read_text(encoding='utf-8-sig'))
+          audit=json.loads(Path('.qa/export/full-audit.json').read_text(encoding='utf-8-sig'))
+          fishing=json.loads(Path('.qa/export/fishing-probe.json').read_text(encoding='utf-8-sig'))
+          browser=json.loads(Path('.qa/browser/browser.json').read_text(encoding='utf-8-sig'))
+          gate='PASS' if export.get('status')=='PASS' and audit.get('status')=='PASS' and browser.get('status')=='PASS' else 'FAIL'
+          female=int(fishing.get('FemaleFullFishingBanks',0))
+          male=int(fishing.get('MaleFullFishingBanks',0))
+          fishing_state='COMPLETE_OFFICIAL_FEMALE_BANK_FOUND' if female>0 else 'UPSTREAM_FEMALE_FISHING_GAP'
+          lines=[
+            '# ORIGINS-DxR — Complete PlayerObject Visual Closure','',
+            f'- Gate: **{gate}**',
+            f'- Origins-DxR HEAD tested: `{export.get("head")}`',
+            f'- Zircon authority: `{export.get("zirconCommit")}`',
+            '- Scope: complete player visual/movement asset stack; **maps are intentionally excluded**.','',
+            '## Closure','',
+            f'- Official Zircon player libraries fetched/exported: **{audit.get("libraryCount")} / {audit.get("expectedLibraryCount")}**.',
+            f'- PlayerObject selector entries resolved to real exported libraries: **{audit.get("selectorCount")} / 122**.',
+            f'- FrameSet.Players animation contracts implemented: **{audit.get("playerAnimationCount")} / 42**.',
+            f'- Magic-to-body animation mappings retained: **{audit.get("magicAnimationMappingCount")}**.',
+            f'- Real browser proof cases drawn: **{browser.get("caseCount")} / 11**.',
+            f'- Exported real images: **{audit.get("totalExportedImages")}** from **{audit.get("totalImageSlots")}** official slots.',
+            f'- Generated atlas PNG payload during gate: **{audit.get("totalAtlasPngBytes")} bytes**.','',
+            '## Player layers covered','',
+            '- Male + female body libraries, including extended armour banks and Assassin bodies.',
+            '- Hair and Assassin hair.',
+            '- Helmets, shields, normal weapons, Assassin one-hand and dual left/right weapons.',
+            '- Costumes for male/female/Assassin, including exact `CostumeShapeHideWeapon` behavior.',
+            '- Horse base, Iron, Silver, Gold, Blue, Dark, Royal and BlueDragon libraries; Dark/Royal native overlays are drawn, BlueDragon overlay remains disabled exactly as pinned Zircon source.',
+            '- Equipment is conditional: no weapon/helmet/shield is rendered unless its equipped state/sentinel says it exists.',
+            '- Direction-dependent weapon/shield depth order and native frame offsets are preserved.','',
+            '## Fishing / upstream pixel coverage','',
+            f'- Male complete Fishing banks found in official payload: **{male}**.',
+            f'- Female complete Fishing banks found in official payload: **{female}**.',
+            f'- Payload classification: **{fishing_state}**.',
+            '- The 42/42 claim is the runtime/source animation contract. Empty official image slots are recorded as upstream payload gaps and are never filled with Crystal, copied male art or generated placeholders.','',
+            '## Browser proof','',
+            '- Male and female with no equipment.',
+            '- Male and female with helmet + weapon + shield.',
+            '- Male and female weapon-hiding costumes.',
+            '- Male and female Assassin dual weapons.',
+            '- Dark horse + effect, Royal horse + effect, and BlueDragon with its upstream-disabled overlay behavior.','',
+            '## Boundary','',
+            '- `PREVIEW_LOCAL` remains explicit: this closure does not claim server-authoritative transport/login/combat.',
+            '- Maps, tiles and collision are not part of this closure and were not touched.',
+            '- Raw `.Zl` and generated atlas PNGs remain build artifacts, not source-controlled binaries.',
+            '- No Crystal runtime or graphical fallback is permitted.',
+          ]
+          Path('docs/generated/ORIGINS_DXR_PLAYEROBJECT_CLOSURE.md').write_text('\n'.join(lines)+'\n',encoding='utf-8')
+          Path('.qa/closure/gate.txt').write_text(gate+'\n',encoding='utf-8')
+          Path('.qa/closure/summary.json').write_text(json.dumps({'status':gate,'head':export.get('head'),'libraries':audit.get('libraryCount'),'selectors':audit.get('selectorCount'),'animations':audit.get('playerAnimationCount'),'browserCases':browser.get('caseCount'),'maleFishingBanks':male,'femaleFishingBanks':female,'fishingPayloadStatus':fishing_state},indent=2)+'\n',encoding='utf-8')
+          print('\n'.join(lines))
+          PY
+
+      - name: Commit non-stale final closure report
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -- docs/generated/ORIGINS_DXR_PLAYEROBJECT_CLOSURE.md
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m 'audit(dxr): close complete PlayerObject visual stack'
+          git fetch origin Origins-DxR
+          remote="$(git rev-parse origin/Origins-DxR)"
+          if [[ "$remote" != "$GITHUB_SHA" ]]; then
+            meaningful="$(git diff --name-only "$GITHUB_SHA" "$remote" | grep -v '^docs/generated/' || true)"
+            if [[ -n "$meaningful" ]]; then
+              echo "Skipping stale closure report because newer functional changes exist:"
+              echo "$meaningful"
+              exit 0
+            fi
+          fi
+          git pull --rebase origin Origins-DxR
+          git push origin HEAD:Origins-DxR
+
+      - name: Upload final closure evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: origins-dxr-playerobject-closure
+          path: |
+            docs/generated/ORIGINS_DXR_PLAYEROBJECT_CLOSURE.md
+            .qa/closure/*
+          if-no-files-found: error
+
+      - name: Enforce final PlayerObject closure
+        if: always()
+        shell: bash
+        run: |
+          test -f .qa/closure/gate.txt
+          [[ "$(tr -d '\r\n' < .qa/closure/gate.txt)" == 'PASS' ]]
