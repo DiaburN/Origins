@@ -60,10 +60,12 @@ jobs:
           set -euo pipefail
           mkdir -p artifacts/bichon/source
           python - <<'PY'
-          import gzip,hashlib,json,os,shutil,urllib.parse,urllib.request
+          import gzip,hashlib,json,os,urllib.parse,urllib.request
           from pathlib import Path
 
-          hosts=[os.environ['PRIMARY_PATCH'],os.environ['MIRROR_PATCH']]
+          # The mirror index is independently verified to expose Map-0/1/7.map.gz.
+          # Fail over to the pinned Launcher's primary host if the mirror is unavailable.
+          hosts=[os.environ['MIRROR_PATCH'],os.environ['PRIMARY_PATCH']]
           targets=[('Map/0.map','0.map'),('Map/1.map','1.map'),('Map/7.map','7.map')]
           rows=[]
           for relative,name in targets:
@@ -74,8 +76,8 @@ jobs:
               for host in hosts:
                   url=host+urllib.parse.quote(patch, safe='-_.()')
                   try:
-                      req=urllib.request.Request(url,headers={'User-Agent':'ORIGINS-DxR-BichonMapBuilder/1.0'})
-                      with urllib.request.urlopen(req,timeout=300) as response:
+                      req=urllib.request.Request(url,headers={'User-Agent':'ORIGINS-DxR-BichonMapBuilder/1.1'})
+                      with urllib.request.urlopen(req,timeout=60) as response:
                           compressed=response.read()
                       if not compressed.startswith(b'\x1f\x8b'):
                           raise RuntimeError('response is not gzip')
@@ -84,13 +86,14 @@ jobs:
                           raise RuntimeError('decompressed map is too short')
                       destination.write_bytes(payload)
                       attempts.append({'url':url,'success':True,'compressedBytes':len(compressed)})
-                      rows.append({'relativePath':relative,'file':name,'url':url,'bytes':len(payload),'sha256':hashlib.sha256(payload).hexdigest().upper()})
+                      rows.append({'relativePath':relative,'file':name,'url':url,'bytes':len(payload),'sha256':hashlib.sha256(payload).hexdigest().upper(),'attempts':attempts})
                       ready=True
                       break
                   except Exception as exc:
                       attempts.append({'url':url,'success':False,'error':f'{type(exc).__name__}: {exc}'})
               if not ready:
                   rows.append({'relativePath':relative,'file':name,'status':'MISSING_REMOTE','attempts':attempts})
+                  Path('artifacts/bichon/fetch.json').write_text(json.dumps({'status':'FAIL','maps':rows},indent=2)+'\n',encoding='utf-8')
                   raise SystemExit(f'Unable to fetch approved Zircon map payload: {relative}')
           Path('artifacts/bichon/fetch.json').write_text(json.dumps({'status':'PASS','maps':rows},indent=2)+'\n',encoding='utf-8')
           PY
