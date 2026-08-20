@@ -4,6 +4,7 @@ on:
   push:
     branches: [Origins-DxR]
     paths:
+      - 'scripts/prepare-zircon-libraryeditor-managed-dxt.py'
       - '.github/workflows/origins-dxr-horse-visual-import.yml'
   workflow_dispatch:
 
