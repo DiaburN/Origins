@@ -1,0 +1,361 @@
+name: Origins DxR - Core Bootstrap
+
+on:
+  push:
+    branches: [Origins-DxR]
+    paths:
+      - '.github/workflows/origins-dxr-core-bootstrap.yml'
+      - 'scripts/**'
+      - 'database/**'
+      - 'src/**'
+      - 'tools/**'
+      - 'vendor/README.md'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: origins-dxr-core-bootstrap-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  ZIRCON_COMMIT: cbf1aa919083bc13fc3f23f93772a8ab8370632d
+
+jobs:
+  core-bootstrap:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout Origins-DxR
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install .NET 10
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Prepare evidence directory
+        shell: pwsh
+        run: New-Item -ItemType Directory -Force -Path artifacts/core-bootstrap | Out-Null
+
+      - name: Bootstrap pinned Zircon
+        id: bootstrap
+        continue-on-error: true
+        shell: pwsh
+        run: |
+          ./scripts/bootstrap-zircon.ps1 *>&1 | Tee-Object -FilePath artifacts/core-bootstrap/bootstrap.log
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          $actual = (git -C vendor/zircon rev-parse HEAD).Trim()
+          if ($actual -ne $env:ZIRCON_COMMIT) {
+            Write-Error "Pinned Zircon mismatch: $actual"
+            exit 1
+          }
+          "Pinned Zircon: $actual" | Add-Content artifacts/core-bootstrap/bootstrap.log
+
+      - name: Reject active Crystal build dependencies
+        id: crystal
+        continue-on-error: true
+        shell: pwsh
+        run: |
+          $hits = git grep -n -i -E 'crystal(-monk)?' -- '*.csproj' '*.sln' '*.props' '*.targets' 'scripts/bootstrap-zircon.ps1' 'scripts/bootstrap-zircon.sh' 2>$null
+          $code = $LASTEXITCODE
+          if ($code -eq 0) {
+            $hits | Tee-Object -FilePath artifacts/core-bootstrap/crystal-active-dependencies.log
+            Write-Error 'Active compile/bootstrap references to Crystal were found.'
+            exit 1
+          }
+          if ($code -eq 1) {
+            'PASS: no active Crystal compile/bootstrap references found.' | Tee-Object -FilePath artifacts/core-bootstrap/crystal-active-dependencies.log
+            exit 0
+          }
+          Write-Error "git grep failed with exit code $code"
+          exit $code
+
+      - name: Build Zircon LibraryCore
+        id: librarycore
+        continue-on-error: true
+        shell: pwsh
+        run: |
+          dotnet build vendor/zircon/LibraryCore/LibraryCore.csproj --configuration Release --nologo *>&1 | Tee-Object -FilePath artifacts/core-bootstrap/librarycore.log
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+      - name: Build Zircon ServerLibrary
+        id: serverlibrary
+        continue-on-error: true
+        shell: pwsh
+        run: |
+          dotnet build vendor/zircon/ServerLibrary/ServerLibrary.csproj --configuration Release --nologo *>&1 | Tee-Object -FilePath artifacts/core-bootstrap/serverlibrary.log
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+      - name: Build Zircon server
+        id: server
+        continue-on-error: true
+        shell: pwsh
+        run: |
+          dotnet build vendor/zircon/Server/Server.csproj --configuration Release --nologo *>&1 | Tee-Object -FilePath artifacts/core-bootstrap/server.log
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+      - name: Build Zircon client
+        id: client
+        continue-on-error: true
+        shell: pwsh
+        run: |
+          dotnet build vendor/zircon/Client/Client.csproj --configuration Release --nologo *>&1 | Tee-Object -FilePath artifacts/core-bootstrap/client.log
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+      - name: Verify four active classes are selectable
+        id: classes
+        continue-on-error: true
+        shell: pwsh
+        run: |
+          $path = 'vendor/zircon/Client/Scenes/SelectScene.cs'
+          $text = Get-Content $path -Raw
+          $required = @(
+            'WarriorButton.MouseClick += (o, e) => SelectedClass = MirClass.Warrior;',
+            'WizardButton.MouseClick += (o, e) => SelectedClass = MirClass.Wizard;',
+            'TaoistButton.MouseClick += (o, e) => SelectedClass = MirClass.Taoist;',
+            'AssassinButton.MouseClick += (o, e) => SelectedClass = MirClass.Assassin;'
+          )
+          $missing = @($required | Where-Object { -not $text.Contains($_) })
+          if ($missing.Count -gt 0) {
+            $missing | Set-Content artifacts/core-bootstrap/class-selection.log
+            Write-Error 'One or more required class selectors are missing.'
+            exit 1
+          }
+          if ($text -match 'ArcherButton|MonkButton') {
+            'Unexpected Archer/Monk selector found in SelectScene.cs' | Set-Content artifacts/core-bootstrap/class-selection.log
+            Write-Error 'Archer/Monk selector unexpectedly active.'
+            exit 1
+          }
+          'PASS: Warrior, Wizard, Taoist and Assassin selectors found; Archer/Monk selectors absent.' | Tee-Object -FilePath artifacts/core-bootstrap/class-selection.log
+
+      - name: Build Origins database tools
+        id: dbtools
+        continue-on-error: true
+        shell: pwsh
+        run: |
+          dotnet build tools/Origins.Database.Import/Origins.Database.Import.csproj --configuration Release --nologo *>&1 | Tee-Object -FilePath artifacts/core-bootstrap/dbtools.log
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          dotnet build tools/Origins.Database.Verify/Origins.Database.Verify.csproj --configuration Release --nologo *>&1 | Tee-Object -FilePath artifacts/core-bootstrap/dbtools.log -Append
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          dotnet build tools/Origins.Database.Export/Origins.Database.Export.csproj --configuration Release --nologo *>&1 | Tee-Object -FilePath artifacts/core-bootstrap/dbtools.log -Append
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+      - name: Rebuild System.db from canonical Zircon snapshot
+        id: rebuilddb
+        continue-on-error: true
+        shell: pwsh
+        run: |
+          Remove-Item -Recurse -Force Database,Backup,SnapshotRebuilt,ZirconMagicAudit -ErrorAction SilentlyContinue
+          New-Item -ItemType Directory -Force Database,Backup,ZirconMagicAudit | Out-Null
+          dotnet run --project tools/Origins.Database.Import/Origins.Database.Import.csproj --configuration Release -- database/generated/zircon-system Database Backup *>&1 | Tee-Object -FilePath artifacts/core-bootstrap/rebuild-system-db.log
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          if (-not (Test-Path Database/System.db)) {
+            Write-Error 'Database/System.db was not produced.'
+            exit 1
+          }
+          Get-Item Database/System.db | Select-Object FullName,Length,LastWriteTimeUtc | Format-List | Add-Content artifacts/core-bootstrap/rebuild-system-db.log
+
+      - name: Verify rebuilt System.db
+        id: verifydb
+        continue-on-error: true
+        shell: pwsh
+        run: |
+          dotnet run --project tools/Origins.Database.Verify/Origins.Database.Verify.csproj --configuration Release -- ./Database ./Backup *>&1 | Tee-Object -FilePath artifacts/core-bootstrap/verify-system-db.log
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+      - name: Verify deterministic MagicInfo round-trip
+        id: roundtrip
+        continue-on-error: true
+        shell: pwsh
+        run: |
+          dotnet run --project tools/Origins.Database.Export/Origins.Database.Export.csproj --configuration Release -- ./Database ./SnapshotRebuilt ./Backup *>&1 | Tee-Object -FilePath artifacts/core-bootstrap/roundtrip.log
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          $canonical = 'database/generated/zircon-system/LibraryCore__Library_SystemModels_MagicInfo.json'
+          $rebuilt = 'SnapshotRebuilt/LibraryCore__Library_SystemModels_MagicInfo.json'
+          if (-not (Test-Path $rebuilt)) { Write-Error 'Round-trip MagicInfo export missing.'; exit 1 }
+          $a = (Get-FileHash $canonical -Algorithm SHA256).Hash
+          $b = (Get-FileHash $rebuilt -Algorithm SHA256).Hash
+          "canonical=$a`nrebuilt=$b" | Add-Content artifacts/core-bootstrap/roundtrip.log
+          if ($a -ne $b) { Write-Error 'MagicInfo round-trip hash mismatch.'; exit 1 }
+
+      - name: Audit four-class MagicType catalog
+        id: catalog
+        continue-on-error: true
+        shell: pwsh
+        run: |
+          python scripts/verify-zircon-four-class-magics.py --source vendor/zircon/LibraryCore/Enum.cs --catalog database/magic/zircon-four-class-magic-types.json *>&1 | Tee-Object -FilePath artifacts/core-bootstrap/magic-catalog.log
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+      - name: Audit four-class MagicInfo rows
+        id: magicdb
+        continue-on-error: true
+        shell: pwsh
+        run: |
+          python scripts/audit-zircon-four-class-db.py --catalog database/magic/zircon-four-class-magic-types.json --magic-info database/generated/zircon-system/LibraryCore__Library_SystemModels_MagicInfo.json --output ZirconMagicAudit/four-class-magic-db-report.json *>&1 | Tee-Object -FilePath artifacts/core-bootstrap/magic-db-audit.log
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+      - name: Audit Zircon runtime magic handlers
+        id: magicruntime
+        continue-on-error: true
+        shell: pwsh
+        run: |
+          python scripts/audit-zircon-four-class-runtime.py --catalog database/magic/zircon-four-class-magic-types.json --magic-info database/generated/zircon-system/LibraryCore__Library_SystemModels_MagicInfo.json --magics-root vendor/zircon/ServerLibrary/Models/Magics --output ZirconMagicAudit/four-class-magic-runtime-report.json *>&1 | Tee-Object -FilePath artifacts/core-bootstrap/magic-runtime-audit.log
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+      - name: Runtime entrypoint/config preflight
+        id: runtimepreflight
+        continue-on-error: true
+        shell: pwsh
+        run: |
+          $checks = @(
+            @{ Path='vendor/zircon/Server/Program.cs'; Token='ConfigReader.Load' },
+            @{ Path='vendor/zircon/Server/Program.cs'; Token='Application.Run(new SMain())' },
+            @{ Path='vendor/zircon/Client/Program.cs'; Token='ConfigReader.Load' },
+            @{ Path='vendor/zircon/Client/Program.cs'; Token='CEnvir.Init(args)' },
+            @{ Path='vendor/zircon/ServerLibrary/Envir/Config.cs'; Token='class Config' }
+          )
+          $failed = @()
+          foreach ($check in $checks) {
+            if (-not (Test-Path $check.Path)) { $failed += "missing file: $($check.Path)"; continue }
+            $content = Get-Content $check.Path -Raw
+            if (-not $content.Contains($check.Token)) { $failed += "missing token '$($check.Token)' in $($check.Path)" }
+          }
+          if (-not (Test-Path Database/System.db)) { $failed += 'missing Database/System.db' }
+          if ($failed.Count -gt 0) {
+            $failed | Tee-Object -FilePath artifacts/core-bootstrap/runtime-preflight.log
+            Write-Error 'Runtime preflight failed.'
+            exit 1
+          }
+          'PASS: server/client entrypoints, server config source and rebuilt System.db are present.' | Tee-Object -FilePath artifacts/core-bootstrap/runtime-preflight.log
+
+      - name: Write core bootstrap evidence report
+        id: report
+        if: always()
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force docs/generated | Out-Null
+          $sourceHead = (git rev-parse HEAD).Trim()
+          $zirconHead = if (Test-Path vendor/zircon/.git) { (git -C vendor/zircon rev-parse HEAD).Trim() } else { 'unavailable' }
+          $systemDb = if (Test-Path Database/System.db) { (Get-Item Database/System.db).Length } else { 0 }
+          $required = @(
+            '${{ steps.bootstrap.outcome }}','${{ steps.crystal.outcome }}','${{ steps.librarycore.outcome }}','${{ steps.serverlibrary.outcome }}',
+            '${{ steps.server.outcome }}','${{ steps.client.outcome }}','${{ steps.classes.outcome }}','${{ steps.dbtools.outcome }}',
+            '${{ steps.rebuilddb.outcome }}','${{ steps.verifydb.outcome }}','${{ steps.roundtrip.outcome }}','${{ steps.catalog.outcome }}',
+            '${{ steps.magicdb.outcome }}','${{ steps.magicruntime.outcome }}','${{ steps.runtimepreflight.outcome }}'
+          )
+          $gate = if ($required -contains 'failure' -or $required -contains 'cancelled' -or $required -contains 'skipped') { 'FAIL' } else { 'PASS' }
+          $report = @"
+          # ORIGINS-DxR core bootstrap status
+
+          - Gate: **$gate**
+          - Origins-DxR source HEAD tested: `$sourceHead`
+          - Zircon expected: `${{ env.ZIRCON_COMMIT }}`
+          - Zircon actual: `$zirconHead`
+          - Runner: `${{ runner.os }}` / `${{ runner.name }}`
+          - UTC: $(Get-Date -AsUTC -Format 'yyyy-MM-ddTHH:mm:ssZ')
+          - Rebuilt `Database/System.db`: $systemDb bytes
+
+          | Check | Result |
+          |---|---|
+          | Bootstrap pinned Zircon | ${{ steps.bootstrap.outcome }} |
+          | No active Crystal build/bootstrap refs | ${{ steps.crystal.outcome }} |
+          | LibraryCore build | ${{ steps.librarycore.outcome }} |
+          | ServerLibrary build | ${{ steps.serverlibrary.outcome }} |
+          | Server build | ${{ steps.server.outcome }} |
+          | Client build | ${{ steps.client.outcome }} |
+          | Four class selectors | ${{ steps.classes.outcome }} |
+          | Origins DB tools build | ${{ steps.dbtools.outcome }} |
+          | System.db rebuild | ${{ steps.rebuilddb.outcome }} |
+          | System.db verify | ${{ steps.verifydb.outcome }} |
+          | MagicInfo deterministic round-trip | ${{ steps.roundtrip.outcome }} |
+          | Four-class MagicType catalog audit | ${{ steps.catalog.outcome }} |
+          | Four-class MagicInfo audit | ${{ steps.magicdb.outcome }} |
+          | Zircon magic runtime handler audit | ${{ steps.magicruntime.outcome }} |
+          | Runtime entrypoint/config preflight | ${{ steps.runtimepreflight.outcome }} |
+
+          ## Scope note
+
+          This gate proves source bootstrap, compilation, canonical System.db reconstruction/verification, four-class selection wiring and static runtime entrypoint/config presence. It does **not** claim a successful interactive GUI login on a hosted Actions runner; entering the world additionally requires the runtime client data/libraries, server runtime configuration and writable user database to be staged.
+          "@
+          Set-Content -Path docs/generated/ORIGINS_DXR_CORE_BOOTSTRAP_STATUS.md -Value $report -Encoding utf8
+
+          $failedLogs = @()
+          $map = @{
+            bootstrap='${{ steps.bootstrap.outcome }}'; crystal='${{ steps.crystal.outcome }}'; librarycore='${{ steps.librarycore.outcome }}';
+            serverlibrary='${{ steps.serverlibrary.outcome }}'; server='${{ steps.server.outcome }}'; client='${{ steps.client.outcome }}';
+            classes='${{ steps.classes.outcome }}'; dbtools='${{ steps.dbtools.outcome }}'; rebuild='${{ steps.rebuilddb.outcome }}';
+            verify='${{ steps.verifydb.outcome }}'; roundtrip='${{ steps.roundtrip.outcome }}'; catalog='${{ steps.catalog.outcome }}';
+            magicdb='${{ steps.magicdb.outcome }}'; magicruntime='${{ steps.magicruntime.outcome }}'; runtime='${{ steps.runtimepreflight.outcome }}'
+          }
+          $logMap = @{
+            bootstrap='bootstrap.log'; crystal='crystal-active-dependencies.log'; librarycore='librarycore.log'; serverlibrary='serverlibrary.log';
+            server='server.log'; client='client.log'; classes='class-selection.log'; dbtools='dbtools.log'; rebuild='rebuild-system-db.log';
+            verify='verify-system-db.log'; roundtrip='roundtrip.log'; catalog='magic-catalog.log'; magicdb='magic-db-audit.log';
+            magicruntime='magic-runtime-audit.log'; runtime='runtime-preflight.log'
+          }
+          foreach ($name in $map.Keys) {
+            if ($map[$name] -eq 'failure') {
+              $log = Join-Path 'artifacts/core-bootstrap' $logMap[$name]
+              Add-Content docs/generated/ORIGINS_DXR_CORE_BOOTSTRAP_STATUS.md "`n## Failure tail: $name`n"
+              if (Test-Path $log) {
+                Add-Content docs/generated/ORIGINS_DXR_CORE_BOOTSTRAP_STATUS.md '```text'
+                Get-Content $log -Tail 40 | Add-Content docs/generated/ORIGINS_DXR_CORE_BOOTSTRAP_STATUS.md
+                Add-Content docs/generated/ORIGINS_DXR_CORE_BOOTSTRAP_STATUS.md '```'
+              } else {
+                Add-Content docs/generated/ORIGINS_DXR_CORE_BOOTSTRAP_STATUS.md '_No log file was produced._'
+              }
+            }
+          }
+
+      - name: Upload bootstrap evidence
+        if: always()
+        continue-on-error: true
+        uses: actions/upload-artifact@v4
+        with:
+          name: origins-dxr-core-bootstrap-${{ github.run_number }}
+          path: |
+            docs/generated/ORIGINS_DXR_CORE_BOOTSTRAP_STATUS.md
+            artifacts/core-bootstrap/
+            Database/System.db
+            Database/import-report.json
+            SnapshotRebuilt/
+            ZirconMagicAudit/
+          if-no-files-found: warn
+
+      - name: Commit evidence report to Origins-DxR
+        id: commitreport
+        if: always()
+        continue-on-error: true
+        shell: pwsh
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add docs/generated/ORIGINS_DXR_CORE_BOOTSTRAP_STATUS.md
+          git diff --cached --quiet
+          if ($LASTEXITCODE -eq 0) {
+            Write-Host 'Evidence report unchanged.'
+            exit 0
+          }
+          git commit -m 'ci(dxr): record core bootstrap status'
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          git push origin HEAD:Origins-DxR
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+      - name: Enforce Phase 1 gate
+        if: always()
+        shell: pwsh
+        run: |
+          $outcomes = @(
+            '${{ steps.bootstrap.outcome }}','${{ steps.crystal.outcome }}','${{ steps.librarycore.outcome }}','${{ steps.serverlibrary.outcome }}',
+            '${{ steps.server.outcome }}','${{ steps.client.outcome }}','${{ steps.classes.outcome }}','${{ steps.dbtools.outcome }}',
+            '${{ steps.rebuilddb.outcome }}','${{ steps.verifydb.outcome }}','${{ steps.roundtrip.outcome }}','${{ steps.catalog.outcome }}',
+            '${{ steps.magicdb.outcome }}','${{ steps.magicruntime.outcome }}','${{ steps.runtimepreflight.outcome }}','${{ steps.report.outcome }}','${{ steps.commitreport.outcome }}'
+          )
+          if ($outcomes -contains 'failure' -or $outcomes -contains 'cancelled' -or $outcomes -contains 'skipped') {
+            Write-Error "Phase 1 gate failed: $($outcomes -join ', ')"
+            exit 1
+          }
+          Write-Host 'Phase 1 core bootstrap gate PASS.'
