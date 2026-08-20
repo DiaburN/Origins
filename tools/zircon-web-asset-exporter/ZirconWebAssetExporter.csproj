@@ -12,4 +12,17 @@
   <ItemGroup>
     <ProjectReference Include="..\..\vendor\zircon\LibraryEditor\LibraryEditor.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <!-- LibraryEditor references these directly, but project-reference transitivity does
+         not reliably copy the native helper into this standalone tool's output. Keep the
+         exact pinned Zircon binaries beside the exporter executable. -->
+    <Reference Include="ManagedSquish">
+      <HintPath>..\..\vendor\zircon\Components\ManagedSquish.dll</HintPath>
+      <Private>true</Private>
+    </Reference>
+    <Reference Include="NativeSquish_x64">
+      <HintPath>..\..\vendor\zircon\Components\NativeSquish_x64.dll</HintPath>
+      <Private>true</Private>
+    </Reference>
+  </ItemGroup>
 </Project>
