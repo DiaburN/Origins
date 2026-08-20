@@ -1,0 +1,229 @@
+name: Origins DxR - Bichon Map 0 Cataclysm Hub
+
+on:
+  push:
+    branches: [Origins-DxR]
+    paths:
+      - 'scripts/build-origins-bichon-cataclysm.py'
+      - 'database/generated/zircon-system/LibraryCore__Library_SystemModels_MapRegion.json'
+      - '.github/workflows/origins-dxr-bichon-map0-cataclysm.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: origins-dxr-bichon-map0-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  ZIRCON_COMMIT: cbf1aa919083bc13fc3f23f93772a8ab8370632d
+  PRIMARY_PATCH: https://mirfiles.com/resources/mir3/zircon/patch/
+  MIRROR_PATCH: https://mirfiles.co.uk/resources/mir3/zircon/patch/
+
+jobs:
+  build-bichon-cataclysm:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout Origins-DxR
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Bootstrap pinned Zircon source authority
+        id: bootstrap
+        run: |
+          set -euo pipefail
+          ./scripts/bootstrap-zircon.sh
+          actual="$(git -C vendor/zircon rev-parse HEAD)"
+          test "$actual" = "$ZIRCON_COMMIT"
+          grep -F 'public static string MapPath { get; set; } = @".\\Map\\";' vendor/zircon/ServerLibrary/Envir/Config.cs
+          grep -F '[0] = LibraryFile.Tilesc' vendor/zircon/LibraryCore/Libraries.cs
+          grep -F '[9] = LibraryFile.Wallsc' vendor/zircon/LibraryCore/Libraries.cs
+          grep -F 'Width = fileBytes[23] << 8 | fileBytes[22];' vendor/zircon/ServerLibrary/Models/Map.cs
+          grep -F 'int offSet = 28 + Width * Height / 4 * 3;' vendor/zircon/ServerLibrary/Models/Map.cs
+
+      - name: Validate Bichon builder syntax
+        id: syntax
+        run: python -m py_compile scripts/build-origins-bichon-cataclysm.py
+
+      - name: Fetch official Zircon map payloads
+        id: fetch
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p artifacts/bichon/source
+          python - <<'PY'
+          import gzip,hashlib,json,os,shutil,urllib.parse,urllib.request
+          from pathlib import Path
+
+          hosts=[os.environ['PRIMARY_PATCH'],os.environ['MIRROR_PATCH']]
+          targets=[('Map/0.map','0.map'),('Map/1.map','1.map'),('Map/7.map','7.map')]
+          rows=[]
+          for relative,name in targets:
+              patch=relative.replace('\\','/').replace('/','-')+'.gz'
+              destination=Path('artifacts/bichon/source')/name
+              attempts=[]
+              ready=False
+              for host in hosts:
+                  url=host+urllib.parse.quote(patch, safe='-_.()')
+                  try:
+                      req=urllib.request.Request(url,headers={'User-Agent':'ORIGINS-DxR-BichonMapBuilder/1.0'})
+                      with urllib.request.urlopen(req,timeout=300) as response:
+                          compressed=response.read()
+                      if not compressed.startswith(b'\x1f\x8b'):
+                          raise RuntimeError('response is not gzip')
+                      payload=gzip.decompress(compressed)
+                      if len(payload)<28:
+                          raise RuntimeError('decompressed map is too short')
+                      destination.write_bytes(payload)
+                      attempts.append({'url':url,'success':True,'compressedBytes':len(compressed)})
+                      rows.append({'relativePath':relative,'file':name,'url':url,'bytes':len(payload),'sha256':hashlib.sha256(payload).hexdigest().upper()})
+                      ready=True
+                      break
+                  except Exception as exc:
+                      attempts.append({'url':url,'success':False,'error':f'{type(exc).__name__}: {exc}'})
+              if not ready:
+                  rows.append({'relativePath':relative,'file':name,'status':'MISSING_REMOTE','attempts':attempts})
+                  raise SystemExit(f'Unable to fetch approved Zircon map payload: {relative}')
+          Path('artifacts/bichon/fetch.json').write_text(json.dumps({'status':'PASS','maps':rows},indent=2)+'\n',encoding='utf-8')
+          PY
+
+      - name: Build native ORIGINS Bichon Cataclysm map
+        id: build
+        run: |
+          set -euo pipefail
+          mkdir -p maps/origins docs/generated artifacts/bichon
+          python scripts/build-origins-bichon-cataclysm.py \
+            --source-map artifacts/bichon/source/0.map \
+            --sea-reference-map artifacts/bichon/source/1.map \
+            --sea-reference-map artifacts/bichon/source/7.map \
+            --map-regions database/generated/zircon-system/LibraryCore__Library_SystemModels_MapRegion.json \
+            --output-map maps/origins/0.map \
+            --report artifacts/bichon/build.json \
+            --preserve-margin 6 \
+            --walkway-width 12 \
+            --coast-variation 2
+
+      - name: Verify native map integrity and write evidence
+        id: evidence
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json,os,struct
+          from pathlib import Path
+          report=json.loads(Path('artifacts/bichon/build.json').read_text())
+          source=Path('artifacts/bichon/source/0.map').read_bytes()
+          output=Path('maps/origins/0.map').read_bytes()
+          assert report['status']=='PASS'
+          assert source[:28]==output[:28]
+          assert len(source)==len(output)
+          assert struct.unpack_from('<H',source,22)==struct.unpack_from('<H',output,22)
+          assert struct.unpack_from('<H',source,24)==struct.unpack_from('<H',output,24)
+          assert report['mutation']['seaCellsBlocked'] is True
+          assert report['mutation']['promenadeCellsPassable'] is True
+          assert report['tiles']['promenade']['library'] != report['tiles']['sea']['library'] or report['tiles']['promenade']['backImage'] != report['tiles']['sea']['backImage']
+
+          town=report['townArea']; geom=report['geometry']; prom=report['tiles']['promenade']; sea=report['tiles']['sea']; mut=report['mutation']
+          lines=[
+            '# ORIGINS-DxR — Bichon Town (0.map) Cataclysm Hub','',
+            '- Gate: **PASS**',
+            f'- Origins-DxR HEAD tested: `{os.environ.get("GITHUB_SHA","unknown")}`',
+            f'- Zircon authority: `{os.environ["ZIRCON_COMMIT"]}`',
+            '- Source MapInfo: **Index 1 / FileName `0` / Bichon Town**',
+            f'- Native dimensions: **{report["source"]["width"]} × {report["source"]["height"]} cells**',
+            f'- Source SHA-256: `{report["source"]["sha256"]}`',
+            f'- ORIGINS map SHA-256: `{report["output"]["sha256"]}`','',
+            '## Cataclysm geometry','',
+            f'- Official `Town Area` cells preserved: **{town["cells"]}**.',
+            f'- `Town Area` bbox: `{town["bbox"]}`.',
+            f'- Preserve box including native walls/context: `{geom["preserveBox"]}`.',
+            f'- Promenade width: **{geom["walkwayWidth"]} cells** beyond the preserve box.',
+            f'- Coast variation: **±{geom["coastVariation"]} cells** at native 2×2 BackTile granularity.',
+            f'- Zone cell counts: `{geom["zoneCellCounts"]}`.','',
+            '## Native Zircon tiles','',
+            f'- Promenade: `BackFile={prom["backFile"]}` → `{prom["library"]}`, `BackImage={prom["backImage"]}`.',
+            '- Promenade selection: dominant non-empty passable ground already used inside Bichon `Town Area`.',
+            f'- Sea: `BackFile={sea["backFile"]}` → `{sea["library"]}`, `BackImage={sea["backImage"]}`.',
+            '- Sea selection: dominant blocked perimeter BackTile sampled from official Zircon maps `1` and `7`; no generated art.',
+            '', '## Native binary / collision guarantees','',
+            f'- Back blocks changed: **{mut["changedBackBlocks"]}**.',
+            f'- Cell records changed: **{mut["changedCells"]}**.',
+            f'- Original passable cells: **{mut["originalPassableCells"]}**.',
+            f'- Modified passable cells: **{mut["modifiedPassableCells"]}**.',
+            '- Ocean cells have Zircon movement bits cleared, so the **server blocks movement over water**.',
+            '- Promenade cells have Zircon movement bits enabled and Middle/Front clutter removed.',
+            '- Width/height, 28-byte header and total binary length are preserved.',
+            '- Everything inside the preserve box is left byte-for-byte as in official Bichon.',
+            '', '## Intent','',
+            '- Bichon becomes the permanent ORIGINS social/hub city.',
+            '- The fortified central city survives the catastrophe.',
+            '- Immediately outside the native wall context is a walkable promenade.',
+            '- Everything beyond the promenade is ocean, using only real Zircon map tiles.',
+            '- Future dungeon/world access will be driven from a central teleport hub rather than overland province exits.',
+            '', '## Next validation boundary','',
+            '- This gate proves native map structure, source provenance and server collision semantics.',
+            '- A source-tile renderer/Chrome map slice is the next visual gate before NPC/teleport placement.'
+          ]
+          Path('docs/generated/ORIGINS_DXR_BICHON_CATACLYSM.md').write_text('\n'.join(lines)+'\n',encoding='utf-8')
+          Path('maps/origins/README.md').write_text(
+            '# ORIGINS native maps\n\n'
+            '`0.map` is the ORIGINS Bichon Cataclysm hub, derived from the official pinned-Zircon `Map/0.map`.\n\n'
+            'It preserves the central Bichon town/wall context, creates a native-tile promenade around it, and replaces the remaining exterior with blocked native Zircon sea tiles. No painted/generated map art is used.\n'
+            'See `docs/generated/ORIGINS_DXR_BICHON_CATACLYSM.md` for the exact build evidence and hashes.\n',
+            encoding='utf-8')
+          PY
+
+      - name: Upload Bichon map evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: origins-dxr-bichon-map0-cataclysm
+          path: |
+            maps/origins/0.map
+            maps/origins/README.md
+            docs/generated/ORIGINS_DXR_BICHON_CATACLYSM.md
+            artifacts/bichon/fetch.json
+            artifacts/bichon/build.json
+          if-no-files-found: warn
+
+      - name: Commit non-stale native Bichon map
+        if: steps.evidence.outcome == 'success'
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -- maps/origins/0.map maps/origins/README.md docs/generated/ORIGINS_DXR_BICHON_CATACLYSM.md
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m 'feat(map): add native Bichon cataclysm hub'
+          git fetch origin Origins-DxR
+          remote="$(git rev-parse origin/Origins-DxR)"
+          if [[ "$remote" != "$GITHUB_SHA" ]]; then
+            meaningful="$(git diff --name-only "$GITHUB_SHA" "$remote" | grep -v '^docs/generated/' || true)"
+            if [[ -n "$meaningful" ]]; then
+              echo "Skipping stale Bichon push because newer functional changes exist: $meaningful"
+              exit 1
+            fi
+          fi
+          git pull --rebase origin Origins-DxR
+          git push origin HEAD:Origins-DxR
+
+      - name: Enforce Bichon map gate
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          test '${{ steps.bootstrap.outcome }}' = 'success'
+          test '${{ steps.syntax.outcome }}' = 'success'
+          test '${{ steps.fetch.outcome }}' = 'success'
+          test '${{ steps.build.outcome }}' = 'success'
+          test '${{ steps.evidence.outcome }}' = 'success'
+          test -s maps/origins/0.map
+          grep -q 'Gate: \*\*PASS\*\*' docs/generated/ORIGINS_DXR_BICHON_CATACLYSM.md
