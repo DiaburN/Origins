@@ -1,0 +1,66 @@
+name: Origins DxR - Magic UI Contract
+
+on:
+  push:
+    branches: [Origins-DxR]
+    paths:
+      - '.github/workflows/origins-dxr-magic-ui.yml'
+      - 'apps/zircon-ui-reference/index.html'
+      - 'apps/zircon-ui-reference/zircon-magic-runtime.js'
+      - 'tools/zircon-ui-importer/augment_magic_bar_reference.py'
+      - 'scripts/audit-zircon-magic-ui-contract.py'
+      - 'database/generated/zircon-system/LibraryCore__Library_SystemModels_MagicInfo.json'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: origins-dxr-magic-ui-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  magic-ui-contract:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Origins-DxR
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Bootstrap pinned Zircon
+        run: bash scripts/bootstrap-zircon.sh
+
+      - name: Verify pinned Zircon HEAD
+        run: test "$(git -C vendor/zircon rev-parse HEAD)" = "cbf1aa919083bc13fc3f23f93772a8ab8370632d"
+
+      - name: Audit MagicDialog + MagicBar authority contract
+        run: >-
+          python3 scripts/audit-zircon-magic-ui-contract.py
+          --repo .
+          --zircon vendor/zircon
+          --json-output artifacts/magic-ui/magic-ui-contract.json
+          --md-output docs/generated/ORIGINS_DXR_MAGIC_UI_STATUS.md
+
+      - name: Publish audit artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: origins-dxr-magic-ui-contract
+          path: |
+            artifacts/magic-ui/magic-ui-contract.json
+            docs/generated/ORIGINS_DXR_MAGIC_UI_STATUS.md
+          if-no-files-found: warn
+
+      - name: Commit generated PASS report
+        if: success()
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -- docs/generated/ORIGINS_DXR_MAGIC_UI_STATUS.md
+          if git diff --cached --quiet; then
+            exit 0
+          fi
+          git commit -m "audit(dxr): record MagicDialog MagicBar authority contract"
+          git push origin HEAD:Origins-DxR
