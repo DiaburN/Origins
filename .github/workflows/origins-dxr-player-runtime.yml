@@ -1,0 +1,84 @@
+name: Origins DxR - Player Runtime Contract
+
+on:
+  push:
+    branches: [Origins-DxR]
+    paths:
+      - '.github/workflows/origins-dxr-player-runtime.yml'
+      - 'scripts/audit-zircon-player-runtime.py'
+      - 'scripts/bootstrap-zircon.sh'
+      - 'scripts/bootstrap-zircon.ps1'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: origins-dxr-player-runtime-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  player-runtime:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout Origins-DxR
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install .NET 10
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Bootstrap pinned Zircon
+        shell: pwsh
+        run: ./scripts/bootstrap-zircon.ps1
+
+      - name: Verify pinned Zircon HEAD
+        shell: pwsh
+        run: |
+          $head = (git -C vendor/zircon rev-parse HEAD).Trim()
+          if ($head -ne 'cbf1aa919083bc13fc3f23f93772a8ab8370632d') { throw "Unexpected Zircon HEAD $head" }
+
+      - name: Build LibraryCore
+        shell: pwsh
+        run: dotnet build vendor/zircon/LibraryCore/LibraryCore.csproj --configuration Release --nologo
+
+      - name: Build ServerLibrary
+        shell: pwsh
+        run: dotnet build vendor/zircon/ServerLibrary/ServerLibrary.csproj --configuration Release --nologo
+
+      - name: Build Client
+        shell: pwsh
+        run: dotnet build vendor/zircon/Client/Client.csproj --configuration Release --nologo
+
+      - name: Audit native player action/animation contracts
+        shell: pwsh
+        run: >-
+          python scripts/audit-zircon-player-runtime.py
+          --repo .
+          --zircon vendor/zircon
+          --json-output artifacts/player-runtime/player-runtime-audit.json
+          --md-output docs/generated/ORIGINS_DXR_PLAYER_RUNTIME_STATUS.md
+
+      - name: Publish player runtime audit
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: origins-dxr-player-runtime
+          path: |
+            artifacts/player-runtime/player-runtime-audit.json
+            docs/generated/ORIGINS_DXR_PLAYER_RUNTIME_STATUS.md
+          if-no-files-found: warn
+
+      - name: Commit generated PASS report
+        if: success()
+        shell: pwsh
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -- docs/generated/ORIGINS_DXR_PLAYER_RUNTIME_STATUS.md
+          if ((git diff --cached --quiet); $LASTEXITCODE -eq 0) { exit 0 }
+          git commit -m "audit(dxr): record native Zircon player runtime"
+          git push origin HEAD:Origins-DxR
