@@ -1,9 +1,9 @@
 # ORIGINS-DxR — Web Player Assets Step 2
 
-- Pipeline gate: **PASS**
-- Real Zircon player payload: **BLOCKED_MISSING_ZL**
+- Pipeline gate: **FAIL**
+- Real Zircon player payload: **UNKNOWN**
 - Real sprite binding status: **BLOCKED_MISSING_ZL**
-- Origins-DxR HEAD tested: b9d2c70302c80bd6faab26cd323be4475f47ab50
+- Origins-DxR HEAD tested: daf503f8ff8a52fd60be7ea519456d75f0c89e10
 - Zircon authority: cbf1aa919083bc13fc3f23f93772a8ab8370632d
 
 ## What is implemented
@@ -27,8 +27,8 @@
 | JavaScript syntax | success |
 | Player animation tests | success |
 | Pinned PlayerObject audit | success |
-| ZL atlas exporter build | success |
-| Player payload probe | success |
+| ZL atlas exporter build | cancelled |
+| Player payload probe | skipped |
 
 ## Contract totals
 
@@ -36,7 +36,7 @@
 - Magic-to-body-animation cases: **124**
 - Player-related Zircon libraries: **137**
 - PlayerObject selector entries: **122**
-- Required `.Zl` present in repository/runtime payload: **0 / 137**
+- Required `.Zl` present in repository/runtime payload: **0 / 0**
 
 ## Source parity audit
 
