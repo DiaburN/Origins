@@ -38,7 +38,7 @@ internal static class Program
             Options options = Options.Parse(args);
             NativeMap map = NativeMap.Load(options.MapPath);
             HashSet<int> used = map.GetUsedLibraryIds();
-            foreach (int id in used)
+            foreach (int id in used.Order())
                 if (!LibraryPaths.ContainsKey(id))
                     throw new InvalidDataException($"Map uses unsupported KROrder library id {id}; renderer refuses to guess.");
 
@@ -213,7 +213,8 @@ internal static class Program
         if (dx >= g.VisibleClipBounds.Right || dy >= g.VisibleClipBounds.Bottom || dx + dw <= 0 || dy + dh <= 0)
             return;
 
-        RectangleF dest = new(dx, dy, dw, dh);
+        Rectangle dest = Rectangle.Round(new RectangleF(dx, dy, dw, dh));
+        if (dest.Width <= 0 || dest.Height <= 0) return;
         if (opacity >= 0.999f)
         {
             g.DrawImage(source, dest, 0, 0, source.Width, source.Height, GraphicsUnit.Pixel);
@@ -223,7 +224,7 @@ internal static class Program
         using ImageAttributes attributes = new();
         ColorMatrix matrix = new() { Matrix33 = opacity };
         attributes.SetColorMatrix(matrix, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
-        g.DrawImage(source, Rectangle.Round(dest), 0, 0, source.Width, source.Height, GraphicsUnit.Pixel, attributes);
+        g.DrawImage(source, dest, 0, 0, source.Width, source.Height, GraphicsUnit.Pixel, attributes);
     }
 
     private static string Sha256(string path)
