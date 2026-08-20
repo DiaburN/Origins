@@ -6,12 +6,14 @@ import {
   getPlayerFrameDefinition,
   getRenderedLocalFrameIndex,
   getTimelineFrameIndex,
+  normalizeWeaponShape,
   resolveAssassinArmourShift,
   resolveAttackAnimation,
   resolveMagicAnimation,
   resolvePlayerAnimation,
   resolvePlayerDrawFrame,
   resolvePlayerLayerFrames,
+  resolvePlayerLibrarySelection,
 } from '../player-animation-runtime.js';
 
 test('all 42 pinned FrameSet.Players animations are present', () => {
@@ -52,9 +54,7 @@ test('Combat1 and Combat2 preserve Zircon custom per-frame delays', () => {
 });
 
 test('DrawFrame uses StartIndex + frame + OffSet * MirDirection', () => {
-  // Standing, Down(4), local frame 0 => 0 + 0 + 10*4 = 40.
   assert.equal(resolvePlayerDrawFrame('Standing', 4, 0, { action: 'Standing' }), 40);
-  // Walking, Right(2), local frame 3 => 80 + 3 + 10*2 = 103.
   assert.equal(resolvePlayerDrawFrame('Walking', 2, 3, { action: 'Moving' }), 103);
 });
 
@@ -156,4 +156,64 @@ test('body/hair/helmet/weapon/shield/horse frame composition keeps Zircon offset
     armourShape: 2,
     armourShift: 1600,
   }).body, 7700);
+});
+
+test('PlayerObject library selector maps choose male/female Zircon layers exactly', () => {
+  assert.deepEqual(resolvePlayerLibrarySelection({
+    playerClass: 'Warrior', gender: 'Male', armourShape: 11,
+    helmetShape: 11, libraryWeaponShape: 20, shieldShape: 10,
+  }), {
+    body: 'M_HumEx1',
+    hair: 'M_Hair',
+    helmet: 'M_Helmet2',
+    weapon1: 'M_Weapon3',
+    weapon2: null,
+    shield: 'M_Shield2',
+    horseBase: 'Horse',
+    horseShape: null,
+    horseShapeEffect: null,
+    normalizedWeaponShape: 20,
+    effectiveArmourShape: 11,
+  });
+
+  const female = resolvePlayerLibrarySelection({
+    playerClass: 'Wizard', gender: 'Female', armourShape: 11,
+    helmetShape: 11, libraryWeaponShape: 20, shieldShape: 10,
+  });
+  assert.equal(female.body, 'WM_HumEx1');
+  assert.equal(female.hair, 'WM_Hair');
+  assert.equal(female.helmet, 'WM_Helmet2');
+  assert.equal(female.weapon1, 'WM_Weapon3');
+  assert.equal(female.shield, 'WM_Shield2');
+});
+
+test('Assassin dual weapon and costume selectors preserve left/right libraries', () => {
+  const male = resolvePlayerLibrarySelection({
+    playerClass: 'Assassin', gender: 'Male', armourShape: 11,
+    costumeShape: 0, helmetShape: 11, libraryWeaponShape: 1200,
+    horseShape: 5,
+  });
+  assert.equal(male.body, 'M_CostumeA');
+  assert.equal(male.hair, 'M_HairA');
+  assert.equal(male.helmet, 'M_HelmetA2');
+  assert.equal(male.weapon1, 'M_WeaponADL1');
+  assert.equal(male.weapon2, 'M_WeaponADR1');
+  assert.equal(male.normalizedWeaponShape, 200);
+  assert.equal(male.horseShape, 'HorseDark');
+  assert.equal(male.horseShapeEffect, 'HorseDarkEffect');
+
+  const female = resolvePlayerLibrarySelection({
+    playerClass: 'Assassin', gender: 'Female', armourShape: 0,
+    libraryWeaponShape: 1200,
+  });
+  assert.equal(female.body, 'WM_HumA');
+  assert.equal(female.hair, 'WM_HairA');
+  assert.equal(female.weapon1, 'WM_WeaponADL1');
+  assert.equal(female.weapon2, 'WM_WeaponADR1');
+});
+
+test('weapon frame shape normalization matches PlayerObject UpdateLibraries', () => {
+  assert.equal(normalizeWeaponShape(999), 999);
+  assert.equal(normalizeWeaponShape(1100), 100);
+  assert.equal(normalizeWeaponShape(1200), 200);
 });
