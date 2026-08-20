@@ -3,8 +3,8 @@
 
 This script does not read Crystal and does not invent missing frames. It extracts the
 actual FrameSet.Players table, magic-to-animation mapping, PlayerObject library
-selectors, and player-related LibraryList entries from the bootstrapped pinned Zircon
-checkout.
+selectors/draw flags, and player-related LibraryList entries from the bootstrapped
+pinned Zircon checkout.
 """
 from __future__ import annotations
 
@@ -171,6 +171,14 @@ def parse_selector_map(player_text: str, name: str, constants: dict[str, int]) -
     return result
 
 
+def parse_int_list(player_text: str, marker: str) -> list[int]:
+    block = extract_block(player_text, marker)
+    values = [int(value) for value in re.findall(r"(?<![A-Za-z0-9_])-?\d+", block)]
+    if not values:
+        raise RuntimeError(f"integer list is empty: {marker}")
+    return values
+
+
 def build_contract(zroot: Path, commit: str) -> dict:
     enum_path = zroot / "LibraryCore" / "Enum.cs"
     frame_path = zroot / "LibraryCore" / "FrameSet.cs"
@@ -225,12 +233,14 @@ def build_contract(zroot: Path, commit: str) -> dict:
         "playerLibraries": parse_player_libraries(libraries_text),
         "playerConstants": constants,
         "playerLibrarySelectors": selector_maps,
+        "costumeShapeHideWeapon": parse_int_list(player_text, "CostumeShapeHideWeapon = new()"),
         "drawFrameFormula": "frameIndex + startIndex + offset * direction",
         "pushedPlayerFrameOverride": 0,
         "notes": [
             "All player frame definitions are extracted from FrameSet.Players.",
             "Magic-to-body-animation cases are extracted from Functions.GetMagicAnimation.",
             "Armour/Costume/Weapon/Shield/Helmet selectors are extracted from PlayerObject dictionaries.",
+            "Costume weapon-hiding shapes are extracted from PlayerObject.",
             "Real PNG/atlas payload is generated only when the corresponding Zircon .Zl files are supplied.",
             "No Crystal fallback is permitted.",
         ],
@@ -249,7 +259,8 @@ def write_outputs(contract: dict, json_path: Path, js_path: Path) -> None:
         "export const ZIRCON_PLAYER_FRAMESET = ZIRCON_PLAYER_ASSET_CONTRACT.playerFrames;\n"
         "export const ZIRCON_MIR_ANIMATION = ZIRCON_PLAYER_ASSET_CONTRACT.mirAnimation;\n"
         "export const ZIRCON_MAGIC_ANIMATION_MAP = ZIRCON_PLAYER_ASSET_CONTRACT.magicAnimationMap;\n"
-        "export const ZIRCON_PLAYER_LIBRARY_SELECTORS = ZIRCON_PLAYER_ASSET_CONTRACT.playerLibrarySelectors;\n",
+        "export const ZIRCON_PLAYER_LIBRARY_SELECTORS = ZIRCON_PLAYER_ASSET_CONTRACT.playerLibrarySelectors;\n"
+        "export const ZIRCON_COSTUME_HIDE_WEAPON = ZIRCON_PLAYER_ASSET_CONTRACT.costumeShapeHideWeapon;\n",
         encoding="utf-8",
     )
 
