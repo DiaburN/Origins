@@ -32,7 +32,12 @@ export function resolvePlayerVisualComposition(context = {}) {
   if (!Number.isInteger(direction) || direction < 0 || direction > 7) {
     throw new RangeError(`MirDirection must be 0..7: ${direction}`);
   }
+  if (weaponEquipped && (!Number.isInteger(libraryWeaponShape) || libraryWeaponShape < 0)) {
+    throw new RangeError(`equipped weapon requires a non-negative LibraryWeaponShape: ${libraryWeaponShape}`);
+  }
 
+  // Native Zircon separates equipment presence from animation visibility:
+  // DrawWeapon can hide an equipped weapon, but it must never create one when the slot is empty.
   const equipment = Object.freeze({
     weapon: Boolean(weaponEquipped),
     helmet: helmetShape > 0,
