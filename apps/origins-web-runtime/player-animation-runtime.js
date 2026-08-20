@@ -2,6 +2,7 @@ import {
   ZIRCON_MAGIC_ANIMATION_MAP,
   ZIRCON_PLAYER_ASSET_CONTRACT,
   ZIRCON_PLAYER_FRAMESET,
+  ZIRCON_PLAYER_LIBRARY_SELECTORS,
 } from './generated/zircon-player-asset-contract.generated.js';
 
 export const DIRECT_UNMAPPED_PLAYER_ACTIONS = Object.freeze(['Show', 'Hide', 'Mount', 'Idle']);
@@ -10,6 +11,16 @@ const ATTACK_COMBAT3 = new Set(['Slaying', 'Thrusting', 'FlamingSword', 'Defensi
 const ATTACK_COMBAT4 = new Set(['HalfMoon', 'DestructiveSurge', 'OffensiveBlow']);
 const LOTUS_ATTACKS = new Set(['FullBloom', 'WhiteLotus', 'RedLotus', 'DanceOfSwallow']);
 const BRIER_ATTACKS = new Set(['SweetBrier', 'Karma']);
+
+const HORSE_SHAPE_LIBRARIES = Object.freeze({
+  1: ['HorseIron', null],
+  2: ['HorseSilver', null],
+  3: ['HorseGold', null],
+  4: ['HorseBlue', null],
+  5: ['HorseDark', 'HorseDarkEffect'],
+  6: ['HorseRoyal', 'HorseRoyalEffect'],
+  7: ['HorseBlueDragon', 'HorseBlueDragonEffect'],
+});
 
 const ASSASSIN_ARMOUR_SHIFT = Object.freeze({
   Standing: 0,
@@ -251,6 +262,88 @@ export function resolvePlayerAnimation(context) {
   return Object.freeze({ animation, drawWeapon });
 }
 
+function selector(mapName, key) {
+  return ZIRCON_PLAYER_LIBRARY_SELECTORS[mapName]?.[String(key)] ?? null;
+}
+
+function csharpIntegerDivide(value, divisor) {
+  return Math.trunc(value / divisor);
+}
+
+export function normalizeWeaponShape(libraryWeaponShape) {
+  return libraryWeaponShape >= 1000 ? libraryWeaponShape - 1000 : libraryWeaponShape;
+}
+
+export function resolvePlayerLibrarySelection({
+  playerClass = 'Warrior',
+  gender = 'Male',
+  armourShape = 0,
+  costumeShape = -1,
+  helmetShape = 0,
+  libraryWeaponShape = 0,
+  shieldShape = -1,
+  horseShape = 0,
+} = {}) {
+  const female = gender === 'Female';
+  const assassin = playerClass === 'Assassin';
+  const femaleOffset = female ? ZIRCON_PLAYER_ASSET_CONTRACT.playerConstants.FemaleOffSet : 0;
+  const assassinOffset = assassin ? ZIRCON_PLAYER_ASSET_CONTRACT.playerConstants.AssassinOffSet : 0;
+  const rightHandOffset = ZIRCON_PLAYER_ASSET_CONTRACT.playerConstants.RightHandOffSet;
+
+  const defaultBody = assassin
+    ? (female ? 'WM_HumA' : 'M_HumA')
+    : (female ? 'WM_Hum' : 'M_Hum');
+  const hair = assassin
+    ? (female ? 'WM_HairA' : 'M_HairA')
+    : (female ? 'WM_Hair' : 'M_Hair');
+
+  let effectiveArmourShape = armourShape;
+  let body = selector('ArmourList', csharpIntegerDivide(armourShape, 11) + assassinOffset + femaleOffset);
+  if (!body) {
+    body = defaultBody;
+    effectiveArmourShape = 0;
+  }
+
+  if (costumeShape >= 0) {
+    body = selector('CostumeList', csharpIntegerDivide(costumeShape, 10) + assassinOffset + femaleOffset);
+    if (!body) {
+      body = defaultBody;
+      effectiveArmourShape = 0;
+    }
+  }
+
+  const helmet = selector('HelmetList', csharpIntegerDivide(helmetShape - 1, 10) + assassinOffset + femaleOffset);
+
+  // Assassin weapons use their normal AOH/ADL selector range without AssassinOffSet.
+  const weaponBaseKey = csharpIntegerDivide(libraryWeaponShape, 10) + femaleOffset;
+  let weapon1 = selector('WeaponList', weaponBaseKey);
+  let weapon2 = null;
+  if (assassin && libraryWeaponShape >= 1200) {
+    const rightLibrary = selector('WeaponList', weaponBaseKey + rightHandOffset);
+    if (libraryWeaponShape === 1263) weapon1 = rightLibrary;
+    else weapon2 = rightLibrary;
+  }
+
+  const shield = shieldShape >= 0
+    ? selector('ShieldList', csharpIntegerDivide(shieldShape, 10) + femaleOffset)
+    : null;
+
+  const horseLayers = HORSE_SHAPE_LIBRARIES[horseShape] ?? [null, null];
+  return Object.freeze({
+    body,
+    hair,
+    helmet,
+    weapon1,
+    weapon2,
+    shield,
+    horseBase: 'Horse',
+    horseShape: horseLayers[0],
+    horseShapeEffect: horseLayers[1],
+    normalizedWeaponShape: normalizeWeaponShape(libraryWeaponShape),
+    effectiveArmourShape,
+  });
+}
+
 export function resolvePlayerLayerFrames({
   drawFrame,
   playerClass = 'Warrior',
@@ -282,4 +375,5 @@ export const PLAYER_ANIMATION_SOURCE = Object.freeze({
   commit: ZIRCON_PLAYER_ASSET_CONTRACT.zirconCommit,
   frameCount: Object.keys(ZIRCON_PLAYER_FRAMESET).length,
   libraryCount: ZIRCON_PLAYER_ASSET_CONTRACT.playerLibraries.length,
+  selectorCount: Object.values(ZIRCON_PLAYER_LIBRARY_SELECTORS).reduce((sum, map) => sum + Object.keys(map).length, 0),
 });
