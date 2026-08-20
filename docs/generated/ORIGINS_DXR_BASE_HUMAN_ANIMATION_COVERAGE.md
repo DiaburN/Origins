@@ -2,13 +2,13 @@
 
 - Coverage gate: **FAIL**
 - Zircon authority: `cbf1aa919083bc13fc3f23f93772a8ab8370632d`
-- Coverage commit: `d3fd35466072dc107679b5ec282f181225f2c236`
+- Coverage commit: `b1723559172c03b16ee79321c2ad3461ca783a72`
 - Source import run: **32392632203**
 - Source preview commit: `cbe40cbde1efea9b9c0dd423a41b97607907851d`
 - Animations audited: **42**
 - Directions per animation: **8**
-- Real frame references checked: **3760**
-- Missing referenced frames: **432**
+- Real frame references checked: **3680**
+- Missing referenced frames: **352**
 
 ## Per-animation result
 
@@ -20,7 +20,7 @@
 | CreepStanding | 4 | 64 | 0 | PASS |
 | CreepWalkFast | 6 | 96 | 0 | PASS |
 | CreepWalkSlow | 6 | 96 | 0 | PASS |
-| Pushed | 6 | 96 | 80 | FAIL |
+| Pushed | 6 | 16 | 0 | PASS |
 | Stance | 3 | 48 | 0 | PASS |
 | Harvest | 2 | 32 | 0 | PASS |
 | Combat1 | 5 | 80 | 0 | PASS |
@@ -59,86 +59,6 @@
 
 ## Missing references
 
-- `M_Hum` / `Pushed` / dir 0 / local 1 → index **241**
-- `M_Hum` / `Pushed` / dir 0 / local 2 → index **242**
-- `M_Hum` / `Pushed` / dir 0 / local 3 → index **243**
-- `M_Hum` / `Pushed` / dir 0 / local 4 → index **244**
-- `M_Hum` / `Pushed` / dir 0 / local 5 → index **245**
-- `M_Hum` / `Pushed` / dir 1 / local 1 → index **251**
-- `M_Hum` / `Pushed` / dir 1 / local 2 → index **252**
-- `M_Hum` / `Pushed` / dir 1 / local 3 → index **253**
-- `M_Hum` / `Pushed` / dir 1 / local 4 → index **254**
-- `M_Hum` / `Pushed` / dir 1 / local 5 → index **255**
-- `M_Hum` / `Pushed` / dir 2 / local 1 → index **261**
-- `M_Hum` / `Pushed` / dir 2 / local 2 → index **262**
-- `M_Hum` / `Pushed` / dir 2 / local 3 → index **263**
-- `M_Hum` / `Pushed` / dir 2 / local 4 → index **264**
-- `M_Hum` / `Pushed` / dir 2 / local 5 → index **265**
-- `M_Hum` / `Pushed` / dir 3 / local 1 → index **271**
-- `M_Hum` / `Pushed` / dir 3 / local 2 → index **272**
-- `M_Hum` / `Pushed` / dir 3 / local 3 → index **273**
-- `M_Hum` / `Pushed` / dir 3 / local 4 → index **274**
-- `M_Hum` / `Pushed` / dir 3 / local 5 → index **275**
-- `M_Hum` / `Pushed` / dir 4 / local 1 → index **281**
-- `M_Hum` / `Pushed` / dir 4 / local 2 → index **282**
-- `M_Hum` / `Pushed` / dir 4 / local 3 → index **283**
-- `M_Hum` / `Pushed` / dir 4 / local 4 → index **284**
-- `M_Hum` / `Pushed` / dir 4 / local 5 → index **285**
-- `M_Hum` / `Pushed` / dir 5 / local 1 → index **291**
-- `M_Hum` / `Pushed` / dir 5 / local 2 → index **292**
-- `M_Hum` / `Pushed` / dir 5 / local 3 → index **293**
-- `M_Hum` / `Pushed` / dir 5 / local 4 → index **294**
-- `M_Hum` / `Pushed` / dir 5 / local 5 → index **295**
-- `M_Hum` / `Pushed` / dir 6 / local 1 → index **301**
-- `M_Hum` / `Pushed` / dir 6 / local 2 → index **302**
-- `M_Hum` / `Pushed` / dir 6 / local 3 → index **303**
-- `M_Hum` / `Pushed` / dir 6 / local 4 → index **304**
-- `M_Hum` / `Pushed` / dir 6 / local 5 → index **305**
-- `M_Hum` / `Pushed` / dir 7 / local 1 → index **311**
-- `M_Hum` / `Pushed` / dir 7 / local 2 → index **312**
-- `M_Hum` / `Pushed` / dir 7 / local 3 → index **313**
-- `M_Hum` / `Pushed` / dir 7 / local 4 → index **314**
-- `M_Hum` / `Pushed` / dir 7 / local 5 → index **315**
-- `WM_Hum` / `Pushed` / dir 0 / local 1 → index **241**
-- `WM_Hum` / `Pushed` / dir 0 / local 2 → index **242**
-- `WM_Hum` / `Pushed` / dir 0 / local 3 → index **243**
-- `WM_Hum` / `Pushed` / dir 0 / local 4 → index **244**
-- `WM_Hum` / `Pushed` / dir 0 / local 5 → index **245**
-- `WM_Hum` / `Pushed` / dir 1 / local 1 → index **251**
-- `WM_Hum` / `Pushed` / dir 1 / local 2 → index **252**
-- `WM_Hum` / `Pushed` / dir 1 / local 3 → index **253**
-- `WM_Hum` / `Pushed` / dir 1 / local 4 → index **254**
-- `WM_Hum` / `Pushed` / dir 1 / local 5 → index **255**
-- `WM_Hum` / `Pushed` / dir 2 / local 1 → index **261**
-- `WM_Hum` / `Pushed` / dir 2 / local 2 → index **262**
-- `WM_Hum` / `Pushed` / dir 2 / local 3 → index **263**
-- `WM_Hum` / `Pushed` / dir 2 / local 4 → index **264**
-- `WM_Hum` / `Pushed` / dir 2 / local 5 → index **265**
-- `WM_Hum` / `Pushed` / dir 3 / local 1 → index **271**
-- `WM_Hum` / `Pushed` / dir 3 / local 2 → index **272**
-- `WM_Hum` / `Pushed` / dir 3 / local 3 → index **273**
-- `WM_Hum` / `Pushed` / dir 3 / local 4 → index **274**
-- `WM_Hum` / `Pushed` / dir 3 / local 5 → index **275**
-- `WM_Hum` / `Pushed` / dir 4 / local 1 → index **281**
-- `WM_Hum` / `Pushed` / dir 4 / local 2 → index **282**
-- `WM_Hum` / `Pushed` / dir 4 / local 3 → index **283**
-- `WM_Hum` / `Pushed` / dir 4 / local 4 → index **284**
-- `WM_Hum` / `Pushed` / dir 4 / local 5 → index **285**
-- `WM_Hum` / `Pushed` / dir 5 / local 1 → index **291**
-- `WM_Hum` / `Pushed` / dir 5 / local 2 → index **292**
-- `WM_Hum` / `Pushed` / dir 5 / local 3 → index **293**
-- `WM_Hum` / `Pushed` / dir 5 / local 4 → index **294**
-- `WM_Hum` / `Pushed` / dir 5 / local 5 → index **295**
-- `WM_Hum` / `Pushed` / dir 6 / local 1 → index **301**
-- `WM_Hum` / `Pushed` / dir 6 / local 2 → index **302**
-- `WM_Hum` / `Pushed` / dir 6 / local 3 → index **303**
-- `WM_Hum` / `Pushed` / dir 6 / local 4 → index **304**
-- `WM_Hum` / `Pushed` / dir 6 / local 5 → index **305**
-- `WM_Hum` / `Pushed` / dir 7 / local 1 → index **311**
-- `WM_Hum` / `Pushed` / dir 7 / local 2 → index **312**
-- `WM_Hum` / `Pushed` / dir 7 / local 3 → index **313**
-- `WM_Hum` / `Pushed` / dir 7 / local 4 → index **314**
-- `WM_Hum` / `Pushed` / dir 7 / local 5 → index **315**
 - `M_Hum` / `FishingCast` / dir 0 / local 0 → index **2000**
 - `M_Hum` / `FishingCast` / dir 0 / local 1 → index **2001**
 - `M_Hum` / `FishingCast` / dir 0 / local 2 → index **2002**
@@ -259,7 +179,87 @@
 - `WM_Hum` / `FishingCast` / dir 6 / local 5 → index **2065**
 - `WM_Hum` / `FishingCast` / dir 6 / local 6 → index **2066**
 - `WM_Hum` / `FishingCast` / dir 6 / local 7 → index **2067**
-- … 232 additional missing references are in the JSON artifact.
+- `WM_Hum` / `FishingCast` / dir 7 / local 0 → index **2070**
+- `WM_Hum` / `FishingCast` / dir 7 / local 1 → index **2071**
+- `WM_Hum` / `FishingCast` / dir 7 / local 2 → index **2072**
+- `WM_Hum` / `FishingCast` / dir 7 / local 3 → index **2073**
+- `WM_Hum` / `FishingCast` / dir 7 / local 4 → index **2074**
+- `WM_Hum` / `FishingCast` / dir 7 / local 5 → index **2075**
+- `WM_Hum` / `FishingCast` / dir 7 / local 6 → index **2076**
+- `WM_Hum` / `FishingCast` / dir 7 / local 7 → index **2077**
+- `M_Hum` / `FishingWait` / dir 0 / local 0 → index **2080**
+- `M_Hum` / `FishingWait` / dir 0 / local 1 → index **2081**
+- `M_Hum` / `FishingWait` / dir 0 / local 2 → index **2082**
+- `M_Hum` / `FishingWait` / dir 0 / local 3 → index **2083**
+- `M_Hum` / `FishingWait` / dir 0 / local 4 → index **2084**
+- `M_Hum` / `FishingWait` / dir 0 / local 5 → index **2085**
+- `M_Hum` / `FishingWait` / dir 1 / local 0 → index **2090**
+- `M_Hum` / `FishingWait` / dir 1 / local 1 → index **2091**
+- `M_Hum` / `FishingWait` / dir 1 / local 2 → index **2092**
+- `M_Hum` / `FishingWait` / dir 1 / local 3 → index **2093**
+- `M_Hum` / `FishingWait` / dir 1 / local 4 → index **2094**
+- `M_Hum` / `FishingWait` / dir 1 / local 5 → index **2095**
+- `M_Hum` / `FishingWait` / dir 2 / local 0 → index **2100**
+- `M_Hum` / `FishingWait` / dir 2 / local 1 → index **2101**
+- `M_Hum` / `FishingWait` / dir 2 / local 2 → index **2102**
+- `M_Hum` / `FishingWait` / dir 2 / local 3 → index **2103**
+- `M_Hum` / `FishingWait` / dir 2 / local 4 → index **2104**
+- `M_Hum` / `FishingWait` / dir 2 / local 5 → index **2105**
+- `M_Hum` / `FishingWait` / dir 3 / local 0 → index **2110**
+- `M_Hum` / `FishingWait` / dir 3 / local 1 → index **2111**
+- `M_Hum` / `FishingWait` / dir 3 / local 2 → index **2112**
+- `M_Hum` / `FishingWait` / dir 3 / local 3 → index **2113**
+- `M_Hum` / `FishingWait` / dir 3 / local 4 → index **2114**
+- `M_Hum` / `FishingWait` / dir 3 / local 5 → index **2115**
+- `M_Hum` / `FishingWait` / dir 4 / local 0 → index **2120**
+- `M_Hum` / `FishingWait` / dir 4 / local 1 → index **2121**
+- `M_Hum` / `FishingWait` / dir 4 / local 2 → index **2122**
+- `M_Hum` / `FishingWait` / dir 4 / local 3 → index **2123**
+- `M_Hum` / `FishingWait` / dir 4 / local 4 → index **2124**
+- `M_Hum` / `FishingWait` / dir 4 / local 5 → index **2125**
+- `M_Hum` / `FishingWait` / dir 5 / local 0 → index **2130**
+- `M_Hum` / `FishingWait` / dir 5 / local 1 → index **2131**
+- `M_Hum` / `FishingWait` / dir 5 / local 2 → index **2132**
+- `M_Hum` / `FishingWait` / dir 5 / local 3 → index **2133**
+- `M_Hum` / `FishingWait` / dir 5 / local 4 → index **2134**
+- `M_Hum` / `FishingWait` / dir 5 / local 5 → index **2135**
+- `M_Hum` / `FishingWait` / dir 6 / local 0 → index **2140**
+- `M_Hum` / `FishingWait` / dir 6 / local 1 → index **2141**
+- `M_Hum` / `FishingWait` / dir 6 / local 2 → index **2142**
+- `M_Hum` / `FishingWait` / dir 6 / local 3 → index **2143**
+- `M_Hum` / `FishingWait` / dir 6 / local 4 → index **2144**
+- `M_Hum` / `FishingWait` / dir 6 / local 5 → index **2145**
+- `M_Hum` / `FishingWait` / dir 7 / local 0 → index **2150**
+- `M_Hum` / `FishingWait` / dir 7 / local 1 → index **2151**
+- `M_Hum` / `FishingWait` / dir 7 / local 2 → index **2152**
+- `M_Hum` / `FishingWait` / dir 7 / local 3 → index **2153**
+- `M_Hum` / `FishingWait` / dir 7 / local 4 → index **2154**
+- `M_Hum` / `FishingWait` / dir 7 / local 5 → index **2155**
+- `WM_Hum` / `FishingWait` / dir 0 / local 0 → index **2080**
+- `WM_Hum` / `FishingWait` / dir 0 / local 1 → index **2081**
+- `WM_Hum` / `FishingWait` / dir 0 / local 2 → index **2082**
+- `WM_Hum` / `FishingWait` / dir 0 / local 3 → index **2083**
+- `WM_Hum` / `FishingWait` / dir 0 / local 4 → index **2084**
+- `WM_Hum` / `FishingWait` / dir 0 / local 5 → index **2085**
+- `WM_Hum` / `FishingWait` / dir 1 / local 0 → index **2090**
+- `WM_Hum` / `FishingWait` / dir 1 / local 1 → index **2091**
+- `WM_Hum` / `FishingWait` / dir 1 / local 2 → index **2092**
+- `WM_Hum` / `FishingWait` / dir 1 / local 3 → index **2093**
+- `WM_Hum` / `FishingWait` / dir 1 / local 4 → index **2094**
+- `WM_Hum` / `FishingWait` / dir 1 / local 5 → index **2095**
+- `WM_Hum` / `FishingWait` / dir 2 / local 0 → index **2100**
+- `WM_Hum` / `FishingWait` / dir 2 / local 1 → index **2101**
+- `WM_Hum` / `FishingWait` / dir 2 / local 2 → index **2102**
+- `WM_Hum` / `FishingWait` / dir 2 / local 3 → index **2103**
+- `WM_Hum` / `FishingWait` / dir 2 / local 4 → index **2104**
+- `WM_Hum` / `FishingWait` / dir 2 / local 5 → index **2105**
+- `WM_Hum` / `FishingWait` / dir 3 / local 0 → index **2110**
+- `WM_Hum` / `FishingWait` / dir 3 / local 1 → index **2111**
+- `WM_Hum` / `FishingWait` / dir 3 / local 2 → index **2112**
+- `WM_Hum` / `FishingWait` / dir 3 / local 3 → index **2113**
+- `WM_Hum` / `FishingWait` / dir 3 / local 4 → index **2114**
+- `WM_Hum` / `FishingWait` / dir 3 / local 5 → index **2115**
+- … 152 additional missing references are in the JSON artifact.
 
 ## Boundary
 
