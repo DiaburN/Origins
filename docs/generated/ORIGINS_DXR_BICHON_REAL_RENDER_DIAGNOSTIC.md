@@ -1,7 +1,7 @@
 # ORIGINS-DxR — Bichon Real Render Diagnostic
 
 - Gate: **FAIL**
-- HEAD: `5e7fd50afeab3f46a3774f87d8c78bfb3cb7f702`
+- HEAD: `40c64ae4e5f38f603886124cff92811a7843386f`
 
 ## Steps
 
@@ -32,9 +32,9 @@
 
 ```text
   Determining projects to restore...
-  Restored D:\a\Origins\Origins\vendor\zircon\RenderingCore\RenderingCore.csproj (in 3.43 sec).
-  Restored D:\a\Origins\Origins\vendor\zircon\LibraryEditor\LibraryEditor.csproj (in 3.29 sec).
-  Restored D:\a\Origins\Origins\tools\zircon-map-renderer\ZirconMapRenderer.csproj (in 3.43 sec).
+  Restored D:\a\Origins\Origins\vendor\zircon\RenderingCore\RenderingCore.csproj (in 5.69 sec).
+  Restored D:\a\Origins\Origins\vendor\zircon\LibraryEditor\LibraryEditor.csproj (in 5.69 sec).
+  Restored D:\a\Origins\Origins\tools\zircon-map-renderer\ZirconMapRenderer.csproj (in 5.69 sec).
   RenderingCore -> D:\a\Origins\Origins\vendor\zircon\RenderingCore\bin\Release\net10.0-windows8.0\RenderingCore.dll
 C:\Program Files\dotnet\sdk\10.0.400\Microsoft.CSharp.CurrentVersion.targets(130,9): warning MSB3884: Could not find rule set file "MinimumRecommendedRules.ruleset". [D:\a\Origins\Origins\vendor\zircon\LibraryEditor\LibraryEditor.csproj]
 D:\a\Origins\Origins\vendor\zircon\LibraryEditor\LMain.cs(158,13): warning CS0162: Unreachable code detected [D:\a\Origins\Origins\vendor\zircon\LibraryEditor\LibraryEditor.csproj]
@@ -48,12 +48,13 @@ D:\a\Origins\Origins\vendor\zircon\LibraryEditor\LMain.cs(158,13): warning CS016
     2 Warning(s)
     0 Error(s)
 
-Time Elapsed 00:00:11.86
+Time Elapsed 00:00:30.33
 ```
 
 ## render.log
 
 ```text
-System.IO.InvalidDataException: Map uses unsupported KROrder library id 15; renderer refuses to guess.
-   at ZirconMapRenderer.Program.Main(String[] args) in D:\a\Origins\Origins\tools\zircon-map-renderer\Program.cs:line 43
+System.IO.FileNotFoundException: Missing official Zircon map library id 15: D:\a\Origins\Origins\runtime-assets\zircon-map-render\Data\Map Data\Wood\Tilesc.Zl
+File name: 'D:\a\Origins\Origins\runtime-assets\zircon-map-render\Data\Map Data\Wood\Tilesc.Zl'
+   at ZirconMapRenderer.Program.Main(String[] args) in D:\a\Origins\Origins\tools\zircon-map-renderer\Program.cs:line 55
 ```
