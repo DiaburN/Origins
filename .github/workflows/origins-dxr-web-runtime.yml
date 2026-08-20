@@ -4,7 +4,12 @@ on:
   push:
     branches: [Origins-DxR]
     paths:
-      - 'apps/origins-web-runtime/**'
+      - 'apps/origins-web-runtime/index.html'
+      - 'apps/origins-web-runtime/main.js'
+      - 'apps/origins-web-runtime/runtime-core.js'
+      - 'apps/origins-web-runtime/runtime.css'
+      - 'apps/origins-web-runtime/package.json'
+      - 'apps/origins-web-runtime/tests/runtime-core.test.mjs'
       - 'scripts/audit-origins-web-runtime.py'
       - '.github/workflows/origins-dxr-web-runtime.yml'
   workflow_dispatch:
