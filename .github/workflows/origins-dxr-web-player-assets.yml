@@ -4,6 +4,7 @@ on:
   push:
     branches: [Origins-DxR]
     paths:
+      - 'apps/origins-web-runtime/main.js'
       - 'apps/origins-web-runtime/player-animation-runtime.js'
       - 'apps/origins-web-runtime/player-sprite-runtime.js'
       - 'apps/origins-web-runtime/tests/player-animation-runtime.test.mjs'
@@ -73,6 +74,7 @@ jobs:
           node --check $env:CONTRACT_JS
           node --check apps/origins-web-runtime/player-animation-runtime.js
           node --check apps/origins-web-runtime/player-sprite-runtime.js
+          node --check apps/origins-web-runtime/main.js
 
       - name: Full player animation and sprite unit tests
         id: tests
@@ -91,6 +93,7 @@ jobs:
             --contract $env:CONTRACT_JSON `
             --runtime apps/origins-web-runtime/player-animation-runtime.js `
             --sprite-runtime apps/origins-web-runtime/player-sprite-runtime.js `
+            --main-runtime apps/origins-web-runtime/main.js `
             --exporter tools/zircon-web-asset-exporter/Program.cs `
             --player-source vendor/zircon/Client/Models/PlayerObject.cs `
             --map-source vendor/zircon/Client/Models/MapObject.cs `
@@ -149,7 +152,7 @@ jobs:
               'Generate source-faithful contract': '${{ steps.generate.outcome }}',
               'JavaScript syntax': '${{ steps.syntax.outcome }}',
               'Player animation + sprite tests': '${{ steps.tests.outcome }}',
-              'Pinned PlayerObject audit': '${{ steps.audit.outcome }}',
+              'Pinned PlayerObject + main runtime audit': '${{ steps.audit.outcome }}',
               'ZL atlas exporter build': '${{ steps.exporter.outcome }}',
               'M-Hum + WM-Hum pair probe': '${{ steps.basehumans.outcome }}',
               'All-player payload probe': '${{ steps.payload.outcome }}',
@@ -189,6 +192,7 @@ jobs:
               '- `.Zl` exporter uses pinned `LibraryEditor.Mir3Library`, creates transparent PNG atlas pages, and preserves image index + OffSetX/OffSetY.',
               '- `--base-humans` exports M_Hum and WM_Hum together and refuses a partial pair.',
               '- Browser sprite store maps `Male -> M_Hum` and `Female -> WM_Hum` and exposes pair readiness.',
+              '- The actual web runtime auto-renders the corresponding native base body whenever the complete pair is READY; otherwise it keeps the diagnostic marker and does not fabricate a sprite.',
               '',
               '## CI',
               '',
