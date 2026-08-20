@@ -1,0 +1,210 @@
+name: Origins DxR - Male Fishing Browser Proof
+
+on:
+  push:
+    branches: [Origins-DxR]
+    paths:
+      - '.github/workflows/origins-dxr-male-fishing-browser-proof.yml'
+  workflow_dispatch:
+
+permissions:
+  actions: read
+  contents: write
+
+concurrency:
+  group: origins-dxr-male-fishing-browser-proof-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  SOURCE_WORKFLOW: origins-dxr-base-human-import.yml
+  ZIRCON_COMMIT: cbf1aa919083bc13fc3f23f93772a8ab8370632d
+  REQUIRED_RUNTIME_COMMIT: 86a501a63f7f1990f49085e1464742e45ae61927
+
+jobs:
+  male-fishing-browser-proof:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Locate compatible generated base-human preview
+        id: source
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p .qa
+          payload="$(gh api "repos/${GITHUB_REPOSITORY}/actions/workflows/${SOURCE_WORKFLOW}/runs?branch=Origins-DxR&per_page=40")"
+          python3 -c 'import json,sys; d=json.load(sys.stdin); [print(r.get("id",""),r.get("head_sha",""),r.get("status","")) for r in d.get("workflow_runs",[])]' <<<"$payload" > .qa/runs.txt
+          while read -r run_id run_sha status; do
+            [[ "$status" == 'completed' ]] || continue
+            git merge-base --is-ancestor "$REQUIRED_RUNTIME_COMMIT" "$run_sha" 2>/dev/null || continue
+            artifacts="$(gh api "repos/${GITHUB_REPOSITORY}/actions/runs/${run_id}/artifacts")"
+            artifact_id="$(python3 -c 'import json,sys; d=json.load(sys.stdin); xs=[a for a in d.get("artifacts",[]) if a.get("name")=="origins-dxr-base-humans-preview" and not a.get("expired")]; print(xs[0]["id"] if xs else "")' <<<"$artifacts")"
+            if [[ -n "$artifact_id" ]]; then
+              echo "run_id=$run_id" >> "$GITHUB_OUTPUT"
+              echo "run_sha=$run_sha" >> "$GITHUB_OUTPUT"
+              echo "artifact_id=$artifact_id" >> "$GITHUB_OUTPUT"
+              exit 0
+            fi
+          done < .qa/runs.txt
+          echo "No compatible preview artifact with runtime ancestor $REQUIRED_RUNTIME_COMMIT" >&2
+          cat .qa/runs.txt >&2
+          exit 1
+
+      - name: Download preview with real M_Hum atlas
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p .qa/preview
+          gh api "repos/${GITHUB_REPOSITORY}/actions/artifacts/${{ steps.source.outputs.artifact_id }}/zip" > .qa/preview.zip
+          unzip -q .qa/preview.zip -d .qa/preview
+          test -f .qa/preview/index.html
+          test -f .qa/preview/main.js
+          test -f .qa/preview/assets/player/player-assets.json
+          grep -q 'playerArmourShape' .qa/preview/main.js
+          grep -q 'forcedAnimation' .qa/preview/main.js
+
+      - name: Render FishingCast Wait Reel from M_Hum body bank 5
+        id: browser
+        continue-on-error: true
+        shell: bash
+        run: |
+          set +e
+          set -uo pipefail
+          mkdir -p .qa/browser
+          : > .qa/browser/error.txt
+          chrome="$(command -v google-chrome || command -v google-chrome-stable || command -v chromium || true)"
+          if [[ -z "$chrome" ]]; then echo 'Chrome missing' > .qa/browser/error.txt; exit 1; fi
+          "$chrome" --version > .qa/browser/chrome-version.txt 2>&1
+          python3 -m http.server 8765 --bind 127.0.0.1 --directory .qa/preview > .qa/browser/http.log 2>&1 &
+          server_pid=$!
+          trap 'kill "$server_pid" 2>/dev/null || true' EXIT
+          sleep 2
+          curl --fail --silent http://127.0.0.1:8765/index.html >/dev/null || { echo 'HTTP preview unavailable' > .qa/browser/error.txt; exit 1; }
+
+          cat > .qa/browser/cases.tsv <<'EOF'
+          FishingCast	FishingCast
+          FishingWait	FishingWait
+          FishingReel	FishingReel
+          EOF
+          failed=0
+          while IFS=$'\t' read -r case_id animation; do
+            url="http://127.0.0.1:8765/index.html?gender=Male&armourShape=5&animation=${animation}&direction=4"
+            "$chrome" --headless=new --no-sandbox --disable-gpu --hide-scrollbars --window-size=960,720 \
+              --virtual-time-budget=60000 --dump-dom "$url" > ".qa/browser/${case_id}.html" 2> ".qa/browser/${case_id}.log"
+            code=$?
+            if [[ $code -ne 0 ]]; then echo "$case_id DOM exit=$code" >> .qa/browser/error.txt; failed=1; continue; fi
+            "$chrome" --headless=new --no-sandbox --disable-gpu --hide-scrollbars --window-size=960,720 \
+              --virtual-time-budget=60000 --screenshot="$(pwd)/.qa/browser/${case_id}.png" "$url" >> ".qa/browser/${case_id}.log" 2>&1
+            code=$?
+            if [[ $code -ne 0 || ! -s ".qa/browser/${case_id}.png" ]]; then echo "$case_id screenshot exit=$code" >> .qa/browser/error.txt; failed=1; fi
+          done < .qa/browser/cases.tsv
+          [[ $failed -eq 0 ]] || exit 1
+
+          python3 - <<'PY' > .qa/browser/result.json 2> .qa/browser/validation.err
+          import json,re
+          from pathlib import Path
+          root=Path('.qa/browser')
+          rows=[]
+          starts={'FishingCast':2000,'FishingWait':2080,'FishingReel':2160}
+          for animation,start in starts.items():
+              text=(root/f'{animation}.html').read_text(encoding='utf-8',errors='replace')
+              m=re.search(r'<html\b([^>]*)>',text,re.I|re.S)
+              if not m: raise SystemExit(f'{animation}: no html tag')
+              attrs=dict(re.findall(r'([:\w-]+)="([^"]*)"',m.group(1)))
+              checks={
+                'data-preview-gender':'Male','data-player-asset-pair':'READY','data-player-library':'M_Hum',
+                'data-player-armour-shape':'5','data-player-animation':animation,'data-player-direction':'4','data-real-frame-drawn':'true'}
+              for k,v in checks.items():
+                  if attrs.get(k)!=v: raise SystemExit(f'{animation}: {k}={attrs.get(k)!r}, expected {v!r}')
+              idx=int(attrs['data-player-image-index'])
+              minimum=25000+start+40
+              if idx < minimum: raise SystemExit(f'{animation}: index {idx} is below expected bank-5/direction-4 range {minimum}')
+              shot=root/f'{animation}.png'
+              if not shot.is_file() or shot.stat().st_size==0: raise SystemExit(f'{animation}: screenshot missing')
+              rows.append({'animation':animation,'libraryFile':'M_Hum','armourShape':5,'direction':4,'imageIndex':idx,'screenshotBytes':shot.stat().st_size})
+          print(json.dumps({'schema':'origins.zircon.male-fishing-browser.v1','status':'PASS','renders':rows},indent=2))
+          PY
+          code=$?
+          if [[ $code -ne 0 ]]; then
+            cat .qa/browser/validation.err >> .qa/browser/error.txt
+            exit 1
+          fi
+          exit 0
+
+      - name: Write evidence
+        if: always()
+        shell: bash
+        env:
+          BROWSER_OUTCOME: ${{ steps.browser.outcome }}
+          SOURCE_RUN: ${{ steps.source.outputs.run_id }}
+          SOURCE_SHA: ${{ steps.source.outputs.run_sha }}
+        run: |
+          set -euo pipefail
+          mkdir -p docs/generated
+          python3 - <<'PY'
+          import json,os
+          from pathlib import Path
+          p=Path('.qa/browser/result.json')
+          result=json.loads(p.read_text()) if p.exists() else {}
+          gate='PASS' if os.environ.get('BROWSER_OUTCOME')=='success' and result.get('status')=='PASS' else 'FAIL'
+          lines=['# ORIGINS-DxR — Male Fishing Browser Proof','',f'- Gate: **{gate}**',
+                 f'- Zircon authority: `{os.environ["ZIRCON_COMMIT"]}`',
+                 f'- Proof commit: `{os.environ.get("GITHUB_SHA","unknown")}`',
+                 f'- Source import run: **{os.environ.get("SOURCE_RUN","unknown")}**',
+                 f'- Source preview commit: `{os.environ.get("SOURCE_SHA","unknown")}`','',
+                 '## Real Chrome renders','']
+          for row in result.get('renders',[]):
+              lines.append(f'- `{row["animation"]}` → `M_Hum` → armourShape **5** → direction **4** → image **{row["imageIndex"]}** → screenshot **{row["screenshotBytes"]} bytes**')
+          if gate!='PASS':
+              err=Path('.qa/browser/error.txt')
+              if err.exists(): lines += ['','## Diagnostics','','```text',*err.read_text(errors='replace').splitlines()[-100:],'```']
+          lines += ['','## Boundary','',
+                    '- PASS proves all three pinned Zircon male fishing body phases render from the real `M_Hum` bank 5 atlas in Chrome.',
+                    '- It does not claim female fishing; female source discovery is independently audited.',
+                    '- No Crystal or placeholder art is accepted.']
+          Path('docs/generated/ORIGINS_DXR_MALE_FISHING_BROWSER_STATUS.md').write_text('\n'.join(lines)+'\n',encoding='utf-8')
+          Path('.qa/gate.txt').write_text(gate+'\n',encoding='utf-8')
+          PY
+
+      - name: Upload proof
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: origins-dxr-male-fishing-browser-proof
+          path: |
+            .qa/browser/
+            docs/generated/ORIGINS_DXR_MALE_FISHING_BROWSER_STATUS.md
+          include-hidden-files: true
+          if-no-files-found: warn
+
+      - name: Commit non-stale evidence
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -- docs/generated/ORIGINS_DXR_MALE_FISHING_BROWSER_STATUS.md
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m 'audit(dxr): record male fishing browser proof'
+          git fetch origin Origins-DxR
+          remote="$(git rev-parse origin/Origins-DxR)"
+          if [[ "$remote" != "$GITHUB_SHA" ]]; then
+            meaningful="$(git diff --name-only "$GITHUB_SHA" "$remote" | grep -v '^docs/generated/' || true)"
+            if [[ -n "$meaningful" ]]; then echo "Skipping stale proof push: $meaningful"; exit 0; fi
+          fi
+          git pull --rebase origin Origins-DxR
+          git push origin HEAD:Origins-DxR
+
+      - name: Enforce gate
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -f .qa/gate.txt
+          [[ "$(tr -d '\r\n' < .qa/gate.txt)" == 'PASS' ]]
