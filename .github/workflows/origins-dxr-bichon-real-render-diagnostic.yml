@@ -1,4 +1,4 @@
-name: Origins DxR - Bichon Real Render Diagnostic
+name: Origins DxR - Bichon + Forest F1 Real Render Diagnostic
 
 on:
   push:
@@ -6,6 +6,7 @@ on:
     paths:
       - 'maps/origins/0.map'
       - 'tools/zircon-map-renderer/**'
+      - 'scripts/build-origins-forest-room.py'
       - '.github/workflows/origins-dxr-bichon-real-render-diagnostic.yml'
   workflow_dispatch:
 
@@ -13,7 +14,7 @@ permissions:
   contents: write
 
 concurrency:
-  group: origins-dxr-bichon-real-render-final-${{ github.ref }}
+  group: origins-dxr-bichon-forest-real-render-${{ github.ref }}
   cancel-in-progress: true
 
 env:
@@ -22,6 +23,7 @@ env:
   PRIMARY_PATCH: https://mirfiles.com/resources/mir3/zircon/patch/
   RAW_ROOT: runtime-assets/zircon-map-render
   OUT_ROOT: artifacts/bichon-real-render-diagnostic
+  FOREST_ROOT: artifacts/forest-room-real
 
 jobs:
   diagnose:
@@ -31,6 +33,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
+
       - uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '10.0.x'
@@ -48,9 +51,10 @@ jobs:
         shell: pwsh
         run: |
           New-Item -ItemType Directory -Force $env:OUT_ROOT | Out-Null
+          New-Item -ItemType Directory -Force $env:FOREST_ROOT | Out-Null
           python scripts/prepare-zircon-libraryeditor-managed-dxt.py --zircon-root vendor/zircon --report "$env:OUT_ROOT/dxt.json"
 
-      - name: Fetch exact official map libraries used by map0
+      - name: Fetch official Bichon source map and Zircon map libraries
         id: fetch
         if: steps.dxt.outcome == 'success'
         continue-on-error: true
@@ -59,15 +63,27 @@ jobs:
           @'
           import gzip,json,os,urllib.parse,urllib.request
           from pathlib import Path
+
           rels=[
+            'Map/0.map',
             'Data/Map Data/Tilesc.Zl',
             'Data/Map Data/Tiles30c.Zl',
+            'Data/Map Data/Tiles5c.Zl',
+            'Data/Map Data/SmTilesc.Zl',
             'Data/Map Data/Housesc.Zl',
+            'Data/Map Data/Cliffsc.Zl',
+            'Data/Map Data/Dungeonsc.Zl',
+            'Data/Map Data/Innersc.Zl',
+            'Data/Map Data/Furnituresc.Zl',
+            'Data/Map Data/Wallsc.Zl',
             'Data/Map Data/SmObjectsc.Zl',
+            'Data/Map Data/Animationsc.Zl',
+            'Data/Map Data/Object1c.Zl',
             'Data/Map Data/Object2c.Zl',
             'Data/Map Data/Wood/Tilesc.Zl',
             'Data/Map Data/Wood/Housesc.Zl',
-            'Data/Map Data/Wood/SmObjectsc.Zl']
+            'Data/Map Data/Wood/SmObjectsc.Zl',
+          ]
           hosts=[os.environ['MIRROR_PATCH'],os.environ['PRIMARY_PATCH']]
           root=Path(os.environ['RAW_ROOT']); rows=[]; ok=True
           for rel in rels:
@@ -76,18 +92,19 @@ jobs:
               for host in hosts:
                   url=host+urllib.parse.quote(patch,safe='-_.()')
                   try:
-                      req=urllib.request.Request(url,headers={'User-Agent':'ORIGINS-DxR-MapRenderDiagnostic/1.2'})
-                      with urllib.request.urlopen(req,timeout=75) as r: compressed=r.read()
+                      req=urllib.request.Request(url,headers={'User-Agent':'ORIGINS-DxR-ForestRoom/1.0'})
+                      with urllib.request.urlopen(req,timeout=90) as r: compressed=r.read()
+                      if not compressed.startswith(b'\x1f\x8b'): raise RuntimeError('not gzip')
                       payload=gzip.decompress(compressed); dest.write_bytes(payload)
                       rows.append({'relativePath':rel,'status':'READY','url':url,'bytes':len(payload)}); ready=True; break
                   except Exception as exc:
                       attempts.append({'url':url,'error':f'{type(exc).__name__}: {exc}'})
               if not ready:
                   ok=False; rows.append({'relativePath':rel,'status':'FAIL','attempts':attempts})
-          Path(os.environ['OUT_ROOT'],'fetch.json').write_text(json.dumps({'status':'PASS' if ok else 'FAIL','libraries':rows},indent=2)+'\n',encoding='utf-8')
-          if not ok: raise SystemExit('One or more official map libraries failed to download')
+          Path(os.environ['OUT_ROOT'],'fetch.json').write_text(json.dumps({'status':'PASS' if ok else 'FAIL','files':rows},indent=2)+'\n',encoding='utf-8')
+          if not ok: raise SystemExit('One or more official Zircon files failed to download')
           '@ | python - 2>&1 | Tee-Object -FilePath "$env:OUT_ROOT/fetch.log"
-          if ($LASTEXITCODE -ne 0) { throw "Map library fetch failed with $LASTEXITCODE" }
+          if ($LASTEXITCODE -ne 0) { throw "Official Zircon fetch failed with $LASTEXITCODE" }
 
       - name: Build renderer
         id: build
@@ -98,16 +115,67 @@ jobs:
           dotnet build tools/zircon-map-renderer/ZirconMapRenderer.csproj -c Release -p:Platform=AnyCPU 2>&1 | Tee-Object -FilePath "$env:OUT_ROOT/build.log"
           if ($LASTEXITCODE -ne 0) { throw "Renderer build failed with $LASTEXITCODE" }
 
-      - name: Render committed 0.map
-        id: render
+      - name: Render committed Bichon 0.map
+        id: render_bichon
         if: steps.build.outcome == 'success'
         continue-on-error: true
         shell: pwsh
         run: |
           dotnet run --project tools/zircon-map-renderer/ZirconMapRenderer.csproj -c Release -p:Platform=AnyCPU --no-build -- --map maps/origins/0.map --source-root $env:RAW_ROOT --output-dir $env:OUT_ROOT 2>&1 | Tee-Object -FilePath "$env:OUT_ROOT/render.log"
-          if ($LASTEXITCODE -ne 0) { throw "Renderer execution failed with $LASTEXITCODE" }
+          if ($LASTEXITCODE -ne 0) { throw "Bichon renderer execution failed with $LASTEXITCODE" }
 
-      - name: Write and commit diagnostic
+      - name: Build authentic Forest F1 from official Bichon 0.map
+        id: build_forest
+        if: steps.fetch.outcome == 'success'
+        continue-on-error: true
+        shell: pwsh
+        run: |
+          python scripts/build-origins-forest-room.py `
+            --source-map "$env:RAW_ROOT/Map/0.map" `
+            --output-map "$env:FOREST_ROOT/forest_f1.map" `
+            --report "$env:FOREST_ROOT/build-report.json" 2>&1 | Tee-Object -FilePath "$env:FOREST_ROOT/build.log"
+          if ($LASTEXITCODE -ne 0) { throw "Forest F1 builder failed with $LASTEXITCODE" }
+
+      - name: Render Forest F1 with real Zircon .Zl assets
+        id: render_forest
+        if: steps.build.outcome == 'success' && steps.build_forest.outcome == 'success'
+        continue-on-error: true
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force "$env:FOREST_ROOT/render" | Out-Null
+          dotnet run --project tools/zircon-map-renderer/ZirconMapRenderer.csproj -c Release -p:Platform=AnyCPU --no-build -- `
+            --map "$env:FOREST_ROOT/forest_f1.map" `
+            --source-root $env:RAW_ROOT `
+            --output-dir "$env:FOREST_ROOT/render" 2>&1 | Tee-Object -FilePath "$env:FOREST_ROOT/render.log"
+          if ($LASTEXITCODE -ne 0) { throw "Forest F1 renderer failed with $LASTEXITCODE" }
+
+      - name: Validate Forest F1
+        id: validate_forest
+        if: steps.render_forest.outcome == 'success'
+        continue-on-error: true
+        shell: pwsh
+        run: |
+          @'
+          import hashlib,json,struct
+          from pathlib import Path
+          root=Path('artifacts/forest-room-real')
+          mp=root/'forest_f1.map'; data=mp.read_bytes()
+          w,h=struct.unpack_from('<HH',data,22)
+          expected=28+(w//2)*(h//2)*3+w*h*14
+          assert (w,h)==(80,128),(w,h)
+          assert len(data)==expected,(len(data),expected)
+          build=json.loads((root/'build-report.json').read_text(encoding='utf-8'))
+          assert build['output']['sha256']==hashlib.sha256(data).hexdigest().upper()
+          png=root/'render'/'bichon-cataclysm-real-overview.png'
+          assert png.is_file() and png.stat().st_size>10000,png
+          assert png.read_bytes()[:8]==b'\x89PNG\r\n\x1a\n'
+          rr=json.loads((root/'render'/'render-report.json').read_text(encoding='utf-8'))
+          assert rr['status']=='PASS'
+          assert rr['map']['width']==80 and rr['map']['height']==128
+          print(json.dumps({'status':'PASS','mapBytes':len(data),'previewBytes':png.stat().st_size},indent=2))
+          '@ | python -
+
+      - name: Write evidence and commit real outputs
         if: always()
         shell: pwsh
         env:
@@ -115,45 +183,69 @@ jobs:
           DXT: ${{ steps.dxt.outcome }}
           FETCH: ${{ steps.fetch.outcome }}
           BUILD: ${{ steps.build.outcome }}
-          RENDER: ${{ steps.render.outcome }}
+          RENDER_BICHON: ${{ steps.render_bichon.outcome }}
+          BUILD_FOREST: ${{ steps.build_forest.outcome }}
+          RENDER_FOREST: ${{ steps.render_forest.outcome }}
+          VALIDATE_FOREST: ${{ steps.validate_forest.outcome }}
         run: |
           New-Item -ItemType Directory -Force docs/generated/bichon-map0 | Out-Null
+          New-Item -ItemType Directory -Force docs/generated/forest-room | Out-Null
+          New-Item -ItemType Directory -Force maps/origins/forest | Out-Null
           @'
           import json,os
           from pathlib import Path
-          out=Path(os.environ['OUT_ROOT'])
-          outcomes={k:os.environ.get(k,'unknown') for k in ['BOOTSTRAP','DXT','FETCH','BUILD','RENDER']}
-          gate='PASS' if all(v=='success' for v in outcomes.values()) and (out/'render-report.json').exists() else 'FAIL'
-          lines=['# ORIGINS-DxR — Bichon Real Render Diagnostic','',f'- Gate: **{gate}**',f'- HEAD: `{os.environ.get("GITHUB_SHA","unknown")}`','', '## Steps','']
+          out=Path(os.environ['OUT_ROOT']); forest=Path(os.environ['FOREST_ROOT'])
+          keys=['BOOTSTRAP','DXT','FETCH','BUILD','RENDER_BICHON','BUILD_FOREST','RENDER_FOREST','VALIDATE_FOREST']
+          outcomes={k:os.environ.get(k,'unknown') for k in keys}
+          gate='PASS' if outcomes.get('VALIDATE_FOREST')=='success' else 'FAIL'
+          lines=['# ORIGINS-DxR — Authentic Forest F1 Real Zircon Render','',f'- Forest gate: **{gate}**',f'- HEAD: `{os.environ.get("GITHUB_SHA","unknown")}`','', '## Steps','']
           lines += [f'- {k}: **{v}**' for k,v in outcomes.items()]
           fetch=out/'fetch.json'
           if fetch.exists():
               payload=json.loads(fetch.read_text(encoding='utf-8'))
-              lines += ['','## Fetch','']
-              for row in payload.get('libraries',[]):
-                  lines.append(f'- `{row.get("relativePath")}`: **{row.get("status")}**; bytes `{row.get("bytes","—")}`')
-                  for a in row.get('attempts',[]): lines.append(f'  - `{a.get("url")}` → `{a.get("error")}`')
-          for name in ['build.log','render.log']:
-              p=out/name
+              lines += ['','## Official Zircon files','']
+              for row in payload.get('files',[]): lines.append(f'- `{row.get("relativePath")}`: **{row.get("status")}**; `{row.get("bytes","—")}` bytes')
+          for label,p in [('forest build',forest/'build.log'),('forest render',forest/'render.log')]:
               if p.exists():
-                  tail='\n'.join(p.read_text(errors='replace').splitlines()[-50:])
-                  lines += ['',f'## {name}','', '```text',tail,'```']
-          report=out/'render-report.json'
+                  tail='\n'.join(p.read_text(errors='replace').splitlines()[-60:])
+                  lines += ['',f'## {label} log','', '```text',tail,'```']
+          report=forest/'build-report.json'
           if report.exists():
               r=json.loads(report.read_text(encoding='utf-8'))
-              lines += ['','## Render report','',f'- Map SHA-256: `{r["map"]["sha256"]}`']
-              for row in r.get('renders',[]): lines.append(f'- {row["name"]}: **{row["pixelWidth"]}×{row["pixelHeight"]}**, `{row["bytes"]}` bytes, SHA `{row["sha256"]}`')
-          Path('docs/generated/ORIGINS_DXR_BICHON_REAL_RENDER_DIAGNOSTIC.md').write_text('\n'.join(lines)+'\n',encoding='utf-8')
+              lines += ['','## Forest F1','',f'- Native map: **{r["output"]["width"]}×{r["output"]["height"]}** cells.',f'- Spawn proposal: `{r["output"]["spawn"]}`.',f'- Map SHA-256: `{r["output"].get("sha256","—")}`.',f'- KROrder IDs used: `{r.get("usedKROrderIds",[])}`.','', 'The visible cells are copied from the official Zircon Bichon `0.map`; the preview is rendered from official `.Zl` libraries by the native ORIGINS Zircon renderer. No generated artwork is used.']
+          Path('docs/generated/ORIGINS_DXR_FOREST_F1_REAL_RENDER.md').write_text('\n'.join(lines)+'\n',encoding='utf-8')
           '@ | python -
+
           if (Test-Path "$env:OUT_ROOT/bichon-cataclysm-real-overview.png") { Copy-Item "$env:OUT_ROOT/bichon-cataclysm-real-overview.png" docs/generated/bichon-map0/real-overview.png -Force }
           if (Test-Path "$env:OUT_ROOT/bichon-cataclysm-real-detail.png") { Copy-Item "$env:OUT_ROOT/bichon-cataclysm-real-detail.png" docs/generated/bichon-map0/real-detail.png -Force }
+
+          if (Test-Path "$env:FOREST_ROOT/forest_f1.map") { Copy-Item "$env:FOREST_ROOT/forest_f1.map" maps/origins/forest/forest_f1.map -Force }
+          if (Test-Path "$env:FOREST_ROOT/render/bichon-cataclysm-real-overview.png") { Copy-Item "$env:FOREST_ROOT/render/bichon-cataclysm-real-overview.png" docs/generated/forest-room/real-overview.png -Force }
+          if (Test-Path "$env:FOREST_ROOT/build-report.json") { Copy-Item "$env:FOREST_ROOT/build-report.json" docs/generated/forest-room/build-report.json -Force }
+          if (Test-Path "$env:FOREST_ROOT/render/render-report.json") { Copy-Item "$env:FOREST_ROOT/render/render-report.json" docs/generated/forest-room/render-report.json -Force }
+
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add docs/generated/ORIGINS_DXR_BICHON_REAL_RENDER_DIAGNOSTIC.md
-          if (Test-Path docs/generated/bichon-map0/real-overview.png) { git add docs/generated/bichon-map0/real-overview.png }
-          if (Test-Path docs/generated/bichon-map0/real-detail.png) { git add docs/generated/bichon-map0/real-detail.png }
+          git add docs/generated/ORIGINS_DXR_FOREST_F1_REAL_RENDER.md
+          if (Test-Path maps/origins/forest/forest_f1.map) { git add maps/origins/forest/forest_f1.map }
+          if (Test-Path docs/generated/forest-room/real-overview.png) { git add docs/generated/forest-room/real-overview.png }
+          if (Test-Path docs/generated/forest-room/build-report.json) { git add docs/generated/forest-room/build-report.json }
+          if (Test-Path docs/generated/forest-room/render-report.json) { git add docs/generated/forest-room/render-report.json }
           if (-not (git diff --cached --quiet)) {
-            git commit -m 'audit(map): record real Bichon render diagnostic'
+            git commit -m 'feat(map): add authentic Zircon Forest F1 and real preview'
             git pull --rebase origin Origins-DxR
             git push origin HEAD:Origins-DxR
           }
+
+      - name: Upload Forest F1 artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: origins-dxr-authentic-forest-f1
+          path: |
+            artifacts/forest-room-real/forest_f1.map
+            artifacts/forest-room-real/build-report.json
+            artifacts/forest-room-real/render/bichon-cataclysm-real-overview.png
+            artifacts/forest-room-real/render/render-report.json
+            docs/generated/ORIGINS_DXR_FOREST_F1_REAL_RENDER.md
+          if-no-files-found: warn
