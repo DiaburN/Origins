@@ -1,0 +1,186 @@
+name: Origins DxR - Authentic Forest Room F1
+
+on:
+  push:
+    branches: [Origins-DxR]
+    paths:
+      - 'scripts/build-origins-forest-room.py'
+      - '.github/workflows/origins-dxr-forest-room.yml'
+      - 'tools/zircon-map-renderer/**'
+      - 'scripts/prepare-zircon-libraryeditor-managed-dxt.py'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: origins-dxr-forest-room-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  ZIRCON_COMMIT: cbf1aa919083bc13fc3f23f93772a8ab8370632d
+  PRIMARY_PATCH: https://mirfiles.com/resources/mir3/zircon/patch/
+  MIRROR_PATCH: https://mirfiles.co.uk/resources/mir3/zircon/patch/
+  RAW_ROOT: runtime-assets/forest-room
+  OUT_ROOT: artifacts/forest-room
+
+jobs:
+  build-render:
+    runs-on: windows-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Bootstrap pinned Zircon
+        shell: pwsh
+        run: |
+          ./scripts/bootstrap-zircon.ps1
+          $actual=(git -C vendor/zircon rev-parse HEAD).Trim()
+          if ($actual -ne $env:ZIRCON_COMMIT) { throw "Pinned Zircon mismatch: $actual" }
+
+      - name: Prepare managed DXT decoder
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force $env:OUT_ROOT | Out-Null
+          python scripts/prepare-zircon-libraryeditor-managed-dxt.py `
+            --zircon-root vendor/zircon `
+            --report "$env:OUT_ROOT/managed-dxt.json"
+
+      - name: Fetch official Bichon map and exact Zircon map libraries
+        shell: pwsh
+        run: |
+          @'
+          import gzip,hashlib,json,os,urllib.parse,urllib.request
+          from pathlib import Path
+
+          root=Path(os.environ['RAW_ROOT'])
+          relatives=[
+            'Map/0.map',
+            'Data/Map Data/Tilesc.Zl',
+            'Data/Map Data/Tiles30c.Zl',
+            'Data/Map Data/Tiles5c.Zl',
+            'Data/Map Data/SmTilesc.Zl',
+            'Data/Map Data/Housesc.Zl',
+            'Data/Map Data/Cliffsc.Zl',
+            'Data/Map Data/Dungeonsc.Zl',
+            'Data/Map Data/Innersc.Zl',
+            'Data/Map Data/Furnituresc.Zl',
+            'Data/Map Data/Wallsc.Zl',
+            'Data/Map Data/SmObjectsc.Zl',
+            'Data/Map Data/Animationsc.Zl',
+            'Data/Map Data/Object1c.Zl',
+            'Data/Map Data/Object2c.Zl',
+            'Data/Map Data/Wood/Tilesc.Zl',
+            'Data/Map Data/Wood/Housesc.Zl',
+            'Data/Map Data/Wood/SmObjectsc.Zl',
+          ]
+          hosts=[os.environ['MIRROR_PATCH'],os.environ['PRIMARY_PATCH']]
+          rows=[]
+          for relative in relatives:
+              destination=root/Path(relative)
+              destination.parent.mkdir(parents=True,exist_ok=True)
+              patch=relative.replace('\\','/').replace('/','-')+'.gz'
+              attempts=[]
+              for host in hosts:
+                  url=host+urllib.parse.quote(patch,safe='-_.()')
+                  try:
+                      req=urllib.request.Request(url,headers={'User-Agent':'ORIGINS-DxR-ForestRoom/1.0'})
+                      with urllib.request.urlopen(req,timeout=120) as response:
+                          compressed=response.read()
+                      if not compressed.startswith(b'\x1f\x8b'):
+                          raise RuntimeError('response is not gzip')
+                      payload=gzip.decompress(compressed)
+                      destination.write_bytes(payload)
+                      rows.append({'relativePath':relative,'url':url,'bytes':len(payload),'sha256':hashlib.sha256(payload).hexdigest().upper()})
+                      break
+                  except Exception as exc:
+                      attempts.append({'url':url,'error':f'{type(exc).__name__}: {exc}'})
+              else:
+                  raise SystemExit(f'Unable to fetch {relative}: {attempts}')
+          Path(os.environ['OUT_ROOT'],'fetch.json').write_text(json.dumps({'status':'PASS','files':rows},indent=2)+'\n',encoding='utf-8')
+          print(json.dumps({'status':'PASS','files':len(rows)},indent=2))
+          '@ | python -
+
+      - name: Build Forest F1 from native Bichon cells
+        shell: pwsh
+        run: |
+          python scripts/build-origins-forest-room.py `
+            --source-map "$env:RAW_ROOT/Map/0.map" `
+            --output-map "$env:OUT_ROOT/forest_f1.map" `
+            --report "$env:OUT_ROOT/build-report.json"
+
+      - name: Build native Zircon renderer
+        shell: pwsh
+        run: dotnet build tools/zircon-map-renderer/ZirconMapRenderer.csproj -c Release -p:Platform=AnyCPU
+
+      - name: Render Forest F1 with real .Zl tiles
+        shell: pwsh
+        run: |
+          dotnet run --project tools/zircon-map-renderer/ZirconMapRenderer.csproj `
+            -c Release -p:Platform=AnyCPU --no-build -- `
+            --map "$env:OUT_ROOT/forest_f1.map" `
+            --source-root "$env:RAW_ROOT" `
+            --output-dir "$env:OUT_ROOT/render"
+          if ($LASTEXITCODE -ne 0) { throw "Native renderer failed with $LASTEXITCODE" }
+
+      - name: Validate native map and real render
+        shell: pwsh
+        run: |
+          @'
+          import hashlib,json,struct
+          from pathlib import Path
+          root=Path('artifacts/forest-room')
+          mp=root/'forest_f1.map'
+          data=mp.read_bytes()
+          w,h=struct.unpack_from('<HH',data,22)
+          expected=28+(w//2)*(h//2)*3+w*h*14
+          assert (w,h)==(80,128),(w,h)
+          assert len(data)==expected,(len(data),expected)
+          build=json.loads((root/'build-report.json').read_text(encoding='utf-8'))
+          assert build['output']['sha256']==hashlib.sha256(data).hexdigest().upper()
+          png=root/'render'/'bichon-cataclysm-real-overview.png'
+          assert png.is_file() and png.stat().st_size>10000,png
+          assert png.read_bytes()[:8]==b'\x89PNG\r\n\x1a\n'
+          render=json.loads((root/'render'/'render-report.json').read_text(encoding='utf-8'))
+          assert render['status']=='PASS'
+          assert render['map']['width']==80 and render['map']['height']==128
+          print(json.dumps({'status':'PASS','mapBytes':len(data),'pngBytes':png.stat().st_size},indent=2))
+          '@ | python -
+
+      - name: Stage chat-ready outputs
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force docs/generated/forest-room | Out-Null
+          New-Item -ItemType Directory -Force maps/origins/forest | Out-Null
+          Copy-Item "$env:OUT_ROOT/forest_f1.map" maps/origins/forest/forest_f1.map -Force
+          Copy-Item "$env:OUT_ROOT/render/bichon-cataclysm-real-overview.png" docs/generated/forest-room/real-overview.png -Force
+          Copy-Item "$env:OUT_ROOT/build-report.json" docs/generated/forest-room/build-report.json -Force
+          Copy-Item "$env:OUT_ROOT/render/render-report.json" docs/generated/forest-room/render-report.json -Force
+
+      - name: Upload authentic forest-room artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: origins-dxr-authentic-forest-f1
+          path: |
+            maps/origins/forest/forest_f1.map
+            docs/generated/forest-room/real-overview.png
+            docs/generated/forest-room/build-report.json
+            docs/generated/forest-room/render-report.json
+            artifacts/forest-room/fetch.json
+
+      - name: Commit generated .map and real preview
+        shell: pwsh
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -- maps/origins/forest/forest_f1.map docs/generated/forest-room/real-overview.png docs/generated/forest-room/build-report.json docs/generated/forest-room/render-report.json
+          if (git diff --cached --quiet) { exit 0 }
+          git commit -m 'feat(map): generate authentic Zircon Forest F1 and real preview'
+          git pull --rebase origin Origins-DxR
+          git push origin HEAD:Origins-DxR
