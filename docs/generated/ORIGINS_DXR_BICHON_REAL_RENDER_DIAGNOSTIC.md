@@ -1,7 +1,7 @@
 # ORIGINS-DxR — Bichon Real Render Diagnostic
 
 - Gate: **PASS**
-- HEAD: `3a16bf8798a85ef6c225ff1c1280df1424233842`
+- HEAD: `d1f6b6df2830aab7c9bf5eed705a296ebffb3c45`
 
 ## Steps
 
@@ -26,9 +26,9 @@
 
 ```text
   Determining projects to restore...
-  Restored D:\a\Origins\Origins\vendor\zircon\RenderingCore\RenderingCore.csproj (in 4.1 sec).
-  Restored D:\a\Origins\Origins\tools\zircon-map-renderer\ZirconMapRenderer.csproj (in 4.1 sec).
-  Restored D:\a\Origins\Origins\vendor\zircon\LibraryEditor\LibraryEditor.csproj (in 4.1 sec).
+  Restored D:\a\Origins\Origins\vendor\zircon\RenderingCore\RenderingCore.csproj (in 4.65 sec).
+  Restored D:\a\Origins\Origins\tools\zircon-map-renderer\ZirconMapRenderer.csproj (in 4.65 sec).
+  Restored D:\a\Origins\Origins\vendor\zircon\LibraryEditor\LibraryEditor.csproj (in 4.65 sec).
   RenderingCore -> D:\a\Origins\Origins\vendor\zircon\RenderingCore\bin\Release\net10.0-windows8.0\RenderingCore.dll
 C:\Program Files\dotnet\sdk\10.0.400\Microsoft.CSharp.CurrentVersion.targets(130,9): warning MSB3884: Could not find rule set file "MinimumRecommendedRules.ruleset". [D:\a\Origins\Origins\vendor\zircon\LibraryEditor\LibraryEditor.csproj]
 D:\a\Origins\Origins\vendor\zircon\LibraryEditor\LMain.cs(158,13): warning CS0162: Unreachable code detected [D:\a\Origins\Origins\vendor\zircon\LibraryEditor\LibraryEditor.csproj]
@@ -42,7 +42,7 @@ D:\a\Origins\Origins\vendor\zircon\LibraryEditor\LMain.cs(158,13): warning CS016
     2 Warning(s)
     0 Error(s)
 
-Time Elapsed 00:00:14.20
+Time Elapsed 00:00:17.30
 ```
 
 ## render.log
