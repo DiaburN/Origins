@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ORIGINS Zircon Library Manifest",
+  "type": "object",
+  "required": ["formatVersion", "key", "sourceFile", "images"],
+  "properties": {
+    "formatVersion": {"type": "integer"},
+    "key": {"type": "string"},
+    "sourceFile": {"type": "string"},
+    "zlVersion": {"type": ["integer", "null"]},
+    "slotCount": {"type": ["integer", "null"]},
+    "images": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "present"],
+        "properties": {
+          "id": {"type": "integer"},
+          "present": {"type": "boolean"},
+          "file": {"type": ["string", "null"]},
+          "width": {"type": ["integer", "null"]},
+          "height": {"type": ["integer", "null"]},
+          "offsetX": {"type": ["integer", "null"]},
+          "offsetY": {"type": ["integer", "null"]},
+          "category": {"type": ["string", "null"]}
+        }
+      }
+    }
+  }
+}

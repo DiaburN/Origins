@@ -1,25 +1,42 @@
-# ORIGINS
+# ORIGINS — Zircon Asset & Map Library
 
-Official repository of ORIGINS.
+Este repositorio es la biblioteca maestra de recursos de **Zircon** que utilizaremos para reconstruir mapas reales y reutilizar sus piezas visuales en **ORIGINS IDLE**.
 
-ORIGINS is a web-first action RPG/MMORPG project rebuilt around vertical room-based dungeons inspired by the visual language and content structure of classic Mir games.
+## Objetivo
 
-## Current phase
+El flujo de trabajo será:
 
-**MAP ENGINE V1 — caves/dungeons only.**
+```text
+.Zl originales
+    -> extracción PNG + metadata
+.MAP original
+    -> lectura de celdas y librerías
+    -> resolución de IDs en manifests
+    -> render completo / minimapa
+    -> selección de zona
+    -> ampliación con tiles reales
+    -> composición horizontal para ORIGINS IDLE
+```
 
-No player, combat, UI, monsters or spells are part of this first milestone. The first goal is to build coherent cave rooms from one visual theme at a time.
+Los índices originales de Zircon nunca se renumeran.
 
-## Locked map rule
+## Estructura
 
-Each dungeon theme is a closed visual set. Floors, walls, corners, doors, obstacles, decorations and KingRoom pieces must all belong to the same cave/theme.
+- `ZIRCON_ASSETS/originals/` — librerías `.Zl` originales.
+- `ZIRCON_ASSETS/extracted/` — imágenes extraídas por librería, conservando ID original.
+- `ZIRCON_ASSETS/manifests/` — índice global y metadata de cada librería.
+- `MAPS/originals/` — mapas `.map` originales.
+- `MAPS/renders/` — renders completos reconstruidos.
+- `MAPS/minimaps/` — vistas reducidas generadas desde el mapa real.
+- `MAPS/selections/` — recortes/zonas seleccionadas.
+- `TOOLS/` — extractores, renderer e inspector.
+- `schemas/` — esquemas de manifests.
+- `docs/` — especificaciones del pipeline.
 
-Standard progression:
+## Regla principal
 
-`BOTTOM ENTRY -> LONG CENTRAL PLAY AREA -> TOP DOOR -> NEXT FLOOR -> ... -> KINGROOM`
+Un render de mapa debe proceder siempre de:
 
-The final floor is a **KingRoom**, where special pieces such as an altar, throne, portal or boss decoration may be used, but only if they belong to the same dungeon theme.
+`MAP real + librerías reales + image IDs reales + offsets reales`.
 
-Different floors can be visually differentiated with floor decorations and gameplay obstacles while preserving the same cave identity.
-
-See `docs/MAP_ENGINE_V1.md` for the design specification.
+No se generan aproximaciones cuando existen los recursos originales.

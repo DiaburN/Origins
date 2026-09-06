@@ -1,0 +1,6 @@
+# Los .Zl originales pueden ser grandes. Se preparan para Git LFS.
+*.Zl filter=lfs diff=lfs merge=lfs -text
+*.zl filter=lfs diff=lfs merge=lfs -text
+
+# Los PNG extraídos NO se ponen en LFS: deben quedar accesibles individualmente
+# para inspección, descarga y reconstrucción automatizada.
