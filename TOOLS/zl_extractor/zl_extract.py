@@ -163,6 +163,15 @@ def extract(lib:Lib,out:Path,mroot:Path):
     src=f'ZIRCON_ASSETS/originals/{lib.key}.Zl'; obj=manifest(lib,src); mp=mroot/(lib.key+'.json'); mp.parent.mkdir(parents=True,exist_ok=True); mp.write_text(json.dumps(obj,indent=2)+'\n')
     return obj
 
+def update_index(index_path:Path,lib:Lib,obj:dict,status='complete'):
+    if index_path.exists():
+        idx=json.loads(index_path.read_text(encoding='utf-8'))
+    else:
+        idx={'formatVersion':1,'libraries':[],'rules':{'preserveOriginalImageIds':True,'pngTransparency':'alpha','renumberImages':False}}
+    rec={'key':lib.key,'sourceFile':obj['sourceFile'],'manifest':f"ZIRCON_ASSETS/manifests/{lib.key}.json",'extractedRoot':f"ZIRCON_ASSETS/extracted/{lib.key}/",'zlFormat':lib.format,'zlVersion':lib.version,'slotCount':lib.slots,'presentCount':obj['presentCount'],'status':status}
+    libs=[x for x in idx.get('libraries',[]) if x.get('key')!=lib.key]; libs.append(rec); libs.sort(key=lambda x:x['key'].lower()); idx['libraries']=libs
+    index_path.parent.mkdir(parents=True,exist_ok=True); index_path.write_text(json.dumps(idx,indent=2)+'\n',encoding='utf-8')
+
 def collect(ps):
     out=[]
     for p in ps:
@@ -173,11 +182,12 @@ def collect(ps):
 
 def main():
     ap=argparse.ArgumentParser(); ap.add_argument('inputs',nargs='+',type=Path); ap.add_argument('--source-root',type=Path)
-    ap.add_argument('--extracted-root',type=Path,default=Path('ZIRCON_ASSETS/extracted')); ap.add_argument('--manifests-root',type=Path,default=Path('ZIRCON_ASSETS/manifests')); ap.add_argument('--scan-only',action='store_true'); a=ap.parse_args()
+    ap.add_argument('--extracted-root',type=Path,default=Path('ZIRCON_ASSETS/extracted')); ap.add_argument('--manifests-root',type=Path,default=Path('ZIRCON_ASSETS/manifests')); ap.add_argument('--index',type=Path,default=Path('ZIRCON_ASSETS/manifests/library_index.json')); ap.add_argument('--scan-only',action='store_true'); a=ap.parse_args()
     for p in collect(a.inputs):
         lib=parse(p,a.source_root); src=f'ZIRCON_ASSETS/originals/{lib.key}.Zl'
         if a.scan_only:
             obj=manifest(lib,src); obj['extractionStatus']='metadata_only'; mp=a.manifests_root/(lib.key+'.json'); mp.parent.mkdir(parents=True,exist_ok=True); mp.write_text(json.dumps(obj,indent=2)+'\n')
-        else: obj=extract(lib,a.extracted_root,a.manifests_root)
+        else:
+            obj=extract(lib,a.extracted_root,a.manifests_root); update_index(a.index,lib,obj,'complete')
         print(f"{lib.key}: {lib.format} v{lib.version}, slots={lib.slots}, present={obj['presentCount']}")
 if __name__=='__main__': main()
