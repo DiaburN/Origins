@@ -37,6 +37,58 @@ jobs:
           cd TOOLS/hpr_zircon_builder
           python self_test.py
 
+      - name: Real HispaCrystal v3 reader self test
+        shell: pwsh
+        run: |
+          cd TOOLS/hpr_zircon_builder
+          python selftest_real_v3.py
+
+      - name: Bundled analyzer end-to-end smoke test
+        shell: pwsh
+        run: |
+          $root = Join-Path $env:RUNNER_TEMP 'hpr-analyze-e2e'
+          New-Item -ItemType Directory -Force -Path $root | Out-Null
+          $hpr = Join-Path $root '000.hpr'
+          $analysis = Join-Path $root 'ANALYSIS'
+          $master = Join-Path $root 'MASTER'
+          python TOOLS/hpr_zircon_builder/selftest_real_v3.py | Out-Host
+
+          # Generate a deterministic v3 fixture using the same verified layout.
+          @'
+          import gzip, struct, sys
+          from pathlib import Path
+          sys.path.insert(0, str(Path('TOOLS/hpr_zircon_builder').resolve()))
+          import origins_hpr_zircon as core
+
+          out = Path(sys.argv[1])
+          def bgra(w,h,seed):
+              b=bytearray()
+              for y in range(h):
+                  for x in range(w):
+                      b.extend(((seed+x)&255,(seed+y*3)&255,(seed+x+y)&255,255))
+              return bytes(b)
+          def rec(w,h,x,y,sx,sy,shadow,raw):
+              p=gzip.compress(raw,compresslevel=9)
+              return struct.pack('<HHhhhhBI',w,h,x,y,sx,sy,shadow,len(p))+p
+          records=[rec(8,7,-4,-10,1,2,1,bgra(8,7,10)),rec(7,6,-3,-9,1,1,1,bgra(7,6,30)),None,rec(5,4,2,-7,0,1,0,bgra(5,4,70))]
+          count=len(records); table_end=24+count*4; physical=table_end; offs=[]; blob=bytearray()
+          for r in records:
+              if r is None: offs.append(0); continue
+              offs.append(physical-len(core.SIGNATURE)); blob.extend(r); physical+=len(r)
+          frame_set_offset=physical
+          tail=b'FRAMESET_V3_TEST'+bytes(range(32))
+          header=core.SIGNATURE+struct.pack('<III',3,count,frame_set_offset)+struct.pack(f'<{count}I',*offs)
+          out.write_bytes(header+blob+tail)
+          '@ | python - $hpr
+
+          python TOOLS/hpr_zircon_builder/origins_hpr_zircon_builder.py analyze --hpr-root $hpr --output $analysis --master-output $master
+
+          if (!(Test-Path (Join-Path $analysis 'MONSTERS/000/CURSOR_PROFILE.json'))) { throw 'CURSOR_PROFILE missing' }
+          if (!(Test-Path (Join-Path $analysis 'MONSTERS/000/IMAGE_METADATA.csv'))) { throw 'IMAGE_METADATA missing' }
+          if (!(Test-Path (Join-Path $analysis 'MONSTERS/000/FRAMES_PNG/000000.png'))) { throw 'frame PNG missing' }
+          if (!(Test-Path (Join-Path $master 'MASTER_SHEET.csv'))) { throw 'master sheet missing after analyze' }
+          Write-Host 'BUNDLED ANALYZER E2E OK'
+
       - name: Master-sheet CLI smoke test
         shell: pwsh
         run: |
