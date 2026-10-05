@@ -43,7 +43,7 @@ jobs:
           cd TOOLS/hpr_zircon_builder
           python selftest_real_v3.py
 
-      - name: Bundled analyzer end-to-end smoke test
+      - name: Bundled analyzer full HPR to ZL smoke test
         shell: pwsh
         run: |
           $root = Join-Path $env:RUNNER_TEMP 'hpr-analyze-e2e'
@@ -51,9 +51,9 @@ jobs:
           $hpr = Join-Path $root '000.hpr'
           $analysis = Join-Path $root 'ANALYSIS'
           $master = Join-Path $root 'MASTER'
-          python TOOLS/hpr_zircon_builder/selftest_real_v3.py | Out-Host
+          $built = Join-Path $root 'BUILT'
 
-          # Generate a deterministic v3 fixture using the same verified layout.
+          # Generate a deterministic HispaCrystal v3 fixture using the verified real-v3 layout.
           @'
           import gzip, struct, sys
           from pathlib import Path
@@ -82,12 +82,28 @@ jobs:
           '@ | python - $hpr
 
           python TOOLS/hpr_zircon_builder/origins_hpr_zircon_builder.py analyze --hpr-root $hpr --output $analysis --master-output $master
+          $prepared = Join-Path $analysis 'MONSTERS/000'
+          python TOOLS/hpr_zircon_builder/origins_hpr_zircon_builder.py build --monster-root $prepared --output $built
+          $zl = Join-Path $built '000/000.Zl'
 
           if (!(Test-Path (Join-Path $analysis 'MONSTERS/000/CURSOR_PROFILE.json'))) { throw 'CURSOR_PROFILE missing' }
           if (!(Test-Path (Join-Path $analysis 'MONSTERS/000/IMAGE_METADATA.csv'))) { throw 'IMAGE_METADATA missing' }
           if (!(Test-Path (Join-Path $analysis 'MONSTERS/000/FRAMES_PNG/000000.png'))) { throw 'frame PNG missing' }
           if (!(Test-Path (Join-Path $master 'MASTER_SHEET.csv'))) { throw 'master sheet missing after analyze' }
-          Write-Host 'BUNDLED ANALYZER E2E OK'
+          if (!(Test-Path $zl)) { throw 'final ZL missing' }
+
+          @'
+          import importlib.util, sys
+          from pathlib import Path
+          p=Path('TOOLS/zl_extractor/zl_extract.py').resolve()
+          spec=importlib.util.spec_from_file_location('zlx',p)
+          mod=importlib.util.module_from_spec(spec); sys.modules[spec.name]=mod; spec.loader.exec_module(mod)
+          lib=mod.parse(Path(sys.argv[1]))
+          assert lib.slots == 4
+          assert lib.images[0].present and not lib.images[2].present and lib.images[3].present
+          assert lib.images[0].offsetX == -4 and lib.images[0].offsetY == -10
+          print('FULL HPR -> ANALYSIS -> ZL ROUND TRIP OK')
+          '@ | python - $zl
 
       - name: Master-sheet CLI smoke test
         shell: pwsh
