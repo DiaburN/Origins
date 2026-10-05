@@ -1,8 +1,5 @@
 name: HPR Zircon Builder Test
 
-permissions:
-  contents: write
-
 on:
   push:
     branches:
@@ -22,8 +19,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-        with:
-          ref: tools/hpr-zircon-master-builder
 
       - name: Setup Python
         uses: actions/setup-python@v5
@@ -35,23 +30,6 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           python -m pip install -r TOOLS/hpr_zircon_builder/requirements.txt
-
-      - name: Recover validated HPR parser v3
-        shell: pwsh
-        run: |
-          $engine = 'TOOLS/hpr_zircon_builder/engine/monster_hpr_analyzer.py'
-          if (!(Test-Path $engine)) {
-            $zip = Join-Path $env:RUNNER_TEMP 'analyzer-v3.zip'
-            $unpack = Join-Path $env:RUNNER_TEMP 'analyzer-v3'
-            $url = 'https://drive.google.com/uc?export=download&id=1PT7OuO5MML2KsiY6-teMNjejCTT_orgD'
-            Invoke-WebRequest -Uri $url -OutFile $zip
-            Expand-Archive -Path $zip -DestinationPath $unpack -Force
-            $src = Get-ChildItem -Path $unpack -Recurse -Filter 'monster_hpr_analyzer.py' | Select-Object -First 1
-            if ($null -eq $src) { throw 'Validated monster_hpr_analyzer.py not found in package' }
-            Copy-Item $src.FullName $engine -Force
-          }
-          python -m py_compile $engine
-          python $engine --help
 
       - name: ZL writer round-trip self test
         shell: pwsh
@@ -88,17 +66,3 @@ jobs:
           if (!(Test-Path (Join-Path $root 'MASTER/MONSTERS/000/FRAMESET.json'))) { throw 'FRAMESET.json missing' }
           if (!(Test-Path (Join-Path $root 'MASTER/MONSTERS/000/CURSOR_IMPORT_THIS_MONSTER.md'))) { throw 'Cursor instructions missing' }
           Write-Host 'MASTER SHEET SMOKE TEST OK'
-
-      - name: Commit recovered parser
-        if: github.event_name == 'push'
-        shell: pwsh
-        run: |
-          git add TOOLS/hpr_zircon_builder/engine/monster_hpr_analyzer.py
-          if (git diff --cached --quiet) {
-            Write-Host 'Parser already included.'
-            exit 0
-          }
-          git config user.name 'github-actions[bot]'
-          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git commit -m 'fix: bundle validated HispaCrystal HPR parser'
-          git push origin HEAD:tools/hpr-zircon-master-builder
