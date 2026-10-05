@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import csv
 import importlib.util
+import sys
 import tempfile
 from pathlib import Path
 
@@ -21,17 +22,19 @@ def load_zl_extractor():
     if not p.exists():
         raise RuntimeError(f"No encuentro el extractor ORIGINS: {p}")
     spec = importlib.util.spec_from_file_location("origins_zl_extract", p)
+    if spec is None or spec.loader is None:
+        raise RuntimeError(f"No puedo cargar {p}")
     mod = importlib.util.module_from_spec(spec)
-    assert spec and spec.loader
+    sys.modules[spec.name] = mod
     spec.loader.exec_module(mod)
     return mod
 
 
-def make_png(path: Path, size, rect_color, offset):
+def make_png(path: Path, size, rect_color, label):
     im = Image.new("RGBA", size, (0, 0, 0, 0))
     d = ImageDraw.Draw(im)
     d.rectangle((2, 2, size[0]-3, size[1]-3), fill=rect_color)
-    d.text((3, 3), str(offset), fill=(255, 255, 255, 255))
+    d.text((3, 3), str(label), fill=(255, 255, 255, 255))
     im.save(path)
 
 
