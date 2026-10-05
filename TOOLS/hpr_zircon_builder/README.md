@@ -1,12 +1,10 @@
 # ORIGINS HPR -> ZIRCON MASTER BUILDER
 
-Herramienta para convertir el trabajo de análisis HispaCrystal HPR en paquetes de monstruo utilizables por Zircon y generar un **MASTER SHEET** global.
+Herramienta para convertir librerías **HispaCrystal `.hpr`** en paquetes de monstruo utilizables por Zircon y generar un **MASTER SHEET** global.
 
-## Objetivo
+## Flujo
 
-Flujo:
-
-`HPR -> analisis probado -> frames RGBA -> metadata -> FrameSet -> .Zl -> ficha Cursor -> MASTER_SHEET`
+`HPR -> lector HispaCrystal v3 integrado -> frames RGBA -> metadata X/Y -> perfil visual -> .Zl -> ficha Cursor -> MASTER_SHEET`
 
 La herramienta NO decide AI, daño, heal ni proyectiles a partir del nombre visual de una acción.
 
@@ -16,33 +14,60 @@ La herramienta NO decide AI, daño, heal ni proyectiles a partir del nombre visu
 2. `Frame.OffSet` de Zircon = `direction_stride` del perfil HPR.
 3. No modificar `FrameSet.DefaultMonster` para encajar criaturas custom.
 4. Preservar índices originales de imagen siempre que sea posible.
-5. Si se compactan índices, hay que crear `sourceIndex -> targetIndex` y reescribir todos los StartIndex. Este builder, por defecto, **NO compacta**.
+5. Este builder, por defecto, **NO compacta** índices.
 6. Preservar `X/Y` de cada imagen.
-7. Los frames no referenciados por FrameSet quedan marcados como `UNREFERENCED` / posibles efectos; nunca se asignan automáticamente.
-8. Las criaturas con status REVIEW/SPECIAL siguen pudiendo exportarse visualmente, pero el paquete queda marcado para revisión.
+7. Los frames no referenciados quedan marcados para revisión; nunca se asignan automáticamente.
+8. Las criaturas REVIEW/SPECIAL siguen pudiendo exportarse visualmente, pero deben revisarse antes de mapear comportamiento de servidor.
 
-## Backend HPR
+## Lector HPR integrado
 
-Este proyecto usa como backend el analizador ya probado de ORIGINS (`monster_hpr_analyzer.py`) porque ese lector ya fue validado sobre 650 HPR HispaCrystal.
+Ya no hay que copiar un `monster_hpr_analyzer.py` externo.
 
-Colócalo en:
+El proyecto incluye:
 
-`TOOLS/hpr_zircon_builder/engine/monster_hpr_analyzer.py`
+- `origins_hpr_zircon.py`: núcleo HispaCrystal + exportador.
+- `origins_hpr_zircon_v2.py`: lector **real v3** con tabla de offsets.
+- `engine/monster_hpr_analyzer.py`: adaptador usado automáticamente por `analyze`.
+- `selftest_real_v3.py`: prueba estructural del formato v3.
 
-También funciona apuntando a un análisis ya generado con `--analysis-root`.
+El lector v3 fue construido a partir de la estructura verificada en las librerías reales Hispa `000.hpr` y `001.hpr` del proyecto. Los slots se toman de la tabla de offsets y no se renumeran.
 
-## Uso rápido
+## Uso recomendado en Windows
 
-### 1. Instalar
+Ejecuta:
 
 ```bat
-py -m pip install -r requirements.txt
+START.bat
 ```
 
-### 2. Generar MASTER SHEET desde un análisis existente
+Opciones principales:
+
+- **[3] Analizar HPR**: selecciona un `.hpr`, una carpeta de `.hpr` o un ZIP. Genera frames PNG, `IMAGE_METADATA.csv`, `CURSOR_PROFILE.json` y validaciones.
+- **[4] HPR -> ANALISIS + MASTER**: hace el catálogo completo en un paso. Si tienes `ALL_MONSTERS_CURSOR_MANIFEST.json`, indícalo para reutilizar los FrameSet ya analizados de la colección de 650 HPR.
+- **[2] Construir .Zl**: cuando elijas un monstruo concreto, construye su `.Zl` preservando índices y offsets.
+
+## CLI
+
+### Analizar HPR directamente
+
+```bat
+py origins_hpr_zircon_builder.py analyze --hpr-root "D:\HISPA_HPR" --output "D:\HISPA_ANALYSIS"
+```
+
+El backend está integrado; no necesitas `--engine`.
+
+### Crear MASTER SHEET desde el análisis
+
+Sin manifiesto:
 
 ```bat
 py origins_hpr_zircon_builder.py master --analysis-root "D:\HISPA_ANALYSIS" --output "D:\HISPA_MASTER"
+```
+
+Con el manifiesto de los 650 HPR, recomendado:
+
+```bat
+py origins_hpr_zircon_builder.py master --analysis-root "D:\HISPA_ANALYSIS" --manifest "D:\ALL_MONSTERS_CURSOR_MANIFEST.json" --output "D:\HISPA_MASTER"
 ```
 
 Genera:
@@ -52,14 +77,14 @@ Genera:
 - `MASTER_SHEET.html`
 - `READY_IDS.txt`
 - `REVIEW_IDS.txt`
-- una ficha `MONSTERS/<id>/CURSOR_IMPORT_THIS_MONSTER.md` por monstruo.
+- `MONSTERS/<id>/FRAMESET.json`
+- `MONSTERS/<id>/FRAMESET.cs.txt`
+- `MONSTERS/<id>/CURSOR_IMPORT_THIS_MONSTER.md`
 
-### 3. Construir una .Zl de un monstruo
-
-Si la carpeta del monstruo ya tiene `IMAGE_METADATA.csv`, `CURSOR_PROFILE.json` y frames PNG:
+### Construir una `.Zl` de un monstruo
 
 ```bat
-py origins_hpr_zircon_builder.py build --monster-root "D:\HISPA_MASTER\MONSTERS\1829" --output "D:\BUILT"
+py origins_hpr_zircon_builder.py build --monster-root "D:\HISPA_ANALYSIS\MONSTERS\1829" --output "D:\BUILT"
 ```
 
 Salida:
@@ -70,23 +95,22 @@ Salida:
 - `CURSOR_IMPORT_THIS_MONSTER.md`
 - `VALIDATION_BUILD.txt`
 
-La `.Zl` se escribe en el formato legacy DXT1 que el lector de Zircon del propio repositorio ya reconoce. Los slots vacíos se conservan y los IDs de frame no se renumeran.
+La `.Zl` conserva los slots originales y los offsets `X/Y` recuperados del HPR.
 
-## Estructura esperada por monstruo
+## Estructura preparada por monstruo
 
 ```text
 MONSTERS/1829/
   CURSOR_PROFILE.json
-  PROFILE_SOURCE.json              (opcional)
   IMAGE_METADATA.csv
   FRAMES_PNG/
     000000.png
     000001.png
     ...
-  VALIDATION.txt                   (opcional)
+  FRAMESET.cs.txt
+  CURSOR_IMPORT_THIS_MONSTER.md
+  VALIDATION.txt
 ```
-
-El builder acepta también nombres PNG con 5 o 6 dígitos y busca el índice numérico en el nombre.
 
 ## MASTER SHEET
 
@@ -105,16 +129,21 @@ Cada fila incluye al menos:
 - `build_ready`
 - ruta de la ficha Cursor
 
-## Sobre `.Zl`
+## Tests
 
-El writer incluido genera **ZL legacy DXT1** preservando índices y offsets. El extractor existente de este repositorio (`TOOLS/zl_extractor/zl_extract.py`) reconoce tanto ZL legacy como ZL2, por lo que puede usarse inmediatamente para validar una librería construida:
+GitHub Actions comprueba automáticamente:
 
-```bat
-py ..\zl_extractor\zl_extract.py BUILT\1829.Zl --extracted-root CHECK
-```
-
-El objetivo inicial es fidelidad y compatibilidad, no recomprimir al formato más nuevo. Si luego interesa ZL2/BC7, se puede añadir otro writer sin tocar el análisis ni el mastersheet.
+1. writer `.Zl` y lectura inversa;
+2. lector HispaCrystal v3;
+3. HPR v3 -> análisis -> PNG/metadata -> MASTER;
+4. análisis preparado -> `.Zl` -> lectura inversa conservando slots y `X/Y`.
 
 ## Importante para Cursor
 
-La ficha generada por monstruo es deliberadamente explícita: Cursor debe tratar el paquete como **visual/client-side** hasta que se asigne por separado Race/AI/stats en el servidor.
+La ficha generada por monstruo describe **solo el visual/client-side**. Race, AI, stats, rango, proyectil, heal y comportamiento de combate se asignan por separado en servidor.
+
+Ejemplo de uso posterior:
+
+`mete el HPR 034 en Mon8 slot6`
+
+Cursor debe leer la ficha del `034`, usar sus índices/FrameSet y registrar el monstruo sin alterar `FrameSet.DefaultMonster` ni deducir AI por el nombre de las animaciones.
