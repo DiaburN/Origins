@@ -7,11 +7,11 @@ if not exist OUTPUT_HISPA_ZIRCON mkdir OUTPUT_HISPA_ZIRCON
 
 echo.
 echo ================================================
-echo   ORIGINS HPR -^> ZIRCON MONSTER BUILDER
+echo   ORIGINS HPR -^> ZIRCON MONSTER BUILDER V2
 echo ================================================
 echo.
 echo 1. Copia las .hpr dentro de INPUT_HPR
-echo 2. Opcional: crea ANALYSIS y mete ahi el analisis anterior
+echo 2. Recomendado: crea ANALYSIS y mete ahi el analisis anterior
 echo    que contiene CURSOR_PROFILE.json de las 650 Hispa.
 echo.
 
@@ -21,7 +21,7 @@ if errorlevel 1 goto :error
 set ANALYSIS_ARG=
 if exist ANALYSIS set ANALYSIS_ARG=--analysis-root ANALYSIS
 
-py origins_hpr_zircon.py batch INPUT_HPR --out OUTPUT_HISPA_ZIRCON %ANALYSIS_ARG%
+py origins_hpr_zircon_v2.py batch INPUT_HPR --out OUTPUT_HISPA_ZIRCON %ANALYSIS_ARG%
 if errorlevel 1 goto :error
 
 echo.
