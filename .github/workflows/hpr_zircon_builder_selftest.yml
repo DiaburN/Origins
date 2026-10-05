@@ -19,6 +19,9 @@ jobs:
           python-version: '3.12'
       - name: Install requirements
         run: python -m pip install -r TOOLS/hpr_zircon_builder/requirements.txt
-      - name: Run roundtrip selftest
+      - name: Run generic roundtrip selftest
         working-directory: TOOLS/hpr_zircon_builder
         run: python selftest.py
+      - name: Run verified HispaCrystal v3 roundtrip selftest
+        working-directory: TOOLS/hpr_zircon_builder
+        run: python selftest_real_v3.py
