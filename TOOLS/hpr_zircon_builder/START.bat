@@ -26,16 +26,18 @@ echo ================================================================
 echo.
 echo   [1] Crear MASTER SHEET desde analisis ya generado
 echo   [2] Construir .Zl de UN monstruo preparado
-echo   [3] Analizar carpeta HPR con backend monster_hpr_analyzer.py
-echo   [4] Validar carpeta de UN monstruo
-echo   [5] Salir
+echo   [3] Analizar HPR ^(lector HispaCrystal v3 integrado^)
+echo   [4] HPR -^> ANALISIS + MASTER en un paso
+echo   [5] Validar carpeta de UN monstruo
+echo   [6] Salir
 echo.
 set /p OP=Elige opcion: 
 if "%OP%"=="1" goto :master
 if "%OP%"=="2" goto :build
 if "%OP%"=="3" goto :analyze
-if "%OP%"=="4" goto :validate
-if "%OP%"=="5" exit /b 0
+if "%OP%"=="4" goto :full
+if "%OP%"=="5" goto :validate
+if "%OP%"=="6" exit /b 0
 goto :menu
 
 :master
@@ -61,14 +63,25 @@ goto :result
 
 :analyze
 cls
-echo --- ANALYZE HPR ---
-set /p HR=Carpeta con .hpr: 
+echo --- ANALYZE HPR - LECTOR v3 INTEGRADO ---
+set /p HR=Archivo .hpr, carpeta con .hpr o ZIP: 
 set /p OUT=Carpeta de analisis: 
-set /p MASTER=Carpeta MASTER final ^(ENTER para no crearla ahora^): 
-if "%MASTER%"=="" (
-  py origins_hpr_zircon_builder.py analyze --hpr-root "%HR%" --output "%OUT%"
+py origins_hpr_zircon_builder.py analyze --hpr-root "%HR%" --output "%OUT%"
+goto :result
+
+:full
+cls
+echo --- HPR -^> ANALISIS + MASTER ---
+set /p HR=Archivo .hpr, carpeta con .hpr o ZIP: 
+set /p ANALYSIS=Carpeta de salida ANALISIS: 
+set /p MF=Ruta ALL_MONSTERS_CURSOR_MANIFEST.json ^(ENTER si no tienes^): 
+set /p MASTER=Carpeta de salida MASTER: 
+py origins_hpr_zircon_builder.py analyze --hpr-root "%HR%" --output "%ANALYSIS%"
+if errorlevel 1 goto :result
+if "%MF%"=="" (
+  py origins_hpr_zircon_builder.py master --analysis-root "%ANALYSIS%" --output "%MASTER%"
 ) else (
-  py origins_hpr_zircon_builder.py analyze --hpr-root "%HR%" --output "%OUT%" --master-output "%MASTER%"
+  py origins_hpr_zircon_builder.py master --analysis-root "%ANALYSIS%" --manifest "%MF%" --output "%MASTER%"
 )
 goto :result
 
