@@ -1,0 +1,35 @@
+name: HPR Real 000 Access Test
+
+on:
+  push:
+    branches:
+      - tools/hpr-zircon-master-builder
+    paths:
+      - '.github/workflows/hpr-real-000-access-test.yml'
+
+jobs:
+  test-real-hpr-access:
+    runs-on: windows-latest
+    steps:
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install gdown
+        shell: pwsh
+        run: python -m pip install gdown
+
+      - name: Fetch real 000.hpr from Drive and verify signature
+        shell: pwsh
+        run: |
+          $out = Join-Path $env:RUNNER_TEMP '000.hpr'
+          gdown 'https://drive.google.com/uc?id=1rE66fizA9VWwOsAuX4jCqm41M5_C-K_0' -O $out --fuzzy
+          if (!(Test-Path $out)) { throw '000.hpr was not downloaded' }
+          $size = (Get-Item $out).Length
+          if ($size -ne 339132) { throw "Unexpected 000.hpr size: $size" }
+          $bytes = [System.IO.File]::ReadAllBytes($out)
+          $sig = [System.Text.Encoding]::ASCII.GetString($bytes, 0, 12)
+          Write-Host "000.hpr size=$size signature=$sig"
+          if (!$sig.StartsWith('HispaCrystal')) { throw "Bad HPR signature: $sig" }
+          Write-Host 'REAL HPR 000 ACCESS OK'
