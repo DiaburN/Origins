@@ -24,7 +24,7 @@ jobs:
         shell: pwsh
         run: |
           $out = Join-Path $env:RUNNER_TEMP '000.hpr'
-          gdown 'https://drive.google.com/uc?id=1rE66fizA9VWwOsAuX4jCqm41M5_C-K_0' -O $out --fuzzy
+          gdown 'https://drive.google.com/uc?id=1rE66fizA9VWwOsAuX4jCqm41M5_C-K_0' -O $out
           if (!(Test-Path $out)) { throw '000.hpr was not downloaded' }
           $size = (Get-Item $out).Length
           if ($size -ne 339132) { throw "Unexpected 000.hpr size: $size" }
