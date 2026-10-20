@@ -42,12 +42,12 @@ Origins/
 9. Dirección y animaciones: estándar MIR3/Zircon de 8 direcciones.
 10. Los frames MIR usan índices lógicos; el manifest conserva librería, frame base y offsets del origen. El renderer admite atlas para evitar miles de peticiones/PNG sueltos.
 11. Estructura Player: `race/common-or-class/gender/appearance`; nuevas razas reutilizan el mismo renderer y sistema de animación.
-12. Persistencia: copiar el modelo lógico de Zircon, separando definiciones y estado del jugador: `AccountInfo -> CharacterInfo -> UserItem/UserMagic`; `UserItem -> ItemInfo` y `UserMagic -> MagicInfo`. Adaptar solo la capa de almacenamiento/comunicación al entorno web.
+12. Persistencia: copiar el modelo lógico de Zircon: `AccountInfo -> CharacterInfo -> UserItem/UserMagic`; `UserItem -> ItemInfo` y `UserMagic -> MagicInfo`. Adaptar solo almacenamiento/comunicación al entorno web.
 
 ## Referencias
 
 - PokéSurvivor `b297089`: loop, cámara, input y dinámica general.
-- Zircon `80d5df21016b2f377d48f14f7dcc2e994b163ff1`: reglas MIR3, direcciones, frames, datos de personajes/items/magias y sistemas técnicos.
+- Zircon `80d5df21016b2f377d48f14f7dcc2e994b163ff1`: reglas MIR3, direcciones, frames, personajes, items y magias.
 
 ## Apariencias elegidas
 
@@ -55,35 +55,28 @@ Origins/
 - Warrior: `M004 > M007 > M002 > M053 > M067`.
 - Taoist: `M006 > M009 > M010 > M051 > M056`.
 - Wizard: `M005 > M008 > M011 > M054 > M061`.
-- Assassin: `M013 > M016 > M014 > M015 > M046`.
-- Femenino: equivalentes `Fxxx` del mismo código/orden cuando existan.
+- Assassin: las selecciones visuales `M013 > M016 > M014 > M015` corresponden realmente a `A002 > A007 > A004 > A006` en las librerías Assassin de Zircon. `M046` pertenece a una librería normal y necesita sustituto Assassin real.
+- Femenino: equivalente femenino del mismo shape/librería.
 
 ## Estado
 
 - [x] Cliente web mínimo.
-- [x] Loop con delta limitado.
-- [x] Input WASD/flechas normalizado.
-- [x] Cámara independiente con seguimiento suave.
-- [x] Player separado de MovementSystem.
-- [x] Direcciones Zircon 0-7.
-- [x] Standing/Walking/Running definidos con frames lógicos Zircon.
-- [x] Movimiento continuo + Standing/Walking.
+- [x] Loop, input, cámara y movimiento continuo.
+- [x] Direcciones Zircon 0-7 y Standing/Walking/Running lógicos.
 - [x] Renderer MIR3 desacoplado del Player.
-- [x] Renderer compatible con atlas y offsets por frame.
-- [x] Assets preparados para múltiples razas/clases/géneros.
-- [x] Catálogo fuente Hums analizado: 69 apariencias masculinas + 69 femeninas.
-- [x] Apariencias definitivas seleccionadas.
+- [x] Renderer compatible con atlas.
+- [x] Catálogo Hums analizado.
+- [x] Warrior/Taoist/Wizard seleccionados.
 - [x] Modelo lógico de persistencia fijado siguiendo Zircon.
-- [x] M001 masculino extraído: Standing + Walking, 8 direcciones, offsets Zircon.
-- [ ] Validar visualmente M001 Standing/Walking en navegador.
-- [ ] Importar el resto de apariencias seleccionadas usando el mismo formato atlas.
+- [x] Diferencia Assassin verificada: `ArmourShapeOffSet=3000` y shifts por animación.
+- [ ] Elegir sustituto Assassin real para `M046`.
+- [ ] Importar atlases definitivos y validar Standing/Walking.
 - [ ] Resto de acciones del Player.
-- [ ] Cuenta/personajes/inventario/equipo/magias siguiendo asociaciones Zircon.
+- [ ] Cuenta/personajes/inventario/equipo/magias según Zircon.
 - [ ] Mapa y colisiones.
 - [ ] Monstruos y spawn.
-- [ ] Combate.
-- [ ] Magias.
+- [ ] Combate y magias.
 
 ## Siguiente paso
 
-Validar M001 Standing/Walking en 8 direcciones. Si es correcto, generar el resto de apariencias seleccionadas con el mismo pipeline y sin cambiar el renderer.
+Cerrar el quinto set Assassin usando el catálogo `A001-A026`; después generar/importar los atlases definitivos sin cambiar el renderer.
