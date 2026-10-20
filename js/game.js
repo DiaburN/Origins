@@ -107,6 +107,7 @@ G.Game = (() => {
     ctx.fillText(`pos ${player.x.toFixed(1)}, ${player.y.toFixed(1)}`, 12, 38);
     ctx.fillText(`dir ${player.direction}  action ${player.action}`, 12, 56);
     ctx.fillText(`MIR frame ${player.animator.logicalFrame()}`, 12, 74);
+    ctx.fillText(`body ${player.assetState}`, 12, 92);
   }
 
   return Object.freeze({
