@@ -24,8 +24,9 @@ Origins/
 │   └── game.js
 └── assets/
     └── players/
-        └── warrior/male/armour_01/
-            └── manifest.json
+        └── <race>/<class>/<gender>/<armour>/
+            ├── manifest.json
+            └── frames/
 ```
 
 ## Reglas
@@ -36,10 +37,11 @@ Origins/
 4. No importar Zircon ni PokéSurvivor completos.
 5. Antes de crear un archivo nuevo, comprobar si su función ya existe.
 6. Assets y lógica permanecen separados.
-7. Una criatura, personaje o magia debe poder añadirse sin modificar el motor salvo mecánica nueva.
+7. Una criatura, personaje, raza o magia debe poder añadirse sin modificar el motor salvo mecánica nueva.
 8. Posición del gameplay: continua, estilo PokéSurvivor.
 9. Dirección y animaciones: estándar MIR3/Zircon de 8 direcciones.
 10. Los PNG MIR usan frames lógicos; el manifest conserva librería, frame base y offsets del origen.
+11. Estructura Player: `race/class/gender/armour`; nuevas razas reutilizan el mismo renderer y sistema de animación.
 
 ## Referencias
 
@@ -57,8 +59,10 @@ Origins/
 - [x] Standing/Walking/Running definidos con frames lógicos Zircon.
 - [x] Movimiento continuo + Standing/Walking.
 - [x] Renderer MIR3 desacoplado del Player.
-- [x] Paquete de assets para primera armadura M-Hum.
-- [ ] Importar PNG + OffSetX/OffSetY reales de M-Hum armour shape 0.
+- [x] Assets preparados para múltiples razas/clases/géneros.
+- [x] Catálogo fuente Hums analizado: 69 apariencias masculinas + 69 femeninas.
+- [ ] Seleccionar apariencias definitivas del catálogo.
+- [ ] Importar todos los frames/offsets de las apariencias elegidas.
 - [ ] Validar Standing/Walking en 8 direcciones con sprite real.
 - [ ] Resto de acciones del Player.
 - [ ] Mapa y colisiones.
@@ -68,4 +72,4 @@ Origins/
 
 ## Siguiente paso
 
-Importar únicamente los frames necesarios de `M_Hum` armour shape 0, conservando sus offsets originales de Zircon. Activar `ready` en el manifest y validar Standing/Walking en las 8 direcciones.
+Elegir las apariencias del catálogo `M001-M069` y `F001-F069`. Después extraer únicamente las seleccionadas con todos sus frames y offsets reales de Zircon.
