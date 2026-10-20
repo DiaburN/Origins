@@ -7,5 +7,7 @@ G.Config = Object.freeze({
   maxDelta: 1 / 30,
   playerSpeed: 150,
   cameraFollow: 12,
+  mirCellWidth: 48,
+  mirCellHeight: 32,
   debug: true
 });
