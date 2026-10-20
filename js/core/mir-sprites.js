@@ -8,6 +8,27 @@ G.MirSprites = (() => {
       this.manifest = manifest;
       this.baseUrl = new URL('.', manifestUrl);
       this.frames = new Map();
+      this.atlas = null;
+      this.atlasFrames = new Map();
+
+      const cfg = this.manifest.frames || {};
+      if (cfg.mode === 'atlas' && Array.isArray(cfg.order)) {
+        const cellWidth = cfg.cellWidth || 0;
+        const cellHeight = cfg.cellHeight || 0;
+        const columns = cfg.columns || 1;
+        cfg.order.forEach((logicalFrame, index) => {
+          this.atlasFrames.set(logicalFrame, {
+            x: (index % columns) * cellWidth,
+            y: Math.floor(index / columns) * cellHeight,
+            w: cellWidth,
+            h: cellHeight
+          });
+        });
+      }
+    }
+
+    frameMode() {
+      return (this.manifest.frames && this.manifest.frames.mode) || 'individual';
     }
 
     frameFile(logicalFrame) {
@@ -22,6 +43,10 @@ G.MirSprites = (() => {
       return new URL(this.frameFile(logicalFrame), this.baseUrl).href;
     }
 
+    atlasFrame(logicalFrame) {
+      return this.atlasFrames.get(logicalFrame);
+    }
+
     frameOffset(logicalFrame) {
       const key = String(logicalFrame);
       const specific = this.manifest.frameOffsets && this.manifest.frameOffsets[key];
@@ -34,7 +59,31 @@ G.MirSprites = (() => {
       return (source.frameBase || 0) + logicalFrame;
     }
 
+    requestAtlas() {
+      if (this.atlas) return this.atlas;
+
+      const cfg = this.manifest.frames || {};
+      const image = cfg.image;
+      const record = { image: new Image(), state: image ? 'loading' : 'missing' };
+      if (!image) {
+        this.atlas = record;
+        return record;
+      }
+
+      record.image.decoding = 'async';
+      record.image.onload = () => { record.state = 'ready'; };
+      record.image.onerror = () => { record.state = 'missing'; };
+      record.image.src = new URL(image, this.baseUrl).href;
+      this.atlas = record;
+      return record;
+    }
+
     request(logicalFrame) {
+      if (this.frameMode() === 'atlas') {
+        if (!this.atlasFrame(logicalFrame)) return { image: null, state: 'missing' };
+        return this.requestAtlas();
+      }
+
       if (this.frames.has(logicalFrame)) return this.frames.get(logicalFrame);
 
       const record = { image: new Image(), state: 'loading' };
@@ -64,6 +113,17 @@ G.MirSprites = (() => {
       const scale = (this.manifest.render && this.manifest.render.scale) || 1;
       const dx = Math.round(x + offset.x);
       const dy = Math.round(y + offset.y);
+
+      if (this.frameMode() === 'atlas') {
+        const frame = this.atlasFrame(logicalFrame);
+        if (!frame) return false;
+        ctx.drawImage(
+          record.image,
+          frame.x, frame.y, frame.w, frame.h,
+          dx, dy, frame.w * scale, frame.h * scale
+        );
+        return true;
+      }
 
       if (scale === 1) {
         ctx.drawImage(record.image, dx, dy);

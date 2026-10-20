@@ -1,0 +1,37 @@
+{
+  "id": "human_common_male_base_m001",
+  "kind": "player-body",
+  "race": "human",
+  "class": "common",
+  "gender": "male",
+  "appearanceCode": "M001",
+  "ready": true,
+  "source": {
+    "repository": "Suprcode/Zircon",
+    "library": "M_Hum",
+    "armourShape": 0,
+    "frameBase": 0,
+    "shapeOffset": 5000
+  },
+  "frames": {
+    "mode": "atlas",
+    "image": "atlas.png",
+    "cellWidth": 41,
+    "cellHeight": 75,
+    "columns": 10,
+    "order": [
+      0, 1, 2, 3, 10, 11, 12, 13, 20, 21, 22, 23, 30, 31, 32, 33,
+      40, 41, 42, 43, 50, 51, 52, 53, 60, 61, 62, 63, 70, 71, 72, 73,
+      80, 81, 82, 83, 84, 85, 90, 91, 92, 93, 94, 95, 100, 101, 102, 103,
+      104, 105, 110, 111, 112, 113, 114, 115, 120, 121, 122, 123, 124, 125,
+      130, 131, 132, 133, 134, 135, 140, 141, 142, 143, 144, 145,
+      150, 151, 152, 153, 154, 155
+    ]
+  },
+  "render": {
+    "offsetMode": "zircon-baked-atlas",
+    "defaultOffset": { "x": 4, "y": -49 },
+    "scale": 1
+  },
+  "actionsReady": ["Standing", "Walking"]
+}

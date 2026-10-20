@@ -24,9 +24,9 @@ Origins/
 │   └── game.js
 └── assets/
     └── players/
-        └── <race>/<class>/<gender>/<armour>/
+        └── <race>/<common-or-class>/<gender>/<appearance>/
             ├── manifest.json
-            └── frames/
+            └── atlas.png
 ```
 
 ## Reglas
@@ -40,8 +40,8 @@ Origins/
 7. Una criatura, personaje, raza o magia debe poder añadirse sin modificar el motor salvo mecánica nueva.
 8. Posición del gameplay: continua, estilo PokéSurvivor.
 9. Dirección y animaciones: estándar MIR3/Zircon de 8 direcciones.
-10. Los PNG MIR usan frames lógicos; el manifest conserva librería, frame base y offsets del origen.
-11. Estructura Player: `race/class/gender/armour`; nuevas razas reutilizan el mismo renderer y sistema de animación.
+10. Los frames MIR usan índices lógicos; el manifest conserva librería, frame base y offsets del origen. El renderer admite atlas para evitar miles de peticiones/PNG sueltos.
+11. Estructura Player: `race/common-or-class/gender/appearance`; nuevas razas reutilizan el mismo renderer y sistema de animación.
 12. Persistencia: copiar el modelo lógico de Zircon, separando definiciones y estado del jugador: `AccountInfo -> CharacterInfo -> UserItem/UserMagic`; `UserItem -> ItemInfo` y `UserMagic -> MagicInfo`. Adaptar solo la capa de almacenamiento/comunicación al entorno web.
 
 ## Referencias
@@ -69,12 +69,14 @@ Origins/
 - [x] Standing/Walking/Running definidos con frames lógicos Zircon.
 - [x] Movimiento continuo + Standing/Walking.
 - [x] Renderer MIR3 desacoplado del Player.
+- [x] Renderer compatible con atlas y offsets por frame.
 - [x] Assets preparados para múltiples razas/clases/géneros.
 - [x] Catálogo fuente Hums analizado: 69 apariencias masculinas + 69 femeninas.
 - [x] Apariencias definitivas seleccionadas.
 - [x] Modelo lógico de persistencia fijado siguiendo Zircon.
-- [ ] Importar todos los frames/offsets de las apariencias elegidas.
-- [ ] Validar Standing/Walking en 8 direcciones con sprite real.
+- [x] M001 masculino extraído: Standing + Walking, 8 direcciones, offsets Zircon.
+- [ ] Validar visualmente M001 Standing/Walking en navegador.
+- [ ] Importar el resto de apariencias seleccionadas usando el mismo formato atlas.
 - [ ] Resto de acciones del Player.
 - [ ] Cuenta/personajes/inventario/equipo/magias siguiendo asociaciones Zircon.
 - [ ] Mapa y colisiones.
@@ -84,4 +86,4 @@ Origins/
 
 ## Siguiente paso
 
-Extraer únicamente las apariencias seleccionadas con sus frames/offsets reales de Zircon y validar Standing/Walking antes de ampliar acciones o persistencia.
+Validar M001 Standing/Walking en 8 direcciones. Si es correcto, generar el resto de apariencias seleccionadas con el mismo pipeline y sin cambiar el renderer.
