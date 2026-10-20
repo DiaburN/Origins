@@ -9,18 +9,23 @@ Origins/
 ├── index.html
 ├── css/
 │   └── game.css
-└── js/
-    ├── core/
-    │   ├── config.js
-    │   ├── math.js
-    │   ├── mir-animation.js
-    │   ├── input.js
-    │   └── camera.js
-    ├── entities/
-    │   └── player.js
-    ├── systems/
-    │   └── movement.js
-    └── game.js
+├── js/
+│   ├── core/
+│   │   ├── config.js
+│   │   ├── math.js
+│   │   ├── mir-animation.js
+│   │   ├── mir-sprites.js
+│   │   ├── input.js
+│   │   └── camera.js
+│   ├── entities/
+│   │   └── player.js
+│   ├── systems/
+│   │   └── movement.js
+│   └── game.js
+└── assets/
+    └── players/
+        └── warrior/male/armour_01/
+            └── manifest.json
 ```
 
 ## Reglas
@@ -34,6 +39,7 @@ Origins/
 7. Una criatura, personaje o magia debe poder añadirse sin modificar el motor salvo mecánica nueva.
 8. Posición del gameplay: continua, estilo PokéSurvivor.
 9. Dirección y animaciones: estándar MIR3/Zircon de 8 direcciones.
+10. Los PNG MIR usan frames lógicos; el manifest conserva librería, frame base y offsets del origen.
 
 ## Referencias
 
@@ -50,8 +56,10 @@ Origins/
 - [x] Direcciones Zircon 0-7.
 - [x] Standing/Walking/Running definidos con frames lógicos Zircon.
 - [x] Movimiento continuo + Standing/Walking.
-- [ ] Renderer real de sprites MIR3.
-- [ ] Primera armadura M-Hum completa.
+- [x] Renderer MIR3 desacoplado del Player.
+- [x] Paquete de assets para primera armadura M-Hum.
+- [ ] Importar PNG + OffSetX/OffSetY reales de M-Hum armour shape 0.
+- [ ] Validar Standing/Walking en 8 direcciones con sprite real.
 - [ ] Resto de acciones del Player.
 - [ ] Mapa y colisiones.
 - [ ] Monstruos y spawn.
@@ -60,4 +68,4 @@ Origins/
 
 ## Siguiente paso
 
-Crear el renderer de assets MIR3 y conectar una única armadura M-Hum de prueba sin modificar Player ni MovementSystem.
+Importar únicamente los frames necesarios de `M_Hum` armour shape 0, conservando sus offsets originales de Zircon. Activar `ready` en el manifest y validar Standing/Walking en las 8 direcciones.
