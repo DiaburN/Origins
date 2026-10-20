@@ -1,0 +1,25 @@
+{
+  "id": "human_male_M001",
+  "kind": "player-body",
+  "race": "human",
+  "gender": "male",
+  "appearance": "M001",
+  "ready": false,
+  "source": {
+    "repository": "Suprcode/Zircon",
+    "library": "M_Hum",
+    "slot": 0,
+    "frameBase": 0,
+    "shapeOffset": 5000
+  },
+  "frames": {
+    "mode": "atlas",
+    "image": "atlas.png",
+    "map": {}
+  },
+  "render": {
+    "offsetMode": "zircon",
+    "defaultOffset": { "x": 0, "y": 0 },
+    "scale": 1
+  }
+}
