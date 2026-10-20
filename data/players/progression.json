@@ -1,0 +1,18 @@
+{
+  "version": 1,
+  "base": {
+    "male": "M001",
+    "female": "F001"
+  },
+  "commonNoob": {
+    "male": "M003",
+    "female": "F003"
+  },
+  "classes": {
+    "warrior": ["M004", "M007", "M002", "M053", "M067"],
+    "taoist": ["M006", "M009", "M010", "M051", "M056"],
+    "wizard": ["M005", "M008", "M011", "M054", "M061"],
+    "assassin": ["M013", "M016", "M014", "M015", "M046"]
+  },
+  "femaleCodeRule": "Replace leading M with F while preserving numeric code and progression order."
+}
