@@ -3,6 +3,7 @@
   "kind": "player-body",
   "class": "warrior",
   "gender": "male",
+  "ready": false,
   "source": {
     "repository": "Suprcode/Zircon",
     "library": "M_Hum",
