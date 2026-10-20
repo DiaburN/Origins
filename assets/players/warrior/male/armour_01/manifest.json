@@ -1,0 +1,25 @@
+{
+  "id": "warrior_male_armour_01",
+  "kind": "player-body",
+  "class": "warrior",
+  "gender": "male",
+  "source": {
+    "repository": "Suprcode/Zircon",
+    "library": "M_Hum",
+    "armourShape": 0,
+    "frameBase": 0,
+    "shapeOffset": 5000
+  },
+  "frames": {
+    "mode": "individual",
+    "directory": "frames",
+    "extension": "png",
+    "pad": 4
+  },
+  "render": {
+    "offsetMode": "zircon",
+    "defaultOffset": { "x": 0, "y": 0 },
+    "scale": 1
+  },
+  "frameOffsets": {}
+}
