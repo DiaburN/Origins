@@ -93,22 +93,21 @@ Núcleo inicial: `Warrior`, `Wizard`, `Taoist`, `Assassin`.
 ## Mapas MIR3
 
 - Primer objetivo: `01.map` = Border Village.
-- Fuente catalogada: `600x600`, `5.310.028 bytes`, SHA1 `84104ce289f773d488160282163c0ff6397ec62d`, grupos `0,1`, max file id `25`.
-- `assets/maps/border-village/manifest.json`: identidad y datos fuente; `runtime.ready=false` hasta colocar el binario seleccionado.
+- Fuente oficial ORIGINS X recibida y validada: `600x600`, `5.310.028 bytes`, SHA1 `61c550cd938573a26efa7ee7067d51d9aa47d391`.
+- `assets/maps/border-village/manifest.json`: identidad, hash y 11 librerías Map Data realmente usadas por este mapa.
 - `js/core/mir-map.js`: parser completo `.map`: Back/Middle/Front, animación, luz, librerías y colisión.
 - Formato verificado contra Zircon: ancho bytes `22-23`, alto `24-25`, header `28`; fondos por bloques 2x2 de 3 bytes; 14 bytes por celda.
 - Compatibilidad añadida con mapas válidos que omiten únicamente el último byte de padding.
 - `js/systems/map-world.js`: puente runtime para carga, spawn de prueba, límites, movimiento continuo y colisión MIR.
 - Grid MIR solo para colisión/navegación; movimiento gameplay continuo.
-- Objetivo ORIGINS: mapas grandes finitos divididos en chunks; terreno base MIR reutilizable por bioma, bordes automáticos, objetos/colisión/spawns separados.
+- Drive conserva `Map` + `Map Data`; importar únicamente las librerías e imágenes usadas por cada mapa.
 - Mapas abiertos: perímetro visual/jugable natural e irregular; evitar límites rectos visibles.
 - Templos/cuevas/interiores: salas y pasillos amplios; colisión y borde visual derivados de la misma máscara.
-- Render real de `.Zl` pendiente después de cargar `01.map` y resolver únicamente las librerías de Map Data que realmente usa.
 
 ## Orden de implementación
 
-1. Cargar `01.map` Border Village y validar estructura + colisiones.
-2. Resolver sus librerías de Map Data y renderizar Back/Middle/Front.
+1. Convertir `01.map` Border Village a paquete runtime y validar estructura + colisiones.
+2. Extraer únicamente imágenes usadas de sus 11 librerías y renderizar Back/Middle/Front.
 3. Ver Player real moviéndose correctamente sobre Border Village.
 4. Importar/validar primeras magias con VFX y comportamiento real.
 5. Importar monstruos: animaciones, lógica, colisión y combate; una carpeta por criatura.
@@ -125,14 +124,15 @@ Núcleo inicial: `Warrior`, `Wizard`, `Taoist`, `Assassin`.
 - [x] Persistencia lógica fijada según Zircon.
 - [x] Parser completo `.map` preparado y contrastado con el lector de Zircon.
 - [x] Runtime `MapWorld` conectado a MovementSystem y cámara.
-- [x] Border Village registrado como primer mapa.
+- [x] Border Village `01.map` recibido, validado y registrado.
+- [x] Sus 11 librerías exactas de Map Data identificadas.
 - [x] 195 magias Zircon Player indexadas y animaciones centrales registradas.
 - [x] Clasificación mecánica Zircon y dependencias/augments principales guardadas.
-- [ ] Colocar/cargar el binario runtime `01.map`.
-- [ ] Resolver/renderizar las librerías `.Zl` usadas por Border Village.
+- [ ] Crear paquete runtime de `01.map` sin subir la fuente pesada completa.
+- [ ] Extraer/renderizar las imágenes `.Zl` realmente usadas por Border Village.
 - [ ] Validar Player visualmente sobre el mapa real.
 - [ ] Monstruos, spawn y combate.
 
 ## Siguiente paso
 
-Conseguir el binario fuente `01.map` dentro de la carpeta accesible de Drive/runtime. En el Drive actual se ha verificado el índice y el preview `01.png`, pero la carpeta `MAPAS Y ARCHIVOS/Map/Levels/Bichon` expone `lvl1.map` a `Lvl4.map`, no `01.map`. En cuanto `01.map` esté accesible, activar `runtime.ready`, validar 600x600/sha1, detectar los file IDs usados y extraer solo sus `.Zl` de `Map Data`.
+Procesar `01.map` recibido y sus 11 librerías exactas de `Map Data`. Empezar por las librerías de suelo, generar assets web mínimos y validar el primer render real antes de importar objetos y capas superiores.
