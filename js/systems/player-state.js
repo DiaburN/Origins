@@ -31,6 +31,7 @@ G.PlayerStateMachine = class PlayerStateMachine {
   setMounted(value) {
     if (this.dead || this.locked) return false;
     this.mounted = value === true;
+    if (this.mounted) this.creeping = false;
     return true;
   }
 
@@ -43,7 +44,7 @@ G.PlayerStateMachine = class PlayerStateMachine {
   setLocomotion({ moving, running = false, creepFast = true } = {}) {
     if (!this.canMove()) return false;
 
-    let action = moving ? G.MirAction.Moving : G.MirAction.Standing;
+    const action = moving ? G.MirAction.Moving : G.MirAction.Standing;
     let animation;
 
     if (this.mounted) {
@@ -76,7 +77,12 @@ G.PlayerStateMachine = class PlayerStateMachine {
     restart = true
   } = {}) {
     if (this.dead && action !== G.MirAction.Dead) return false;
-    if (!force && this.locked && priority < this.priority) return false;
+
+    // A lower-priority action can never interrupt a stronger state. Equal
+    // priority is also blocked unless explicitly forced for controlled chains
+    // such as ChannellingMiddle -> ChannellingEnd.
+    if (this.locked && priority < this.priority) return false;
+    if (this.locked && priority === this.priority && !force) return false;
 
     this._enter(action, animation, {
       priority,
@@ -101,15 +107,13 @@ G.PlayerStateMachine = class PlayerStateMachine {
 
   struck() {
     return this.play(G.MirAction.Struck, G.MirAnimation.Struck, {
-      priority: G.PlayerState.Priority.Struck,
-      force: true
+      priority: G.PlayerState.Priority.Struck
     });
   }
 
   pushed() {
     return this.play(G.MirAction.Pushed, G.MirAnimation.Pushed, {
-      priority: G.PlayerState.Priority.Pushed,
-      force: true
+      priority: G.PlayerState.Priority.Pushed
     });
   }
 
@@ -117,7 +121,6 @@ G.PlayerStateMachine = class PlayerStateMachine {
     if (this.dead || this.action === G.MirAction.Die) return false;
     return this.play(G.MirAction.Die, G.MirAnimation.Die, {
       priority: G.PlayerState.Priority.Die,
-      force: true,
       chain: {
         action: G.MirAction.Dead,
         animation: G.MirAnimation.Dead,
