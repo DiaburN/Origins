@@ -17,10 +17,10 @@ Origins/
 ├── js/
 │   ├── core/        # config, input, cámara, MIR animation/sprites/map parser
 │   ├── entities/    # Player
-│   ├── systems/     # player-state + movement
+│   ├── systems/     # player-state, map-world, movement
 │   └── game.js
 └── assets/
-    ├── maps/        # .map reales cuando se importen
+    ├── maps/<map-id>/manifest.json
     ├── monsters/<monster-id>/ # sprites + manifest + datos por criatura
     └── players/<race>/<common-or-class>/<gender>/<appearance>/
         ├── manifest.json
@@ -42,6 +42,7 @@ Origins/
 11. Magias: lógica autoritativa separada de VFX. No convertir los catálogos fuente en un botón por magia.
 12. Clases nuevas deben ser data-driven: añadir una clase no debe requerir rehacer Player, combate, mapa ni renderer base.
 13. Monstruos: una carpeta independiente por criatura; no mezclar assets de criaturas distintas.
+14. Drive conserva fuentes pesadas; GitHub contiene código y solo assets runtime seleccionados/convertidos.
 
 ## Referencias
 
@@ -91,25 +92,29 @@ Núcleo inicial: `Warrior`, `Wizard`, `Taoist`, `Assassin`.
 
 ## Mapas MIR3
 
-- `js/core/mir-map.js`: parser estructural `.map`.
-- Ancho bytes `22-23`, alto `24-25`; offset `28 + floor(width*height/4)*3`; 14 bytes/celda.
+- Primer objetivo: `01.map` = Border Village.
+- Fuente catalogada: `600x600`, `5.310.028 bytes`, SHA1 `84104ce289f773d488160282163c0ff6397ec62d`, grupos `0,1`, max file id `25`.
+- `assets/maps/border-village/manifest.json`: identidad y datos fuente; `runtime.ready=false` hasta colocar el binario seleccionado.
+- `js/core/mir-map.js`: parser completo `.map`: Back/Middle/Front, animación, luz, librerías y colisión.
+- Formato verificado contra Zircon: ancho bytes `22-23`, alto `24-25`, header `28`; fondos por bloques 2x2 de 3 bytes; 14 bytes por celda.
+- Compatibilidad añadida con mapas válidos que omiten únicamente el último byte de padding.
+- `js/systems/map-world.js`: puente runtime para carga, spawn de prueba, límites, movimiento continuo y colisión MIR.
 - Grid MIR solo para colisión/navegación; movimiento gameplay continuo.
 - Objetivo ORIGINS: mapas grandes finitos divididos en chunks; terreno base MIR reutilizable por bioma, bordes automáticos, objetos/colisión/spawns separados.
-- Forma técnica: el archivo puede seguir siendo rectangular/cuadrado para simplificar coordenadas, chunks y minimapa.
-- Mapas abiertos (bosque, arena, nieve, lava, etc.): gran zona interior amplia; el límite jugable NO debe verse rectangular. Crear un perímetro natural ondulado/irregular con los tiles de borde del bioma (roca, montaña, árboles densos, lava, hielo, etc.). Evitar paredes exteriores rectas largas.
-- Templos/cuevas/interiores: usar mapas físicamente más grandes, con salas y pasillos amplios. Pueden mantener una estructura general rectangular por debajo, pero la geometría jugable debe formarse con habitaciones, corredores y bordes irregulares según el tileset; evitar laberintos estrechos salvo zonas diseñadas expresamente así.
-- El borde visual y la colisión deben derivar de la misma máscara jugable para que no existan zonas que parezcan accesibles y no lo sean.
-- Render real pendiente de `0.map` + librerías de tiles.
+- Mapas abiertos: perímetro visual/jugable natural e irregular; evitar límites rectos visibles.
+- Templos/cuevas/interiores: salas y pasillos amplios; colisión y borde visual derivados de la misma máscara.
+- Render real de `.Zl` pendiente después de cargar `01.map` y resolver únicamente las librerías de Map Data que realmente usa.
 
 ## Orden de implementación
 
-1. Cargar un mapa MIR real y validar renderer + colisiones.
-2. Ver Player real moviéndose correctamente sobre ese mapa.
-3. Importar/validar primeras magias con VFX y comportamiento real.
-4. Importar monstruos: animaciones, lógica, colisión y combate; una carpeta por criatura.
-5. Montar spawns, zonas de farmeo y bosses/eventos por coordenadas.
-6. Ampliar catálogo de criaturas y biomas/mapas.
-7. Interfaz, equipamiento, menús y acabado visual después de que el gameplay base funcione.
+1. Cargar `01.map` Border Village y validar estructura + colisiones.
+2. Resolver sus librerías de Map Data y renderizar Back/Middle/Front.
+3. Ver Player real moviéndose correctamente sobre Border Village.
+4. Importar/validar primeras magias con VFX y comportamiento real.
+5. Importar monstruos: animaciones, lógica, colisión y combate; una carpeta por criatura.
+6. Montar spawns, zonas de farmeo y bosses/eventos por coordenadas.
+7. Ampliar catálogo de criaturas y biomas/mapas.
+8. Interfaz, equipamiento, menús y acabado visual después del gameplay base.
 
 ## Estado
 
@@ -118,16 +123,16 @@ Núcleo inicial: `Warrior`, `Wizard`, `Taoist`, `Assassin`.
 - [x] Renderer MIR desacoplado + pipeline M001 validado técnicamente.
 - [x] Apariencias definitivas elegidas para las 4 clases iniciales.
 - [x] Persistencia lógica fijada según Zircon.
-- [x] Parser estructural `.map` preparado.
+- [x] Parser completo `.map` preparado y contrastado con el lector de Zircon.
+- [x] Runtime `MapWorld` conectado a MovementSystem y cámara.
+- [x] Border Village registrado como primer mapa.
 - [x] 195 magias Zircon Player indexadas y animaciones centrales registradas.
 - [x] Clasificación mecánica Zircon y dependencias/augments principales guardadas.
-- [x] Referencia Archer conservada para una posible ampliación futura.
-- [ ] Validar Player visualmente en navegador.
-- [ ] Recibir/importar VFX Zircon + `MIcon.Zl` + datos `MagicInfo` y validar cada efecto visual contra sus índices reales.
-- [ ] Diseñar después las cadenas definitivas ORIGINS sin multiplicar botones.
-- [ ] Probar `0.map` real + colisiones + renderer de mapa.
+- [ ] Colocar/cargar el binario runtime `01.map`.
+- [ ] Resolver/renderizar las librerías `.Zl` usadas por Border Village.
+- [ ] Validar Player visualmente sobre el mapa real.
 - [ ] Monstruos, spawn y combate.
 
 ## Siguiente paso
 
-Al recibir los archivos del PC: empezar por `0.map` + librerías de tiles, validar el mapa y colocar el Player real encima. Después VFX/magias y, a continuación, monstruos. No dedicar tiempo a UI antes de validar ese gameplay base. Archer/Monk siguen fuera del núcleo inicial.
+Conseguir el binario fuente `01.map` dentro de la carpeta accesible de Drive/runtime. En el Drive actual se ha verificado el índice y el preview `01.png`, pero la carpeta `MAPAS Y ARCHIVOS/Map/Levels/Bichon` expone `lvl1.map` a `Lvl4.map`, no `01.map`. En cuanto `01.map` esté accesible, activar `runtime.ready`, validar 600x600/sha1, detectar los file IDs usados y extraer solo sus `.Zl` de `Map Data`.
