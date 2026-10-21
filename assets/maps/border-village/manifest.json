@@ -1,0 +1,18 @@
+{
+  "id": "border-village",
+  "name": "Border Village",
+  "source": {
+    "file": "01.map",
+    "format": "mir3_type5",
+    "width": 600,
+    "height": 600,
+    "size": 5310028,
+    "sha1": "84104ce289f773d488160282163c0ff6397ec62d",
+    "maxFileId": 25,
+    "groupsUsed": [0, 1]
+  },
+  "runtime": {
+    "mapFile": "01.map",
+    "ready": false
+  }
+}
