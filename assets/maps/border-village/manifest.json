@@ -24,7 +24,9 @@
     { "id": 25, "name": "Wood_SmObjectsc", "path": "Map Data/Wood/SmObjectsc.Zl" }
   ],
   "runtime": {
-    "mapFile": "01.map",
+    "mapFile": "runtime/01.map",
+    "renderPack": "runtime/render-pack.json",
+    "packVersion": 1,
     "ready": false
   }
 }
