@@ -13,8 +13,10 @@ G.Player = class Player {
     this.direction = G.MirDirection.Down;
     this.action = G.MirAnimation.Standing;
     this.moving = false;
+
     this.animator = new G.MirAnimator();
     this.animator.setDirection(this.direction);
+    this.state = new G.PlayerStateMachine(this);
 
     this.bodyManifest = bodyManifest;
     this.bodySprites = null;
@@ -38,6 +40,7 @@ G.Player = class Player {
       if (this.assetState === 'ready') {
         sprites.preloadAction(G.MirAnimation.Standing);
         sprites.preloadAction(G.MirAnimation.Walking);
+        sprites.preloadAction(G.MirAnimation.Running);
       }
     } catch (error) {
       if (loadId !== this._bodyLoadId) return;
@@ -46,15 +49,38 @@ G.Player = class Player {
     }
   }
 
-  setAction(action) {
-    if (this.action === action) return;
-    this.action = action;
-    this.animator.setAction(action);
+  canMove() {
+    return this.state.canMove();
+  }
+
+  attack(animation = G.MirAnimation.Combat3) {
+    return this.state.attack(animation);
+  }
+
+  spell(animation = G.MirAnimation.Combat1) {
+    return this.state.spell(animation);
+  }
+
+  struck() {
+    return this.state.struck();
+  }
+
+  pushed() {
+    return this.state.pushed();
+  }
+
+  die() {
+    return this.state.die();
+  }
+
+  revive() {
+    this.state.revive();
   }
 
   update(dt) {
     this.animator.setDirection(this.direction);
     this.animator.update(dt);
+    this.state.update();
   }
 
   draw(ctx) {
@@ -70,7 +96,11 @@ G.Player = class Player {
     ctx.save();
     ctx.translate(this.x, this.y);
 
-    ctx.fillStyle = this.assetState === 'error' ? '#b94a48' : '#d9d9d9';
+    if (this.state.dead) ctx.fillStyle = '#6d6d6d';
+    else if (this.state.locked) ctx.fillStyle = '#d6a858';
+    else if (this.assetState === 'error') ctx.fillStyle = '#b94a48';
+    else ctx.fillStyle = '#d9d9d9';
+
     ctx.beginPath();
     ctx.ellipse(0, -20, 11, 19, 0, 0, Math.PI * 2);
     ctx.fill();
@@ -83,10 +113,11 @@ G.Player = class Player {
     ctx.lineTo(Math.cos(angle) * 18, -20 + Math.sin(angle) * 18);
     ctx.stroke();
 
-    ctx.fillStyle = '#111';
-    ctx.font = '11px monospace';
+    ctx.fillStyle = '#f1f1f1';
+    ctx.font = '10px monospace';
     ctx.textAlign = 'center';
-    ctx.fillText(String(logicalFrame), 0, 12);
+    ctx.fillText(this.state.animation, 0, 10);
+    ctx.fillText(String(logicalFrame), 0, 22);
     ctx.restore();
   }
 };
