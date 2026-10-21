@@ -11,7 +11,7 @@ Origins/
 ├── js/
 │   ├── core/        # config, input, cámara, MIR animation/sprites
 │   ├── entities/    # Player
-│   ├── systems/     # movimiento y futuros sistemas
+│   ├── systems/     # player-state + movement
 │   └── game.js
 └── assets/
     └── players/<race>/<common-or-class>/<gender>/<appearance>/
@@ -60,21 +60,16 @@ Orden visual AUTORITATIVO; no cambiarlo por la librería de origen:
 6. Masculino y femenino comparten el mismo sistema de acciones.
 7. M001 fue solo una validación del pipeline; no continuar importando assets todavía.
 
-## Acciones Player Zircon
+## Acciones y estados Player
 
-La fuente autoritativa es `js/core/mir-animation.js`. Ya contiene las 43 definiciones de `FrameSet.Players`, con inicio, número de frames, offset de dirección, timing, delays especiales, reverse/static-speed y política loop/once/hold.
-
-Incluye:
-- Standing / Walking / Running.
-- CreepStanding / CreepWalkSlow / CreepWalkFast.
-- Pushed / Stance / Harvest.
-- Combat1-Combat15.
-- DragonRepulse Start/Middle/End.
-- Struck / Die / Dead.
-- Fishing Cast/Wait/Reel.
-- Horse Standing/Walking/Running/Struck/Leaping.
-- Channelling Start/Middle/End.
-- Taming Cast/Wait.
+- `js/core/mir-animation.js`: fuente autoritativa de las 43 definiciones `FrameSet.Players` de Zircon.
+- `js/systems/player-state.js`: máquina de estados; separa intención (`MirAction`) de animación (`MirAnimation`).
+- Prioridad: locomoción < acción < struck < pushed < die < dead.
+- Acciones one-shot bloquean locomoción y al terminar vuelven a Standing.
+- `Die -> Dead` automático; Dead persiste hasta revive.
+- Secuencias preparadas: Channelling, DragonRepulse, Fishing y Taming.
+- Locomoción preparada para Standing/Walking/Running, creep y caballo.
+- Debug temporal en `game.js` permite probar Combat1-15 y transiciones sin sprites.
 
 Direcciones fijas Zircon: `0 Up, 1 UpRight, 2 Right, 3 DownRight, 4 Down, 5 DownLeft, 6 Left, 7 UpLeft`.
 
@@ -83,13 +78,16 @@ Direcciones fijas Zircon: `0 Up, 1 UpRight, 2 Right, 3 DownRight, 4 Down, 5 Down
 - [x] Cliente web mínimo, loop, input y cámara.
 - [x] Movimiento continuo y direcciones Zircon 0-7.
 - [x] Todas las definiciones/timings Player de Zircon registradas.
-- [x] Animator soporta loop, acciones one-shot, hold, reverse y delays por frame.
+- [x] Animator soporta loop, one-shot, hold, reverse y delays por frame.
+- [x] Máquina de estados/transiciones Player implementada.
+- [x] Movement respeta acciones bloqueantes y muerte.
+- [x] Controles diagnósticos para probar estados sin sprites.
 - [x] Renderer MIR desacoplado y compatible con atlas.
 - [x] Catálogo HUM analizado y apariencias definitivas elegidas.
 - [x] Pipeline M001 probado como validación técnica.
 - [x] Modelo lógico de persistencia fijado siguiendo Zircon.
-- [ ] Implementar máquina de estados/transiciones del Player sobre esas acciones.
-- [ ] Validar transiciones y timings con representación diagnóstica/placeholders.
+- [ ] Validar visualmente todas las transiciones/timings en navegador.
+- [ ] Ajustar locomoción final (velocidad de run/creep) con gameplay PokéSurvivor.
 - [ ] Importar solo entonces las apariencias definitivas anteriores.
 - [ ] Cuenta/personajes/inventario/equipo/magias según Zircon.
 - [ ] Mapa y colisiones.
@@ -97,4 +95,4 @@ Direcciones fijas Zircon: `0 Up, 1 UpRight, 2 Right, 3 DownRight, 4 Down, 5 Down
 
 ## Siguiente paso
 
-Crear la máquina de estados del Player que decide cuándo entra/sale de Standing, Moving, Pushed, Attack, Spell, Struck, Die, etc., usando exclusivamente las definiciones ya fijadas en `mir-animation.js`.
+Probar la máquina de estados en navegador con representación diagnóstica: movimiento 8 direcciones, Combat1-15, Struck/Pushed, Die/Dead/Revive y las secuencias especiales. Corregir cualquier transición antes de importar armaduras.
