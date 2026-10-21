@@ -189,7 +189,31 @@ G.MirMapRenderer = (() => {
     drawFrame(ctx, frame, x * map.cellWidth, drawY, blend ? 0.5 : 1);
   }
 
-  function drawLayers(ctx, map, now = performance.now()) {
+  function drawRow(ctx, map, y, minX, maxX, tick) {
+    for (let x = minX; x <= maxX; x++) {
+      const cell = map.cell(x, y);
+      if (!cell) continue;
+
+      // Zircon does not draw Tilesc as a Middle/Front object layer.
+      if (cell.middleFile !== 0 && cell.middleFile !== G.MirMap.EMPTY_FILE) {
+        const index = animationIndex(cell.middleImage, cell.middleAnimation, tick);
+        if (index >= 0) {
+          const frame = frameFor(cell.middleFile, index);
+          drawMapFrame(ctx, frame, x, y, map, cell.middleAnimationBlend);
+        }
+      }
+
+      if (cell.frontFile !== 0 && cell.frontFile !== G.MirMap.EMPTY_FILE) {
+        const index = animationIndex(cell.frontImage, cell.frontAnimation, tick);
+        if (index >= 0) {
+          const frame = frameFor(cell.frontFile, index);
+          drawMapFrame(ctx, frame, x, y, map, cell.frontAnimationBlend);
+        }
+      }
+    }
+  }
+
+  function drawLayers(ctx, map, now = performance.now(), afterRow = null) {
     if (status !== 'ready' || !pack || !map) return false;
 
     const maxHeight = Number.isFinite(pack.maxFrameHeight) ? pack.maxFrameHeight : map.cellHeight * 20;
@@ -198,35 +222,16 @@ G.MirMapRenderer = (() => {
     const tick = Math.floor(now / ANIMATION_MS);
 
     for (let y = bounds.minY; y <= bounds.maxY; y++) {
-      for (let x = bounds.minX; x <= bounds.maxX; x++) {
-        const cell = map.cell(x, y);
-        if (!cell) continue;
-
-        // Zircon does not draw Tilesc as a Middle/Front object layer.
-        if (cell.middleFile !== 0 && cell.middleFile !== G.MirMap.EMPTY_FILE) {
-          const index = animationIndex(cell.middleImage, cell.middleAnimation, tick);
-          if (index >= 0) {
-            const frame = frameFor(cell.middleFile, index);
-            drawMapFrame(ctx, frame, x, y, map, cell.middleAnimationBlend);
-          }
-        }
-
-        if (cell.frontFile !== 0 && cell.frontFile !== G.MirMap.EMPTY_FILE) {
-          const index = animationIndex(cell.frontImage, cell.frontAnimation, tick);
-          if (index >= 0) {
-            const frame = frameFor(cell.frontFile, index);
-            drawMapFrame(ctx, frame, x, y, map, cell.frontAnimationBlend);
-          }
-        }
-      }
+      drawRow(ctx, map, y, bounds.minX, bounds.maxX, tick);
+      if (afterRow) afterRow(y);
     }
 
     return true;
   }
 
-  function draw(ctx, map, now = performance.now()) {
+  function draw(ctx, map, now = performance.now(), afterRow = null) {
     if (!drawBackground(ctx, map)) return false;
-    drawLayers(ctx, map, now);
+    drawLayers(ctx, map, now, afterRow);
     return true;
   }
 
