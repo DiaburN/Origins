@@ -4,12 +4,14 @@ G.MapWorld = (() => {
   const EMPTY_IMAGE = 65536;
 
   let manifest = null;
+  let manifestUrl = null;
   let map = null;
   let status = 'idle';
   let error = null;
 
   async function load(manifestPath) {
     manifest = null;
+    manifestUrl = null;
     map = null;
     status = 'loading-manifest';
     error = null;
@@ -18,6 +20,7 @@ G.MapWorld = (() => {
       const response = await fetch(manifestPath);
       if (!response.ok) throw new Error(`Unable to load map manifest: ${manifestPath}`);
 
+      manifestUrl = response.url;
       manifest = await response.json();
       const runtime = manifest.runtime || {};
       if (runtime.ready !== true || !runtime.mapFile) {
@@ -26,7 +29,7 @@ G.MapWorld = (() => {
       }
 
       status = 'loading-map';
-      const mapUrl = new URL(runtime.mapFile, response.url).href;
+      const mapUrl = resolveAsset(runtime.mapFile);
       map = await G.MirMap.load(mapUrl);
 
       const source = manifest.source || {};
@@ -43,6 +46,11 @@ G.MapWorld = (() => {
       console.error(cause);
       return null;
     }
+  }
+
+  function resolveAsset(path) {
+    if (!path) return null;
+    return manifestUrl ? new URL(path, manifestUrl).href : path;
   }
 
   function canOccupyWorld(x, y) {
@@ -152,6 +160,7 @@ G.MapWorld = (() => {
 
   return Object.freeze({
     load,
+    resolveAsset,
     canOccupyWorld,
     movePoint,
     findSpawn,
