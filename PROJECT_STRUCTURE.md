@@ -10,7 +10,9 @@ Origins/
 ├── css/game.css
 ├── data/
 │   ├── players/
-│   └── magics/zircon-player-magics.json
+│   └── magics/
+│       ├── zircon-player-magics.json
+│       └── zircon-magic-mechanics.json
 ├── js/
 │   ├── core/        # config, input, cámara, MIR animation/sprites/map parser
 │   ├── entities/    # Player
@@ -35,7 +37,7 @@ Origins/
 8. El renderer debe aceptar cualquier apariencia sin cambiar el motor.
 9. Persistencia seguirá el modelo lógico Zircon: `AccountInfo -> CharacterInfo -> UserItem/UserMagic`; `UserItem -> ItemInfo`; `UserMagic -> MagicInfo`.
 10. NO importar sprites definitivos hasta validar el sistema de acciones/movimiento del Player.
-11. Magias: copiar comportamiento/arquitectura Zircon; lógica autoritativa separada de gráficos.
+11. Magias: lógica autoritativa separada de VFX. No convertir el catálogo Zircon en un botón por magia.
 
 ## Referencias
 
@@ -44,66 +46,61 @@ Origins/
 
 ## Apariencias definitivas a importar después
 
-Orden visual AUTORITATIVO; no cambiarlo por la librería de origen:
-
-- Base: `M001/F001`; noob común: `M003/F003`.
+- Base `M001/F001`; noob `M003/F003`.
 - Warrior: `M004 > M007 > M002 > M053 > M067` + `Fxxx`.
 - Taoist: `M006 > M009 > M010 > M051 > M056` + `Fxxx`.
 - Wizard: `M005 > M008 > M011 > M054 > M061` + `Fxxx`.
 - Assassin: `M013 > M016 > M014 > M015 > M046` + `Fxxx`.
 
-`M046` sigue siendo Assassin aunque su recurso fuente proceda de otra familia HUM.
-
-Importación: localizar librería+slot por código, solo sets elegidos, 8 direcciones sin espejar/rotar, conservar índices MIR y `OffSetX/OffSetY`, atlas+manifest por apariencia.
+`M046` sigue siendo Assassin aunque su recurso fuente proceda de otra familia HUM. Importar solo sets elegidos, 8 direcciones, índices MIR y offsets originales, atlas+manifest por apariencia.
 
 ## Acciones y estados Player
 
-- `js/core/mir-animation.js`: 43 definiciones `FrameSet.Players` de Zircon.
-- `js/systems/player-state.js`: intención (`MirAction`) separada de animación (`MirAnimation`).
+- `js/core/mir-animation.js`: 43 definiciones `FrameSet.Players`.
+- `js/systems/player-state.js`: intención `MirAction` separada de `MirAnimation`.
 - Prioridad: locomoción < acción < struck < pushed < die < dead.
-- One-shot bloquea locomoción y vuelve a Standing; `Die -> Dead`; revive explícito.
+- One-shot -> Standing; `Die -> Dead`; revive explícito.
 - Secuencias: Channelling, DragonRepulse, Fishing y Taming.
-- Debug temporal permite probar Combat1-15 y transiciones sin sprites.
+- Debug temporal para Combat1-15/transiciones sin sprites.
 - Direcciones: `0 Up, 1 UpRight, 2 Right, 3 DownRight, 4 Down, 5 DownLeft, 6 Left, 7 UpLeft`.
 
 ## Magias Zircon
 
-- Fuente de trabajo: `data/magics/zircon-player-magics.json`.
-- Catalogadas las 195 entradas player: Warrior 38, Wizard 47, Taoist 52, Assassin 58.
-- El catálogo guarda IDs, nombres internos, mapping central de animaciones y reglas especiales de ataque.
-- `Functions.GetMagicAnimation` aporta 124 mappings directos de cast; las restantes pueden ser ataque, pasiva, toggle, augment o lógica especial y se resuelven en su clase de servidor.
-- Arquitectura: servidor decide coste/objetivo/daño/buff/summon/cooldown; cliente reproduce acción y VFX.
-- `MagicInfo` contiene potencia, coste, niveles, EXP, delay y descripción; `UserMagic` guarda estado aprendido/nivel/EXP/teclas/cooldown.
-- Patrones visuales verificados: proyectiles, efectos directos, objetos persistentes de suelo y VFX persistentes de buff/debuff.
-- Paquete VFX a pedir: `Magic.Zl`, `MagicEx.Zl` ... `MagicEx11.Zl`, más `MonMagicEx7.Zl`, `MonMagicEx8.Zl`, `MonMagicEx20.Zl` reutilizados por efectos player, y `MIcon.Zl` para iconos.
-- Para valores exactos pedir export de `MagicInfo`; si no se puede, el `System.db` relevante.
-- Sprites de criaturas invocadas y sonidos se tratarán aparte cuando toque summons/audio.
+- `data/magics/zircon-player-magics.json`: IDs, nombres, 124 mappings centrales de animación, reglas de ataque y referencias VFX conocidas.
+- `data/magics/zircon-magic-mechanics.json`: clasificación mecánica de las 195 entradas, dependencias/augments, familias, casos especiales y stubs.
+- Conteo: Warrior 38, Wizard 47, Taoist 52, Assassin 58.
+- Arquitectura: servidor decide coste/objetivo/daño/buff/summon/cooldown; cliente reproduce acción/VFX.
+- Modelo ORIGINS acordado: pocas skills principales; las magias Zircon pueden actuar como `coreSkill`, evolución, modifier, proc, pasiva o utilidad. Las cadenas finales aún NO están fijadas.
+- Interacciones fuente útiles ya registradas: `Burning` sobre familia Fuego; `Shocked` sobre Rayo; `Asteroid -> FireWall`; augments Taoist; combo Lotus Assassin; `Chain -> ChainOfFire`; etc.
+- No copiar stubs/bugs a ciegas. Ej.: `DarkConversion.MagicConsume` requiere reimplementación segura.
+- Valores exactos siguen pendientes de `MagicInfo` (potencia, coste, niveles, EXP, delay).
+- VFX a pedir: `Magic.Zl`, `MagicEx.Zl`...`MagicEx11.Zl`, `MonMagicEx7.Zl`, `MonMagicEx8.Zl`, `MonMagicEx20.Zl`, `MIcon.Zl`.
+- Sprites de summons y sonidos se pedirán aparte cuando toque esa fase.
 
 ## Mapas MIR3
 
-- `js/core/mir-map.js` sigue el parser estructural `.map` de Zircon.
-- Ancho bytes `22-23`, alto `24-25`; offset celdas `28 + floor(width*height/4)*3`; 14 bytes por celda.
-- Celda transitable cuando el flag contiene `0x02` y `0x01`.
-- Movimiento del gameplay sigue siendo continuo; grid MIR solo para colisión/navegación.
+- `js/core/mir-map.js`: parser estructural `.map`.
+- Ancho bytes `22-23`, alto `24-25`; offset `28 + floor(width*height/4)*3`; 14 bytes/celda.
+- Grid MIR solo para colisión/navegación; movimiento gameplay continuo.
 - Render real pendiente de `0.map` + librerías de tiles.
 
 ## Estado
 
-- [x] Cliente web mínimo, loop, input y cámara.
-- [x] Movimiento continuo + direcciones Zircon 0-7.
-- [x] Definiciones/timings y máquina de estados Player.
+- [x] Cliente mínimo, loop, input, cámara y movimiento continuo.
+- [x] Definiciones/timings + máquina de estados Player.
 - [x] Renderer MIR desacoplado + pipeline M001 validado técnicamente.
 - [x] Apariencias definitivas elegidas.
 - [x] Persistencia lógica fijada según Zircon.
 - [x] Parser estructural `.map` preparado.
-- [x] 195 magias Player indexadas y mappings de animación central registrados.
-- [x] Dependencias VFX de magia identificadas, incluyendo reutilizaciones `MonMagic` confirmadas.
+- [x] 195 magias Player indexadas y animaciones centrales registradas.
+- [x] Clasificación mecánica de las 195 entradas y dependencias/augments principales guardadas.
+- [x] Dependencias VFX principales identificadas, incluidas reutilizaciones `MonMagic`.
 - [ ] Validar Player visualmente en navegador.
-- [ ] Completar auditoría mecánica/visual detallada de cada magia antes de implementar combate.
-- [ ] Recibir/importar VFX, `MIcon.Zl` y datos `MagicInfo`.
+- [ ] Recibir/importar VFX + `MIcon.Zl` + datos `MagicInfo` y validar cada efecto visual contra sus índices reales.
+- [ ] Diseñar después las cadenas definitivas ORIGINS a partir de la auditoría, sin multiplicar botones.
 - [ ] Probar `0.map` real + colisiones + renderer de mapa.
 - [ ] Monstruos, spawn y combate.
 
 ## Siguiente paso
 
-Mientras no estén disponibles los assets/mapas del PC, completar el catálogo mecánico de magias desde Zircon: distinguir ataque, proyectil, área, buff/debuff, summon, movimiento, toggle/pasiva y persistencia, sin inventar valores que pertenecen a `MagicInfo`.
+Mientras no estén disponibles los archivos del PC, usar `zircon-magic-mechanics.json` como referencia y no volver a escanear todo Zircon. Al recibir `MagicInfo` y los `.Zl`, cruzar valores + VFX reales y entonces fijar las cadenas de skills ORIGINS.
