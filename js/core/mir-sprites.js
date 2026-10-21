@@ -8,20 +8,33 @@ G.MirSprites = (() => {
       this.manifest = manifest;
       this.baseUrl = new URL('.', manifestUrl);
       this.frames = new Map();
-      this.atlas = null;
+      this.atlasPages = new Map();
       this.atlasFrames = new Map();
 
       const cfg = this.manifest.frames || {};
       if (cfg.mode === 'atlas') {
         if (cfg.rects && typeof cfg.rects === 'object') {
+          const multiPage = Array.isArray(cfg.images);
           for (const [logicalFrame, rect] of Object.entries(cfg.rects)) {
-            if (!Array.isArray(rect) || rect.length < 4) continue;
-            this.atlasFrames.set(Number(logicalFrame), {
-              x: rect[0],
-              y: rect[1],
-              w: rect[2],
-              h: rect[3]
-            });
+            if (!Array.isArray(rect)) continue;
+
+            if (multiPage && rect.length >= 5) {
+              this.atlasFrames.set(Number(logicalFrame), {
+                page: rect[0],
+                x: rect[1],
+                y: rect[2],
+                w: rect[3],
+                h: rect[4]
+              });
+            } else if (rect.length >= 4) {
+              this.atlasFrames.set(Number(logicalFrame), {
+                page: 0,
+                x: rect[0],
+                y: rect[1],
+                w: rect[2],
+                h: rect[3]
+              });
+            }
           }
         } else if (Array.isArray(cfg.order)) {
           const cellWidth = cfg.cellWidth || 0;
@@ -29,6 +42,7 @@ G.MirSprites = (() => {
           const columns = cfg.columns || 1;
           cfg.order.forEach((logicalFrame, index) => {
             this.atlasFrames.set(logicalFrame, {
+              page: 0,
               x: (index % columns) * cellWidth,
               y: Math.floor(index / columns) * cellHeight,
               w: cellWidth,
@@ -71,29 +85,32 @@ G.MirSprites = (() => {
       return (source.frameBase || 0) + logicalFrame;
     }
 
-    requestAtlas() {
-      if (this.atlas) return this.atlas;
-
+    atlasPagePath(pageIndex) {
       const cfg = this.manifest.frames || {};
-      const image = cfg.image;
-      const record = { image: new Image(), state: image ? 'loading' : 'missing' };
-      if (!image) {
-        this.atlas = record;
-        return record;
-      }
+      if (Array.isArray(cfg.images)) return cfg.images[pageIndex] || null;
+      return pageIndex === 0 ? (cfg.image || null) : null;
+    }
+
+    requestAtlasPage(pageIndex) {
+      if (this.atlasPages.has(pageIndex)) return this.atlasPages.get(pageIndex);
+
+      const path = this.atlasPagePath(pageIndex);
+      const record = { image: new Image(), state: path ? 'loading' : 'missing' };
+      this.atlasPages.set(pageIndex, record);
+      if (!path) return record;
 
       record.image.decoding = 'async';
       record.image.onload = () => { record.state = 'ready'; };
       record.image.onerror = () => { record.state = 'missing'; };
-      record.image.src = new URL(image, this.baseUrl).href;
-      this.atlas = record;
+      record.image.src = new URL(path, this.baseUrl).href;
       return record;
     }
 
     request(logicalFrame) {
       if (this.frameMode() === 'atlas') {
-        if (!this.atlasFrame(logicalFrame)) return { image: null, state: 'missing' };
-        return this.requestAtlas();
+        const frame = this.atlasFrame(logicalFrame);
+        if (!frame) return { image: null, state: 'missing' };
+        return this.requestAtlasPage(frame.page || 0);
       }
 
       if (this.frames.has(logicalFrame)) return this.frames.get(logicalFrame);
@@ -118,6 +135,7 @@ G.MirSprites = (() => {
     }
 
     draw(ctx, logicalFrame, x, y) {
+      const frame = this.frameMode() === 'atlas' ? this.atlasFrame(logicalFrame) : null;
       const record = this.request(logicalFrame);
       if (record.state !== 'ready') return false;
 
@@ -127,7 +145,6 @@ G.MirSprites = (() => {
       const dy = Math.round(y + offset.y);
 
       if (this.frameMode() === 'atlas') {
-        const frame = this.atlasFrame(logicalFrame);
         if (!frame) return false;
         ctx.drawImage(
           record.image,
