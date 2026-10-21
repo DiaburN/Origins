@@ -7,10 +7,22 @@
     "width": 600,
     "height": 600,
     "size": 5310028,
-    "sha1": "84104ce289f773d488160282163c0ff6397ec62d",
-    "maxFileId": 25,
-    "groupsUsed": [0, 1]
+    "sha1": "61c550cd938573a26efa7ee7067d51d9aa47d391",
+    "verified": true
   },
+  "libraries": [
+    { "id": 0, "name": "Tilesc", "path": "Map Data/Tilesc.Zl" },
+    { "id": 1, "name": "Tiles30c", "path": "Map Data/Tiles30c.Zl" },
+    { "id": 2, "name": "Tiles5c", "path": "Map Data/Tiles5c.Zl" },
+    { "id": 3, "name": "SmTilesc", "path": "Map Data/SmTilesc.Zl" },
+    { "id": 4, "name": "Housesc", "path": "Map Data/Housesc.Zl" },
+    { "id": 5, "name": "Cliffsc", "path": "Map Data/Cliffsc.Zl" },
+    { "id": 9, "name": "Wallsc", "path": "Map Data/Wallsc.Zl" },
+    { "id": 10, "name": "SmObjectsc", "path": "Map Data/SmObjectsc.Zl" },
+    { "id": 11, "name": "Animationsc", "path": "Map Data/Animationsc.Zl" },
+    { "id": 15, "name": "Wood_Tilesc", "path": "Map Data/Wood/Tilesc.Zl" },
+    { "id": 25, "name": "Wood_SmObjectsc", "path": "Map Data/Wood/SmObjectsc.Zl" }
+  ],
   "runtime": {
     "mapFile": "01.map",
     "ready": false
