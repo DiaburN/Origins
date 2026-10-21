@@ -163,15 +163,38 @@ G.MirSprites = (() => {
     }
   }
 
+  async function fetchManifest(url) {
+    const response = await fetch(url);
+    if (!response.ok) throw new Error(`Unable to load MIR sprite manifest: ${url}`);
+    const manifest = await response.json();
+    if (!manifest.id || !manifest.frames) throw new Error(`Invalid MIR sprite manifest: ${url}`);
+    return { manifest, url: response.url };
+  }
+
+  async function resolveManifest(manifestPath) {
+    const source = await fetchManifest(manifestPath);
+    const runtime = source.manifest.runtime || {};
+
+    if (source.manifest.ready === false && G.Config.runtimeBaseUrl && runtime.root && runtime.manifest) {
+      const runtimeUrl = G.runtimeAssetUrl(`${runtime.root}${runtime.manifest}`);
+      if (runtimeUrl) {
+        try {
+          return await fetchManifest(runtimeUrl);
+        } catch (runtimeError) {
+          console.warn(`MIR runtime unavailable, using source manifest: ${runtimeUrl}`, runtimeError);
+        }
+      }
+    }
+
+    return source;
+  }
+
   async function load(manifestPath) {
     if (sets.has(manifestPath)) return sets.get(manifestPath);
 
-    const promise = fetch(manifestPath).then(async response => {
-      if (!response.ok) throw new Error(`Unable to load MIR sprite manifest: ${manifestPath}`);
-      const manifest = await response.json();
-      if (!manifest.id || !manifest.frames) throw new Error(`Invalid MIR sprite manifest: ${manifestPath}`);
-      return new SpriteSet(manifest, response.url);
-    });
+    const promise = resolveManifest(manifestPath).then(
+      resolved => new SpriteSet(resolved.manifest, resolved.url)
+    );
 
     sets.set(manifestPath, promise);
     return promise;
