@@ -19,6 +19,11 @@
     "runtimeManifest": "manifest.json",
     "runtimeAtlas": "atlas.webp"
   },
+  "runtime": {
+    "root": "players/base_m001/",
+    "localRoot": "runtime/",
+    "manifest": "manifest.json"
+  },
   "storage": {
     "kind": "external-runtime",
     "driveFolderId": "1wOToCCfYkB3Pw5lgqKO_LCo_i-GOS_XI"
