@@ -117,10 +117,21 @@ G.Game = (() => {
     G.Camera.apply(ctx);
 
     const map = G.MapWorld.map;
-    const renderedMap = map && G.MirMapRenderer.draw(ctx, map, now);
-    if (!renderedMap && !G.MapWorld.drawDebug(ctx)) drawMirGrid();
+    let playerDrawn = false;
+    let renderedMap = false;
 
-    player.draw(ctx);
+    if (map) {
+      const playerRow = map.worldToCell(player.x, player.y).y;
+      renderedMap = G.MirMapRenderer.draw(ctx, map, now, row => {
+        if (!playerDrawn && row === playerRow) {
+          player.draw(ctx);
+          playerDrawn = true;
+        }
+      });
+    }
+
+    if (!renderedMap && !G.MapWorld.drawDebug(ctx)) drawMirGrid();
+    if (!playerDrawn) player.draw(ctx);
 
     if (G.Config.debug) drawDebug();
   }
