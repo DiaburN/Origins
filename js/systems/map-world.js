@@ -1,12 +1,16 @@
 window.G = window.G || {};
 
 G.MapWorld = (() => {
+  const EMPTY_IMAGE = 65536;
+
   let manifest = null;
   let map = null;
   let status = 'idle';
   let error = null;
 
   async function load(manifestPath) {
+    manifest = null;
+    map = null;
     status = 'loading-manifest';
     error = null;
 
@@ -33,6 +37,7 @@ G.MapWorld = (() => {
       status = 'ready';
       return map;
     } catch (cause) {
+      map = null;
       error = cause;
       status = 'error';
       console.error(cause);
@@ -69,15 +74,16 @@ G.MapWorld = (() => {
     return moved;
   }
 
-  function findSpawn(preferredX = null, preferredY = null, maxRadius = 300) {
+  function findSpawn(preferredX = null, preferredY = null, maxRadius = null) {
     if (!map) return null;
 
     const startX = Number.isInteger(preferredX) ? preferredX : Math.floor(map.width / 2);
     const startY = Number.isInteger(preferredY) ? preferredY : Math.floor(map.height / 2);
+    const radiusLimit = Number.isInteger(maxRadius) ? maxRadius : Math.max(map.width, map.height);
 
     if (map.isWalkable(startX, startY)) return worldCenter(startX, startY);
 
-    for (let radius = 1; radius <= maxRadius; radius++) {
+    for (let radius = 1; radius <= radiusLimit; radius++) {
       const minX = startX - radius;
       const maxX = startX + radius;
       const minY = startY - radius;
@@ -105,6 +111,10 @@ G.MapWorld = (() => {
     };
   }
 
+  function hasVisibleLayer(image) {
+    return image > 0 && image !== EMPTY_IMAGE;
+  }
+
   function drawDebug(ctx) {
     if (!map) return false;
 
@@ -127,7 +137,7 @@ G.MapWorld = (() => {
         if (!cell.walkable) {
           ctx.fillStyle = '#2e1717';
           ctx.fillRect(px, py, map.cellWidth, map.cellHeight);
-        } else if (cell.frontImage > 1 || cell.middleImage > 1) {
+        } else if (hasVisibleLayer(cell.frontImage) || hasVisibleLayer(cell.middleImage)) {
           ctx.fillStyle = '#202a24';
           ctx.fillRect(px, py, map.cellWidth, map.cellHeight);
         }
