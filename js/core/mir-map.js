@@ -3,6 +3,7 @@ window.G = window.G || {};
 G.MirMap = (() => {
   const HEADER_SIZE = 28;
   const CELL_SIZE = 14;
+  const EMPTY_FILE = 255;
 
   function readUInt16LE(bytes, offset) {
     return bytes[offset] | (bytes[offset + 1] << 8);
@@ -66,7 +67,11 @@ G.MirMap = (() => {
 
     let walkableCount = 0;
     const libraries = new Set();
-    for (let i = 0; i < backCount; i++) libraries.add(backFile[i]);
+    const addLibrary = id => {
+      if (id !== EMPTY_FILE) libraries.add(id);
+    };
+
+    for (let i = 0; i < backCount; i++) addLibrary(backFile[i]);
 
     for (let x = 0; x < width; x++) {
       for (let y = 0; y < height; y++) {
@@ -91,8 +96,8 @@ G.MirMap = (() => {
         walkable[target] = canWalk ? 1 : 0;
         if (canWalk) walkableCount += 1;
 
-        libraries.add(frontFile[target]);
-        libraries.add(middleFile[target]);
+        addLibrary(frontFile[target]);
+        addLibrary(middleFile[target]);
       }
     }
 
@@ -184,6 +189,7 @@ G.MirMap = (() => {
   return Object.freeze({
     HEADER_SIZE,
     CELL_SIZE,
+    EMPTY_FILE,
     parse,
     load
   });
