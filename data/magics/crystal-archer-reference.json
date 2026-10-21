@@ -2,12 +2,12 @@
   "source": {
     "repository": "Suprcode/Crystal",
     "commit": "0e315fe327192afe52c3d7357ddd1f5b7e26c5b8",
-    "note": "Public LOMCN C# source with full Archer class. Used only as Archer technical donor; ORIGINS runtime remains based on its own web architecture and Zircon semantics where applicable."
+    "note": "Public LOMCN C# source with full Archer class. Reference only; ORIGINS core launches with Zircon's four classes first."
   },
   "class": {
     "name": "Archer",
     "mirClassId": 4,
-    "status": "planned-origins-class",
+    "status": "optional-future-class",
     "skillCount": 21
   },
   "skills": [
@@ -45,10 +45,10 @@
     "StraightShot": "AttackRange2",
     "DoubleShot": "AttackRange2"
   },
-  "todo": [
+  "todoIfActivatedLater": [
     "Audit all 21 Archer server mechanics before translating them into ORIGINS skills.",
     "Audit exact client VFX/projectile libraries and per-skill body-action mapping.",
     "Identify Archer body/weapon/effect asset libraries before import.",
-    "Do not assume Xtreme/Mir3SEA custom Archer logic equals Crystal; their current source is not public in the references found."
+    "Do not assume Xtreme/Mir3SEA custom Archer logic equals Crystal without source verification."
   ]
 }
