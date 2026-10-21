@@ -22,8 +22,14 @@ G.Game = (() => {
     resize();
     G.Camera.snapTo(player);
 
-    G.MapWorld.load(MAP_MANIFEST).then(loadedMap => {
+    G.MapWorld.load(MAP_MANIFEST).then(async loadedMap => {
       if (!loadedMap) return;
+
+      const renderPack = G.MapWorld.manifest?.runtime?.renderPack;
+      if (renderPack) {
+        await G.MirMapRenderer.load(G.MapWorld.resolveAsset(renderPack));
+      }
+
       const spawn = G.MapWorld.findSpawn();
       if (!spawn) return;
 
@@ -57,7 +63,7 @@ G.Game = (() => {
     lastTime = now;
 
     update(dt);
-    draw();
+    draw(now);
   }
 
   function update(dt) {
@@ -103,13 +109,17 @@ G.Game = (() => {
     }
   }
 
-  function draw() {
+  function draw(now) {
     ctx.setTransform(1, 0, 0, 1, 0, 0);
     ctx.fillStyle = '#151719';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
     G.Camera.apply(ctx);
-    if (!G.MapWorld.drawDebug(ctx)) drawMirGrid();
+
+    const map = G.MapWorld.map;
+    const renderedMap = map && G.MirMapRenderer.draw(ctx, map, now);
+    if (!renderedMap && !G.MapWorld.drawDebug(ctx)) drawMirGrid();
+
     player.draw(ctx);
 
     if (G.Config.debug) drawDebug();
@@ -164,7 +174,7 @@ G.Game = (() => {
       `Q/E choose Combat${debugCombat} | Space play | 1/2 spell`,
       'H harvest | J struck | P pushed | K die | R revive',
       'V channel | B dragon repulse | F fishing | T taming',
-      `map ${mapText}`,
+      `map ${mapText} | renderer ${G.MirMapRenderer.status}`,
       `pos ${player.x.toFixed(1)}, ${player.y.toFixed(1)}  dir ${player.direction}`,
       `state ${player.state.action}  anim ${player.state.animation}`,
       `locked ${player.state.locked}  dead ${player.state.dead}  frame ${player.animator.logicalFrame()}`,
