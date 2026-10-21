@@ -24,8 +24,10 @@
     { "id": 25, "name": "Wood_SmObjectsc", "path": "Map Data/Wood/SmObjectsc.Zl" }
   ],
   "runtime": {
-    "mapFile": "runtime/01.map",
-    "renderPack": "runtime/render-pack.json",
+    "root": "maps/border-village/",
+    "localRoot": "runtime/",
+    "mapFile": "01.map",
+    "renderPack": "render-pack.json",
     "packVersion": 1,
     "ready": false
   }
