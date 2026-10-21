@@ -85,7 +85,18 @@ G.Player = class Player {
 
   draw(ctx) {
     const logicalFrame = this.animator.logicalFrame();
-    if (this.bodySprites && this.assetState === 'ready' && this.bodySprites.draw(ctx, logicalFrame, this.x, this.y)) {
+
+    // MIR libraries draw relative to the top-left of the logical 48x32 cell.
+    // ORIGINS stores the entity position at the centre of that cell so movement
+    // can remain continuous; translate back to the MIR origin only for rendering.
+    const drawOriginX = this.x - G.Config.mirCellWidth / 2;
+    const drawOriginY = this.y - G.Config.mirCellHeight / 2;
+
+    if (
+      this.bodySprites &&
+      this.assetState === 'ready' &&
+      this.bodySprites.draw(ctx, logicalFrame, drawOriginX, drawOriginY)
+    ) {
       return;
     }
 
