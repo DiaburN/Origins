@@ -8,16 +8,14 @@ G.MirMapRenderer = (() => {
   let status = 'idle';
   let error = null;
   let baseUrl = null;
-  const globalPages = [];
-  const legacyPages = new Map();
+  const pageRecords = new Map();
 
   function reset() {
     pack = null;
     status = 'idle';
     error = null;
     baseUrl = null;
-    globalPages.length = 0;
-    legacyPages.clear();
+    pageRecords.clear();
   }
 
   async function load(url) {
@@ -32,9 +30,6 @@ G.MirMapRenderer = (() => {
       validatePack(data);
       pack = data;
       baseUrl = response.url;
-
-      status = 'loading-pages';
-      await preloadPages();
       status = 'ready';
       return pack;
     } catch (cause) {
@@ -51,37 +46,37 @@ G.MirMapRenderer = (() => {
     }
   }
 
-  async function preloadPages() {
-    if (Array.isArray(pack.pages)) {
-      const jobs = pack.pages.map((path, pageIndex) =>
-        loadImage(new URL(path, baseUrl).href).then(image => {
-          globalPages[pageIndex] = image;
-        })
-      );
-      await Promise.all(jobs);
-      return;
-    }
-
-    const jobs = [];
-    for (const [libraryId, library] of Object.entries(pack.libraries)) {
-      if (!library || !Array.isArray(library.pages)) continue;
-
-      library.pages.forEach((path, pageIndex) => {
-        const key = `${libraryId}:${pageIndex}`;
-        jobs.push(loadImage(new URL(path, baseUrl).href).then(image => legacyPages.set(key, image)));
-      });
-    }
-    await Promise.all(jobs);
+  function pagePath(libraryId, pageIndex) {
+    if (Array.isArray(pack.pages)) return pack.pages[pageIndex] || null;
+    const library = pack.libraries[String(libraryId)];
+    return library && Array.isArray(library.pages) ? (library.pages[pageIndex] || null) : null;
   }
 
-  function loadImage(url) {
-    return new Promise((resolve, reject) => {
-      const image = new Image();
-      image.decoding = 'async';
-      image.onload = () => resolve(image);
-      image.onerror = () => reject(new Error(`Unable to load MIR atlas page: ${url}`));
-      image.src = url;
-    });
+  function pageKey(libraryId, pageIndex) {
+    return Array.isArray(pack.pages) ? `global:${pageIndex}` : `${libraryId}:${pageIndex}`;
+  }
+
+  function requestPage(libraryId, pageIndex) {
+    const key = pageKey(libraryId, pageIndex);
+    if (pageRecords.has(key)) return pageRecords.get(key);
+
+    const path = pagePath(libraryId, pageIndex);
+    const record = { image: null, state: path ? 'loading' : 'missing' };
+    pageRecords.set(key, record);
+    if (!path) return record;
+
+    const image = new Image();
+    image.decoding = 'async';
+    image.onload = () => {
+      record.image = image;
+      record.state = 'ready';
+    };
+    image.onerror = () => {
+      record.state = 'missing';
+      console.error(new Error(`Unable to load MIR atlas page: ${image.src}`));
+    };
+    image.src = new URL(path, baseUrl).href;
+    return record;
   }
 
   function frameFor(libraryId, imageIndex) {
@@ -92,13 +87,11 @@ G.MirMapRenderer = (() => {
     const raw = library.frames[String(imageIndex)];
     if (!raw || raw.length < 5) return null;
 
-    const page = Array.isArray(pack.pages)
-      ? globalPages[raw[0]]
-      : legacyPages.get(`${libraryId}:${raw[0]}`);
-    if (!page) return null;
+    const pageRecord = requestPage(libraryId, raw[0]);
+    if (pageRecord.state !== 'ready' || !pageRecord.image) return null;
 
     return {
-      page,
+      page: pageRecord.image,
       sx: raw[1],
       sy: raw[2],
       width: raw[3],
@@ -225,21 +218,13 @@ G.MirMapRenderer = (() => {
 
     const animated = isAnimated(animationByte);
     const cellSized = isCellSized(frame, map);
-
-    // Zircon bakes static 48x32 / 96x64 layers into Floor before any entities.
     if (cellSized && !animated) return;
 
     const drawY = cellSized
       ? y * map.cellHeight
       : (y + 1) * map.cellHeight - frame.height;
 
-    drawFrame(
-      ctx,
-      frame,
-      x * map.cellWidth,
-      drawY,
-      animated && blend ? 0.5 : 1
-    );
+    drawFrame(ctx, frame, x * map.cellWidth, drawY, animated && blend ? 0.5 : 1);
   }
 
   function drawRow(ctx, map, y, minX, maxX, tick) {
@@ -247,29 +232,8 @@ G.MirMapRenderer = (() => {
       const cell = map.cell(x, y);
       if (!cell) continue;
 
-      drawObjectLayer(
-        ctx,
-        map,
-        x,
-        y,
-        cell.middleFile,
-        cell.middleImage,
-        cell.middleAnimation,
-        cell.middleAnimationBlend,
-        tick
-      );
-
-      drawObjectLayer(
-        ctx,
-        map,
-        x,
-        y,
-        cell.frontFile,
-        cell.frontImage,
-        cell.frontAnimation,
-        cell.frontAnimationBlend,
-        tick
-      );
+      drawObjectLayer(ctx, map, x, y, cell.middleFile, cell.middleImage, cell.middleAnimation, cell.middleAnimationBlend, tick);
+      drawObjectLayer(ctx, map, x, y, cell.frontFile, cell.frontImage, cell.frontAnimation, cell.frontAnimationBlend, tick);
     }
   }
 
@@ -305,6 +269,11 @@ G.MirMapRenderer = (() => {
     drawLayers,
     get status() { return status; },
     get error() { return error; },
-    get ready() { return status === 'ready'; }
+    get ready() { return status === 'ready'; },
+    get loadedPageCount() {
+      let count = 0;
+      for (const record of pageRecords.values()) if (record.state === 'ready') count += 1;
+      return count;
+    }
   });
 })();
