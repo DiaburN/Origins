@@ -4,6 +4,13 @@ G.Movement = Object.freeze({
   updatePlayer(player, dt) {
     const [axisX, axisY] = G.Input.axis();
     const moving = axisX !== 0 || axisY !== 0;
+    const running = G.Input.isHeld('shiftleft', 'shiftright');
+    const creepFast = !G.Input.isHeld('controlleft', 'controlright');
+
+    if (!player.canMove()) {
+      player.moving = false;
+      return;
+    }
 
     if (moving) {
       player.direction = G.directionFromVector(axisX, axisY, player.direction);
@@ -12,6 +19,6 @@ G.Movement = Object.freeze({
     }
 
     player.moving = moving;
-    player.setAction(moving ? G.MirAnimation.Walking : G.MirAnimation.Standing);
+    player.state.setLocomotion({ moving, running, creepFast });
   }
 });
