@@ -6,6 +6,7 @@ G.Game = (() => {
   let player;
   let lastTime = 0;
   let dpr = 1;
+  let debugCombat = 3;
 
   function init() {
     canvas = document.getElementById('game');
@@ -48,9 +49,46 @@ G.Game = (() => {
   }
 
   function update(dt) {
+    if (G.Config.debug) updateDebugActions();
     G.Movement.updatePlayer(player, dt);
     player.update(dt);
     G.Camera.follow(player, dt);
+  }
+
+  function updateDebugActions() {
+    if (G.Input.consume('keyq')) debugCombat = debugCombat <= 1 ? 15 : debugCombat - 1;
+    if (G.Input.consume('keye')) debugCombat = debugCombat >= 15 ? 1 : debugCombat + 1;
+
+    if (G.Input.consume('space')) {
+      player.attack(G.MirAnimation[`Combat${debugCombat}`]);
+    }
+
+    if (G.Input.consume('digit1')) player.spell(G.MirAnimation.Combat1);
+    if (G.Input.consume('digit2')) player.spell(G.MirAnimation.Combat2);
+    if (G.Input.consume('keyh')) player.state.harvest();
+    if (G.Input.consume('keyj')) player.struck();
+    if (G.Input.consume('keyp')) player.pushed();
+    if (G.Input.consume('keyk')) player.die();
+    if (G.Input.consume('keyr')) player.revive();
+
+    if (G.Input.consume('keyc')) player.state.setCreeping(!player.state.creeping);
+    if (G.Input.consume('keym')) player.state.setMounted(!player.state.mounted);
+
+    if (G.Input.consume('keyv')) {
+      if (!player.state.endChannel()) player.state.beginChannel();
+    }
+
+    if (G.Input.consume('keyb')) {
+      if (!player.state.endDragonRepulse()) player.state.beginDragonRepulse();
+    }
+
+    if (G.Input.consume('keyf')) {
+      if (!player.state.reelFishing()) player.state.beginFishing();
+    }
+
+    if (G.Input.consume('keyt')) {
+      if (!player.state.stopTaming()) player.state.beginTaming();
+    }
   }
 
   function draw() {
@@ -103,11 +141,21 @@ G.Game = (() => {
     ctx.fillStyle = '#f1f1f1';
     ctx.font = '12px monospace';
     ctx.textAlign = 'left';
-    ctx.fillText('WASD / arrows', 12, 20);
-    ctx.fillText(`pos ${player.x.toFixed(1)}, ${player.y.toFixed(1)}`, 12, 38);
-    ctx.fillText(`dir ${player.direction}  action ${player.action}`, 12, 56);
-    ctx.fillText(`MIR frame ${player.animator.logicalFrame()}`, 12, 74);
-    ctx.fillText(`body ${player.assetState}`, 12, 92);
+
+    const lines = [
+      'WASD move | Shift run | C creep | M mount',
+      `Q/E choose Combat${debugCombat} | Space play | 1/2 spell`,
+      'H harvest | J struck | P pushed | K die | R revive',
+      'V channel | B dragon repulse | F fishing | T taming',
+      `pos ${player.x.toFixed(1)}, ${player.y.toFixed(1)}  dir ${player.direction}`,
+      `state ${player.state.action}  anim ${player.state.animation}`,
+      `locked ${player.state.locked}  dead ${player.state.dead}  frame ${player.animator.logicalFrame()}`,
+      `body ${player.assetState}`
+    ];
+
+    for (let i = 0; i < lines.length; i++) {
+      ctx.fillText(lines[i], 12, 20 + i * 18);
+    }
   }
 
   return Object.freeze({
