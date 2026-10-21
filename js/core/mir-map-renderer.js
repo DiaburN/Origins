@@ -8,14 +8,16 @@ G.MirMapRenderer = (() => {
   let status = 'idle';
   let error = null;
   let baseUrl = null;
-  const pages = new Map();
+  const globalPages = [];
+  const legacyPages = new Map();
 
   function reset() {
     pack = null;
     status = 'idle';
     error = null;
     baseUrl = null;
-    pages.clear();
+    globalPages.length = 0;
+    legacyPages.clear();
   }
 
   async function load(url) {
@@ -50,17 +52,26 @@ G.MirMapRenderer = (() => {
   }
 
   async function preloadPages() {
-    const jobs = [];
+    if (Array.isArray(pack.pages)) {
+      const jobs = pack.pages.map((path, pageIndex) =>
+        loadImage(new URL(path, baseUrl).href).then(image => {
+          globalPages[pageIndex] = image;
+        })
+      );
+      await Promise.all(jobs);
+      return;
+    }
 
+    // Compatibility with early packs where each library declared pages.
+    const jobs = [];
     for (const [libraryId, library] of Object.entries(pack.libraries)) {
       if (!library || !Array.isArray(library.pages)) continue;
 
       library.pages.forEach((path, pageIndex) => {
         const key = `${libraryId}:${pageIndex}`;
-        jobs.push(loadImage(new URL(path, baseUrl).href).then(image => pages.set(key, image)));
+        jobs.push(loadImage(new URL(path, baseUrl).href).then(image => legacyPages.set(key, image)));
       });
     }
-
     await Promise.all(jobs);
   }
 
@@ -82,7 +93,9 @@ G.MirMapRenderer = (() => {
     const raw = library.frames[String(imageIndex)];
     if (!raw || raw.length < 5) return null;
 
-    const page = pages.get(`${libraryId}:${raw[0]}`);
+    const page = Array.isArray(pack.pages)
+      ? globalPages[raw[0]]
+      : legacyPages.get(`${libraryId}:${raw[0]}`);
     if (!page) return null;
 
     return {
@@ -136,8 +149,8 @@ G.MirMapRenderer = (() => {
     if (status !== 'ready' || !pack || !map) return false;
 
     const bounds = visibleBounds(map);
-    let startX = bounds.minX & ~1;
-    let startY = bounds.minY & ~1;
+    const startX = bounds.minX & ~1;
+    const startY = bounds.minY & ~1;
 
     for (let y = startY; y <= bounds.maxY; y += 2) {
       for (let x = startX; x <= bounds.maxX; x += 2) {
