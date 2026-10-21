@@ -1,0 +1,204 @@
+{
+  "source": {
+    "repository": "Suprcode/Zircon",
+    "commit": "80d5df21016b2f377d48f14f7dcc2e994b163ff1",
+    "scope": [
+      "ServerLibrary/Models/Magics/",
+      "ServerLibrary/Models/MagicObject.cs",
+      "LibraryCore/Functions.cs",
+      "Client/Models/MapObject.cs",
+      "Client/Models/SpellObject.cs"
+    ]
+  },
+  "purpose": "Mechanical source audit for ORIGINS X. These are Zircon behavior families, not final ORIGINS skill trees.",
+  "rules": {
+    "serverAuthoritative": true,
+    "exactBalancePendingMagicInfo": true,
+    "assetsSeparateFromMechanics": true,
+    "oneSkillCanReuseSeveralZirconMagics": true
+  },
+  "coverage": {
+    "enumEntries": 195,
+    "warrior": 38,
+    "wizard": 47,
+    "taoist": 52,
+    "assassin": 58,
+    "allEntriesAssignedToMechanicalBucket": true
+  },
+  "taxonomy": [
+    "passive",
+    "attackModifier",
+    "directOrProjectileDamage",
+    "areaDamage",
+    "lineArea",
+    "persistentZone",
+    "crowdControl",
+    "mobility",
+    "buff",
+    "summon",
+    "augmentation",
+    "toggle",
+    "autonomousProc",
+    "resourceOrStatus",
+    "stubOrIncomplete"
+  ],
+  "explicitDependencies": {
+    "warrior": {
+      "ShoulderDash": ["Assault"],
+      "DestructiveSurge": ["AugmentDestructiveSurge"],
+      "Defiance": ["AugmentDefiance"],
+      "ReflectDamage": ["AugmentReflectDamage"]
+    },
+    "wizard": {
+      "fireFamily": {
+        "augmentation": "Burning",
+        "consumers": ["FireBall","AdamantineFireBall","FireWall","ScortchedEarth","FireStorm","MeteorShower","FireBounce","Asteroid"]
+      },
+      "lightningFamily": {
+        "augmentation": "Shocked",
+        "consumers": ["LightningBall","ThunderBolt","LightningBeam","LightningWave","ChainLightning","ThunderStrike","LightningStrike"]
+      },
+      "Asteroid": ["FireWall"]
+    },
+    "taoist": {
+      "Heal": ["EmpoweredHealing"],
+      "MassHeal": ["EmpoweredHealing"],
+      "PoisonDust": ["AugmentPoisonDust"],
+      "ExplosiveTalisman": ["AugmentExplosiveTalisman"],
+      "ImprovedExplosiveTalisman": ["AugmentExplosiveTalisman"],
+      "EvilSlayer": ["AugmentEvilSlayer"],
+      "GreaterEvilSlayer": ["AugmentEvilSlayer"],
+      "Purification": ["AugmentPurification"],
+      "Resurrection": ["AugmentResurrection"],
+      "Neutralize": ["AugmentNeutralize"],
+      "CelestialLight": ["AugmentCelestialLight"],
+      "summonedPets": ["StrengthOfFaith","DemonicRecovery"]
+    },
+    "assassin": {
+      "Cloak": ["PledgeOfBlood","GhostWalk"],
+      "WraithGrip": ["TouchOfTheDeparted"],
+      "SummonPuppet": ["ElementalPuppet","ArtOfShadows"],
+      "Karma": ["Release","Resolution"],
+      "FlameSplash": ["DragonWave"],
+      "Chain": ["ChainOfFire"],
+      "TheNewBeginning": ["Stealth","FlashOfLight"],
+      "lotusCombo": ["FullBloom","WhiteLotus","RedLotus","SweetBrier"]
+    }
+  },
+  "mechanicalHighlights": {
+    "warrior": {
+      "Slaying": "Passive/attack proc that periodically arms a stronger Slaying hit.",
+      "HalfMoon": "Toggle attack modifier adding adjacent secondary hits.",
+      "DestructiveSurge": "360-degree adjacent attack; augment can add a second ring.",
+      "ShoulderDash": "Movement plus push; Assault adds paralysis/silence to pushed targets.",
+      "CrushingWave": "Forward wave/line with lateral secondary cells.",
+      "ElementalSwords": "Self buff that autonomously fires stored swords at nearby enemies."
+    },
+    "wizard": {
+      "FireWall": "Persistent ground hazard.",
+      "FireBounce": "Fire projectile that bounces between nearby enemies.",
+      "Asteroid": "Large fire area; if FireWall is learned it schedules FireWall zones after impact.",
+      "ChainLightning": "Damage propagates between targets with diminishing power.",
+      "FrostBite": "Temporary self buff that ends in a delayed nearby frost burst.",
+      "ElementalHurricane": "Channel/toggle field whose element can come from DarkStone affinity.",
+      "ElectricShock": "Monster-control/taming utility rather than ordinary lightning damage.",
+      "Tornado": "Server mechanic exists as a temporary summon despite enum NOT CODED note; visuals/features remain incomplete."
+    },
+    "taoist": {
+      "PoisonDust": "Poison target spell; AugmentPoisonDust expands it to multiple targets.",
+      "TrapOctagon": "Persistent eight-part trap that shocks valid monsters.",
+      "Parasite": "Poison/status that can later explode around the infected target.",
+      "Infection": "Spreads existing poisons from one monster to a nearby monster.",
+      "DemonExplosion": "Uses InfernalSoldier pet health for area damage and creates persistent ground zones.",
+      "CorpseExploder": "Consumes/clears a corpse and damages around it.",
+      "SummonDead": "Converts a valid corpse into an UndeadSoul pet.",
+      "BrainStorm": "Works on a Binding target, removes Binding and delivers its follow-up hit/shock."
+    },
+    "assassin": {
+      "lotusCombo": "FullBloom -> WhiteLotus -> RedLotus -> SweetBrier passes short-lived combo buffs; each next stage gains extra power then consumes the prior stage.",
+      "Cloak": "HP-cost stealth state; PledgeOfBlood lowers its HP cost and GhostWalk can augment it.",
+      "Chain": "Links monsters and constrains movement. ChainOfFire levels add slow, shared/siphoned damage, periodic fire damage and death explosion.",
+      "SummonPuppet": "Summon system; ElementalPuppet and ArtOfShadows modify spawned puppets/count/range.",
+      "BurningFire": "Persistent ground spell with later explosion hook.",
+      "Massacre": "Passive kill proc that splashes overkill-style damage around a killed monster.",
+      "LastStand": "Automatic low-HP defensive buff.",
+      "DragonBlood": "Attack proc that applies and stacks green poison.",
+      "DanceOfSwallow": "Teleports adjacent to target, attacks, then can silence/paralyse."
+    }
+  },
+  "byClass": {
+    "warrior": {
+      "passive": ["Swordsmanship","DefensiveMastery"],
+      "attackModifier": ["Slaying","Thrusting","HalfMoon","FlamingSword","DragonRise","BladeStorm","DestructiveSurge","DefensiveBlow","OffensiveBlow"],
+      "mobility": ["ShoulderDash","Interchange","HundredFist"],
+      "areaDamage": ["HalfMoon","DragonRise","BladeStorm","DestructiveSurge","SwiftBlade","SeismicSlam","CrushingWave","TaecheonSword","FireSword"],
+      "crowdControl": ["ShoulderDash","Beckon","MassBeckon","Fetter","SeismicSlam","HundredFist","OffensiveBlow"],
+      "buff": ["Defiance","Might","Endurance","ReflectDamage","Invincibility","ElementalSwords"],
+      "autonomousProc": ["ElementalSwords"],
+      "augmentation": ["Assault","AugmentDestructiveSurge","AugmentDefiance","AugmentReflectDamage","AugmentPotionMastery"],
+      "stubOrIncomplete": ["PotionMastery","PhysicalImmunity","MagicImmunity","Shuriken","FlameArt"]
+    },
+    "wizard": {
+      "projectileOrSingleTarget": ["FireBall","LightningBall","IceBolt","GustBlast","AdamantineFireBall","ThunderBolt","IceBlades","Cyclone","IceDragon"],
+      "lineArea": ["ScortchedEarth","LightningBeam","FrozenEarth","BlowEarth","GreaterFrozenEarth"],
+      "areaDamage": ["FireStorm","LightningWave","IceStorm","DragonTornado","MeteorShower","ThunderStrike","ChainLightning","FireBounce","LightningStrike","IceRain","Asteroid","IceBreaker","FrozenDragon"],
+      "persistentZone": ["FireWall","Tempest","IceAura"],
+      "crowdControl": ["GustBlast","Repulsion","ElectricShock","Cyclone","BlowEarth","DragonTornado"],
+      "mobility": ["Teleportation","GeoManipulation"],
+      "buff": ["MagicShield","Renounce","JudgementOfHeaven","SuperiorMagicShield","FrostBite"],
+      "summon": ["MirrorImage","Tornado"],
+      "augmentation": ["Burning","Shocked"],
+      "channelToggle": ["ElementalHurricane"],
+      "specialUtility": ["ElectricShock","ExpelUndead"],
+      "stubOrIncomplete": ["Storm","UnityWithNature"],
+      "partialImplementation": ["Tornado"]
+    },
+    "taoist": {
+      "attackFoundation": ["SpiritSword"],
+      "directOrProjectileDamage": ["ExplosiveTalisman","EvilSlayer","GreaterEvilSlayer","ImprovedExplosiveTalisman","SearingLight","BrainStorm"],
+      "areaDamage": ["DemonExplosion","CorpseExploder","HeavenlySky"],
+      "heal": ["Heal","MassHeal"],
+      "buffSupport": ["Invisibility","MagicResistance","MassInvisibility","Resilience","ElementalSuperiority","BloodLust","Transparency","CelestialLight","LifeSteal","Spiritualism","StrengthOfFaith"],
+      "reviveCleanse": ["Resurrection","Purification"],
+      "poisonDebuff": ["PoisonDust","Parasite","Neutralize","BindingTalisman","PoisonCloud"],
+      "crowdControl": ["TrapOctagon","CombatKick","ThunderKick","Neutralize","BindingTalisman","BrainStorm","SearingLight"],
+      "persistentZone": ["TrapOctagon","DarkSoulPrison"],
+      "summon": ["CursedDoll","SummonSkeleton","SummonShinsu","SummonJinSkeleton","SummonDemonicCreature","SummonDead"],
+      "petInteraction": ["StrengthOfFaith","DemonExplosion","DemonicRecovery"],
+      "linkedOrSpreadMechanic": ["SoulResonance","Infection"],
+      "augmentation": ["EmpoweredHealing","AugmentPoisonDust","AugmentExplosiveTalisman","AugmentEvilSlayer","AugmentPurification","AugmentResurrection","AugmentNeutralize","AugmentCelestialLight"],
+      "toggle": ["DemonicRecovery"],
+      "stubOrIncomplete": ["SupremeHealing"]
+    },
+    "assassin": {
+      "passive": ["WillowDance","VineTreeDance","Discipline","BloodyFlower","AdventOfDemon","AdventOfDevil","Stealth","Massacre","FatalBlow","LastStand","DualWeaponSkills"],
+      "attackCombo": ["FullBloom","WhiteLotus","RedLotus","SweetBrier"],
+      "attackModifier": ["CalamityOfFullMoon","WaningMoon","Karma","FlameSplash","DanceOfSwallow","DragonBlood","FatalBlow","DualWeaponSkills"],
+      "directOrProjectileDamage": ["HellFire","FlashOfLight","MagicCombustion","Hemorrhage","FlamingDaggers","Shredding"],
+      "areaDamage": ["FourWheels","CrescentMoon","BurningFire","Massacre"],
+      "persistentZone": ["PoisonousCloud","BurningFire"],
+      "stealth": ["Cloak","GhostWalk","Stealth","TheNewBeginning"],
+      "crowdControl": ["WraithGrip","Rake","DragonRepulse","Abyss","Chain","Containment"],
+      "mobility": ["DanceOfSwallow","FlashOfLight"],
+      "buff": ["TheNewBeginning","DarkConversion","DragonRepulse","Evasion","RagingWind","Concentration","LastStand"],
+      "summon": ["SummonPuppet"],
+      "augmentation": ["PledgeOfBlood","TouchOfTheDeparted","GhostWalk","ElementalPuppet","Resolution","Release","FlameSplash","ArtOfShadows","DragonWave","ChainOfFire"],
+      "resourceOrStatus": ["HellFire","DarkConversion","MagicCombustion","DragonBlood","Hemorrhage"],
+      "stubOrRemoved": ["Rejuvenation","ChangeOfSeasons","Unused","Vitality","ManaBurn"],
+      "otherImplemented": ["Karma","BloodyFlower","DragonBlood","Concentration"]
+    }
+  },
+  "sourceCaveats": {
+    "enumNotCodedButPartialServerLogic": ["Tornado"],
+    "notCodedOrNoUsableImplementation": ["FlameArt","Storm","UnityWithNature","SupremeHealing","ManaBurn"],
+    "emptyOrEffectivelyStubInReviewedClass": ["PotionMastery","PhysicalImmunity","MagicImmunity","Shuriken","Rejuvenation","ChangeOfSeasons","Vitality","Unused"],
+    "knownSourceIssueToReimplementNotCopyBlindly": {
+      "DarkConversion": "MagicConsume calls itself recursively in the reviewed Zircon source; ORIGINS must implement intended resource consumption explicitly."
+    }
+  },
+  "originsDesignImplication": {
+    "decision": "Do not expose the Zircon catalog as one button per magic.",
+    "recommendedModel": ["coreSkill","evolution","modifier","proc","passive","utility"],
+    "status": "Design principle accepted; final ORIGINS chains are intentionally not locked until asset and MagicInfo review."
+  }
+}
