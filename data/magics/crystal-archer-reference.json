@@ -1,0 +1,54 @@
+{
+  "source": {
+    "repository": "Suprcode/Crystal",
+    "commit": "0e315fe327192afe52c3d7357ddd1f5b7e26c5b8",
+    "note": "Public LOMCN C# source with full Archer class. Used only as Archer technical donor; ORIGINS runtime remains based on its own web architecture and Zircon semantics where applicable."
+  },
+  "class": {
+    "name": "Archer",
+    "mirClassId": 4,
+    "status": "planned-origins-class",
+    "skillCount": 21
+  },
+  "skills": [
+    [121, "Focus"],
+    [122, "StraightShot"],
+    [123, "DoubleShot"],
+    [124, "ExplosiveTrap"],
+    [125, "DelayedExplosion"],
+    [126, "Meditation"],
+    [127, "BackStep"],
+    [128, "ElementalShot"],
+    [129, "Concentration"],
+    [130, "Stonetrap"],
+    [131, "ElementalBarrier"],
+    [132, "SummonVampire"],
+    [133, "VampireShot"],
+    [134, "SummonToad"],
+    [135, "PoisonShot"],
+    [136, "CrippleShot"],
+    [137, "SummonSnakes"],
+    [138, "NapalmShot"],
+    [139, "OneWithNature"],
+    [140, "BindingShot"],
+    [141, "MentalState"]
+  ],
+  "playerActions": {
+    "WalkingBow": { "start": 0, "count": 6, "offset": 6, "frameMs": 100 },
+    "RunningBow": { "start": 48, "count": 6, "offset": 6, "frameMs": 100 },
+    "AttackRange1": { "start": 96, "count": 8, "offset": 8, "frameMs": 100 },
+    "AttackRange2": { "start": 160, "count": 8, "offset": 8, "frameMs": 100 },
+    "AttackRange3": { "start": 224, "count": 8, "offset": 8, "frameMs": 100 },
+    "Jump": { "start": 288, "count": 8, "offset": 8, "frameMs": 100 }
+  },
+  "verifiedMappings": {
+    "StraightShot": "AttackRange2",
+    "DoubleShot": "AttackRange2"
+  },
+  "todo": [
+    "Audit all 21 Archer server mechanics before translating them into ORIGINS skills.",
+    "Audit exact client VFX/projectile libraries and per-skill body-action mapping.",
+    "Identify Archer body/weapon/effect asset libraries before import.",
+    "Do not assume Xtreme/Mir3SEA custom Archer logic equals Crystal; their current source is not public in the references found."
+  ]
+}
