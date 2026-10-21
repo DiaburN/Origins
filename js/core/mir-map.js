@@ -57,8 +57,11 @@ G.MirMap = (() => {
     const frontAnimation = new Uint8Array(cellCount);
     const middleFile = new Uint8Array(cellCount);
     const frontFile = new Uint8Array(cellCount);
-    const middleImage = new Uint16Array(cellCount);
-    const frontImage = new Uint16Array(cellCount);
+
+    // Zircon stores these as int after reading UInt16 and adding +1.
+    // 65535 therefore becomes 65536 and must not wrap to 0.
+    const middleImage = new Uint32Array(cellCount);
+    const frontImage = new Uint32Array(cellCount);
     const light = new Uint8Array(cellCount);
 
     let walkableCount = 0;
