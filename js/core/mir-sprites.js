@@ -12,18 +12,30 @@ G.MirSprites = (() => {
       this.atlasFrames = new Map();
 
       const cfg = this.manifest.frames || {};
-      if (cfg.mode === 'atlas' && Array.isArray(cfg.order)) {
-        const cellWidth = cfg.cellWidth || 0;
-        const cellHeight = cfg.cellHeight || 0;
-        const columns = cfg.columns || 1;
-        cfg.order.forEach((logicalFrame, index) => {
-          this.atlasFrames.set(logicalFrame, {
-            x: (index % columns) * cellWidth,
-            y: Math.floor(index / columns) * cellHeight,
-            w: cellWidth,
-            h: cellHeight
+      if (cfg.mode === 'atlas') {
+        if (cfg.rects && typeof cfg.rects === 'object') {
+          for (const [logicalFrame, rect] of Object.entries(cfg.rects)) {
+            if (!Array.isArray(rect) || rect.length < 4) continue;
+            this.atlasFrames.set(Number(logicalFrame), {
+              x: rect[0],
+              y: rect[1],
+              w: rect[2],
+              h: rect[3]
+            });
+          }
+        } else if (Array.isArray(cfg.order)) {
+          const cellWidth = cfg.cellWidth || 0;
+          const cellHeight = cfg.cellHeight || 0;
+          const columns = cfg.columns || 1;
+          cfg.order.forEach((logicalFrame, index) => {
+            this.atlasFrames.set(logicalFrame, {
+              x: (index % columns) * cellWidth,
+              y: Math.floor(index / columns) * cellHeight,
+              w: cellWidth,
+              h: cellHeight
+            });
           });
-        });
+        }
       }
     }
 
