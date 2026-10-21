@@ -23,7 +23,9 @@ G.MapWorld = (() => {
       manifestUrl = response.url;
       manifest = await response.json();
       const runtime = manifest.runtime || {};
-      if (runtime.ready !== true || !runtime.mapFile) {
+      const externalRuntime = Boolean(G.Config.runtimeBaseUrl && runtime.root);
+
+      if ((!externalRuntime && runtime.ready !== true) || !runtime.mapFile) {
         status = 'waiting-source';
         return null;
       }
@@ -50,7 +52,15 @@ G.MapWorld = (() => {
 
   function resolveAsset(path) {
     if (!path) return null;
-    return manifestUrl ? new URL(path, manifestUrl).href : path;
+
+    const runtime = manifest && manifest.runtime ? manifest.runtime : {};
+    if (G.Config.runtimeBaseUrl && runtime.root) {
+      const external = G.runtimeAssetUrl(`${runtime.root}${path}`);
+      if (external) return external;
+    }
+
+    const localRoot = runtime.localRoot || '';
+    return manifestUrl ? new URL(`${localRoot}${path}`, manifestUrl).href : path;
   }
 
   function canOccupyWorld(x, y) {
