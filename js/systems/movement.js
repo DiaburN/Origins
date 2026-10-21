@@ -3,7 +3,7 @@ window.G = window.G || {};
 G.Movement = Object.freeze({
   updatePlayer(player, dt) {
     const [axisX, axisY] = G.Input.axis();
-    const moving = axisX !== 0 || axisY !== 0;
+    const wantsMove = axisX !== 0 || axisY !== 0;
     const running = G.Input.isHeld('shiftleft', 'shiftright');
     const creepFast = !G.Input.isHeld('controlleft', 'controlright');
 
@@ -12,13 +12,23 @@ G.Movement = Object.freeze({
       return;
     }
 
-    if (moving) {
+    let moved = false;
+    if (wantsMove) {
       player.direction = G.directionFromVector(axisX, axisY, player.direction);
-      player.x += axisX * player.speed * dt;
-      player.y += axisY * player.speed * dt;
+      const speed = player.speed * dt;
+      const dx = axisX * speed;
+      const dy = axisY * speed;
+
+      if (G.MapWorld) {
+        moved = G.MapWorld.movePoint(player, dx, dy);
+      } else {
+        player.x += dx;
+        player.y += dy;
+        moved = true;
+      }
     }
 
-    player.moving = moving;
-    player.state.setLocomotion({ moving, running, creepFast });
+    player.moving = wantsMove && moved;
+    player.state.setLocomotion({ moving: player.moving, running, creepFast });
   }
 });
