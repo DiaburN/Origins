@@ -1,0 +1,35 @@
+{
+  "id": "human_common_female_noob_f003",
+  "kind": "player-body",
+  "race": "human",
+  "class": "common",
+  "gender": "female",
+  "appearanceCode": "F003",
+  "ready": false,
+  "source": {
+    "repository": "Suprcode/Zircon",
+    "library": "WM-Hum.Zl",
+    "appearanceSlot": 2,
+    "frameBase": 10000,
+    "shapeOffset": 5000
+  },
+  "build": {
+    "tool": "tools/mir3/build_player_runtime.py",
+    "verifiedFrames": 1064,
+    "runtimeManifest": "manifest.json",
+    "runtimeAtlas": "atlas.webp"
+  },
+  "runtime": {
+    "root": "players/noob_f003/",
+    "manifest": "manifest.json"
+  },
+  "frames": {
+    "mode": "atlas",
+    "image": "atlas.webp"
+  },
+  "render": {
+    "offsetMode": "zircon-frame-offsets",
+    "defaultOffset": { "x": 0, "y": 0 },
+    "scale": 1
+  }
+}
