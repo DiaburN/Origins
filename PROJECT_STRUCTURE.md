@@ -21,6 +21,7 @@ Origins/
 │   └── game.js
 └── assets/
     ├── maps/        # .map reales cuando se importen
+    ├── monsters/<monster-id>/ # sprites + manifest + datos por criatura
     └── players/<race>/<common-or-class>/<gender>/<appearance>/
         ├── manifest.json
         └── atlas.png
@@ -40,11 +41,12 @@ Origins/
 10. NO importar sprites definitivos hasta validar el sistema de acciones/movimiento del Player.
 11. Magias: lógica autoritativa separada de VFX. No convertir los catálogos fuente en un botón por magia.
 12. Clases nuevas deben ser data-driven: añadir una clase no debe requerir rehacer Player, combate, mapa ni renderer base.
+13. Monstruos: una carpeta independiente por criatura; no mezclar assets de criaturas distintas.
 
 ## Referencias
 
-- PokéSurvivor `b297089`: loop, cámara, input y dinámica general.
-- Zircon `80d5df21016b2f377d48f14f7dcc2e994b163ff1`: direcciones, acciones, frames, personajes, items, magias y formato estructural de mapas.
+- PokéSurvivor `b297089`: loop, cámara, input, chunks y dinámica general.
+- Zircon `80d5df21016b2f377d48f14f7dcc2e994b163ff1`: direcciones, acciones, frames, personajes, items, magias, monstruos y formato estructural de mapas.
 - Crystal `0e315fe327192afe52c3d7357ddd1f5b7e26c5b8`: referencia pública para Archer si se activa más adelante.
 
 ## Clases ORIGINS
@@ -92,7 +94,18 @@ Núcleo inicial: `Warrior`, `Wizard`, `Taoist`, `Assassin`.
 - `js/core/mir-map.js`: parser estructural `.map`.
 - Ancho bytes `22-23`, alto `24-25`; offset `28 + floor(width*height/4)*3`; 14 bytes/celda.
 - Grid MIR solo para colisión/navegación; movimiento gameplay continuo.
+- Objetivo ORIGINS: mapas grandes finitos divididos en chunks; terreno base MIR reutilizable por bioma, bordes automáticos, objetos/colisión/spawns separados.
 - Render real pendiente de `0.map` + librerías de tiles.
+
+## Orden de implementación
+
+1. Cargar un mapa MIR real y validar renderer + colisiones.
+2. Ver Player real moviéndose correctamente sobre ese mapa.
+3. Importar/validar primeras magias con VFX y comportamiento real.
+4. Importar monstruos: animaciones, lógica, colisión y combate; una carpeta por criatura.
+5. Montar spawns, zonas de farmeo y bosses/eventos por coordenadas.
+6. Ampliar catálogo de criaturas y biomas/mapas.
+7. Interfaz, equipamiento, menús y acabado visual después de que el gameplay base funcione.
 
 ## Estado
 
@@ -113,4 +126,4 @@ Núcleo inicial: `Warrior`, `Wizard`, `Taoist`, `Assassin`.
 
 ## Siguiente paso
 
-Centrarse solo en las 4 clases iniciales. Mientras no estén disponibles los archivos del PC, usar los JSON de referencia y no volver a escanear repos completos. Archer/Monk no deben bloquear ninguna decisión del núcleo y se añadirán después solo si interesa.
+Al recibir los archivos del PC: empezar por `0.map` + librerías de tiles, validar el mapa y colocar el Player real encima. Después VFX/magias y, a continuación, monstruos. No dedicar tiempo a UI antes de validar ese gameplay base. Archer/Monk siguen fuera del núcleo inicial.
