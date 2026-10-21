@@ -1,0 +1,35 @@
+{
+  "id": "human_common_male_noob_m003",
+  "kind": "player-body",
+  "race": "human",
+  "class": "common",
+  "gender": "male",
+  "appearanceCode": "M003",
+  "ready": false,
+  "source": {
+    "repository": "Suprcode/Zircon",
+    "library": "M-Hum.Zl",
+    "appearanceSlot": 2,
+    "frameBase": 10000,
+    "shapeOffset": 5000
+  },
+  "build": {
+    "tool": "tools/mir3/build_player_runtime.py",
+    "verifiedFrames": 1064,
+    "runtimeManifest": "manifest.json",
+    "runtimeAtlas": "atlas.webp"
+  },
+  "runtime": {
+    "root": "players/noob_m003/",
+    "manifest": "manifest.json"
+  },
+  "frames": {
+    "mode": "atlas",
+    "image": "atlas.webp"
+  },
+  "render": {
+    "offsetMode": "zircon-frame-offsets",
+    "defaultOffset": { "x": 0, "y": 0 },
+    "scale": 1
+  }
+}
