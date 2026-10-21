@@ -1,6 +1,8 @@
 window.G = window.G || {};
 
 G.Game = (() => {
+  const MAP_MANIFEST = 'assets/maps/border-village/manifest.json';
+
   let canvas;
   let ctx;
   let player;
@@ -19,6 +21,16 @@ G.Game = (() => {
 
     resize();
     G.Camera.snapTo(player);
+
+    G.MapWorld.load(MAP_MANIFEST).then(loadedMap => {
+      if (!loadedMap) return;
+      const spawn = G.MapWorld.findSpawn();
+      if (!spawn) return;
+
+      player.x = spawn.x;
+      player.y = spawn.y;
+      G.Camera.snapTo(player);
+    });
 
     addEventListener('resize', resize);
     lastTime = performance.now();
@@ -97,7 +109,7 @@ G.Game = (() => {
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
     G.Camera.apply(ctx);
-    drawMirGrid();
+    if (!G.MapWorld.drawDebug(ctx)) drawMirGrid();
     player.draw(ctx);
 
     if (G.Config.debug) drawDebug();
@@ -142,11 +154,17 @@ G.Game = (() => {
     ctx.font = '12px monospace';
     ctx.textAlign = 'left';
 
+    const loadedMap = G.MapWorld.map;
+    const mapText = loadedMap
+      ? `${G.MapWorld.status} ${loadedMap.width}x${loadedMap.height}`
+      : G.MapWorld.status;
+
     const lines = [
       'WASD move | Shift run | C creep | M mount',
       `Q/E choose Combat${debugCombat} | Space play | 1/2 spell`,
       'H harvest | J struck | P pushed | K die | R revive',
       'V channel | B dragon repulse | F fishing | T taming',
+      `map ${mapText}`,
       `pos ${player.x.toFixed(1)}, ${player.y.toFixed(1)}  dir ${player.direction}`,
       `state ${player.state.action}  anim ${player.state.animation}`,
       `locked ${player.state.locked}  dead ${player.state.dead}  frame ${player.animator.logicalFrame()}`,
