@@ -9,11 +9,12 @@ Origins/
 ├── index.html
 ├── css/game.css
 ├── js/
-│   ├── core/        # config, input, cámara, MIR animation/sprites
+│   ├── core/        # config, input, cámara, MIR animation/sprites/map parser
 │   ├── entities/    # Player
 │   ├── systems/     # player-state + movement
 │   └── game.js
 └── assets/
+    ├── maps/        # .map reales cuando se importen
     └── players/<race>/<common-or-class>/<gender>/<appearance>/
         ├── manifest.json
         └── atlas.png
@@ -35,7 +36,7 @@ Origins/
 ## Referencias
 
 - PokéSurvivor `b297089`: loop, cámara, input y dinámica general.
-- Zircon `80d5df21016b2f377d48f14f7dcc2e994b163ff1`: direcciones, acciones, frames, personajes, items y magias.
+- Zircon `80d5df21016b2f377d48f14f7dcc2e994b163ff1`: direcciones, acciones, frames, personajes, items, magias y formato estructural de mapas.
 
 ## Apariencias definitivas a importar después
 
@@ -73,6 +74,16 @@ Orden visual AUTORITATIVO; no cambiarlo por la librería de origen:
 
 Direcciones fijas Zircon: `0 Up, 1 UpRight, 2 Right, 3 DownRight, 4 Down, 5 DownLeft, 6 Left, 7 UpLeft`.
 
+## Mapas MIR3
+
+- `js/core/mir-map.js` contiene el parser estructural del `.map` siguiendo Zircon.
+- Lee ancho en bytes `22-23`, alto en `24-25`.
+- Offset de celdas: `28 + floor(width*height/4)*3`.
+- Cada celda estructural ocupa 14 bytes.
+- Una celda es transitable cuando el flag contiene `0x02` y `0x01`.
+- Mantener gameplay continuo; la rejilla MIR se usará para colisiones/navegación, no para convertir el movimiento del Player en grid-step.
+- Render de tiles/objetos queda pendiente de disponer de `0.map` real y sus librerías de tiles.
+
 ## Estado
 
 - [x] Cliente web mínimo, loop, input y cámara.
@@ -86,13 +97,15 @@ Direcciones fijas Zircon: `0 Up, 1 UpRight, 2 Right, 3 DownRight, 4 Down, 5 Down
 - [x] Catálogo HUM analizado y apariencias definitivas elegidas.
 - [x] Pipeline M001 probado como validación técnica.
 - [x] Modelo lógico de persistencia fijado siguiendo Zircon.
+- [x] Parser estructural MIR3 `.map` implementado y validado con buffer sintético.
 - [ ] Validar visualmente todas las transiciones/timings en navegador.
+- [ ] Probar parser contra `0.map` real y conectar colisiones.
+- [ ] Implementar render de suelo/tiles/objetos MIR3.
 - [ ] Ajustar locomoción final (velocidad de run/creep) con gameplay PokéSurvivor.
 - [ ] Importar solo entonces las apariencias definitivas anteriores.
 - [ ] Cuenta/personajes/inventario/equipo/magias según Zircon.
-- [ ] Mapa y colisiones.
 - [ ] Monstruos, spawn, combate y magias.
 
 ## Siguiente paso
 
-Probar la máquina de estados en navegador con representación diagnóstica: movimiento 8 direcciones, Combat1-15, Struck/Pushed, Die/Dead/Revive y las secuencias especiales. Corregir cualquier transición antes de importar armaduras.
+Cuando haya un `.map` real disponible, cargar `0.map`, verificar dimensiones/celdas transitables y conectar colisiones. Hasta entonces se puede seguir preparando el renderer de tiles sin inventar datos del archivo.
