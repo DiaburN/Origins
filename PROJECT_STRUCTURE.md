@@ -55,36 +55,40 @@ Orden visual AUTORITATIVO; no cambiarlo por la librería de origen:
 1. Usar la entrada exacta `Mxxx/Fxxx` del catálogo HUM ya analizado para localizar librería + slot fuente.
 2. Extraer únicamente las apariencias anteriores; no importar el catálogo completo.
 3. Mantener las 8 direcciones Zircon sin espejar ni rotar.
-4. Mantener los índices lógicos de acción/frame Zircon y los `OffSetX/OffSetY` originales.
-5. Empaquetar cada apariencia en un atlas + manifest para evitar cientos de PNG/peticiones.
-6. Masculino y femenino son assets distintos pero comparten exactamente el mismo sistema de acciones.
-7. La prueba M001 realizada hasta ahora es solo validación del pipeline; no obliga a continuar importando assets ahora.
+4. Mantener índices lógicos de acción/frame y `OffSetX/OffSetY` originales.
+5. Empaquetar cada apariencia en atlas + manifest.
+6. Masculino y femenino comparten el mismo sistema de acciones.
+7. M001 fue solo una validación del pipeline; no continuar importando assets todavía.
 
-## Acciones Player Zircon a implementar primero
+## Acciones Player Zircon
 
-- Standing `0 / 4 frames / offset 10`.
-- Walking `80 / 6 / 10`.
-- Running `160 / 6 / 10`.
-- Pushed `240 / 6 / 10`.
-- Stance `400 / 3 / 10`.
-- Harvest `480 / 2 / 10`.
-- Combat1-14 según FrameSet Zircon.
-- Struck `1840 / 3 / 10`.
-- Die `1920 / 10 / 10`.
-- Dead `1929 / 1 / 10`.
+La fuente autoritativa es `js/core/mir-animation.js`. Ya contiene las 43 definiciones de `FrameSet.Players`, con inicio, número de frames, offset de dirección, timing, delays especiales, reverse/static-speed y política loop/once/hold.
 
-Primero debe quedar bien la máquina de estados/transiciones, dirección, timing e input; después se conectarán los sprites definitivos.
+Incluye:
+- Standing / Walking / Running.
+- CreepStanding / CreepWalkSlow / CreepWalkFast.
+- Pushed / Stance / Harvest.
+- Combat1-Combat15.
+- DragonRepulse Start/Middle/End.
+- Struck / Die / Dead.
+- Fishing Cast/Wait/Reel.
+- Horse Standing/Walking/Running/Struck/Leaping.
+- Channelling Start/Middle/End.
+- Taming Cast/Wait.
+
+Direcciones fijas Zircon: `0 Up, 1 UpRight, 2 Right, 3 DownRight, 4 Down, 5 DownLeft, 6 Left, 7 UpLeft`.
 
 ## Estado
 
 - [x] Cliente web mínimo, loop, input y cámara.
 - [x] Movimiento continuo y direcciones Zircon 0-7.
-- [x] Definiciones Standing/Walking/Running iniciales.
+- [x] Todas las definiciones/timings Player de Zircon registradas.
+- [x] Animator soporta loop, acciones one-shot, hold, reverse y delays por frame.
 - [x] Renderer MIR desacoplado y compatible con atlas.
 - [x] Catálogo HUM analizado y apariencias definitivas elegidas.
 - [x] Pipeline M001 probado como validación técnica.
 - [x] Modelo lógico de persistencia fijado siguiendo Zircon.
-- [ ] Completar máquina de estados y todas las acciones Player Zircon.
+- [ ] Implementar máquina de estados/transiciones del Player sobre esas acciones.
 - [ ] Validar transiciones y timings con representación diagnóstica/placeholders.
 - [ ] Importar solo entonces las apariencias definitivas anteriores.
 - [ ] Cuenta/personajes/inventario/equipo/magias según Zircon.
@@ -93,4 +97,4 @@ Primero debe quedar bien la máquina de estados/transiciones, dirección, timing
 
 ## Siguiente paso
 
-Completar el sistema de acciones/movimiento del Player siguiendo el FrameSet de Zircon, sin seguir importando armaduras todavía.
+Crear la máquina de estados del Player que decide cuándo entra/sale de Standing, Moving, Pushed, Attack, Spell, Struck, Die, etc., usando exclusivamente las definiciones ya fijadas en `mir-animation.js`.
