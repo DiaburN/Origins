@@ -1,17 +1,24 @@
 #!/usr/bin/env python3
 """Build a browser runtime sprite pack from one MIR3 player appearance block.
 
-Example:
+Examples:
+    # Normal HUM (5000-frame blocks)
     python tools/mir3/build_player_runtime.py \
-        --library "Data/M-Hum.Zl" \
-        --appearance-slot 0 \
+        --library "Data/M-Hum.Zl" --appearance-slot 0 --block-size 5000 \
         --id human_common_male_base_m001 \
         --race human --class-name common --gender male \
         --appearance-code M001 \
         --out assets/players/human/common/male/base_m001
 
-Requires Pillow. Player appearance blocks use 5000 logical source frames in Zircon.
-The output preserves original frame sizes and OffSetX/OffSetY values.
+    # Assassin HUM-A (3000-frame blocks)
+    python tools/mir3/build_player_runtime.py \
+        --library "Data/M-HumA.Zl" --appearance-slot 0 --block-size 3000 \
+        --id human_assassin_male_a001 \
+        --race human --class-name assassin --gender male \
+        --appearance-code A001 \
+        --out assets/players/human/assassin/male/a001
+
+Requires Pillow. The output preserves original frame sizes and OffSetX/OffSetY values.
 """
 
 from __future__ import annotations
@@ -23,17 +30,16 @@ from pathlib import Path
 
 from PIL import Image
 
-# Reuse the exact ZL decoder/packer used by the map runtime builder.
 from build_map_runtime import DEFAULT_PAGE_SIZE, PADDING, LegacyZlLibrary, PagePacker
 
-SHAPE_OFFSET = 5000
+DEFAULT_BLOCK_SIZE = 5000
 
 
-def pack_frames(library: LegacyZlLibrary, frame_base: int, page_size: int):
+def pack_frames(library: LegacyZlLibrary, frame_base: int, block_size: int, page_size: int):
     frames = []
     offsets = {}
 
-    for logical_frame in range(SHAPE_OFFSET):
+    for logical_frame in range(block_size):
         source_index = frame_base + logical_frame
         header = library.header(source_index)
         if not header or header[1] <= 0 or header[2] <= 0:
@@ -72,19 +78,24 @@ def pack_frames(library: LegacyZlLibrary, frame_base: int, page_size: int):
 
 
 def build(args):
+    if args.block_size <= 0:
+        raise ValueError("--block-size must be greater than zero")
+
     library_path = args.library.resolve()
     out = args.out.resolve()
     out.mkdir(parents=True, exist_ok=True)
 
     library = LegacyZlLibrary(library_path)
-    frame_base = args.appearance_slot * SHAPE_OFFSET
+    frame_base = args.appearance_slot * args.block_size
     if frame_base >= len(library.images):
         raise ValueError(
             f"Appearance slot {args.appearance_slot} starts at {frame_base}, "
             f"but {library_path.name} has only {len(library.images)} entries"
         )
 
-    frames, offsets, placements, page_count = pack_frames(library, frame_base, args.page_size)
+    frames, offsets, placements, page_count = pack_frames(
+        library, frame_base, args.block_size, args.page_size
+    )
     if not frames:
         raise ValueError(f"Appearance slot {args.appearance_slot} has no images in {library_path.name}")
 
@@ -138,7 +149,7 @@ def build(args):
             "library": library_path.name,
             "appearanceSlot": args.appearance_slot,
             "frameBase": frame_base,
-            "shapeOffset": SHAPE_OFFSET,
+            "shapeOffset": args.block_size,
         },
         "frames": frame_cfg,
         "frameOffsets": offsets,
@@ -155,7 +166,7 @@ def build(args):
 
     print(
         f"Built {args.appearance_code}: {len(frames)} frames from {library_path.name} "
-        f"slot {args.appearance_slot}, {page_count} atlas page(s)"
+        f"slot {args.appearance_slot}, block {args.block_size}, {page_count} atlas page(s)"
     )
 
 
@@ -163,6 +174,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--library", type=Path, required=True)
     parser.add_argument("--appearance-slot", type=int, required=True)
+    parser.add_argument("--block-size", type=int, default=DEFAULT_BLOCK_SIZE)
     parser.add_argument("--id", required=True)
     parser.add_argument("--race", required=True)
     parser.add_argument("--class-name", required=True)
