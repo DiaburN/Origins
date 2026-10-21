@@ -15,7 +15,7 @@ Origins/
 │       ├── zircon-magic-mechanics.json
 │       └── crystal-archer-reference.json
 ├── js/
-│   ├── core/        # config, input, cámara, MIR animation/sprites/map parser
+│   ├── core/        # config, input, cámara, MIR animation/sprites/map parser+renderer
 │   ├── entities/    # Player
 │   ├── systems/     # player-state, map-world, movement
 │   └── game.js
@@ -94,20 +94,22 @@ Núcleo inicial: `Warrior`, `Wizard`, `Taoist`, `Assassin`.
 
 - Primer objetivo: `01.map` = Border Village.
 - Fuente oficial ORIGINS X recibida y validada: `600x600`, `5.310.028 bytes`, SHA1 `61c550cd938573a26efa7ee7067d51d9aa47d391`.
-- `assets/maps/border-village/manifest.json`: identidad, hash y 11 librerías Map Data realmente usadas por este mapa.
+- `assets/maps/border-village/manifest.json`: identidad, hash, 11 librerías fuente y rutas separadas `runtime/`.
 - `js/core/mir-map.js`: parser completo `.map`: Back/Middle/Front, animación, luz, librerías y colisión.
+- `js/core/mir-map-renderer.js`: renderer genérico por atlas; orden Back -> Middle -> Front, animación global de 100 ms, blend y anclaje vertical equivalentes a Zircon.
 - Formato verificado contra Zircon: ancho bytes `22-23`, alto `24-25`, header `28`; fondos por bloques 2x2 de 3 bytes; 14 bytes por celda.
 - Compatibilidad añadida con mapas válidos que omiten únicamente el último byte de padding.
-- `js/systems/map-world.js`: puente runtime para carga, spawn de prueba, límites, movimiento continuo y colisión MIR.
+- `js/systems/map-world.js`: puente runtime para carga, spawn de prueba, límites, movimiento continuo, colisión MIR y resolución de assets.
 - Grid MIR solo para colisión/navegación; movimiento gameplay continuo.
 - Drive conserva `Map` + `Map Data`; importar únicamente las librerías e imágenes usadas por cada mapa.
+- Border Village fue reconstruido completo fuera del runtime desde `01.map` + sus `.Zl` y contrastado visualmente con el preview oficial antes de fijar el renderer web.
 - Mapas abiertos: perímetro visual/jugable natural e irregular; evitar límites rectos visibles.
 - Templos/cuevas/interiores: salas y pasillos amplios; colisión y borde visual derivados de la misma máscara.
 
 ## Orden de implementación
 
-1. Convertir `01.map` Border Village a paquete runtime y validar estructura + colisiones.
-2. Extraer únicamente imágenes usadas de sus 11 librerías y renderizar Back/Middle/Front.
+1. Generar el paquete web `runtime/` de Border Village con mapa + atlases mínimos.
+2. Activar el manifest y validar Border Village en navegador con colisiones.
 3. Ver Player real moviéndose correctamente sobre Border Village.
 4. Importar/validar primeras magias con VFX y comportamiento real.
 5. Importar monstruos: animaciones, lógica, colisión y combate; una carpeta por criatura.
@@ -126,13 +128,15 @@ Núcleo inicial: `Warrior`, `Wizard`, `Taoist`, `Assassin`.
 - [x] Runtime `MapWorld` conectado a MovementSystem y cámara.
 - [x] Border Village `01.map` recibido, validado y registrado.
 - [x] Sus 11 librerías exactas de Map Data identificadas.
+- [x] Decodificación DXT1/DXT5 y reconstrucción visual completa de Border Village validadas.
+- [x] Renderer MIR genérico por atlas conectado al game loop.
 - [x] 195 magias Zircon Player indexadas y animaciones centrales registradas.
 - [x] Clasificación mecánica Zircon y dependencias/augments principales guardadas.
-- [ ] Crear paquete runtime de `01.map` sin subir la fuente pesada completa.
-- [ ] Extraer/renderizar las imágenes `.Zl` realmente usadas por Border Village.
+- [ ] Generar y publicar `assets/maps/border-village/runtime/` con solo los frames usados.
+- [ ] Activar `runtime.ready` y validar el mapa en navegador.
 - [ ] Validar Player visualmente sobre el mapa real.
 - [ ] Monstruos, spawn y combate.
 
 ## Siguiente paso
 
-Procesar `01.map` recibido y sus 11 librerías exactas de `Map Data`. Empezar por las librerías de suelo, generar assets web mínimos y validar el primer render real antes de importar objetos y capas superiores.
+Empaquetar únicamente los frames usados de las 11 librerías de Border Village en atlases web + `render-pack.json`, colocar el mapa runtime y activar el manifest. No subir los `.Zl` completos a GitHub.
