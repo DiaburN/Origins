@@ -95,6 +95,10 @@ Núcleo inicial: `Warrior`, `Wizard`, `Taoist`, `Assassin`.
 - Ancho bytes `22-23`, alto `24-25`; offset `28 + floor(width*height/4)*3`; 14 bytes/celda.
 - Grid MIR solo para colisión/navegación; movimiento gameplay continuo.
 - Objetivo ORIGINS: mapas grandes finitos divididos en chunks; terreno base MIR reutilizable por bioma, bordes automáticos, objetos/colisión/spawns separados.
+- Forma técnica: el archivo puede seguir siendo rectangular/cuadrado para simplificar coordenadas, chunks y minimapa.
+- Mapas abiertos (bosque, arena, nieve, lava, etc.): gran zona interior amplia; el límite jugable NO debe verse rectangular. Crear un perímetro natural ondulado/irregular con los tiles de borde del bioma (roca, montaña, árboles densos, lava, hielo, etc.). Evitar paredes exteriores rectas largas.
+- Templos/cuevas/interiores: usar mapas físicamente más grandes, con salas y pasillos amplios. Pueden mantener una estructura general rectangular por debajo, pero la geometría jugable debe formarse con habitaciones, corredores y bordes irregulares según el tileset; evitar laberintos estrechos salvo zonas diseñadas expresamente así.
+- El borde visual y la colisión deben derivar de la misma máscara jugable para que no existan zonas que parezcan accesibles y no lo sean.
 - Render real pendiente de `0.map` + librerías de tiles.
 
 ## Orden de implementación
