@@ -70,14 +70,14 @@ Importación: localizar librería+slot por código, solo sets elegidos, 8 direcc
 
 - Fuente de trabajo: `data/magics/zircon-player-magics.json`.
 - Catalogadas las 195 entradas player: Warrior 38, Wizard 47, Taoist 52, Assassin 58.
-- El catálogo guarda ID, nombre interno, animación corporal central cuando existe y reglas especiales de ataque.
-- `Functions.GetMagicAnimation` de Zircon aporta 124 mappings directos de cast; las restantes pueden ser ataque, pasiva, toggle, augment o lógica especial y se resuelven en su clase de servidor.
-- Arquitectura a conservar: el servidor decide coste/objetivo/daño/buff/summon/cooldown; cliente solo reproduce acción y efectos.
-- `MagicInfo` contiene valores configurables (potencia, coste, niveles, EXP, delay, descripción); `UserMagic` guarda estado aprendido/nivel/EXP/teclas/cooldown.
-- Patrones visuales ya identificados: proyectiles, efectos directos, objetos persistentes de suelo y efectos persistentes de buff/debuff.
-- Para assets player se pedirá después un ZIP con `Magic.Zl`, `MagicEx.Zl` ... `MagicEx11.Zl` y `MIcon.Zl`.
-- Para copiar valores exactos se pedirá además export de `MagicInfo`; si no se puede exportar, el `System.db` relevante para extraerlo.
-- No pedir todavía `MonMagic*` ni sonidos: son fases separadas.
+- El catálogo guarda IDs, nombres internos, mapping central de animaciones y reglas especiales de ataque.
+- `Functions.GetMagicAnimation` aporta 124 mappings directos de cast; las restantes pueden ser ataque, pasiva, toggle, augment o lógica especial y se resuelven en su clase de servidor.
+- Arquitectura: servidor decide coste/objetivo/daño/buff/summon/cooldown; cliente reproduce acción y VFX.
+- `MagicInfo` contiene potencia, coste, niveles, EXP, delay y descripción; `UserMagic` guarda estado aprendido/nivel/EXP/teclas/cooldown.
+- Patrones visuales verificados: proyectiles, efectos directos, objetos persistentes de suelo y VFX persistentes de buff/debuff.
+- Paquete VFX a pedir: `Magic.Zl`, `MagicEx.Zl` ... `MagicEx11.Zl`, más `MonMagicEx7.Zl`, `MonMagicEx8.Zl`, `MonMagicEx20.Zl` reutilizados por efectos player, y `MIcon.Zl` para iconos.
+- Para valores exactos pedir export de `MagicInfo`; si no se puede, el `System.db` relevante.
+- Sprites de criaturas invocadas y sonidos se tratarán aparte cuando toque summons/audio.
 
 ## Mapas MIR3
 
@@ -97,10 +97,10 @@ Importación: localizar librería+slot por código, solo sets elegidos, 8 direcc
 - [x] Persistencia lógica fijada según Zircon.
 - [x] Parser estructural `.map` preparado.
 - [x] 195 magias Player indexadas y mappings de animación central registrados.
-- [x] Paquete de assets de magia necesario identificado.
+- [x] Dependencias VFX de magia identificadas, incluyendo reutilizaciones `MonMagic` confirmadas.
 - [ ] Validar Player visualmente en navegador.
 - [ ] Completar auditoría mecánica/visual detallada de cada magia antes de implementar combate.
-- [ ] Recibir/importar `Magic*.Zl`, `MIcon.Zl` y datos `MagicInfo`.
+- [ ] Recibir/importar VFX, `MIcon.Zl` y datos `MagicInfo`.
 - [ ] Probar `0.map` real + colisiones + renderer de mapa.
 - [ ] Monstruos, spawn y combate.
 
