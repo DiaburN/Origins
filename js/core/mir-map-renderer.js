@@ -62,7 +62,6 @@ G.MirMapRenderer = (() => {
       return;
     }
 
-    // Compatibility with early packs where each library declared pages.
     const jobs = [];
     for (const [libraryId, library] of Object.entries(pack.libraries)) {
       if (!library || !Array.isArray(library.pages)) continue;
@@ -145,6 +144,18 @@ G.MirMapRenderer = (() => {
     return true;
   }
 
+  function isCellSized(frame, map) {
+    if (!frame) return false;
+    return (
+      (frame.width === map.cellWidth && frame.height === map.cellHeight) ||
+      (frame.width === map.cellWidth * 2 && frame.height === map.cellHeight * 2)
+    );
+  }
+
+  function isAnimated(animationByte) {
+    return animationByte > 1 && animationByte < 255;
+  }
+
   function drawBackground(ctx, map) {
     if (status !== 'ready' || !pack || !map) return false;
 
@@ -166,27 +177,69 @@ G.MirMapRenderer = (() => {
     return true;
   }
 
+  function drawStaticFloorLayers(ctx, map) {
+    if (status !== 'ready' || !pack || !map) return false;
+
+    const bounds = visibleBounds(map);
+    for (let y = bounds.minY; y <= bounds.maxY; y++) {
+      for (let x = bounds.minX; x <= bounds.maxX; x++) {
+        const cell = map.cell(x, y);
+        if (!cell) continue;
+
+        drawStaticFloorLayer(ctx, map, x, y, cell.middleFile, cell.middleImage, cell.middleAnimation);
+        drawStaticFloorLayer(ctx, map, x, y, cell.frontFile, cell.frontImage, cell.frontAnimation);
+      }
+    }
+    return true;
+  }
+
+  function drawStaticFloorLayer(ctx, map, x, y, libraryId, storedImage, animationByte) {
+    if (libraryId === 0 || libraryId === G.MirMap.EMPTY_FILE) return;
+    if (storedImage <= 0 || storedImage === EMPTY_IMAGE || isAnimated(animationByte)) return;
+
+    const frame = frameFor(libraryId, storedImage - 1);
+    if (!isCellSized(frame, map)) return;
+
+    drawFrame(ctx, frame, x * map.cellWidth, y * map.cellHeight);
+  }
+
   function animationIndex(baseImage, animationByte, tick) {
     if (baseImage <= 0 || baseImage === EMPTY_IMAGE) return -1;
 
     let index = baseImage - 1;
-    if (animationByte > 1 && animationByte < 255) {
+    if (isAnimated(animationByte)) {
       const count = animationByte & 0x0F;
       if (count > 0) index += tick % count;
     }
     return index;
   }
 
-  function drawMapFrame(ctx, frame, x, y, map, blend) {
+  function drawObjectLayer(ctx, map, x, y, libraryId, storedImage, animationByte, blend, tick) {
+    if (libraryId === 0 || libraryId === G.MirMap.EMPTY_FILE) return;
+
+    const index = animationIndex(storedImage, animationByte, tick);
+    if (index < 0) return;
+
+    const frame = frameFor(libraryId, index);
     if (!frame) return;
 
-    const normalCell = frame.width === map.cellWidth && frame.height === map.cellHeight;
-    const doubleCell = frame.width === map.cellWidth * 2 && frame.height === map.cellHeight * 2;
-    const drawY = normalCell || doubleCell
+    const animated = isAnimated(animationByte);
+    const cellSized = isCellSized(frame, map);
+
+    // Zircon bakes static 48x32 / 96x64 layers into Floor before any entities.
+    if (cellSized && !animated) return;
+
+    const drawY = cellSized
       ? y * map.cellHeight
       : (y + 1) * map.cellHeight - frame.height;
 
-    drawFrame(ctx, frame, x * map.cellWidth, drawY, blend ? 0.5 : 1);
+    drawFrame(
+      ctx,
+      frame,
+      x * map.cellWidth,
+      drawY,
+      animated && blend ? 0.5 : 1
+    );
   }
 
   function drawRow(ctx, map, y, minX, maxX, tick) {
@@ -194,22 +247,29 @@ G.MirMapRenderer = (() => {
       const cell = map.cell(x, y);
       if (!cell) continue;
 
-      // Zircon does not draw Tilesc as a Middle/Front object layer.
-      if (cell.middleFile !== 0 && cell.middleFile !== G.MirMap.EMPTY_FILE) {
-        const index = animationIndex(cell.middleImage, cell.middleAnimation, tick);
-        if (index >= 0) {
-          const frame = frameFor(cell.middleFile, index);
-          drawMapFrame(ctx, frame, x, y, map, cell.middleAnimationBlend);
-        }
-      }
+      drawObjectLayer(
+        ctx,
+        map,
+        x,
+        y,
+        cell.middleFile,
+        cell.middleImage,
+        cell.middleAnimation,
+        cell.middleAnimationBlend,
+        tick
+      );
 
-      if (cell.frontFile !== 0 && cell.frontFile !== G.MirMap.EMPTY_FILE) {
-        const index = animationIndex(cell.frontImage, cell.frontAnimation, tick);
-        if (index >= 0) {
-          const frame = frameFor(cell.frontFile, index);
-          drawMapFrame(ctx, frame, x, y, map, cell.frontAnimationBlend);
-        }
-      }
+      drawObjectLayer(
+        ctx,
+        map,
+        x,
+        y,
+        cell.frontFile,
+        cell.frontImage,
+        cell.frontAnimation,
+        cell.frontAnimationBlend,
+        tick
+      );
     }
   }
 
@@ -231,6 +291,7 @@ G.MirMapRenderer = (() => {
 
   function draw(ctx, map, now = performance.now(), afterRow = null) {
     if (!drawBackground(ctx, map)) return false;
+    drawStaticFloorLayers(ctx, map);
     drawLayers(ctx, map, now, afterRow);
     return true;
   }
@@ -240,6 +301,7 @@ G.MirMapRenderer = (() => {
     reset,
     draw,
     drawBackground,
+    drawStaticFloorLayers,
     drawLayers,
     get status() { return status; },
     get error() { return error; },
