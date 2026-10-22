@@ -13,7 +13,7 @@
     },
     "stoneTypes": {
       "basic": "Universal/basic stones created later for all branches. They provide generic numerical modifiers such as damage, critical chance, cooldown, MP cost, area or speed and apply to the currently active skill in the branch.",
-      "elementalColored": "Colored elemental stones tied to a magic element. They reuse former standalone spells or mechanics as effects, passives, procs or behavior modifiers for the currently active evolution. Fire stones modify Fire, Ice stones modify Ice, etc."
+      "elementalColored": "Colored elemental stones tied to a magic element. They reuse former standalone spells or mechanics as effects, passives, procs or behavior modifiers for the currently active evolution. Fire stones modify Fire, Ice stones modify Ice, Lightning stones modify Lightning, etc."
     },
     "uiDirection": {
       "useRealZirconMagicDialogComponents": true,
@@ -22,20 +22,15 @@
         "magicDialogBackgroundInterfaceIndex": 164,
         "magicCellInterfaceIndex": 165,
         "fireTabInterfaceIndices": [174, 175],
-        "iceTabInterfaceIndices": [176, 177]
+        "iceTabInterfaceIndices": [176, 177],
+        "lightningTabInterfaceIndices": [178, 179]
       }
     }
   },
   "elements": {
     "fire": {
       "status": "locked-order",
-      "evolution": [
-        "FireBall",
-        "AdamantineFireBall",
-        "FireBounce",
-        "MeteorShower",
-        "Asteroid"
-      ],
+      "evolution": ["FireBall", "AdamantineFireBall", "FireBounce", "MeteorShower", "Asteroid"],
       "sourceMagicIds": {
         "FireBall": 201,
         "AdamantineFireBall": 208,
@@ -50,26 +45,11 @@
         "FireStorm": "Adds a secondary area-fire burst or storm behavior to impacts.",
         "FlameArt": "Reserved legendary/special modifier; Zircon entry is not coded, so ORIGINS may define it freely."
       },
-      "basicStoneExamples": [
-        "+% fire damage",
-        "+% critical chance for fire skills",
-        "+% critical damage for fire skills",
-        "-% cooldown",
-        "-% MP cost",
-        "+% area/radius",
-        "+% projectile/effect speed"
-      ],
       "designNote": "The five evolution stages are one evolving skill, not five simultaneously usable skills. Stones belong to the fire branch and remain equipped when the skill evolves."
     },
     "ice": {
       "status": "provisional-order",
-      "evolution": [
-        "IceBolt",
-        "IceBlades",
-        "IceDragon",
-        "IceStorm",
-        "IceRain"
-      ],
+      "evolution": ["IceBolt", "IceBlades", "IceDragon", "IceStorm", "IceRain"],
       "sourceMagicIds": {
         "IceBolt": 203,
         "IceBlades": 210,
@@ -85,16 +65,46 @@
         "IceBreaker": "Adds or strengthens an expanding radial ice burst around the caster.",
         "FrozenDragon": "Reserved as a powerful radial/final ice modifier or possible future evolution alternative."
       },
-      "basicStoneExamples": [
-        "+% ice damage",
-        "+% critical chance for ice skills",
-        "-% cooldown",
-        "-% MP cost",
-        "+% area/radius",
-        "+% slow strength/duration",
-        "+% projectile/effect speed"
-      ],
       "designNote": "Provisional ORIGINS order: IceBolt -> IceBlades -> IceDragon -> IceStorm -> IceRain. IceRain remains the proposed final stage for now; FrozenDragon is kept outside the chain as a candidate special modifier or alternate final evolution."
+    },
+    "lightning": {
+      "status": "pending-user-order",
+      "realZirconCandidates": [
+        "LightningBall",
+        "ThunderBolt",
+        "LightningBeam",
+        "LightningWave",
+        "ChainLightning",
+        "ThunderStrike",
+        "LightningStrike",
+        "Shocked",
+        "ElectricShock"
+      ],
+      "sourceMagicIds": {
+        "LightningBall": 202,
+        "ThunderBolt": 209,
+        "LightningBeam": 213,
+        "LightningWave": 221,
+        "ChainLightning": 225,
+        "ThunderStrike": 230,
+        "Shocked": 235,
+        "LightningStrike": 236,
+        "ElectricShock": 206
+      },
+      "suggestedEvolution": [
+        "LightningBall",
+        "ThunderBolt",
+        "LightningBeam",
+        "ChainLightning",
+        "ThunderStrike"
+      ],
+      "specialStoneCandidates": {
+        "Shocked": "Real Zircon lightning augmentation. Adds a chance for lightning attacks to inflict Shock based on the augment level/power.",
+        "LightningWave": "Adds a targeted small-area lightning burst around the impact point.",
+        "LightningStrike": "Can become an advanced chaining proc that jumps repeatedly between nearby monsters.",
+        "ElectricShock": "Zircon uses this primarily for monster shock/control/taming rather than normal damage. ORIGINS can reinterpret its electrical-control behavior as a colored utility/passive stone instead of copying pet taming blindly."
+      },
+      "designNote": "Suggested only, not locked: LightningBall -> ThunderBolt -> LightningBeam -> ChainLightning -> ThunderStrike. User must choose the final order."
     }
   }
 }
