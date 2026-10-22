@@ -26,20 +26,20 @@
       "evolution": ["Heal", "MassHeal"],
       "sourceMagicIds": {"Heal": 300, "MassHeal": 313, "EmpoweredHealing": 319},
       "stoneCandidates": {"EmpoweredHealing": "Healing buff/stone that improves Heal or MassHeal instead of being an active evolution stage."},
-      "designNote": "Healing branch intentionally stops at Heal -> MassHeal. EmpoweredHealing is a modifier stone/buff. SupremeHealing remains in standby."
+      "designNote": "Healing branch intentionally stops at Heal -> MassHeal. EmpoweredHealing is a modifier stone/buff. SupremeHealing remains reserved for a possible future class/race."
     },
     "poison": {
       "status": "locked-direction",
       "evolution": ["PoisonDust", "PoisonCloud"],
       "sourceMagicIds": {"PoisonDust": 302, "PoisonCloud": 350},
-      "designNote": "Poison branch intentionally uses only PoisonDust -> PoisonCloud. Other poison/debuff mechanics remain unassigned in standby."
+      "designNote": "Poison branch intentionally uses only PoisonDust -> PoisonCloud. Other poison/debuff mechanics remain reserved for possible future classes."
     },
     "summon": {
       "status": "locked-direction",
       "evolution": ["SummonSkeleton", "SummonJinSkeleton"],
       "sourceMagicIds": {"SummonSkeleton": 332, "SummonJinSkeleton": 334, "StrengthOfFaith": 335},
       "stoneCandidates": {"StrengthOfFaith": "Summon-focused buff/stone reserved for the pet branch rather than the general Taoist buff chain."},
-      "designNote": "Core summon evolution is SummonSkeleton -> SummonJinSkeleton. Shinsu, DemonicCreature, SummonDead and CursedDoll remain separate in standby."
+      "designNote": "Core summon evolution is SummonSkeleton -> SummonJinSkeleton. Other summon/necromancy skills remain reserved for a possible future class/race."
     },
     "generalBuffs": {
       "status": "provisional-order",
@@ -81,7 +81,25 @@
     "CombatKick": {"sourceMagicId": 311, "status": "standby", "possibleClass": "Archer"},
     "ThunderKick": {"sourceMagicId": 324, "status": "standby", "possibleClass": "Archer"}
   },
-  "standby": [
-    "SearingLight", "BrainStorm", "HeavenlySky", "CorpseExploder", "DemonExplosion", "SpiritSword", "SupremeHealing", "Parasite", "Infection", "Neutralize", "BindingTalisman", "SummonShinsu", "SummonDemonicCreature", "SummonDead", "CursedDoll"
-  ]
+  "reservedForPossibleNecrophage": {
+    "status": "reserved",
+    "designNote": "Do not assign these skills to Taoist for now. Keep them available for a possible future Necrophage/Necromancer-style race or class.",
+    "skills": [
+      "SearingLight",
+      "BrainStorm",
+      "HeavenlySky",
+      "CorpseExploder",
+      "DemonExplosion",
+      "SpiritSword",
+      "SupremeHealing",
+      "Parasite",
+      "Infection",
+      "Neutralize",
+      "BindingTalisman",
+      "SummonShinsu",
+      "SummonDemonicCreature",
+      "SummonDead",
+      "CursedDoll"
+    ]
+  }
 }
