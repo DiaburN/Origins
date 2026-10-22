@@ -37,6 +37,15 @@
         "EmpoweredHealing": "Healing buff/stone that improves Heal or MassHeal instead of being an active evolution stage."
       },
       "designNote": "Healing branch intentionally stops at Heal -> MassHeal. EmpoweredHealing is a modifier stone/buff. SupremeHealing remains in standby."
+    },
+    "poison": {
+      "status": "locked-direction",
+      "evolution": ["PoisonDust", "PoisonCloud"],
+      "sourceMagicIds": {
+        "PoisonDust": 302,
+        "PoisonCloud": 349
+      },
+      "designNote": "Poison branch intentionally uses only PoisonDust -> PoisonCloud. Other poison/debuff mechanics remain unassigned in standby."
     }
   },
   "standby": [
@@ -46,6 +55,10 @@
     "CorpseExploder",
     "DemonExplosion",
     "SpiritSword",
-    "SupremeHealing"
+    "SupremeHealing",
+    "Parasite",
+    "Infection",
+    "Neutralize",
+    "BindingTalisman"
   ]
 }
