@@ -1,0 +1,225 @@
+{
+  "version": 1,
+  "status": "design-reference",
+  "class": "Assassin",
+  "source": {
+    "repository": "Suprcode/Zircon",
+    "auditCommit": "80d5df21016b2f377d48f14f7dcc2e994b163ff1"
+  },
+  "rules": {
+    "designGoal": "Keep Assassin easy to play: one automatic primary combo plus a maximum of four active skill buttons. Move compatible upgrades, procs and conditional mechanics into magical crystals/passives instead of extra buttons.",
+    "maxActiveSkillButtons": 4,
+    "primaryComboIsAutomatic": true,
+    "fixedEvolutionLength": false,
+    "crystalSocketsPerBranch": 5,
+    "socketsPersistThroughEvolution": true,
+    "socketUnlockRequiresSeparateItem": true
+  },
+  "coreKit": {
+    "primaryLotusCombo": {
+      "status": "locked-direction",
+      "inputModel": "single automatic primary attack",
+      "evolution": ["FullBloom", "WhiteLotus", "RedLotus", "SweetBrier"],
+      "sourceMagicIds": {
+        "FullBloom": 405,
+        "WhiteLotus": 407,
+        "RedLotus": 410,
+        "SweetBrier": 414
+      },
+      "originsBehavior": {
+        "stage1": ["FullBloom"],
+        "stage2": ["FullBloom", "WhiteLotus"],
+        "stage3": ["FullBloom", "WhiteLotus", "RedLotus"],
+        "stage4": ["FullBloom", "WhiteLotus", "RedLotus", "SweetBrier"],
+        "rotation": "At the unlocked stage, attacks automatically advance through the sequence and loop back to FullBloom after the final hit. The player does not need four separate buttons."
+      },
+      "designNote": "Zircon implements these as four separate attacks with short-lived combo states. ORIGINS preserves the ordered combo but collapses it into one automatic evolving primary skill."
+    },
+    "cloak": {
+      "status": "locked-direction",
+      "activeSkill": "Cloak",
+      "sourceMagicIds": {
+        "Cloak": 406,
+        "PledgeOfBlood": 412,
+        "GhostWalk": 419
+      },
+      "crystalCandidates": {
+        "PledgeOfBlood": "Reduces Cloak HP cost/penalty.",
+        "GhostWalk": "Adds the GhostWalk improvement/state when entering Cloak."
+      },
+      "designNote": "Cloak remains one active button. Its improvements are crystals rather than additional active skills."
+    },
+    "fireFarm": {
+      "status": "locked-direction",
+      "evolution": ["HellFire", "FlamingDaggers", "Shredding"],
+      "sourceMagicIds": {
+        "HellFire": 411,
+        "FlamingDaggers": 454,
+        "Shredding": 455
+      },
+      "originsBehavior": {
+        "HellFire": "Single-target fire hit with burn/periodic damage foundation.",
+        "FlamingDaggers": "Evolves the farm skill into a stronger multi-projectile dagger attack.",
+        "Shredding": "Final farm evolution; expand coverage/penetration or multi-hit behavior while keeping the Zircon fire/SP identity."
+      },
+      "designNote": "FlamingDaggers and Shredding are mechanically very similar in Zircon, so ORIGINS intentionally differentiates them as successive farming evolutions instead of separate buttons."
+    },
+    "mobilityExecution": {
+      "status": "locked-direction",
+      "evolution": ["DanceOfSwallow", "FlashOfLight"],
+      "sourceMagicIds": {
+        "DanceOfSwallow": 428,
+        "FlashOfLight": 434
+      },
+      "designNote": "One mobility/execution button: close on a target and strike, then evolve toward a faster forward burst/line attack. Exact ORIGINS movement tuning remains implementation-specific."
+    },
+    "areaClear": {
+      "status": "locked-direction",
+      "evolution": ["FourWheels", "CrescentMoon"],
+      "sourceMagicIds": {
+        "FourWheels": 456,
+        "CrescentMoon": 457
+      },
+      "designNote": "Natural AoE evolution: FourWheels attacks around the Assassin at radius 2; CrescentMoon uses the same basic pattern at radius 3."
+    }
+  },
+  "crystalsAndPassives": {
+    "coreRecommended": {
+      "BloodyFlower": {
+        "sourceMagicId": 426,
+        "type": "passive-crystal",
+        "effect": "Life Steal bonus."
+      },
+      "FatalBlow": {
+        "sourceMagicId": 442,
+        "type": "proc-crystal",
+        "effect": "Chance for bonus damage against enemies below 30% HP."
+      },
+      "Massacre": {
+        "sourceMagicId": 439,
+        "type": "kill-proc-crystal",
+        "effect": "On monster kill, converts overkill damage into nearby splash damage; bosses excluded in Zircon."
+      },
+      "DualWeaponSkills": {
+        "sourceMagicId": 448,
+        "type": "equipment-crystal",
+        "effect": "Damage bonus while using DualWield weapons."
+      },
+      "Concentration": {
+        "sourceMagicId": 447,
+        "type": "buff-crystal",
+        "effect": "Critical chance bonus."
+      },
+      "Evasion": {
+        "sourceMagicId": 436,
+        "type": "defensive-crystal",
+        "effect": "Evasion chance bonus."
+      },
+      "LastStand": {
+        "sourceMagicId": 443,
+        "type": "defensive-proc-crystal",
+        "effect": "Automatically increases physical defence while below 30% HP."
+      },
+      "AdventOfDemon": {
+        "sourceMagicId": 431,
+        "type": "defensive-crystal",
+        "effect": "Physical defence/Max AC bonus."
+      },
+      "AdventOfDevil": {
+        "sourceMagicId": 432,
+        "type": "defensive-crystal",
+        "effect": "Magic defence/Max MR bonus."
+      }
+    },
+    "skillModifierCrystals": {
+      "PledgeOfBlood": {
+        "sourceMagicId": 412,
+        "targets": ["Cloak"],
+        "effect": "Reduces Cloak health cost/penalty."
+      },
+      "GhostWalk": {
+        "sourceMagicId": 419,
+        "targets": ["Cloak"],
+        "effect": "Adds the GhostWalk improvement/state to Cloak."
+      },
+      "FlameSplash": {
+        "sourceMagicId": 425,
+        "targets": ["primaryLotusCombo"],
+        "effect": "Special crystal candidate that adds secondary attacks around the primary target instead of becoming another button."
+      },
+      "DragonWave": {
+        "sourceMagicId": 450,
+        "requires": "FlameSplash",
+        "targets": ["FlameSplash"],
+        "effect": "Upgrades FlameSplash damage/coverage; Zircon can expand secondary directions up to eight."
+      },
+      "BurningFire": {
+        "sourceMagicId": 452,
+        "targets": ["fireFarm"],
+        "effect": "Special crystal candidate: fire attacks can create a persistent burning ground zone/explosion instead of adding another active button."
+      },
+      "Chain": {
+        "sourceMagicId": 446,
+        "type": "special-proc-crystal",
+        "targets": ["primaryLotusCombo", "areaClear"],
+        "effect": "Chance/trigger to link nearby non-boss monsters and constrain their separation without requiring a separate Chain button."
+      },
+      "ChainOfFire": {
+        "sourceMagicId": 453,
+        "requires": "Chain",
+        "targets": ["Chain"],
+        "effect": "Advanced Chain crystal. Preserve Zircon progression concept: slow linked targets, share/siphon damage, periodic fire damage, and final death explosion at high tier."
+      },
+      "WraithGrip": {
+        "sourceMagicId": 409,
+        "type": "control-proc-crystal",
+        "effect": "Optional control crystal applying WraithGrip-like status without adding an active button."
+      },
+      "TouchOfTheDeparted": {
+        "sourceMagicId": 417,
+        "requires": "WraithGrip",
+        "effect": "Upgrades WraithGrip with paralysis, following the Zircon dependency."
+      },
+      "DragonBlood": {
+        "sourceMagicId": 441,
+        "type": "poison-proc-crystal",
+        "effect": "Attack proc that applies stackable green poison, up to four stacks in Zircon."
+      }
+    }
+  },
+  "standby": {
+    "reason": "Keep these out of the core Assassin kit to avoid excessive active buttons. They remain available for later crystals, PvP variants, special builds or future classes.",
+    "skills": [
+      "WillowDance",
+      "VineTreeDance",
+      "Discipline",
+      "PoisonousCloud",
+      "CalamityOfFullMoon",
+      "WaningMoon",
+      "Karma",
+      "Release",
+      "Resolution",
+      "Rake",
+      "SummonPuppet",
+      "ElementalPuppet",
+      "ArtOfShadows",
+      "TheNewBeginning",
+      "Stealth",
+      "DarkConversion",
+      "DragonRepulse",
+      "Abyss",
+      "RagingWind",
+      "MagicCombustion",
+      "Containment"
+    ]
+  },
+  "notForCoreUse": {
+    "stubOrRemoved": ["Rejuvenation", "ChangeOfSeasons", "Unused", "Vitality", "ManaBurn"],
+    "designNote": "Do not build core ORIGINS Assassin progression around incomplete, unused or effectively stubbed Zircon skills."
+  },
+  "finalGameplayShape": {
+    "primaryAttack": "Automatic Lotus combo",
+    "activeButtons": ["Cloak", "Fire/Farm", "Mobility/Execution", "AoE Clear"],
+    "complexityGoal": "The player should understand the Assassin quickly; depth comes from crystals/passives and evolution, not from managing a large hotbar."
+  }
+}
