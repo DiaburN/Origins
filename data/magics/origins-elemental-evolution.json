@@ -68,17 +68,45 @@
       "designNote": "Provisional ORIGINS order: IceBolt -> IceBlades -> IceDragon -> IceStorm -> IceRain. IceRain remains the proposed final stage for now; FrozenDragon is kept outside the chain as a candidate special modifier or alternate final evolution."
     },
     "lightning": {
-      "status": "pending-user-order",
-      "realZirconCandidates": [
+      "status": "locked-direction",
+      "evolution": [
         "LightningBall",
         "ThunderBolt",
-        "LightningBeam",
+        "ThunderBolt",
         "LightningWave",
-        "ChainLightning",
-        "ThunderStrike",
-        "LightningStrike",
-        "Shocked",
-        "ElectricShock"
+        "ChainLightning"
+      ],
+      "stages": [
+        {
+          "stage": 1,
+          "sourceMagic": "LightningBall",
+          "sourceMagicId": 202,
+          "behavior": "Single-target lightning projectile."
+        },
+        {
+          "stage": 2,
+          "sourceMagic": "ThunderBolt",
+          "sourceMagicId": 209,
+          "behavior": "Single-target direct lightning strike."
+        },
+        {
+          "stage": 3,
+          "sourceMagic": "ThunderBolt",
+          "sourceMagicId": 209,
+          "behavior": "ORIGINS evolution of ThunderBolt: strikes up to 3 valid targets when available; if only one target is available, only one bolt is shown and applied. This is a behavior upgrade, not a newly named spell."
+        },
+        {
+          "stage": 4,
+          "sourceMagic": "LightningWave",
+          "sourceMagicId": 221,
+          "behavior": "Active targeted lightning area attack."
+        },
+        {
+          "stage": 5,
+          "sourceMagic": "ChainLightning",
+          "sourceMagicId": 225,
+          "behavior": "Final active evolution: lightning propagates through nearby targets."
+        }
       ],
       "sourceMagicIds": {
         "LightningBall": 202,
@@ -91,20 +119,14 @@
         "LightningStrike": 236,
         "ElectricShock": 206
       },
-      "suggestedEvolution": [
-        "LightningBall",
-        "ThunderBolt",
-        "LightningBeam",
-        "ChainLightning",
-        "ThunderStrike"
-      ],
       "specialStoneCandidates": {
         "Shocked": "Real Zircon lightning augmentation. Adds a chance for lightning attacks to inflict Shock based on the augment level/power.",
-        "LightningWave": "Adds a targeted small-area lightning burst around the impact point.",
-        "LightningStrike": "Can become an advanced chaining proc that jumps repeatedly between nearby monsters.",
-        "ElectricShock": "Zircon uses this primarily for monster shock/control/taming rather than normal damage. ORIGINS can reinterpret its electrical-control behavior as a colored utility/passive stone instead of copying pet taming blindly."
+        "LightningBeam": "Candidate colored modifier that can add a line/beam follow-up or directional lightning effect to the current active evolution.",
+        "ThunderStrike": "Candidate colored proc/passive that can call extra lightning strikes around the caster or targets.",
+        "LightningStrike": "Candidate advanced chaining/rebound proc that can jump additional times between nearby monsters.",
+        "ElectricShock": "Candidate electrical-control stone. Zircon uses it for shock/control/taming; ORIGINS should reuse only the control concept, not the pet-taming behavior by default."
       },
-      "designNote": "Suggested only, not locked: LightningBall -> ThunderBolt -> LightningBeam -> ChainLightning -> ThunderStrike. User must choose the final order."
+      "designNote": "Locked direction: LightningBall -> ThunderBolt -> ThunderBolt multi-target behavior upgrade (same spell name, up to 3 targets) -> LightningWave -> ChainLightning. Main chain prioritizes active attacks; rebound, shock and control mechanics are moved toward colored lightning stones/passives."
     }
   }
 }
