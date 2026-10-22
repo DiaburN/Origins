@@ -9,8 +9,12 @@ G.Game = (() => {
   let lastTime = 0;
   let dpr = 1;
   let debugCombat = 3;
+  let initialized = false;
 
   function init() {
+    if (initialized) return;
+    initialized = true;
+
     canvas = document.getElementById('game');
     if (!canvas) throw new Error('Missing #game canvas');
 
@@ -77,10 +81,7 @@ G.Game = (() => {
     if (G.Input.consume('keyq')) debugCombat = debugCombat <= 1 ? 15 : debugCombat - 1;
     if (G.Input.consume('keye')) debugCombat = debugCombat >= 15 ? 1 : debugCombat + 1;
 
-    if (G.Input.consume('space')) {
-      player.attack(G.MirAnimation[`Combat${debugCombat}`]);
-    }
-
+    if (G.Input.consume('space')) player.attack(G.MirAnimation[`Combat${debugCombat}`]);
     if (G.Input.consume('digit1')) player.spell(G.MirAnimation.Combat1);
     if (G.Input.consume('digit2')) player.spell(G.MirAnimation.Combat2);
     if (G.Input.consume('keyh')) player.state.harvest();
@@ -88,25 +89,12 @@ G.Game = (() => {
     if (G.Input.consume('keyp')) player.pushed();
     if (G.Input.consume('keyk')) player.die();
     if (G.Input.consume('keyr')) player.revive();
-
     if (G.Input.consume('keyc')) player.state.setCreeping(!player.state.creeping);
     if (G.Input.consume('keym')) player.state.setMounted(!player.state.mounted);
-
-    if (G.Input.consume('keyv')) {
-      if (!player.state.endChannel()) player.state.beginChannel();
-    }
-
-    if (G.Input.consume('keyb')) {
-      if (!player.state.endDragonRepulse()) player.state.beginDragonRepulse();
-    }
-
-    if (G.Input.consume('keyf')) {
-      if (!player.state.reelFishing()) player.state.beginFishing();
-    }
-
-    if (G.Input.consume('keyt')) {
-      if (!player.state.stopTaming()) player.state.beginTaming();
-    }
+    if (G.Input.consume('keyv')) { if (!player.state.endChannel()) player.state.beginChannel(); }
+    if (G.Input.consume('keyb')) { if (!player.state.endDragonRepulse()) player.state.beginDragonRepulse(); }
+    if (G.Input.consume('keyf')) { if (!player.state.reelFishing()) player.state.beginFishing(); }
+    if (G.Input.consume('keyt')) { if (!player.state.stopTaming()) player.state.beginTaming(); }
   }
 
   function draw(now) {
@@ -132,7 +120,6 @@ G.Game = (() => {
 
     if (!renderedMap && !G.MapWorld.drawDebug(ctx)) drawMirGrid();
     if (!playerDrawn) player.draw(ctx);
-
     if (G.Config.debug) drawDebug();
   }
 
@@ -147,17 +134,14 @@ G.Game = (() => {
     ctx.strokeStyle = '#24282b';
     ctx.lineWidth = 1 / G.Camera.scale;
     ctx.beginPath();
-
     for (let x = Math.floor(left / cw) * cw; x <= right + cw; x += cw) {
       ctx.moveTo(x, top - ch);
       ctx.lineTo(x, bottom + ch);
     }
-
     for (let y = Math.floor(top / ch) * ch; y <= bottom + ch; y += ch) {
       ctx.moveTo(left - cw, y);
       ctx.lineTo(right + cw, y);
     }
-
     ctx.stroke();
 
     ctx.strokeStyle = '#4b5054';
@@ -204,5 +188,3 @@ G.Game = (() => {
     }
   });
 })();
-
-addEventListener('DOMContentLoaded', () => G.Game.init(), { once: true });
