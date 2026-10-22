@@ -12,8 +12,8 @@
       "itemNameWorking": "Piedra de Apertura Mágica"
     },
     "stoneTypes": {
-      "basic": "Generic elemental/stat modifiers that affect whichever evolution is currently active.",
-      "special": "Mechanic-changing modifiers derived from former standalone skills/effects. Their behavior adapts to the currently active evolution."
+      "basic": "Universal/basic stones created later for all branches. They provide generic numerical modifiers such as damage, critical chance, cooldown, MP cost, area or speed and apply to the currently active skill in the branch.",
+      "elementalColored": "Colored elemental stones tied to a magic element. They reuse former standalone spells or mechanics as effects, passives, procs or behavior modifiers for the currently active evolution. Fire stones modify Fire, Ice stones modify Ice, etc."
     },
     "uiDirection": {
       "useRealZirconMagicDialogComponents": true,
