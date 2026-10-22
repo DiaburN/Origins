@@ -69,44 +69,13 @@
     },
     "lightning": {
       "status": "locked-direction",
-      "evolution": [
-        "LightningBall",
-        "ThunderBolt",
-        "ThunderBolt",
-        "LightningWave",
-        "ChainLightning"
-      ],
+      "evolution": ["LightningBall", "ThunderBolt", "ThunderBoltEvolutionNamePending", "LightningWave", "ChainLightning"],
       "stages": [
-        {
-          "stage": 1,
-          "sourceMagic": "LightningBall",
-          "sourceMagicId": 202,
-          "behavior": "Single-target lightning projectile."
-        },
-        {
-          "stage": 2,
-          "sourceMagic": "ThunderBolt",
-          "sourceMagicId": 209,
-          "behavior": "Single-target direct lightning strike."
-        },
-        {
-          "stage": 3,
-          "sourceMagic": "ThunderBolt",
-          "sourceMagicId": 209,
-          "behavior": "ORIGINS evolution of ThunderBolt: strikes up to 3 valid targets when available; if only one target is available, only one bolt is shown and applied. This is a behavior upgrade, not a newly named spell."
-        },
-        {
-          "stage": 4,
-          "sourceMagic": "LightningWave",
-          "sourceMagicId": 221,
-          "behavior": "Active targeted lightning area attack."
-        },
-        {
-          "stage": 5,
-          "sourceMagic": "ChainLightning",
-          "sourceMagicId": 225,
-          "behavior": "Final active evolution: lightning propagates through nearby targets."
-        }
+        {"stage": 1, "sourceMagic": "LightningBall", "sourceMagicId": 202, "behavior": "Single-target lightning projectile."},
+        {"stage": 2, "sourceMagic": "ThunderBolt", "sourceMagicId": 209, "behavior": "Single-target direct lightning strike."},
+        {"stage": 3, "sourceMagic": "ThunderBolt", "sourceMagicId": 209, "originsName": null, "nameStatus": "pending", "behavior": "ORIGINS evolution of ThunderBolt: strikes up to 3 valid targets when available; if only one target is available, only one bolt is shown and applied. This evolution requires its own new ORIGINS spell name."},
+        {"stage": 4, "sourceMagic": "LightningWave", "sourceMagicId": 221, "behavior": "Active targeted lightning area attack."},
+        {"stage": 5, "sourceMagic": "ChainLightning", "sourceMagicId": 225, "behavior": "Final active evolution: lightning propagates through nearby targets."}
       ],
       "sourceMagicIds": {
         "LightningBall": 202,
@@ -126,7 +95,25 @@
         "LightningStrike": "Candidate advanced chaining/rebound proc that can jump additional times between nearby monsters.",
         "ElectricShock": "Candidate electrical-control stone. Zircon uses it for shock/control/taming; ORIGINS should reuse only the control concept, not the pet-taming behavior by default."
       },
-      "designNote": "Locked direction: LightningBall -> ThunderBolt -> ThunderBolt multi-target behavior upgrade (same spell name, up to 3 targets) -> LightningWave -> ChainLightning. Main chain prioritizes active attacks; rebound, shock and control mechanics are moved toward colored lightning stones/passives."
+      "designNote": "Locked direction: LightningBall -> ThunderBolt -> new named multi-target ThunderBolt evolution (name pending, up to 3 targets) -> LightningWave -> ChainLightning. Main chain prioritizes active attacks; rebound, shock and control mechanics are moved toward colored lightning stones/passives."
+    },
+    "wind": {
+      "status": "locked-order",
+      "evolution": ["GustBlast", "Cyclone", "BlowEarth", "DragonTornado", "Tempest"],
+      "sourceMagicIds": {
+        "GustBlast": 204,
+        "Cyclone": 211,
+        "BlowEarth": 215,
+        "DragonTornado": 223,
+        "Tempest": 228,
+        "Storm": 241,
+        "Tornado": 242
+      },
+      "specialStoneCandidates": {
+        "Tornado": "Candidate colored wind stone or summon-effect modifier based on Zircon's temporary tornado summon behavior.",
+        "Storm": "Candidate legendary wind stone/effect. Zircon defines it as Wind but leaves the skill incomplete, so ORIGINS can define its final behavior."
+      },
+      "designNote": "Locked ORIGINS wind evolution: GustBlast -> Cyclone -> BlowEarth -> DragonTornado -> Tempest. Tornado and Storm are reserved for colored wind stones/effects rather than the active evolution chain."
     }
   }
 }
