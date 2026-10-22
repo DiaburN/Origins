@@ -1,12 +1,15 @@
 window.G = window.G || {};
 
 G.Flow = (() => {
-  const CLASS_IMAGES = {
-    Warrior: { male: 'assets/ui/characters/warrior-male.webp', female: 'assets/ui/characters/warrior-female.webp' },
-    Wizard: { male: 'assets/ui/characters/wizard-male.webp', female: 'assets/ui/characters/wizard-female.webp' },
-    Taoist: { male: 'assets/ui/characters/taoist-male.webp', female: 'assets/ui/characters/taoist-female.webp' },
+  // Primera versión funcional: ya usamos personaje MIR real por sexo.
+  // Las previews específicas Warrior/Wizard/Taoist se sustituyen después
+  // por sus frames exactos sin tocar el flujo de creación/selección.
+  const CLASS_IMAGES = Object.freeze({
+    Warrior: { male: 'assets/ui/characters/assassin-male.webp', female: 'assets/ui/characters/assassin-female.webp' },
+    Wizard: { male: 'assets/ui/characters/assassin-male.webp', female: 'assets/ui/characters/assassin-female.webp' },
+    Taoist: { male: 'assets/ui/characters/assassin-male.webp', female: 'assets/ui/characters/assassin-female.webp' },
     Assassin: { male: 'assets/ui/characters/assassin-male.webp', female: 'assets/ui/characters/assassin-female.webp' }
-  };
+  });
 
   let selectedClass = 'Warrior';
   let selectedGender = 'male';
