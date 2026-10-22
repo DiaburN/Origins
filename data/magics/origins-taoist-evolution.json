@@ -1,0 +1,37 @@
+{
+  "version": 1,
+  "status": "design-reference",
+  "class": "Taoist",
+  "rules": {
+    "fixedEvolutionLength": false,
+    "designNote": "Do not force long evolution chains. Keep only mechanically natural stages and leave unassigned Taoist skills in standby until their role is clear."
+  },
+  "branches": {
+    "holy": {
+      "status": "locked-direction",
+      "evolution": ["EvilSlayer", "GreaterEvilSlayer"],
+      "sourceMagicIds": {
+        "EvilSlayer": 304,
+        "GreaterEvilSlayer": 308
+      },
+      "designNote": "Holy attack branch intentionally stops at two stages for now."
+    },
+    "dark": {
+      "status": "locked-direction",
+      "evolution": ["ExplosiveTalisman", "ImprovedExplosiveTalisman"],
+      "sourceMagicIds": {
+        "ExplosiveTalisman": 303,
+        "ImprovedExplosiveTalisman": 321
+      },
+      "designNote": "Dark attack branch intentionally stops at two stages for now."
+    }
+  },
+  "standby": [
+    "SearingLight",
+    "BrainStorm",
+    "HeavenlySky",
+    "CorpseExploder",
+    "DemonExplosion",
+    "SpiritSword"
+  ]
+}
