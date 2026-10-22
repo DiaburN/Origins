@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>ORIGINS X</title>
   <link rel="stylesheet" href="css/game.css">
+  <link rel="stylesheet" href="css/ingame.css">
 </head>
 <body>
   <main id="flow-shell" class="flow-shell">
@@ -29,6 +30,7 @@
         </form>
       </div>
     </section>
+
     <section id="select-screen" class="origin-screen" aria-label="Selección de personaje">
       <div class="zircon-scene" data-zircon-scene>
         <img class="scene-bg" src="assets/ui/zircon/select-bg.webp" alt="">
@@ -50,6 +52,7 @@
         </section>
       </div>
     </section>
+
     <section id="create-screen" class="origin-screen" aria-label="Crear personaje">
       <div class="zircon-scene" data-zircon-scene>
         <img class="scene-bg" src="assets/ui/zircon/select-bg.webp" alt="">
@@ -70,9 +73,56 @@
       </div>
     </section>
   </main>
+
   <canvas id="game" hidden aria-label="ORIGINS X game canvas"></canvas>
-  <div id="game-hud" class="zircon-game-hud" hidden><img src="assets/ui/zircon/main-panel.webp" alt=""><div class="game-character-copy"><strong id="game-character-name"></strong><span id="game-character-class"></span></div></div>
+
+  <div id="ingame-ui" hidden>
+    <section id="minimap-box" class="ingame-minimap" aria-label="Minimapa">
+      <header class="minimap-header"><span id="minimap-title">3.map · Inicio</span></header>
+      <div id="minimap-area" class="minimap-area">
+        <div class="minimap-grid"></div>
+        <div id="minimap-player" class="minimap-player" title="Tu personaje"></div>
+        <span id="minimap-status" class="minimap-status">3.map pendiente de runtime</span>
+      </div>
+      <div class="minimap-tools">
+        <button id="minimap-size" type="button" title="Cambiar tamaño"><img src="assets/ui/zircon/minimap-size.webp" alt=""></button>
+        <button id="minimap-opacity" type="button" title="Transparencia"><img src="assets/ui/zircon/minimap-opacity.webp" alt=""></button>
+        <button id="minimap-bigmap" type="button" title="Mapa grande"><img src="assets/ui/zircon/minimap-bigmap.webp" alt=""></button>
+      </div>
+    </section>
+
+    <div id="ui-window-layer" class="ui-window-layer"></div>
+
+    <div id="game-hud" class="zircon-game-hud" aria-label="Panel principal">
+      <img class="main-panel-image" src="assets/ui/zircon/main-panel.webp" alt="">
+      <div class="hud-exp-track"><div id="hud-exp-fill" class="hud-exp-fill"></div></div>
+      <div class="hud-bar hud-hp"><div id="hud-hp-fill" class="hud-fill"></div><span id="hud-hp-text">100/100</span></div>
+      <div class="hud-bar hud-mp"><div id="hud-mp-fill" class="hud-fill"></div><span id="hud-mp-text">75/75</span></div>
+      <div class="hud-bar hud-focus"><div id="hud-focus-fill" class="hud-fill"></div></div>
+      <div class="hud-stat hud-class"><strong id="panel-class">Warrior</strong></div>
+      <div class="hud-stat hud-level"><strong id="panel-level">Nv 1</strong></div>
+      <div class="hud-character-name" id="panel-character-name"></div>
+      <span id="game-character-name" hidden></span><span id="game-character-class" hidden></span>
+    </div>
+  </div>
+
   <div id="local-toast" class="local-toast" hidden></div>
-  <script src="js/core/config.js"></script><script src="js/core/math.js"></script><script src="js/core/mir-animation.js"></script><script src="js/core/mir-sprites.js"></script><script src="js/core/mir-map.js"></script><script src="js/core/mir-map-renderer.js"></script><script src="js/core/input.js"></script><script src="js/core/camera.js"></script><script src="js/systems/session.js"></script><script src="js/systems/player-state.js"></script><script src="js/systems/map-world.js"></script><script src="js/systems/movement.js"></script><script src="js/entities/player.js"></script><script src="js/game.js"></script><script src="js/ui/flow.js"></script>
+
+  <script src="js/core/config.js"></script>
+  <script src="js/core/math.js"></script>
+  <script src="js/core/mir-animation.js"></script>
+  <script src="js/core/mir-sprites.js"></script>
+  <script src="js/core/mir-map.js"></script>
+  <script src="js/core/mir-map-renderer.js"></script>
+  <script src="js/core/input.js"></script>
+  <script src="js/core/camera.js"></script>
+  <script src="js/systems/session.js"></script>
+  <script src="js/systems/player-state.js"></script>
+  <script src="js/systems/map-world.js"></script>
+  <script src="js/systems/movement.js"></script>
+  <script src="js/entities/player.js"></script>
+  <script src="js/game.js"></script>
+  <script src="js/ui/ingame.js"></script>
+  <script src="js/ui/flow.js"></script>
 </body>
 </html>
