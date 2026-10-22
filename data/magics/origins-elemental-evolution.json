@@ -144,21 +144,15 @@
         "sourceMagicId": 227,
         "role": "offensive self-buff",
         "zirconBehavior": "Trades HealthPercent for additional MCPercent for a timed duration; also grants passive MCPercent scaling with level."
-      },
-      "JudgementOfHeaven": {
-        "sourceMagicId": 229,
-        "role": "special offensive buff/proc",
-        "zirconBehavior": "Applies a timed Chance of Judgement stat. The reviewed Zircon source does not expose a complete downstream mechanic for that stat, so ORIGINS may define its proc behavior."
-      },
-      "MirrorImage": {
-        "sourceMagicId": 237,
-        "role": "illusion/summon-special",
-        "note": "Natural fit for this school if retained."
       }
     },
+    "reservedForLater": {
+      "JudgementOfHeaven": "Do not include for now; revisit later if a suitable buff/proc role is needed.",
+      "ElementalHurricane": "Do not include in Illusion. Reserve for a later system, potentially as a permanent elemental buff/state or another long-term progression mechanic.",
+      "MirrorImage": "Not included in the current utility set; revisit later if an illusion/summon mechanic is wanted."
+    },
     "excludedOrElsewhere": {
-      "Repulsion": "Moved to Wind colored stones/effects.",
-      "ElementalHurricane": "Keep outside Illusion for now. Zircon implements it as a channelled toggle whose element follows DarkStone affinity; better treated as an elemental special/system skill."
+      "Repulsion": "Moved to Wind colored stones/effects."
     }
   }
 }
