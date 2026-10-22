@@ -1,7 +1,7 @@
 window.G = window.G || {};
 
 G.Game = (() => {
-  const MAP_MANIFEST = 'assets/maps/border-village/manifest.json';
+  const MAP_MANIFEST = 'assets/maps/start-3/manifest.json';
 
   let canvas;
   let ctx;
