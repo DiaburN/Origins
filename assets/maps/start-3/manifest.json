@@ -1,0 +1,22 @@
+{
+  "id": "start-3",
+  "name": "3.map · Start",
+  "source": {
+    "file": "3.map",
+    "format": "mir3_type5",
+    "verified": false
+  },
+  "gameplay": {
+    "role": "start-zone",
+    "tutorialPlanned": true,
+    "tutorialType": "island-intro"
+  },
+  "runtime": {
+    "root": "maps/start-3/",
+    "localRoot": "runtime/",
+    "mapFile": "3.map",
+    "renderPack": "render-pack.json",
+    "packVersion": 1,
+    "ready": false
+  }
+}
