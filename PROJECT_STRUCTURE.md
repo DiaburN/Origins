@@ -72,7 +72,9 @@ Núcleo inicial: `Warrior`, `Wizard`, `Taoist`, `Assassin`.
 - `js/systems/session.js`: cuenta y personajes de prueba persistidos en `localStorage`; no guarda contraseña.
 - `js/ui/flow.js`: Login -> Crear/Seleccionar personaje -> Entrar al juego.
 - Clases iniciales: Warrior, Wizard, Taoist y Assassin; hombre/mujer.
-- `tools/mir3/build_ui_runtime.py`: extrae solo fondos, logo y previews usados desde `Interface1c.Zl`, `Interface1c-Extended.Zl` y `GameInter.Zl`.
+- `tools/mir3/build_ui_runtime.py`: extrae desde `Interface1c.Zl`, `Interface1c-Extended.Zl`, `Interface.Zl` y `GameInter.Zl`.
+- `assets/ui/zircon/`: fondo de selección, logo, configuración, HUD y previews reales de las 8 combinaciones clase/sexo.
+- Geometría de Login/Select/Create basada en `LoginScene`, `SelectScene`, `DXWindow` y `DXButton` de Zircon.
 - Esta sesión local es temporal: debe poder sustituirse por backend/Firebase sin rehacer las pantallas.
 
 ## Mapas MIR3
@@ -87,7 +89,6 @@ Primer mapa: `01.map` = Border Village.
 - `js/systems/map-world.js`: carga, spawn, límites, movimiento continuo y colisión MIR.
 - `tools/mir3/build_map_runtime.py`: extrae solo frames realmente usados y genera `.map` + `render-pack.json` + WebP lossless.
 - Border Village runtime generado: `10.914` frames reales, `5` páginas compartidas de atlas; todos los frames extraídos fueron contrastados contra sus `.Zl`.
-- El mapa completo fue reconstruido desde `01.map` + `.Zl` y contrastado con el preview oficial antes de fijar el renderer.
 
 ## Runtime pesado
 
@@ -96,7 +97,7 @@ Drive: `MAPAS Y ARCHIVOS / ORIGINS X RUNTIME`.
 - `border-village/`: `01.map`, `render-pack.json`, `page-0.webp` ... `page-4.webp`.
 - `players/base_m001/`: `atlas.webp`, `manifest.json`.
 
-Estos archivos todavía no se sirven directamente al navegador: Drive actúa como almacén maestro, no como CDN web. Los manifests de GitHub permanecen `ready:false` hasta disponer de una ruta HTTP/CORS estable para los binarios runtime.
+Estos archivos todavía no se sirven directamente al navegador: Drive actúa como almacén maestro, no como CDN web. Los manifests de mapa/player permanecen `ready:false` hasta disponer de una ruta HTTP/CORS estable.
 
 ## Magias
 
@@ -109,25 +110,20 @@ Estos archivos todavía no se sirven directamente al navegador: Drive actúa com
 
 - [x] Cliente mínimo, loop, input y cámara.
 - [x] Login local de prueba + creación/selección de personaje.
+- [x] Interfaz Login/Select/Create reconstruida con assets reales de Zircon.
+- [x] Previews reales Warrior/Wizard/Taoist/Assassin hombre/mujer.
+- [x] HUD base extraído de `GameInter`.
 - [x] El runtime del juego arranca solo después de elegir personaje.
 - [x] Player: movimiento continuo + 8 direcciones + FrameSets/estados MIR.
 - [x] Player renderer: offsets originales, atlas compactos y multipágina.
-- [x] Conversor genérico de apariencias MIR3.
-- [x] Conversor específico de UI MIR3 -> WebP.
-- [x] M001 masculino convertido y validado.
-- [x] Parser completo `.map` y `MapWorld`.
-- [x] Border Village recibido y validado.
-- [x] 11 librerías exactas detectadas.
-- [x] Conversor genérico de mapas MIR3.
+- [x] Conversores genéricos de player/UI/mapa MIR3.
 - [x] Border Village runtime generado y validado.
 - [x] Profundidad mapa/personaje ajustada al orden de Zircon.
-- [x] Runtime pesado guardado en Drive.
-- [ ] Publicar/sincronizar runtime pesado y assets UI web en una ubicación accesible por el cliente.
+- [ ] Publicar/sincronizar runtime pesado de mapa/player en una ubicación HTTP/CORS accesible.
 - [ ] Activar manifests `ready:true` y probar Border Village + M001 en navegador.
 - [ ] Mejorar huella de colisión continua si la prueba visual detecta recorte de esquinas.
-- [ ] Importar siguientes apariencias elegidas.
 - [ ] Monstruos, spawn, combate y primeras magias.
 
 ## Siguiente paso
 
-Publicar los assets UI extraídos y el runtime pesado en una ruta HTTP/CORS estable. Después probar el recorrido completo Login -> Personaje -> Border Village y continuar con HUD/interfaz ingame.
+Probar el recorrido Login -> Crear/Seleccionar con la UI Zircon desde localhost. Después publicar el runtime pesado de Border Village + M001 para completar la entrada ingame real.
