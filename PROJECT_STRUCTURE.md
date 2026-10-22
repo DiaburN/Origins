@@ -14,15 +14,18 @@ Origins/
 ├── js/
 │   ├── core/        # config, input, cámara, MIR animation/sprites/map parser+renderer
 │   ├── entities/    # Player
-│   ├── systems/     # player-state, map-world, movement
+│   ├── systems/     # session, player-state, map-world, movement
+│   ├── ui/          # login, creación/selección y navegación de interfaz
 │   └── game.js
 ├── tools/mir3/
 │   ├── build_map_runtime.py
-│   └── build_player_runtime.py
+│   ├── build_player_runtime.py
+│   └── build_ui_runtime.py
 └── assets/
     ├── maps/<map-id>/manifest.json
     ├── monsters/<monster-id>/
-    └── players/<race>/<common-or-class>/<gender>/<appearance>/manifest.json
+    ├── players/<race>/<common-or-class>/<gender>/<appearance>/manifest.json
+    └── ui/           # runtime web extraído de Interface/GameInter
 ```
 
 ## Reglas
@@ -64,6 +67,14 @@ Núcleo inicial: `Warrior`, `Wizard`, `Taoist`, `Assassin`.
 - `tools/mir3/build_player_runtime.py`: convierte un bloque de apariencia de 5000 frames a WebP lossless + manifest web.
 - M001 masculino generado: `1576` frames reales, todos contrastados píxel a píxel con `M-Hum.Zl`; runtime almacenado en Drive.
 
+## Interfaz / flujo local
+
+- `js/systems/session.js`: cuenta y personajes de prueba persistidos en `localStorage`; no guarda contraseña.
+- `js/ui/flow.js`: Login -> Crear/Seleccionar personaje -> Entrar al juego.
+- Clases iniciales: Warrior, Wizard, Taoist y Assassin; hombre/mujer.
+- `tools/mir3/build_ui_runtime.py`: extrae solo fondos, logo y previews usados desde `Interface1c.Zl`, `Interface1c-Extended.Zl` y `GameInter.Zl`.
+- Esta sesión local es temporal: debe poder sustituirse por backend/Firebase sin rehacer las pantallas.
+
 ## Mapas MIR3
 
 Primer mapa: `01.map` = Border Village.
@@ -97,9 +108,12 @@ Estos archivos todavía no se sirven directamente al navegador: Drive actúa com
 ## Estado
 
 - [x] Cliente mínimo, loop, input y cámara.
+- [x] Login local de prueba + creación/selección de personaje.
+- [x] El runtime del juego arranca solo después de elegir personaje.
 - [x] Player: movimiento continuo + 8 direcciones + FrameSets/estados MIR.
 - [x] Player renderer: offsets originales, atlas compactos y multipágina.
 - [x] Conversor genérico de apariencias MIR3.
+- [x] Conversor específico de UI MIR3 -> WebP.
 - [x] M001 masculino convertido y validado.
 - [x] Parser completo `.map` y `MapWorld`.
 - [x] Border Village recibido y validado.
@@ -108,7 +122,7 @@ Estos archivos todavía no se sirven directamente al navegador: Drive actúa com
 - [x] Border Village runtime generado y validado.
 - [x] Profundidad mapa/personaje ajustada al orden de Zircon.
 - [x] Runtime pesado guardado en Drive.
-- [ ] Publicar/sincronizar runtime pesado en una ubicación web accesible por el cliente.
+- [ ] Publicar/sincronizar runtime pesado y assets UI web en una ubicación accesible por el cliente.
 - [ ] Activar manifests `ready:true` y probar Border Village + M001 en navegador.
 - [ ] Mejorar huella de colisión continua si la prueba visual detecta recorte de esquinas.
 - [ ] Importar siguientes apariencias elegidas.
@@ -116,4 +130,4 @@ Estos archivos todavía no se sirven directamente al navegador: Drive actúa com
 
 ## Siguiente paso
 
-Resolver una ubicación web estable para los binarios runtime (mapa/atlases). Después activar Border Village y M001 y hacer la primera prueba real en navegador: caminar, correr, 8 direcciones, cámara, colisión y oclusión por árboles/casas.
+Publicar los assets UI extraídos y el runtime pesado en una ruta HTTP/CORS estable. Después probar el recorrido completo Login -> Personaje -> Border Village y continuar con HUD/interfaz ingame.
