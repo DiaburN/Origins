@@ -62,35 +62,39 @@
       "designNote": "The five evolution stages are one evolving skill, not five simultaneously usable skills. Stones belong to the fire branch and remain equipped when the skill evolves."
     },
     "ice": {
-      "status": "pending-user-order",
-      "evolution": [],
+      "status": "provisional-order",
+      "evolution": [
+        "IceBolt",
+        "IceBlades",
+        "IceDragon",
+        "IceStorm",
+        "IceRain"
+      ],
       "sourceMagicIds": {
         "IceBolt": 203,
         "IceBlades": 210,
-        "FrozenEarth": 214,
-        "IceStorm": 222,
-        "GreaterFrozenEarth": 224,
-        "IceRain": 238,
-        "FrostBite": 239,
-        "IceAura": 243,
         "IceDragon": 244,
-        "IceBreaker": 245,
-        "FrozenDragon": 246
+        "IceStorm": 222,
+        "IceRain": 238
       },
-      "candidates": {
-        "IceBolt": "Single-target ice projectile; applies slow.",
-        "IceBlades": "Single-target ice attack/projectile; applies stronger high-level slow profile.",
-        "FrozenEarth": "Long forward ice line up to 8 cells with weaker side hits; applies slow.",
-        "GreaterFrozenEarth": "Expanded FrozenEarth covering three forward lanes plus weaker side hits.",
-        "IceStorm": "Targeted small-area ice burst around a selected location; applies slow.",
-        "IceRain": "Large targeted zone with multiple random delayed ice impacts; source contains an unfinished freeze-poison hook.",
-        "FrostBite": "Temporary self buff; when it ends it bursts around the caster and damages nearby non-boss monsters.",
-        "IceAura": "Creates a persistent ice effect on a struck cell that repeatedly applies paralysis to valid targets.",
-        "IceDragon": "Single-target ice projectile/attack; applies slow.",
-        "IceBreaker": "Expanding radial ice burst centered on the caster, radius 2.",
-        "FrozenDragon": "Two successive expanding radial ice pulses centered on the caster, radius 2."
+      "specialStoneCandidates": {
+        "FrozenEarth": "Adds a forward ice-line or frozen-ground effect to the active ice evolution.",
+        "GreaterFrozenEarth": "Upgrades the frozen-ground modifier into a wider three-line pattern.",
+        "FrostBite": "Adds a delayed frost burst around the caster after a temporary buff/window.",
+        "IceAura": "Adds a persistent ice field capable of repeatedly applying paralysis.",
+        "IceBreaker": "Adds or strengthens an expanding radial ice burst around the caster.",
+        "FrozenDragon": "Reserved as a powerful radial/final ice modifier or possible future evolution alternative."
       },
-      "notes": "Order is intentionally not decided yet. Likely some entries become special stones/effects rather than evolution stages."
+      "basicStoneExamples": [
+        "+% ice damage",
+        "+% critical chance for ice skills",
+        "-% cooldown",
+        "-% MP cost",
+        "+% area/radius",
+        "+% slow strength/duration",
+        "+% projectile/effect speed"
+      ],
+      "designNote": "Provisional ORIGINS order: IceBolt -> IceBlades -> IceDragon -> IceStorm -> IceRain. IceRain remains the proposed final stage for now; FrozenDragon is kept outside the chain as a candidate special modifier or alternate final evolution."
     }
   }
 }
