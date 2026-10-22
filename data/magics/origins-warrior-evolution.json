@@ -11,11 +11,7 @@
   "branches": {
     "line": {
       "status": "locked-direction",
-      "evolution": [
-        "Slaying",
-        "Thrusting",
-        "CrushingWave"
-      ],
+      "evolution": ["Slaying", "Thrusting", "CrushingWave"],
       "stages": [
         {
           "stage": 1,
@@ -42,25 +38,10 @@
     },
     "moon": {
       "status": "locked-direction",
-      "evolution": [
-        "HalfMoon",
-        "DragonRise",
-        "FullMoon",
-        "FireSword"
-      ],
+      "evolution": ["HalfMoon", "DragonRise", "FullMoon", "FireSword"],
       "stages": [
-        {
-          "stage": 1,
-          "sourceMagic": "HalfMoon",
-          "sourceMagicId": 104,
-          "role": "toggle frontal sweep"
-        },
-        {
-          "stage": 2,
-          "sourceMagic": "DragonRise",
-          "sourceMagicId": 107,
-          "role": "charged wider sweep"
-        },
+        {"stage": 1, "sourceMagic": "HalfMoon", "sourceMagicId": 104, "role": "toggle frontal sweep"},
+        {"stage": 2, "sourceMagic": "DragonRise", "sourceMagicId": 107, "role": "charged wider sweep"},
         {
           "stage": 3,
           "sourceMagic": "DestructiveSurge",
@@ -69,28 +50,14 @@
           "role": "360-degree sword sweep",
           "originsBehavior": "Destructive Surge supplies the mechanics for the ORIGINS FullMoon stage: a complete circular attack around the Warrior."
         },
-        {
-          "stage": 4,
-          "sourceMagic": "FireSword",
-          "sourceMagicId": 136,
-          "role": "fire-enhanced circular final evolution"
-        }
+        {"stage": 4, "sourceMagic": "FireSword", "sourceMagicId": 136, "role": "fire-enhanced circular final evolution"}
       ]
     },
     "dash": {
       "status": "locked-direction",
-      "evolution": [
-        "ShoulderDash",
-        "Assault",
-        "HundredFist"
-      ],
+      "evolution": ["ShoulderDash", "Assault", "HundredFist"],
       "stages": [
-        {
-          "stage": 1,
-          "sourceMagic": "ShoulderDash",
-          "sourceMagicId": 105,
-          "role": "dash and push"
-        },
+        {"stage": 1, "sourceMagic": "ShoulderDash", "sourceMagicId": 105, "role": "dash and push"},
         {
           "stage": 2,
           "sourceMagic": "Assault",
@@ -98,34 +65,15 @@
           "role": "enhanced dash/control",
           "originsBehavior": "Promote Zircon's ShoulderDash augment into a real ORIGINS evolution stage, preserving its paralysis/silence control concept."
         },
-        {
-          "stage": 3,
-          "sourceMagic": "HundredFist",
-          "sourceMagicId": 133,
-          "role": "advanced target rush and heavy displacement"
-        }
+        {"stage": 3, "sourceMagic": "HundredFist", "sourceMagicId": 133, "role": "advanced target rush and heavy displacement"}
       ]
     },
     "powerStrike": {
       "status": "locked-direction",
-      "evolution": [
-        "FlamingSword",
-        "DefensiveBlow",
-        "BladeStorm"
-      ],
+      "evolution": ["FlamingSword", "DefensiveBlow", "BladeStorm"],
       "stages": [
-        {
-          "stage": 1,
-          "sourceMagic": "FlamingSword",
-          "sourceMagicId": 106,
-          "role": "charged heavy strike"
-        },
-        {
-          "stage": 2,
-          "sourceMagic": "DefensiveBlow",
-          "sourceMagicId": 130,
-          "role": "charged strike with defence reduction"
-        },
+        {"stage": 1, "sourceMagic": "FlamingSword", "sourceMagicId": 106, "role": "charged heavy strike"},
+        {"stage": 2, "sourceMagic": "DefensiveBlow", "sourceMagicId": 130, "role": "charged strike with defence reduction"},
         {
           "stage": 3,
           "sourceMagic": "BladeStorm",
@@ -140,10 +88,7 @@
     "workingName": "Arcane",
     "nameStatus": "provisional",
     "status": "design-direction",
-    "controlEvolution": [
-      "Beckon",
-      "MassBeckon"
-    ],
+    "controlEvolution": ["Beckon", "MassBeckon"],
     "skills": {
       "Beckon": {
         "sourceMagicId": 112,
@@ -153,10 +98,6 @@
       "MassBeckon": {
         "sourceMagicId": 123,
         "role": "mass pull/control"
-      },
-      "Interchange": {
-        "sourceMagicId": 110,
-        "role": "position-swap utility"
       }
     },
     "buffs": {
@@ -167,6 +108,13 @@
       "Invincibility": 125,
       "ElementalSwords": 131
     },
-    "designNote": "Arcane/Utility groups Warrior control, position manipulation and self-buffs rather than forcing these mechanics into offensive evolution branches."
+    "designNote": "Arcane/Utility groups Warrior pull/control and self-buffs rather than forcing these mechanics into offensive evolution branches."
+  },
+  "standbyForOtherClasses": {
+    "Interchange": {
+      "sourceMagicId": 110,
+      "status": "standby",
+      "note": "Not assigned to Warrior. Revisit later; it may fit Assassin better."
+    }
   }
 }
