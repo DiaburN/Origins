@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="es">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -7,7 +7,77 @@
   <link rel="stylesheet" href="css/game.css">
 </head>
 <body>
-  <canvas id="game" aria-label="ORIGINS X game canvas"></canvas>
+  <main id="flow-shell" class="flow-shell">
+    <section id="login-screen" class="origin-screen login-screen is-active" aria-label="Inicio de sesión">
+      <div class="screen-art login-art"></div>
+      <img class="origin-logo" src="assets/ui/login/logo.webp" alt="ORIGINS X">
+      <form id="login-form" class="mir-panel login-panel">
+        <h1>ORIGINS X</h1>
+        <label>Usuario<input id="login-user" autocomplete="username" value="Origins"></label>
+        <label>Contraseña<input id="login-password" type="password" autocomplete="current-password" value="origins"></label>
+        <p id="login-message" class="form-message"></p>
+        <button class="mir-primary" type="submit">ENTRAR</button>
+        <small class="local-note">Cuenta local de prueba. No se envían datos.</small>
+      </form>
+    </section>
+
+    <section id="select-screen" class="origin-screen select-screen" aria-label="Selección de personaje">
+      <div class="screen-art select-art"></div>
+      <div class="select-layout">
+        <aside class="mir-panel character-list-panel">
+          <header><h2>Personajes</h2><button id="create-open" class="mir-small" type="button">+ Crear</button></header>
+          <div id="character-list" class="character-list"></div>
+          <button id="select-logout" class="mir-link" type="button">Cambiar cuenta</button>
+        </aside>
+        <section class="selected-character">
+          <img id="selected-preview" class="selected-preview is-hidden" alt="">
+          <div class="selected-copy">
+            <h2 id="selected-name">Selecciona un personaje</h2>
+            <p id="selected-meta"></p>
+          </div>
+          <div class="selected-actions">
+            <button id="play-character" class="mir-primary" type="button" disabled>ENTRAR AL JUEGO</button>
+            <button id="delete-character" class="mir-danger" type="button" disabled>Eliminar</button>
+          </div>
+        </section>
+      </div>
+    </section>
+
+    <section id="create-screen" class="origin-screen create-screen" aria-label="Crear personaje">
+      <div class="screen-art select-art"></div>
+      <form id="create-form" class="creator-layout">
+        <aside class="mir-panel creator-options">
+          <button id="create-back" class="mir-link back-button" type="button">← Volver</button>
+          <h2>Crear personaje</h2>
+          <label>Nombre<input id="character-name" maxlength="16" autocomplete="off" placeholder="Nombre"></label>
+          <h3>Clase</h3>
+          <div class="option-grid class-grid">
+            <button type="button" data-class="Warrior">Warrior</button>
+            <button type="button" data-class="Wizard">Wizard</button>
+            <button type="button" data-class="Taoist">Taoist</button>
+            <button type="button" data-class="Assassin">Assassin</button>
+          </div>
+          <h3>Sexo</h3>
+          <div class="option-grid gender-grid">
+            <button type="button" data-gender="male">Hombre</button>
+            <button type="button" data-gender="female">Mujer</button>
+          </div>
+          <p id="create-message" class="form-message"></p>
+          <button class="mir-primary" type="submit">CREAR PERSONAJE</button>
+        </aside>
+        <section class="creator-stage">
+          <img id="creator-preview" src="assets/ui/characters/warrior-male.webp" alt="Vista previa">
+          <h2 id="creator-class-name">Warrior</h2>
+        </section>
+      </form>
+    </section>
+  </main>
+
+  <canvas id="game" hidden aria-label="ORIGINS X game canvas"></canvas>
+  <div id="game-hud" class="game-hud" hidden>
+    <strong id="game-character-name"></strong>
+    <span id="game-character-class"></span>
+  </div>
 
   <script src="js/core/config.js"></script>
   <script src="js/core/math.js"></script>
@@ -17,10 +87,12 @@
   <script src="js/core/mir-map-renderer.js"></script>
   <script src="js/core/input.js"></script>
   <script src="js/core/camera.js"></script>
+  <script src="js/systems/session.js"></script>
   <script src="js/systems/player-state.js"></script>
   <script src="js/systems/map-world.js"></script>
   <script src="js/systems/movement.js"></script>
   <script src="js/entities/player.js"></script>
   <script src="js/game.js"></script>
+  <script src="js/ui/flow.js"></script>
 </body>
 </html>
