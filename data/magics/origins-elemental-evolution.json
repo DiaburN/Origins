@@ -1,0 +1,69 @@
+{
+  "version": 1,
+  "status": "design-reference",
+  "rules": {
+    "evolutionReplacesPreviousSkill": true,
+    "previousSkillNoLongerUsableAfterEvolution": true,
+    "modifierSocketsPerElementBranch": 5,
+    "socketsPersistThroughSkillEvolution": true,
+    "socketUnlock": {
+      "automatic": false,
+      "method": "eligible through branch progression, then opened with a dedicated unlock item",
+      "itemNameWorking": "Piedra de Apertura Mágica"
+    },
+    "stoneTypes": {
+      "basic": "Generic elemental/stat modifiers that affect whichever evolution is currently active.",
+      "special": "Mechanic-changing modifiers derived from former standalone skills/effects. Their behavior adapts to the currently active evolution."
+    },
+    "uiDirection": {
+      "useRealZirconMagicDialogComponents": true,
+      "layout": "evolution path above/center, current-skill details/preview, five sockets along bottom",
+      "zirconReferences": {
+        "magicDialogBackgroundInterfaceIndex": 164,
+        "magicCellInterfaceIndex": 165,
+        "fireTabInterfaceIndices": [174, 175]
+      }
+    }
+  },
+  "elements": {
+    "fire": {
+      "status": "locked-order",
+      "evolution": [
+        "FireBall",
+        "AdamantineFireBall",
+        "FireBounce",
+        "MeteorShower",
+        "Asteroid"
+      ],
+      "sourceMagicIds": {
+        "FireBall": 201,
+        "AdamantineFireBall": 208,
+        "FireBounce": 231,
+        "MeteorShower": 226,
+        "Asteroid": 240
+      },
+      "specialStoneCandidates": {
+        "Burning": "Applies a fire damage-over-time effect; adapts to the active fire evolution.",
+        "FireWall": "Leaves persistent fire zones/trails depending on the active fire evolution.",
+        "ScortchedEarth": "Creates scorched ground after impacts; scale/count adapts to the active fire evolution.",
+        "FireStorm": "Adds a secondary area-fire burst or storm behavior to impacts.",
+        "FlameArt": "Reserved legendary/special modifier; Zircon entry is not coded, so ORIGINS may define it freely."
+      },
+      "basicStoneExamples": [
+        "+% fire damage",
+        "+% critical chance for fire skills",
+        "+% critical damage for fire skills",
+        "-% cooldown",
+        "-% MP cost",
+        "+% area/radius",
+        "+% projectile/effect speed"
+      ],
+      "designNote": "The five evolution stages are one evolving skill, not five simultaneously usable skills. Stones belong to the fire branch and remain equipped when the skill evolves."
+    },
+    "ice": {
+      "status": "pending-user-order",
+      "evolution": [],
+      "specialStoneCandidates": {}
+    }
+  }
+}
