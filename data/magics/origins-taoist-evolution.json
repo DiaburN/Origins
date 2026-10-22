@@ -4,7 +4,9 @@
   "class": "Taoist",
   "rules": {
     "fixedEvolutionLength": false,
-    "designNote": "Do not force long evolution chains. Keep only mechanically natural stages and leave unassigned Taoist skills in standby until their role is clear."
+    "designNote": "Do not force long evolution chains. Keep only mechanically natural stages and leave unassigned Taoist skills in standby until their role is clear.",
+    "cumulativeBuffEvolution": true,
+    "cumulativeBuffBehavior": "Taoist buff evolutions do not replace previous buffs. Casting the current buff stage also applies every earlier stage in that same buff chain. This requires ORIGINS-specific implementation rather than Zircon replacement-style evolution."
   },
   "branches": {
     "holy": {
@@ -52,9 +54,50 @@
       "evolution": ["SummonSkeleton", "SummonJinSkeleton"],
       "sourceMagicIds": {
         "SummonSkeleton": 332,
-        "SummonJinSkeleton": 334
+        "SummonJinSkeleton": 334,
+        "StrengthOfFaith": 335
+      },
+      "stoneCandidates": {
+        "StrengthOfFaith": "Summon-focused buff/stone reserved for the pet branch rather than the general Taoist buff chain."
       },
       "designNote": "Core summon evolution is SummonSkeleton -> SummonJinSkeleton. Shinsu, DemonicCreature, SummonDead and CursedDoll remain separate in standby."
+    },
+    "generalBuffs": {
+      "status": "provisional-order",
+      "stacking": "cumulative",
+      "evolution": [
+        "MagicResistance",
+        "Resilience",
+        "BloodLust",
+        "ElementalSuperiority",
+        "LifeSteal",
+        "Spiritualism"
+      ],
+      "sourceMagicIds": {
+        "MagicResistance": 306,
+        "Resilience": 309,
+        "BloodLust": 314,
+        "ElementalSuperiority": 312,
+        "LifeSteal": 320,
+        "Spiritualism": 327
+      },
+      "designNote": "Order is provisional from lower/general utility toward stronger/more complete buffs. Stage N casts and applies stages 1 through N; previous buffs remain active and are not replaced."
+    },
+    "stealth": {
+      "status": "locked-direction",
+      "stacking": "cumulative",
+      "evolution": ["Invisibility", "MassInvisibility", "Transparency"],
+      "sourceMagicIds": {
+        "Invisibility": 305,
+        "MassInvisibility": 307,
+        "Transparency": 317
+      },
+      "designNote": "ORIGINS intentionally uses Transparency as the final stealth evolution even though Zircon mechanics differ. The cumulative Taoist buff rule applies."
+    },
+    "celestialLight": {
+      "status": "standalone",
+      "sourceMagicId": 318,
+      "designNote": "CelestialLight remains an independent Taoist skill and is not part of the cumulative general buff or stealth chains."
     }
   },
   "standby": [
