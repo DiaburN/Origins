@@ -21,7 +21,8 @@
       "zirconReferences": {
         "magicDialogBackgroundInterfaceIndex": 164,
         "magicCellInterfaceIndex": 165,
-        "fireTabInterfaceIndices": [174, 175]
+        "fireTabInterfaceIndices": [174, 175],
+        "iceTabInterfaceIndices": [176, 177]
       }
     }
   },
@@ -63,7 +64,33 @@
     "ice": {
       "status": "pending-user-order",
       "evolution": [],
-      "specialStoneCandidates": {}
+      "sourceMagicIds": {
+        "IceBolt": 203,
+        "IceBlades": 210,
+        "FrozenEarth": 214,
+        "IceStorm": 222,
+        "GreaterFrozenEarth": 224,
+        "IceRain": 238,
+        "FrostBite": 239,
+        "IceAura": 243,
+        "IceDragon": 244,
+        "IceBreaker": 245,
+        "FrozenDragon": 246
+      },
+      "candidates": {
+        "IceBolt": "Single-target ice projectile; applies slow.",
+        "IceBlades": "Single-target ice attack/projectile; applies stronger high-level slow profile.",
+        "FrozenEarth": "Long forward ice line up to 8 cells with weaker side hits; applies slow.",
+        "GreaterFrozenEarth": "Expanded FrozenEarth covering three forward lanes plus weaker side hits.",
+        "IceStorm": "Targeted small-area ice burst around a selected location; applies slow.",
+        "IceRain": "Large targeted zone with multiple random delayed ice impacts; source contains an unfinished freeze-poison hook.",
+        "FrostBite": "Temporary self buff; when it ends it bursts around the caster and damages nearby non-boss monsters.",
+        "IceAura": "Creates a persistent ice effect on a struck cell that repeatedly applies paralysis to valid targets.",
+        "IceDragon": "Single-target ice projectile/attack; applies slow.",
+        "IceBreaker": "Expanding radial ice burst centered on the caster, radius 2.",
+        "FrozenDragon": "Two successive expanding radial ice pulses centered on the caster, radius 2."
+      },
+      "notes": "Order is intentionally not decided yet. Likely some entries become special stones/effects rather than evolution stages."
     }
   }
 }
