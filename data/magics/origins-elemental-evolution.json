@@ -107,13 +107,58 @@
         "DragonTornado": 223,
         "Tempest": 228,
         "Storm": 241,
-        "Tornado": 242
+        "Tornado": 242,
+        "Repulsion": 205
       },
       "specialStoneCandidates": {
         "Tornado": "Candidate colored wind stone or summon-effect modifier based on Zircon's temporary tornado summon behavior.",
-        "Storm": "Candidate legendary wind stone/effect. Zircon defines it as Wind but leaves the skill incomplete, so ORIGINS can define its final behavior."
+        "Storm": "Candidate legendary wind stone/effect. Zircon defines it as Wind but leaves the skill incomplete, so ORIGINS can define its final behavior.",
+        "Repulsion": "Wind control modifier: pushes enemies away from the caster or from impact zones depending on the active wind evolution."
       },
-      "designNote": "Locked ORIGINS wind evolution: GustBlast -> Cyclone -> BlowEarth -> DragonTornado -> Tempest. Tornado and Storm are reserved for colored wind stones/effects rather than the active evolution chain."
+      "designNote": "Locked ORIGINS wind evolution: GustBlast -> Cyclone -> BlowEarth -> DragonTornado -> Tempest. Tornado, Storm and Repulsion are reserved for colored wind stones/effects rather than the active evolution chain."
+    }
+  },
+  "wizardUtilitySchool": {
+    "workingName": "Illusion",
+    "nameStatus": "pending-rename",
+    "status": "design-direction",
+    "skills": {
+      "MagicShield": {
+        "sourceMagicId": 219,
+        "role": "defensive active/buff",
+        "evolvesTo": "SuperiorMagicShield"
+      },
+      "SuperiorMagicShield": {
+        "sourceMagicId": 233,
+        "role": "advanced defensive shield"
+      },
+      "Teleportation": {
+        "sourceMagicId": 207,
+        "role": "mobility"
+      },
+      "GeoManipulation": {
+        "sourceMagicId": 218,
+        "role": "advanced/special mobility"
+      },
+      "Renounce": {
+        "sourceMagicId": 227,
+        "role": "offensive self-buff",
+        "zirconBehavior": "Trades HealthPercent for additional MCPercent for a timed duration; also grants passive MCPercent scaling with level."
+      },
+      "JudgementOfHeaven": {
+        "sourceMagicId": 229,
+        "role": "special offensive buff/proc",
+        "zirconBehavior": "Applies a timed Chance of Judgement stat. The reviewed Zircon source does not expose a complete downstream mechanic for that stat, so ORIGINS may define its proc behavior."
+      },
+      "MirrorImage": {
+        "sourceMagicId": 237,
+        "role": "illusion/summon-special",
+        "note": "Natural fit for this school if retained."
+      }
+    },
+    "excludedOrElsewhere": {
+      "Repulsion": "Moved to Wind colored stones/effects.",
+      "ElementalHurricane": "Keep outside Illusion for now. Zircon implements it as a channelled toggle whose element follows DarkStone affinity; better treated as an elemental special/system skill."
     }
   }
 }
