@@ -1,22 +1,22 @@
 # PROJECT STRUCTURE
 
-Único documento de estructura del proyecto. Mantener corto y actualizado.
+Documento único y corto de estructura oficial. Revisar antes de crear archivos.
 
 ```text
 Origins/
-├── README.md
-├── PROJECT_STRUCTURE.md
 ├── index.html
-├── css/game.css
-├── data/
-│   ├── players/
-│   └── magics/
+├── css/
+│   ├── game.css
+│   └── ingame.css
 ├── js/
 │   ├── core/        # config, input, cámara, MIR animation/sprites/map parser+renderer
 │   ├── entities/    # Player
 │   ├── systems/     # session, player-state, map-world, movement
-│   ├── ui/          # login, creación/selección y navegación de interfaz
+│   ├── ui/          # flow + ingame HUD/windows/minimap
 │   └── game.js
+├── data/
+│   ├── players/
+│   └── magics/
 ├── tools/mir3/
 │   ├── build_map_runtime.py
 │   ├── build_player_runtime.py
@@ -24,106 +24,63 @@ Origins/
 └── assets/
     ├── maps/<map-id>/manifest.json
     ├── monsters/<monster-id>/
-    ├── players/<race>/<common-or-class>/<gender>/<appearance>/manifest.json
-    └── ui/           # runtime web extraído de Interface/GameInter
+    ├── players/<race>/<class>/<gender>/<appearance>/manifest.json
+    └── ui/zircon/   # runtime web extraído de Interface/GameInter
 ```
 
 ## Reglas
 
-1. Revisar este archivo antes de crear carpetas o archivos nuevos.
+1. No escanear todo el repo en cada tarea; mirar este archivo y solo lo afectado.
 2. No crear TXT temporales, copias ni documentación redundante.
-3. No importar Zircon, Crystal ni PokéSurvivor completos.
-4. Assets y lógica permanecen separados.
-5. Posición: continua estilo PokéSurvivor. Dirección/acciones/frames: MIR3/Zircon.
-6. Clases, razas, apariencias, monstruos y magias deben ser data-driven.
-7. Drive conserva fuentes pesadas y runtime pesado; GitHub conserva código, manifests y herramientas.
-8. Los `.Zl` son fuente de conversión, nunca formato que deba interpretar el navegador.
+3. No importar Zircon/PokéSurvivor completos: reutilizar reglas/assets concretos.
+4. Assets y lógica separados; `.Zl` solo fuente de conversión, nunca runtime web.
+5. Movimiento continuo; direcciones/acciones/frames MIR3/Zircon.
+6. Clases, mapas, monstruos, magias, items y spawns deben ser data-driven.
 
-## Referencias
+## Flujo actual
 
-- PokéSurvivor `b297089`: loop, cámara, input, chunks y dinámica general.
-- Zircon `80d5df21016b2f377d48f14f7dcc2e994b163ff1`: direcciones, acciones, frames, personajes, items, magias, monstruos y mapas.
-- Crystal `0e315fe327192afe52c3d7357ddd1f5b7e26c5b8`: referencia futura opcional para Archer.
+`Login local -> Crear/Seleccionar personaje -> Entrar -> HUD ingame -> mapa inicial`
 
-## Clases y apariencias
+- Cuenta/personajes temporales en `localStorage`.
+- Clases: Warrior, Wizard, Taoist, Assassin; hombre/mujer.
+- Login/Select/Create reconstruidos con assets reales de Zircon.
+- `js/ui/ingame.js`: panel principal, ventanas y minimapa.
+- Panel inferior basado en `GameInter` index `50`.
+- Hotspots reales: Character 82, Bag 87, Magic 92, Quest 112, Mail 97, Belt 107, Group 102, Menu 117, Store 122.
+- Minimapa basado en `MiniMapDialog`; controles reales GameInter 130/132/137.
+- Ventanas ya preparadas: Personaje, Bolsa, Magias, Misiones, Correo, Cinturón, Grupo, Menú, Tienda y mapa grande.
 
-Núcleo inicial: `Warrior`, `Wizard`, `Taoist`, `Assassin`.
+## Mapa inicial
 
-- Base `M001/F001`; noob `M003/F003`.
-- Warrior: `M004 > M007 > M002 > M053 > M067` + femenino.
-- Taoist: `M006 > M009 > M010 > M051 > M056` + femenino.
-- Wizard: `M005 > M008 > M011 > M054 > M061` + femenino.
-- Assassin: `M013 > M016 > M014 > M015 > M046` + femenino.
+**Start actual: `3.map`.**
 
-`M046` sigue siendo Assassin aunque proceda de otra familia HUM. `Archer` y `Monk` quedan fuera del núcleo inicial.
+Manifest: `assets/maps/start-3/manifest.json`.
 
-## Player MIR
+- `game.js` apunta directamente a este manifest.
+- Runtime todavía `ready:false`; cuando se genere `3.map + render-pack + atlas`, arrancará automáticamente ahí.
+- Tutorial inicial futuro: isla/minitutorial antes o alrededor del inicio; no bloquear la implementación actual.
+- `01.map` / Border Village se conserva como mapa técnico ya validado y referencia del parser/renderer.
 
-- Direcciones: `0 Up, 1 UpRight, 2 Right, 3 DownRight, 4 Down, 5 DownLeft, 6 Left, 7 UpLeft`.
-- `js/core/mir-animation.js`: FrameSets/timings Player de Zircon, incluido Combat1-15 y estados especiales.
-- `js/systems/player-state.js`: intención `MirAction` separada de `MirAnimation`.
-- `js/core/mir-sprites.js`: atlas compactos de tamaño variable, offsets originales y soporte multipágina.
-- `js/entities/player.js`: posición continua en centro de celda; al renderizar se convierte al origen MIR 48x32 y se aplican `OffSetX/OffSetY` originales.
-- `tools/mir3/build_player_runtime.py`: convierte un bloque de apariencia de 5000 frames a WebP lossless + manifest web.
-- M001 masculino generado: `1576` frames reales, todos contrastados píxel a píxel con `M-Hum.Zl`; runtime almacenado en Drive.
+## Player / mapas
 
-## Interfaz / flujo local
-
-- `js/systems/session.js`: cuenta y personajes de prueba persistidos en `localStorage`; no guarda contraseña.
-- `js/ui/flow.js`: Login -> Crear/Seleccionar personaje -> Entrar al juego.
-- Clases iniciales: Warrior, Wizard, Taoist y Assassin; hombre/mujer.
-- `tools/mir3/build_ui_runtime.py`: extrae desde `Interface1c.Zl`, `Interface1c-Extended.Zl`, `Interface.Zl` y `GameInter.Zl`.
-- `assets/ui/zircon/`: fondo de selección, logo, configuración, HUD y previews reales de las 8 combinaciones clase/sexo.
-- Geometría de Login/Select/Create basada en `LoginScene`, `SelectScene`, `DXWindow` y `DXButton` de Zircon.
-- Esta sesión local es temporal: debe poder sustituirse por backend/Firebase sin rehacer las pantallas.
-
-## Mapas MIR3
-
-Primer mapa: `01.map` = Border Village.
-
-- Fuente oficial ORIGINS X: `600x600`, `5.310.028 bytes`, SHA1 `61c550cd938573a26efa7ee7067d51d9aa47d391`.
-- Usa exactamente 11 librerías: `0,1,2,3,4,5,9,10,11,15,25`.
-- `js/core/mir-map.js`: parser Back/Middle/Front, animación, luz, librerías y colisión.
-- `js/core/mir-map-renderer.js`: atlas compartidos, animación 100 ms y profundidad equivalente al cliente Zircon.
-- Orden visual verificado contra Zircon: Back -> capas estáticas 48x32/96x64 de suelo -> por cada fila capas altas/animadas -> entidades de esa fila.
-- `js/systems/map-world.js`: carga, spawn, límites, movimiento continuo y colisión MIR.
-- `tools/mir3/build_map_runtime.py`: extrae solo frames realmente usados y genera `.map` + `render-pack.json` + WebP lossless.
-- Border Village runtime generado: `10.914` frames reales, `5` páginas compartidas de atlas; todos los frames extraídos fueron contrastados contra sus `.Zl`.
+- `js/core/mir-animation.js`: FrameSets/timings Zircon.
+- `js/core/mir-sprites.js`: atlas + offsets MIR.
+- `js/entities/player.js`: personaje continuo con renderer MIR.
+- `js/core/mir-map.js`: parser `.map`.
+- `js/core/mir-map-renderer.js`: capas/profundidad/animación.
+- `js/systems/map-world.js`: carga, spawn, límites y colisión.
+- `tools/mir3/build_map_runtime.py`: `.map` -> runtime web.
 
 ## Runtime pesado
 
-Drive: `MAPAS Y ARCHIVOS / ORIGINS X RUNTIME`.
+Drive conserva fuentes/runtimes pesados; GitHub conserva código, manifests y assets web pequeños.
 
-- `border-village/`: `01.map`, `render-pack.json`, `page-0.webp` ... `page-4.webp`.
-- `players/base_m001/`: `atlas.webp`, `manifest.json`.
-
-Estos archivos todavía no se sirven directamente al navegador: Drive actúa como almacén maestro, no como CDN web. Los manifests de mapa/player permanecen `ready:false` hasta disponer de una ruta HTTP/CORS estable.
-
-## Magias
-
-- `data/magics/zircon-player-magics.json`: catálogo/mappings centrales Zircon.
-- `data/magics/zircon-magic-mechanics.json`: familias, dependencias y mecánicas.
-- Lógica autoritativa separada de VFX.
-- No copiar stubs/bugs de Zircon a ciegas.
-
-## Estado
-
-- [x] Cliente mínimo, loop, input y cámara.
-- [x] Login local de prueba + creación/selección de personaje.
-- [x] Interfaz Login/Select/Create reconstruida con assets reales de Zircon.
-- [x] Previews reales Warrior/Wizard/Taoist/Assassin hombre/mujer.
-- [x] HUD base extraído de `GameInter`.
-- [x] El runtime del juego arranca solo después de elegir personaje.
-- [x] Player: movimiento continuo + 8 direcciones + FrameSets/estados MIR.
-- [x] Player renderer: offsets originales, atlas compactos y multipágina.
-- [x] Conversores genéricos de player/UI/mapa MIR3.
-- [x] Border Village runtime generado y validado.
-- [x] Profundidad mapa/personaje ajustada al orden de Zircon.
-- [ ] Publicar/sincronizar runtime pesado de mapa/player en una ubicación HTTP/CORS accesible.
-- [ ] Activar manifests `ready:true` y probar Border Village + M001 en navegador.
-- [ ] Mejorar huella de colisión continua si la prueba visual detecta recorte de esquinas.
-- [ ] Monstruos, spawn, combate y primeras magias.
+Pendiente: publicar el runtime real de `3.map` y el player en una ruta HTTP/CORS estable o incorporarlo al flujo local de desarrollo.
 
 ## Siguiente paso
 
-Probar el recorrido Login -> Crear/Seleccionar con la UI Zircon desde localhost. Después publicar el runtime pesado de Border Village + M001 para completar la entrada ingame real.
+1. Probar HUD/minimapa/ventanas desde localhost.
+2. Abrir el editor/conversor de mapas.
+3. Importar y preparar `3.map` como primer mapa jugable.
+4. Definir spawn inicial, regiones y después minitutorial de isla.
+5. Continuar con monstruos, combate, drops y magias.
