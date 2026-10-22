@@ -24,6 +24,19 @@
         "ImprovedExplosiveTalisman": 321
       },
       "designNote": "Dark attack branch intentionally stops at two stages for now."
+    },
+    "healing": {
+      "status": "locked-direction",
+      "evolution": ["Heal", "MassHeal"],
+      "sourceMagicIds": {
+        "Heal": 300,
+        "MassHeal": 313,
+        "EmpoweredHealing": 319
+      },
+      "stoneCandidates": {
+        "EmpoweredHealing": "Healing buff/stone that improves Heal or MassHeal instead of being an active evolution stage."
+      },
+      "designNote": "Healing branch intentionally stops at Heal -> MassHeal. EmpoweredHealing is a modifier stone/buff. SupremeHealing remains in standby."
     }
   },
   "standby": [
@@ -32,6 +45,7 @@
     "HeavenlySky",
     "CorpseExploder",
     "DemonExplosion",
-    "SpiritSword"
+    "SpiritSword",
+    "SupremeHealing"
   ]
 }
