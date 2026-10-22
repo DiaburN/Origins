@@ -12,109 +12,76 @@
     "holy": {
       "status": "locked-direction",
       "evolution": ["EvilSlayer", "GreaterEvilSlayer"],
-      "sourceMagicIds": {
-        "EvilSlayer": 304,
-        "GreaterEvilSlayer": 308
-      },
+      "sourceMagicIds": {"EvilSlayer": 304, "GreaterEvilSlayer": 308},
       "designNote": "Holy attack branch intentionally stops at two stages for now."
     },
     "dark": {
       "status": "locked-direction",
       "evolution": ["ExplosiveTalisman", "ImprovedExplosiveTalisman"],
-      "sourceMagicIds": {
-        "ExplosiveTalisman": 303,
-        "ImprovedExplosiveTalisman": 321
-      },
+      "sourceMagicIds": {"ExplosiveTalisman": 303, "ImprovedExplosiveTalisman": 321},
       "designNote": "Dark attack branch intentionally stops at two stages for now."
     },
     "healing": {
       "status": "locked-direction",
       "evolution": ["Heal", "MassHeal"],
-      "sourceMagicIds": {
-        "Heal": 300,
-        "MassHeal": 313,
-        "EmpoweredHealing": 319
-      },
-      "stoneCandidates": {
-        "EmpoweredHealing": "Healing buff/stone that improves Heal or MassHeal instead of being an active evolution stage."
-      },
+      "sourceMagicIds": {"Heal": 300, "MassHeal": 313, "EmpoweredHealing": 319},
+      "stoneCandidates": {"EmpoweredHealing": "Healing buff/stone that improves Heal or MassHeal instead of being an active evolution stage."},
       "designNote": "Healing branch intentionally stops at Heal -> MassHeal. EmpoweredHealing is a modifier stone/buff. SupremeHealing remains in standby."
     },
     "poison": {
       "status": "locked-direction",
       "evolution": ["PoisonDust", "PoisonCloud"],
-      "sourceMagicIds": {
-        "PoisonDust": 302,
-        "PoisonCloud": 350
-      },
+      "sourceMagicIds": {"PoisonDust": 302, "PoisonCloud": 350},
       "designNote": "Poison branch intentionally uses only PoisonDust -> PoisonCloud. Other poison/debuff mechanics remain unassigned in standby."
     },
     "summon": {
       "status": "locked-direction",
       "evolution": ["SummonSkeleton", "SummonJinSkeleton"],
-      "sourceMagicIds": {
-        "SummonSkeleton": 332,
-        "SummonJinSkeleton": 334,
-        "StrengthOfFaith": 335
-      },
-      "stoneCandidates": {
-        "StrengthOfFaith": "Summon-focused buff/stone reserved for the pet branch rather than the general Taoist buff chain."
-      },
+      "sourceMagicIds": {"SummonSkeleton": 332, "SummonJinSkeleton": 334, "StrengthOfFaith": 335},
+      "stoneCandidates": {"StrengthOfFaith": "Summon-focused buff/stone reserved for the pet branch rather than the general Taoist buff chain."},
       "designNote": "Core summon evolution is SummonSkeleton -> SummonJinSkeleton. Shinsu, DemonicCreature, SummonDead and CursedDoll remain separate in standby."
     },
     "generalBuffs": {
       "status": "provisional-order",
       "stacking": "cumulative",
-      "evolution": [
-        "MagicResistance",
-        "Resilience",
-        "BloodLust",
-        "ElementalSuperiority",
-        "LifeSteal",
-        "Spiritualism"
-      ],
-      "sourceMagicIds": {
-        "MagicResistance": 306,
-        "Resilience": 309,
-        "BloodLust": 314,
-        "ElementalSuperiority": 312,
-        "LifeSteal": 320,
-        "Spiritualism": 327
-      },
+      "evolution": ["MagicResistance", "Resilience", "BloodLust", "ElementalSuperiority", "LifeSteal", "Spiritualism"],
+      "sourceMagicIds": {"MagicResistance": 306, "Resilience": 309, "BloodLust": 314, "ElementalSuperiority": 312, "LifeSteal": 320, "Spiritualism": 327},
       "designNote": "Order is provisional from lower/general utility toward stronger/more complete buffs. Stage N casts and applies stages 1 through N; previous buffs remain active and are not replaced."
     },
     "stealth": {
       "status": "locked-direction",
       "stacking": "cumulative",
       "evolution": ["Invisibility", "MassInvisibility", "Transparency"],
-      "sourceMagicIds": {
-        "Invisibility": 305,
-        "MassInvisibility": 307,
-        "Transparency": 317
-      },
+      "sourceMagicIds": {"Invisibility": 305, "MassInvisibility": 307, "Transparency": 317},
       "designNote": "ORIGINS intentionally uses Transparency as the final stealth evolution even though Zircon mechanics differ. The cumulative Taoist buff rule applies."
     },
     "celestialLight": {
       "status": "standalone",
       "sourceMagicId": 318,
       "designNote": "CelestialLight remains an independent Taoist skill and is not part of the cumulative general buff or stealth chains."
+    },
+    "controlPrison": {
+      "status": "locked-direction",
+      "evolution": ["TrapOctagon", "DarkSoulPrison"],
+      "sourceMagicIds": {"TrapOctagon": 310, "DarkSoulPrison": 342},
+      "designNote": "ORIGINS treats DarkSoulPrison as the stronger evolution of TrapOctagon: small local trap/control grows into a larger persistent dark prison zone."
+    },
+    "resurrection": {
+      "status": "standalone",
+      "sourceMagicIds": {"Resurrection": 315, "AugmentResurrection": 331},
+      "stoneCandidates": {"AugmentResurrection": "Modifier stone/buff that improves Resurrection rather than a separate active evolution."}
+    },
+    "purification": {
+      "status": "standalone",
+      "sourceMagicIds": {"Purification": 316, "AugmentPurification": 330},
+      "stoneCandidates": {"AugmentPurification": "Modifier stone/buff that improves Purification rather than a separate active evolution."}
     }
   },
+  "standbyForOtherClasses": {
+    "CombatKick": {"sourceMagicId": 311, "status": "standby", "possibleClass": "Archer"},
+    "ThunderKick": {"sourceMagicId": 324, "status": "standby", "possibleClass": "Archer"}
+  },
   "standby": [
-    "SearingLight",
-    "BrainStorm",
-    "HeavenlySky",
-    "CorpseExploder",
-    "DemonExplosion",
-    "SpiritSword",
-    "SupremeHealing",
-    "Parasite",
-    "Infection",
-    "Neutralize",
-    "BindingTalisman",
-    "SummonShinsu",
-    "SummonDemonicCreature",
-    "SummonDead",
-    "CursedDoll"
+    "SearingLight", "BrainStorm", "HeavenlySky", "CorpseExploder", "DemonExplosion", "SpiritSword", "SupremeHealing", "Parasite", "Infection", "Neutralize", "BindingTalisman", "SummonShinsu", "SummonDemonicCreature", "SummonDead", "CursedDoll"
   ]
 }
