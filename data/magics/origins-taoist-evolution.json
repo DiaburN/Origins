@@ -43,9 +43,18 @@
       "evolution": ["PoisonDust", "PoisonCloud"],
       "sourceMagicIds": {
         "PoisonDust": 302,
-        "PoisonCloud": 349
+        "PoisonCloud": 350
       },
       "designNote": "Poison branch intentionally uses only PoisonDust -> PoisonCloud. Other poison/debuff mechanics remain unassigned in standby."
+    },
+    "summon": {
+      "status": "locked-direction",
+      "evolution": ["SummonSkeleton", "SummonJinSkeleton"],
+      "sourceMagicIds": {
+        "SummonSkeleton": 332,
+        "SummonJinSkeleton": 334
+      },
+      "designNote": "Core summon evolution is SummonSkeleton -> SummonJinSkeleton. Shinsu, DemonicCreature, SummonDead and CursedDoll remain separate in standby."
     }
   },
   "standby": [
@@ -59,6 +68,10 @@
     "Parasite",
     "Infection",
     "Neutralize",
-    "BindingTalisman"
+    "BindingTalisman",
+    "SummonShinsu",
+    "SummonDemonicCreature",
+    "SummonDead",
+    "CursedDoll"
   ]
 }
