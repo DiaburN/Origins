@@ -4,6 +4,8 @@ const configuredRuntimeBase = typeof window.ORIGINS_RUNTIME_BASE_URL === 'string
   ? window.ORIGINS_RUNTIME_BASE_URL.trim()
   : '';
 
+const debugEnabled = new URLSearchParams(window.location.search).get('debug') === '1';
+
 G.Config = Object.freeze({
   viewWidth: 768,
   minViewHeight: 420,
@@ -14,7 +16,7 @@ G.Config = Object.freeze({
   mirCellWidth: 48,
   mirCellHeight: 32,
   runtimeBaseUrl: configuredRuntimeBase,
-  debug: true
+  debug: debugEnabled
 });
 
 G.runtimeAssetUrl = function runtimeAssetUrl(path) {
