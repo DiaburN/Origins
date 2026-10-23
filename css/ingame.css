@@ -1,1 +1,62 @@
-#ingame-ui[hidden]{display:none}#ingame-ui{position:fixed;inset:0;z-index:30;pointer-events:none;font-family:Arial,sans-serif}.zircon-game-hud{position:fixed;left:50%;bottom:0;width:min(1024px,100vw);aspect-ratio:1024/68;transform:translateX(-50%);z-index:45;pointer-events:auto}.main-panel-image{position:absolute;inset:0;width:100%;height:100%;image-rendering:pixelated;pointer-events:none}.panel-hotspot{position:absolute;border:0;background:transparent;padding:0;z-index:8}.panel-hotspot:hover{background:rgba(255,221,144,.13);box-shadow:0 0 7px rgba(255,208,105,.35) inset}.panel-hotspot:active{transform:translateY(1px)}.hud-exp-track{position:absolute;left:1.66%;top:4.41%;width:96.88%;height:9%;overflow:hidden;border-radius:3px;pointer-events:none}.hud-exp-fill{height:100%;width:0;background:linear-gradient(90deg,#866b18,#e0bb38 55%,#fff09b);box-shadow:0 0 4px #e8c248}.hud-bar{position:absolute;left:3.42%;width:21.48%;height:11.76%;overflow:hidden;border-radius:3px;pointer-events:none}.hud-hp{top:32.35%}.hud-mp{top:52.94%}.hud-focus{top:73.53%}.hud-fill{height:100%;width:100%;transition:width .15s linear}.hud-hp .hud-fill{background:linear-gradient(#d74e3d,#8f160f)}.hud-mp .hud-fill{background:linear-gradient(#4e8ed8,#174b9b)}.hud-focus .hud-fill{background:linear-gradient(#d7b13f,#775b0f)}.hud-bar span{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#fff8e6;font:700 clamp(6px,.7vw,9px)/1 Arial,sans-serif;text-shadow:1px 1px #000}.hud-stat{position:absolute;width:5.86%;height:23.5%;display:flex;align-items:center;justify-content:center;color:#e5d8bd;text-shadow:1px 1px #000;font-size:clamp(6px,.72vw,9px);pointer-events:none}.hud-class{left:29.3%;top:29.41%}.hud-level{left:29.3%;top:58.82%}.hud-character-name{position:absolute;left:36.5%;top:33%;width:24%;height:34%;display:flex;align-items:center;justify-content:center;color:#d4c5a7;text-shadow:1px 1px #000;font-size:clamp(7px,.75vw,10px);pointer-events:none;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.ingame-minimap{position:fixed;right:10px;top:10px;width:200px;height:200px;z-index:42;background:#050505;border:2px solid #5e4a28;box-shadow:0 0 0 1px #100a05 inset,0 4px 14px rgba(0,0,0,.65);pointer-events:auto;transition:width .15s,height .15s,opacity .15s}.ingame-minimap.is-large{width:300px;height:300px}.ingame-minimap.is-transparent{opacity:.52}.minimap-header{position:absolute;left:0;right:0;top:0;height:27px;background:linear-gradient(#594522,#1f1309);border-bottom:1px solid #7c6338;display:flex;align-items:center;justify-content:center;color:#d8c596;font:bold 11px Georgia,serif;text-shadow:1px 1px #000;z-index:3}.minimap-area{position:absolute;left:7px;right:7px;top:33px;bottom:7px;overflow:hidden;background:radial-gradient(circle at 50% 50%,#26342a 0,#162019 48%,#0b100c 100%);border:1px solid #332b1b}.minimap-grid,.big-map-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(218,190,126,.08) 1px,transparent 1px),linear-gradient(90deg,rgba(218,190,126,.08) 1px,transparent 1px);background-size:20px 20px}.minimap-grid:after,.big-map-grid:after{content:"";position:absolute;inset:12%;border:1px solid rgba(179,151,88,.22);transform:rotate(9deg);border-radius:44% 56% 47% 53%}.minimap-player,.big-map-player{position:absolute;width:7px;height:7px;margin:-3px 0 0 -3px;background:#52ff4f;border:1px solid #d6ffd5;box-shadow:0 0 5px #51ff4f;border-radius:1px;z-index:3}.minimap-status{position:absolute;left:5px;right:5px;bottom:4px;z-index:4;color:#bcae8c;font:9px Arial,sans-serif;text-shadow:1px 1px #000;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.minimap-tools{position:absolute;right:3px;top:31px;z-index:5;display:flex;flex-direction:column;gap:0}.minimap-tools button{width:20px;height:20px;padding:0;border:0;background:transparent}.minimap-tools button:hover{filter:brightness(1.3)}.minimap-tools img{display:block;width:20px;height:20px;image-rendering:pixelated}.ui-window-layer{position:fixed;inset:0;z-index:44;pointer-events:none}.ingame-window{position:absolute;width:330px;min-height:260px;background:#100808;border:3px solid #3d3120;border-top-color:#6a522d;border-bottom-color:#6a522d;box-shadow:0 8px 18px rgba(0,0,0,.72);pointer-events:auto;color:#cbbd9f}.ingame-window[hidden]{display:none}.ingame-window-title{height:31px;background:linear-gradient(#6a522d 0 4px,#211408 4px 100%);display:flex;align-items:center;justify-content:center;color:#d6be94;font:bold 12px Georgia,serif;text-shadow:1px 1px #000;position:relative}.ingame-window-close{position:absolute;right:3px;top:2px;width:27px;height:25px;border:0;background:transparent;color:#c9ad75;font:bold 22px/22px Arial,sans-serif}.ingame-window-close:hover{color:#fff0bd}.ingame-window-body{padding:12px;min-height:220px;background:linear-gradient(rgba(25,12,8,.94),rgba(9,6,5,.97))}.character-window{left:20px;top:72px;width:380px}.inventory-window{right:225px;top:72px;width:390px}.magic-window{left:50%;top:90px;transform:translateX(-50%);width:410px}.quest-window,.mail-window{left:50%;top:120px;transform:translateX(-50%);width:430px}.belt-window{left:50%;bottom:92px;transform:translateX(-50%);width:390px;min-height:150px}.group-window{right:225px;top:105px;width:320px}.menu-window{right:30px;top:230px;width:250px}.store-window{left:50%;top:100px;transform:translateX(-50%);width:480px}.bigmap-window{left:50%;top:50%;transform:translate(-50%,-50%);width:min(720px,80vw);height:min(650px,75vh)}.bigmap-window .ingame-window-body{height:calc(100% - 31px)}.window-summary,.inventory-money{display:flex;justify-content:space-between;color:#d8c396;font-size:12px;margin-bottom:9px}.inventory-money{margin:9px 0 0}.inventory-grid{display:grid;grid-template-columns:repeat(8,1fr);gap:4px}.inventory-slot,.magic-slot,.belt-slot,.equipment-slot{aspect-ratio:1;background:linear-gradient(#19120c,#090706);border:1px solid #5e4b2e;box-shadow:inset 0 0 0 1px rgba(0,0,0,.7)}.inventory-slot:hover,.magic-slot:hover,.belt-slot:hover{border-color:#b18b4f}.window-tabs{display:flex;gap:4px;margin-bottom:10px}.window-tabs button{flex:1;height:26px;border:1px solid #58462a;background:#160e09;color:#aa9a7d}.window-tabs button.is-active{border-color:#b29154;color:#efd38f;background:#35220f}.magic-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:7px}.magic-slot{position:relative}.magic-slot span,.belt-slot span{position:absolute;right:3px;bottom:2px;color:#a99d86;font-size:9px}.window-help{color:#91846d;font-size:11px;line-height:1.35;margin:10px 0 0}.belt-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:7px}.character-sheet{display:grid;grid-template-columns:1fr 1fr;gap:10px}.character-portrait{grid-column:1/-1;min-height:54px;border:1px solid #5a482b;background:#0b0806;padding:9px;display:flex;flex-direction:column;align-items:center;justify-content:center}.character-portrait strong{color:#efd18e}.character-portrait span{font-size:11px;color:#9f947e;margin-top:4px}.character-stats{display:grid;gap:4px}.stat-row{display:flex;justify-content:space-between;border-bottom:1px solid #33291a;padding:3px 5px;font-size:11px}.equipment-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:5px}.equipment-slot{min-height:42px}.group-empty,.list-placeholder{min-height:180px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:10px;color:#9d917b;font-size:12px}.group-empty strong{color:#e4ca8f;font-size:16px}.group-empty button,.menu-list button{height:28px;border:1px solid #604d2d;background:#1e140c;color:#aa9c80}.menu-list{display:grid;gap:6px}.big-map-canvas{position:relative;width:100%;height:100%;overflow:hidden;background:radial-gradient(circle,#26342a,#101710 68%,#080b08);border:1px solid #514329}.big-map-player{left:50%;top:50%;width:9px;height:9px}.big-map-canvas>span{position:absolute;left:10px;bottom:8px;color:#d3bf91;font:12px Georgia,serif;text-shadow:1px 1px #000}@media(max-width:900px){.ingame-minimap{width:165px;height:165px;right:5px;top:5px}.ingame-minimap.is-large{width:240px;height:240px}.character-window{left:5px;top:45px}.inventory-window{right:5px;top:45px}.ingame-window{max-width:92vw}.menu-window{right:5px}}
+#ingame-ui[hidden]{display:none}
+#ingame-ui{position:fixed;inset:0;z-index:30;pointer-events:none;font-family:Arial,sans-serif}
+
+.zircon-game-hud{position:fixed;left:50%;bottom:0;width:1024px;height:68px;transform:translateX(-50%);z-index:45;pointer-events:auto;image-rendering:pixelated}
+.main-panel-image{position:absolute;inset:0;width:1024px;height:68px;pointer-events:none;image-rendering:pixelated}
+.panel-hotspot{position:absolute;border:0;background:transparent;padding:0;z-index:20}
+.panel-hotspot:focus{outline:none}
+
+.hud-sprite{position:absolute;display:block;background-image:url("../assets/ui/zircon/hud-parts.webp");background-repeat:no-repeat;image-rendering:pixelated;pointer-events:none}
+.hud-exp-frame{left:17px;top:3px;width:992px;height:10px;background-position:0 0}
+.hud-exp-fill{left:23px;top:5px;width:0;height:4px;background-position:0 -12px}
+.hud-hp-fill{left:35px;top:22px;width:220px;height:8px;background-position:0 -18px}
+.hud-mp-fill{left:35px;top:36px;width:220px;height:8px;background-position:0 -28px}
+.hud-focus-fill{left:35px;top:50px;width:0;height:8px;background-position:0 -38px}
+
+.hud-icon-class{left:277px;top:25px;width:20px;height:12px;background-position:-380px -18px}
+.hud-icon-level{left:277px;top:45px;width:20px;height:12px;background-position:-406px -18px}
+.hud-icon-fp{left:362px;top:25px;width:20px;height:12px;background-position:-432px -18px}
+.hud-icon-cp{left:362px;top:45px;width:20px;height:12px;background-position:-458px -18px}
+.hud-icon-ac{left:445px;top:25px;width:20px;height:12px;background-position:-354px -18px}
+.hud-icon-dc{left:445px;top:45px;width:20px;height:12px;background-position:-328px -18px}
+.hud-icon-mac{left:531px;top:25px;width:36px;height:12px;background-position:-260px -18px}
+.hud-icon-mc{left:541px;top:45px;width:24px;height:12px;background-position:-230px -18px}
+.hud-icon-sc{left:547px;top:45px;width:20px;height:12px;background-position:-302px -18px}
+
+.hud-label{position:absolute;width:60px;height:16px;display:flex;align-items:center;justify-content:center;color:#fff;font:8px/16px Arial,sans-serif;text-shadow:1px 1px #000;pointer-events:none}
+.hud-label-class{left:300px;top:20px}
+.hud-label-level{left:300px;top:40px}
+.hud-label-fp{left:385px;top:20px}
+.hud-label-cp{left:385px;top:40px}
+.hud-label-ac{left:470px;top:20px}
+.hud-label-dc{left:470px;top:40px}
+.hud-label-mac{left:567px;top:20px}
+.hud-label-mc,.hud-label-sc{left:567px;top:40px}
+
+.hud-value{position:absolute;left:35px;width:220px;height:12px;display:flex;align-items:center;justify-content:center;color:#fff;font:8px/12px Arial,sans-serif;text-shadow:1px 1px #000;pointer-events:none}
+.hud-value-hp{top:20px}
+.hud-value-mp{top:34px}
+.hud-value-focus{top:48px}
+
+.ingame-minimap{position:fixed;right:10px;top:10px;width:200px;height:200px;background:#000;z-index:42;pointer-events:auto;image-rendering:pixelated;transition:opacity .15s}
+.ingame-minimap.is-large{width:300px;height:300px}
+.ingame-minimap.is-transparent{opacity:.5}
+.minimap-frame{position:absolute;inset:0;width:100%;height:100%;z-index:4;pointer-events:none;image-rendering:pixelated}
+.minimap-header{position:absolute;left:0;top:3px;width:100%;height:31px;z-index:5;display:flex;align-items:center;justify-content:center;background:transparent;color:#d8c596;font:10px/31px Arial,sans-serif;text-shadow:1px 1px #000;pointer-events:none}
+.minimap-area{position:absolute;left:3px;right:3px;top:31px;bottom:3px;background:#000;overflow:hidden;z-index:1}
+.minimap-image{position:absolute;left:0;top:0;max-width:none;image-rendering:pixelated}
+.minimap-player{position:absolute;width:5px;height:5px;margin:-2px 0 0 -2px;border:1px solid #fff;background:#00ff00;z-index:3}
+.minimap-tools{position:absolute;right:3px;top:31px;z-index:6;display:flex;flex-direction:column;opacity:0;pointer-events:none}
+.ingame-minimap:hover .minimap-tools{opacity:1;pointer-events:auto}
+.minimap-tools button{width:20px;height:20px;padding:0;border:0;background:transparent}
+.minimap-tools button:disabled{opacity:.35}
+.minimap-tools img{display:block;width:20px;height:20px;image-rendering:pixelated}
+
+.ui-window-layer{position:fixed;inset:0;z-index:44;pointer-events:none}
+.ingame-window{position:absolute;pointer-events:auto}
+.ingame-window[hidden]{display:none}
+.ingame-window-body{padding:0;background:transparent}
+
+@media(max-width:1040px){
+  .zircon-game-hud{transform:translateX(-50%) scale(calc(100vw / 1024));transform-origin:bottom center}
+}
