@@ -99,58 +99,26 @@ G.Game = (() => {
 
   function draw(now) {
     ctx.setTransform(1, 0, 0, 1, 0, 0);
-    ctx.fillStyle = '#151719';
+    ctx.fillStyle = '#000';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
     G.Camera.apply(ctx);
 
     const map = G.MapWorld.map;
     let playerDrawn = false;
-    let renderedMap = false;
 
     if (map) {
       const playerRow = map.worldToCell(player.x, player.y).y;
-      renderedMap = G.MirMapRenderer.draw(ctx, map, now, row => {
-        if (!playerDrawn && row === playerRow) {
+      G.MirMapRenderer.draw(ctx, map, now, row => {
+        if (!playerDrawn && row === playerRow && player.assetState === 'ready') {
           player.draw(ctx);
           playerDrawn = true;
         }
       });
     }
 
-    if (!renderedMap && !G.MapWorld.drawDebug(ctx)) drawMirGrid();
-    if (!playerDrawn) player.draw(ctx);
+    if (!playerDrawn && player.assetState === 'ready') player.draw(ctx);
     if (G.Config.debug) drawDebug();
-  }
-
-  function drawMirGrid() {
-    const cw = G.Config.mirCellWidth;
-    const ch = G.Config.mirCellHeight;
-    const left = G.Camera.left();
-    const top = G.Camera.top();
-    const right = left + G.Camera.width;
-    const bottom = top + G.Camera.height;
-
-    ctx.strokeStyle = '#24282b';
-    ctx.lineWidth = 1 / G.Camera.scale;
-    ctx.beginPath();
-    for (let x = Math.floor(left / cw) * cw; x <= right + cw; x += cw) {
-      ctx.moveTo(x, top - ch);
-      ctx.lineTo(x, bottom + ch);
-    }
-    for (let y = Math.floor(top / ch) * ch; y <= bottom + ch; y += ch) {
-      ctx.moveTo(left - cw, y);
-      ctx.lineTo(right + cw, y);
-    }
-    ctx.stroke();
-
-    ctx.strokeStyle = '#4b5054';
-    ctx.beginPath();
-    ctx.moveTo(-12, 0);
-    ctx.lineTo(12, 0);
-    ctx.moveTo(0, -12);
-    ctx.lineTo(0, 12);
-    ctx.stroke();
   }
 
   function drawDebug() {
@@ -170,21 +138,16 @@ G.Game = (() => {
       'H harvest | J struck | P pushed | K die | R revive',
       'V channel | B dragon repulse | F fishing | T taming',
       `map ${mapText} | renderer ${G.MirMapRenderer.status}`,
-      `pos ${player.x.toFixed(1)}, ${player.y.toFixed(1)}  dir ${player.direction}`,
-      `state ${player.state.action}  anim ${player.state.animation}`,
-      `locked ${player.state.locked}  dead ${player.state.dead}  frame ${player.animator.logicalFrame()}`,
+      `pos ${player.x.toFixed(1)}, ${player.y.toFixed(1)} dir ${player.direction}`,
+      `state ${player.state.action} anim ${player.state.animation}`,
       `body ${player.assetState}`
     ];
 
-    for (let i = 0; i < lines.length; i++) {
-      ctx.fillText(lines[i], 12, 20 + i * 18);
-    }
+    for (let i = 0; i < lines.length; i++) ctx.fillText(lines[i], 12, 20 + i * 18);
   }
 
   return Object.freeze({
     init,
-    get player() {
-      return player;
-    }
+    get player() { return player; }
   });
 })();
