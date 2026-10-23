@@ -1,8 +1,6 @@
 window.G = window.G || {};
 
 G.MagicUI = (() => {
-  const A = G.MagicUiAssets || {};
-
   // Values below are read from the user-provided System.db.
   // The evolution order and 5-socket rule are ORIGINS X design decisions agreed for the Fire branch.
   const STAGES = Object.freeze([
@@ -10,7 +8,7 @@ G.MagicUI = (() => {
       id: 'fire-ball',
       name: 'Fire Ball',
       magic: 201,
-      icon: 'iconFireBall0',
+      icon: 'fire-ball',
       need: [7, 9, 11],
       basePower: [0, 4],
       levelPower: [6, 10],
@@ -23,7 +21,7 @@ G.MagicUI = (() => {
       id: 'adamantine-fire-ball',
       name: 'Adamantine Fire Ball',
       magic: 208,
-      icon: 'iconAdamantine8',
+      icon: 'adamantine',
       need: [15, 17, 19],
       basePower: [7, 11],
       levelPower: [15, 19],
@@ -36,7 +34,7 @@ G.MagicUI = (() => {
       id: 'fire-bounce',
       name: 'Fire Bounce',
       magic: 231,
-      icon: 'iconFireBall0',
+      icon: 'fire-ball',
       need: [15, 17, 19],
       basePower: [7, 11],
       levelPower: [15, 19],
@@ -49,7 +47,7 @@ G.MagicUI = (() => {
       id: 'meteor-shower',
       name: 'Meteor Shower',
       magic: 226,
-      icon: 'iconMeteor224',
+      icon: 'meteor',
       need: [43, 45, 47],
       basePower: [14, 22],
       levelPower: [32, 40],
@@ -62,7 +60,7 @@ G.MagicUI = (() => {
       id: 'asteroid',
       name: 'Asteroid',
       magic: 240,
-      icon: 'iconAsteroid392',
+      icon: 'asteroid',
       need: [80, 82, 84],
       basePower: [50, 80],
       levelPower: [70, 120],
@@ -78,7 +76,7 @@ G.MagicUI = (() => {
       id: 'burning',
       name: 'Burning',
       magic: 234,
-      icon: 'iconBurning484',
+      icon: 'burning',
       need: [76, 80, 86],
       basePower: [12, 18],
       levelPower: [12, 16],
@@ -91,7 +89,7 @@ G.MagicUI = (() => {
       id: 'scorched-earth',
       name: 'Scorched Earth',
       magic: 212,
-      icon: 'iconScorchedEarth16',
+      icon: 'scorched-earth',
       need: [20, 22, 24],
       basePower: [12, 16],
       levelPower: [14, 18],
@@ -104,7 +102,7 @@ G.MagicUI = (() => {
       id: 'fire-wall',
       name: 'Fire Wall',
       magic: 216,
-      icon: 'iconFireWall42',
+      icon: 'fire-wall',
       need: [24, 26, 28],
       basePower: [1, 6],
       levelPower: [2, 9],
@@ -117,7 +115,7 @@ G.MagicUI = (() => {
       id: 'fire-storm',
       name: 'Fire Storm',
       magic: 220,
-      icon: 'iconFireStorm44',
+      icon: 'fire-storm',
       need: [32, 34, 36],
       basePower: [14, 18],
       levelPower: [14, 18],
@@ -128,33 +126,28 @@ G.MagicUI = (() => {
     }
   ]);
 
-  const CURRENT_STAGE = 2; // Fire Bounce: visual prototype state agreed for the Fire branch.
+  const CURRENT_STAGE = 2;
   const OPEN_SOCKETS = CURRENT_STAGE + 1;
   const EQUIPPED_STONE_IDS = Object.freeze(['burning', 'scorched-earth', 'fire-wall']);
 
   let selectedKind = 'stage';
   let selectedId = STAGES[CURRENT_STAGE].id;
 
-  function img(asset, alt = '') {
-    const src = A[asset] || '';
-    return `<img src="${src}" alt="${escapeHtml(alt)}" draggable="false">`;
+  function asset(name, extraClass = '') {
+    return `<span class="mir-magic-asset mir-${name}${extraClass ? ` ${extraClass}` : ''}" aria-hidden="true"></span>`;
   }
 
   function render() {
     const selected = getSelected();
     return `
       <div class="origins-magic-book" data-magic-book>
-        <img class="origins-magic-header-art" src="${A.interfaceWizardHeader161 || ''}" alt="" draggable="false">
-        <img class="origins-magic-background-art" src="${A.interfaceBackground164 || ''}" alt="" draggable="false">
-        <button class="origins-magic-close" type="button" data-magic-close aria-label="Cerrar">${img('interfaceClose15')}</button>
+        ${asset('wizard-header', 'origins-magic-header-art')}
+        ${asset('background', 'origins-magic-background-art')}
+        <button class="origins-magic-close" type="button" data-magic-close aria-label="Cerrar">${asset('close')}</button>
         <div class="origins-magic-title">MAGIAS · WIZARD</div>
 
         <nav class="origins-magic-school-tabs" aria-label="Escuelas de magia">
-          ${schoolTab('Fuego', 'tabFireSelected175', true)}
-          ${schoolTab('Hielo', 'tabIce176', false)}
-          ${schoolTab('Rayo', 'tabLightning178', false)}
-          ${schoolTab('Viento', 'tabWind180', false)}
-          ${schoolTab('Phantom', 'tabPhantom182', false)}
+          ${schoolTab('Fuego', 'fire-tab', true)}
         </nav>
 
         <div class="origins-magic-content">
@@ -181,20 +174,21 @@ G.MagicUI = (() => {
       </div>`;
   }
 
-  function schoolTab(label, asset, active) {
+  function schoolTab(label, assetName, active) {
+    if (!assetName) return '';
     return `<button type="button" class="origins-school-tab${active ? ' is-active' : ''}" ${active ? '' : 'disabled'} title="${escapeHtml(label)}">
-      <img src="${A[asset] || ''}" alt="${escapeHtml(label)}" draggable="false">
+      ${asset(assetName)}
     </button>`;
   }
 
   function renderStage(stage, index) {
     const state = index < CURRENT_STAGE ? 'is-complete' : index === CURRENT_STAGE ? 'is-current' : 'is-future';
-    const frame = index <= CURRENT_STAGE ? 'gameInter2Slot816' : 'gameInter2SlotLocked815';
+    const frame = index <= CURRENT_STAGE ? 'slot-gold' : 'slot-locked';
     const selected = selectedKind === 'stage' && selectedId === stage.id;
     return `<button type="button" role="listitem" class="origins-magic-stage ${state}${selected ? ' is-selected' : ''}" data-magic-stage="${stage.id}" title="${escapeHtml(stage.name)}">
       <span class="origins-slot-art">
-        <img class="origins-slot-frame" src="${A[frame] || ''}" alt="" draggable="false">
-        <img class="origins-slot-icon" src="${A[stage.icon] || ''}" alt="" draggable="false">
+        ${asset(frame, 'origins-slot-frame')}
+        ${asset(stage.icon, 'origins-slot-icon')}
       </span>
       <span class="origins-stage-name">${escapeHtml(stage.name)}</span>
     </button>`;
@@ -202,8 +196,8 @@ G.MagicUI = (() => {
 
   function renderDetail(info) {
     return `<div class="origins-magic-detail">
-      <img class="origins-magic-detail-art" src="${A.interfaceCell165 || ''}" alt="" draggable="false">
-      <img class="origins-magic-detail-icon" src="${A[info.icon] || ''}" alt="" draggable="false">
+      ${asset('cell', 'origins-magic-detail-art')}
+      ${asset(info.icon, 'origins-magic-detail-icon')}
       <strong class="origins-magic-detail-name">${escapeHtml(info.name)}</strong>
       <span class="origins-magic-detail-stats">Req. ${info.need[0]} · MP ${info.baseCost} · Power ${info.basePower[0]}-${info.basePower[1]} · Magic ${info.magic}</span>
       <p class="origins-magic-description">${escapeHtml(info.description)}</p>
@@ -214,11 +208,11 @@ G.MagicUI = (() => {
   function renderSocket(index) {
     const isOpen = index < OPEN_SOCKETS;
     const stone = isOpen ? EFFECT_STONES.find(item => item.id === EQUIPPED_STONE_IDS[index]) : null;
-    const frame = isOpen ? 'gameInter2Slot816' : 'gameInter2SlotLocked815';
+    const frame = isOpen ? 'slot-gold' : 'slot-locked';
     const selected = stone && selectedKind === 'stone' && selectedId === stone.id;
     return `<button type="button" class="origins-stone-socket${isOpen ? ' is-open' : ' is-locked'}${selected ? ' is-selected' : ''}" ${stone ? `data-magic-stone="${stone.id}"` : 'disabled'} title="${stone ? escapeHtml(stone.name) : 'Engarce cerrado'}">
-      <img class="origins-slot-frame" src="${A[frame] || ''}" alt="" draggable="false">
-      ${stone ? `<img class="origins-slot-icon" src="${A[stone.icon] || ''}" alt="" draggable="false">` : ''}
+      ${asset(frame, 'origins-slot-frame')}
+      ${stone ? asset(stone.icon, 'origins-slot-icon') : ''}
       <span>${index + 1}</span>
     </button>`;
   }
@@ -226,7 +220,7 @@ G.MagicUI = (() => {
   function renderEffectStone(stone) {
     const selected = selectedKind === 'stone' && selectedId === stone.id;
     return `<button type="button" class="origins-effect-stone${selected ? ' is-selected' : ''}" data-magic-stone="${stone.id}" title="${escapeHtml(stone.name)}">
-      <img src="${A[stone.icon] || ''}" alt="" draggable="false">
+      ${asset(stone.icon)}
       <span>${escapeHtml(stone.name)}</span>
     </button>`;
   }
@@ -238,9 +232,17 @@ G.MagicUI = (() => {
     return STAGES.find(item => item.id === selectedId) || STAGES[CURRENT_STAGE];
   }
 
-  function getIconIndex(asset) {
-    const match = String(asset).match(/(\d+)$/);
-    return match ? match[1] : '?';
+  function getIconIndex(icon) {
+    return ({
+      'fire-ball': 0,
+      'adamantine': 8,
+      'scorched-earth': 16,
+      'fire-wall': 42,
+      'fire-storm': 44,
+      'meteor': 224,
+      'asteroid': 392,
+      'burning': 484
+    })[icon] ?? '?';
   }
 
   function refreshOpenBook() {
@@ -274,9 +276,6 @@ G.MagicUI = (() => {
 
   function init() {
     document.addEventListener('click', handleClick);
-
-    const panel = document.querySelector('.main-panel-image');
-    if (panel && A.gameInterMain50) panel.src = A.gameInterMain50;
 
     const magicWindow = document.getElementById('ui-window-magic');
     const body = magicWindow?.querySelector('.ingame-window-body');
