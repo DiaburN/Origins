@@ -213,7 +213,7 @@ G.MagicUI = (() => {
     return `<button type="button" class="origins-stone-socket${isOpen ? ' is-open' : ' is-locked'}${selected ? ' is-selected' : ''}" ${stone ? `data-magic-stone="${stone.id}"` : 'disabled'} title="${stone ? escapeHtml(stone.name) : 'Engarce cerrado'}">
       ${asset(frame, 'origins-slot-frame')}
       ${stone ? asset(stone.icon, 'origins-slot-icon') : ''}
-      <span>${index + 1}</span>
+      <span class="origins-socket-number">${index + 1}</span>
     </button>`;
   }
 
@@ -221,7 +221,7 @@ G.MagicUI = (() => {
     const selected = selectedKind === 'stone' && selectedId === stone.id;
     return `<button type="button" class="origins-effect-stone${selected ? ' is-selected' : ''}" data-magic-stone="${stone.id}" title="${escapeHtml(stone.name)}">
       ${asset(stone.icon)}
-      <span>${escapeHtml(stone.name)}</span>
+      <span class="origins-effect-name">${escapeHtml(stone.name)}</span>
     </button>`;
   }
 
