@@ -79,12 +79,12 @@
 
   <div id="ingame-ui" hidden>
     <section id="minimap-box" class="ingame-minimap" aria-label="Minimapa">
-      <header class="minimap-header"><span id="minimap-title">3.map · Inicio</span></header>
       <div id="minimap-area" class="minimap-area">
-        <div class="minimap-grid"></div>
-        <div id="minimap-player" class="minimap-player" title="Tu personaje"></div>
-        <span id="minimap-status" class="minimap-status">3.map pendiente de runtime</span>
+        <img id="minimap-image" class="minimap-image" alt="" hidden>
+        <div id="minimap-player" class="minimap-player" title="Tu personaje" hidden></div>
       </div>
+      <img id="minimap-frame" class="minimap-frame" src="assets/ui/zircon/minimap-frame-200.webp" alt="">
+      <header class="minimap-header"><span id="minimap-title">Sabuk-Prov</span></header>
       <div class="minimap-tools">
         <button id="minimap-size" type="button" title="Cambiar tamaño"><img src="assets/ui/zircon/minimap-size.webp" alt=""></button>
         <button id="minimap-opacity" type="button" title="Transparencia"><img src="assets/ui/zircon/minimap-opacity.webp" alt=""></button>
@@ -96,13 +96,37 @@
 
     <div id="game-hud" class="zircon-game-hud" aria-label="Panel principal">
       <img class="main-panel-image" src="assets/ui/zircon/main-panel.webp" alt="">
-      <div class="hud-exp-track"><div id="hud-exp-fill" class="hud-exp-fill"></div></div>
-      <div class="hud-bar hud-hp"><div id="hud-hp-fill" class="hud-fill"></div><span id="hud-hp-text">100/100</span></div>
-      <div class="hud-bar hud-mp"><div id="hud-mp-fill" class="hud-fill"></div><span id="hud-mp-text">75/75</span></div>
-      <div class="hud-bar hud-focus"><div id="hud-focus-fill" class="hud-fill"></div></div>
-      <div class="hud-stat hud-class"><strong id="panel-class">Warrior</strong></div>
-      <div class="hud-stat hud-level"><strong id="panel-level">Nv 1</strong></div>
-      <div class="hud-character-name" id="panel-character-name"></div>
+
+      <i class="hud-sprite hud-exp-frame"></i>
+      <i id="hud-exp-fill" class="hud-sprite hud-exp-fill"></i>
+      <i id="hud-hp-fill" class="hud-sprite hud-hp-fill"></i>
+      <i id="hud-mp-fill" class="hud-sprite hud-mp-fill"></i>
+      <i id="hud-focus-fill" class="hud-sprite hud-focus-fill"></i>
+
+      <span id="hud-hp-text" class="hud-value hud-value-hp">100/100</span>
+      <span id="hud-mp-text" class="hud-value hud-value-mp">75/75</span>
+      <span id="hud-focus-text" class="hud-value hud-value-focus"></span>
+
+      <i class="hud-sprite hud-icon hud-icon-class"></i>
+      <i class="hud-sprite hud-icon hud-icon-level"></i>
+      <i class="hud-sprite hud-icon hud-icon-fp"></i>
+      <i class="hud-sprite hud-icon hud-icon-cp"></i>
+      <i class="hud-sprite hud-icon hud-icon-ac"></i>
+      <i class="hud-sprite hud-icon hud-icon-dc"></i>
+      <i class="hud-sprite hud-icon hud-icon-mac"></i>
+      <i class="hud-sprite hud-icon hud-icon-mc"></i>
+      <i class="hud-sprite hud-icon hud-icon-sc"></i>
+
+      <span id="panel-class" class="hud-label hud-label-class"></span>
+      <span id="panel-level" class="hud-label hud-label-level"></span>
+      <span id="panel-fp" class="hud-label hud-label-fp"></span>
+      <span id="panel-cp" class="hud-label hud-label-cp"></span>
+      <span id="panel-ac" class="hud-label hud-label-ac"></span>
+      <span id="panel-dc" class="hud-label hud-label-dc"></span>
+      <span id="panel-mac" class="hud-label hud-label-mac"></span>
+      <span id="panel-mc" class="hud-label hud-label-mc"></span>
+      <span id="panel-sc" class="hud-label hud-label-sc"></span>
+
       <span id="game-character-name" hidden></span><span id="game-character-class" hidden></span>
     </div>
   </div>
