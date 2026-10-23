@@ -6,6 +6,13 @@
     "format": "mir3_type5",
     "verified": false
   },
+  "mapInfo": {
+    "index": 7,
+    "fileName": "3",
+    "playerDescription": "Sabuk-Prov",
+    "miniMap": 145,
+    "source": "System.db"
+  },
   "gameplay": {
     "role": "start-zone",
     "tutorialPlanned": true,
