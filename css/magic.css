@@ -265,7 +265,7 @@
   border:0;
   background:transparent
 }
-.origins-stone-socket>span{
+.origins-socket-number{
   position:absolute;
   right:2px;
   bottom:0;
@@ -301,7 +301,7 @@
   top:0;
   left:17px
 }
-.origins-effect-stone span{
+.origins-effect-name{
   position:absolute;
   left:0;
   right:0;
@@ -313,8 +313,8 @@
   font:7px/1 Arial,sans-serif;
   text-align:center
 }
-.origins-effect-stone.is-selected span,
-.origins-effect-stone:hover span{color:#e2c58d}
+.origins-effect-stone.is-selected .origins-effect-name,
+.origins-effect-stone:hover .origins-effect-name{color:#e2c58d}
 @media(max-width:600px){
   .magic-window{
     top:45px;
