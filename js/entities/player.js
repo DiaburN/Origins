@@ -49,33 +49,13 @@ G.Player = class Player {
     }
   }
 
-  canMove() {
-    return this.state.canMove();
-  }
-
-  attack(animation = G.MirAnimation.Combat3) {
-    return this.state.attack(animation);
-  }
-
-  spell(animation = G.MirAnimation.Combat1) {
-    return this.state.spell(animation);
-  }
-
-  struck() {
-    return this.state.struck();
-  }
-
-  pushed() {
-    return this.state.pushed();
-  }
-
-  die() {
-    return this.state.die();
-  }
-
-  revive() {
-    this.state.revive();
-  }
+  canMove() { return this.state.canMove(); }
+  attack(animation = G.MirAnimation.Combat3) { return this.state.attack(animation); }
+  spell(animation = G.MirAnimation.Combat1) { return this.state.spell(animation); }
+  struck() { return this.state.struck(); }
+  pushed() { return this.state.pushed(); }
+  die() { return this.state.die(); }
+  revive() { this.state.revive(); }
 
   update(dt) {
     this.animator.setDirection(this.direction);
@@ -85,10 +65,6 @@ G.Player = class Player {
 
   draw(ctx) {
     const logicalFrame = this.animator.logicalFrame();
-
-    // MIR libraries draw relative to the top-left of the logical 48x32 cell.
-    // ORIGINS stores the entity position at the centre of that cell so movement
-    // can remain continuous; translate back to the MIR origin only for rendering.
     const drawOriginX = this.x - G.Config.mirCellWidth / 2;
     const drawOriginY = this.y - G.Config.mirCellHeight / 2;
 
@@ -97,10 +73,11 @@ G.Player = class Player {
       this.assetState === 'ready' &&
       this.bodySprites.draw(ctx, logicalFrame, drawOriginX, drawOriginY)
     ) {
-      return;
+      return true;
     }
 
-    this.drawDiagnostic(ctx, logicalFrame);
+    if (G.Config.debug) this.drawDiagnostic(ctx, logicalFrame);
+    return false;
   }
 
   drawDiagnostic(ctx, logicalFrame) {
