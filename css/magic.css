@@ -1,3 +1,25 @@
+.mir-magic-asset{
+  display:block;
+  background-image:url("../assets/ui/magic/magic-ui-atlas.webp");
+  background-repeat:no-repeat;
+  image-rendering:pixelated;
+  pointer-events:none
+}
+.mir-background{width:420px;height:448px;background-position:0 0}
+.mir-wizard-header{width:420px;height:68px;background-position:-422px 0}
+.mir-cell{width:369px;height:54px;background-position:0 -450px}
+.mir-slot-gold{width:48px;height:48px;background-position:-371px -450px}
+.mir-slot-locked{width:48px;height:46px;background-position:-421px -450px}
+.mir-fire-tab{width:60px;height:24px;background-position:-471px -450px}
+.mir-fire-ball{width:36px;height:36px;background-position:-533px -450px}
+.mir-adamantine{width:36px;height:36px;background-position:-571px -450px}
+.mir-meteor{width:36px;height:36px;background-position:-609px -450px}
+.mir-asteroid{width:36px;height:36px;background-position:-647px -450px}
+.mir-burning{width:36px;height:36px;background-position:-685px -450px}
+.mir-scorched-earth{width:36px;height:36px;background-position:-723px -450px}
+.mir-fire-wall{width:36px;height:36px;background-position:-761px -450px}
+.mir-fire-storm{width:36px;height:36px;background-position:-799px -450px}
+.mir-close{width:32px;height:32px;background-position:-837px -450px}
 .magic-window{
   left:50%;
   top:72px;
@@ -46,7 +68,6 @@
   padding:0;
   background:transparent
 }
-.origins-magic-close img{display:block;width:32px;height:32px}
 .origins-magic-close:hover{filter:brightness(1.2)}
 .origins-magic-title{
   position:absolute;
@@ -81,12 +102,7 @@
   background:transparent;
   opacity:.75
 }
-.origins-school-tab img{
-  display:block;
-  max-width:60px;
-  max-height:24px;
-  image-rendering:pixelated
-}
+.origins-school-tab .mir-magic-asset{display:block}
 .origins-school-tab.is-active{opacity:1}
 .origins-school-tab:disabled{cursor:default}
 .origins-magic-content{
@@ -145,20 +161,14 @@
 }
 .origins-slot-frame{
   position:absolute;
-  inset:0;
-  width:48px;
-  height:48px;
-  image-rendering:pixelated;
-  pointer-events:none
+  left:0;
+  top:0
 }
+.origins-slot-frame.mir-slot-locked{top:1px}
 .origins-slot-icon{
   position:absolute;
   left:6px;
-  top:6px;
-  width:36px;
-  height:36px;
-  image-rendering:pixelated;
-  pointer-events:none
+  top:6px
 }
 .origins-stage-name{
   display:block;
@@ -184,19 +194,12 @@
 .origins-magic-detail-art{
   position:absolute;
   left:0;
-  top:0;
-  width:369px;
-  height:54px;
-  pointer-events:none;
-  image-rendering:pixelated
+  top:0
 }
 .origins-magic-detail-icon{
   position:absolute;
   left:9px;
-  top:9px;
-  width:36px;
-  height:36px;
-  image-rendering:pixelated
+  top:9px
 }
 .origins-magic-detail-name{
   position:absolute;
@@ -293,13 +296,10 @@
   background:transparent;
   color:#887a63
 }
-.origins-effect-stone img{
+.origins-effect-stone .mir-magic-asset{
   position:absolute;
   top:0;
-  left:17px;
-  width:36px;
-  height:36px;
-  image-rendering:pixelated
+  left:17px
 }
 .origins-effect-stone span{
   position:absolute;
