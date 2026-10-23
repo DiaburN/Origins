@@ -1,25 +1,25 @@
 .mir-magic-asset{
   display:block;
-  background-image:url("../assets/ui/magic/magic-ui-atlas.webp");
   background-repeat:no-repeat;
   image-rendering:pixelated;
   pointer-events:none
 }
-.mir-background{width:420px;height:448px;background-position:0 0}
-.mir-wizard-header{width:420px;height:68px;background-position:-422px 0}
-.mir-cell{width:369px;height:54px;background-position:0 -450px}
-.mir-slot-gold{width:48px;height:48px;background-position:-371px -450px}
-.mir-slot-locked{width:48px;height:46px;background-position:-421px -450px}
-.mir-fire-tab{width:60px;height:24px;background-position:-471px -450px}
-.mir-fire-ball{width:36px;height:36px;background-position:-533px -450px}
-.mir-adamantine{width:36px;height:36px;background-position:-571px -450px}
-.mir-meteor{width:36px;height:36px;background-position:-609px -450px}
-.mir-asteroid{width:36px;height:36px;background-position:-647px -450px}
-.mir-burning{width:36px;height:36px;background-position:-685px -450px}
-.mir-scorched-earth{width:36px;height:36px;background-position:-723px -450px}
-.mir-fire-wall{width:36px;height:36px;background-position:-761px -450px}
-.mir-fire-storm{width:36px;height:36px;background-position:-799px -450px}
-.mir-close{width:32px;height:32px;background-position:-837px -450px}
+.mir-background{width:420px;height:448px;background-image:url("../assets/ui/magic/background.webp")}
+.mir-wizard-header{width:420px;height:68px;background-image:url("../assets/ui/magic/wizard-header.webp")}
+.mir-cell{width:369px;height:54px;background-image:url("../assets/ui/magic/cell.webp")}
+.mir-slot-gold,.mir-slot-locked,.mir-fire-tab,.mir-fire-ball,.mir-adamantine,.mir-meteor,.mir-asteroid,.mir-burning,.mir-scorched-earth,.mir-fire-wall,.mir-fire-storm,.mir-close{background-image:url("../assets/ui/magic/small-atlas.webp")}
+.mir-slot-gold{width:48px;height:48px;background-position:0 0}
+.mir-slot-locked{width:48px;height:46px;background-position:-50px 0}
+.mir-fire-tab{width:60px;height:24px;background-position:-100px 0}
+.mir-fire-ball{width:36px;height:36px;background-position:-162px 0}
+.mir-adamantine{width:36px;height:36px;background-position:-200px 0}
+.mir-meteor{width:36px;height:36px;background-position:-238px 0}
+.mir-asteroid{width:36px;height:36px;background-position:-276px 0}
+.mir-burning{width:36px;height:36px;background-position:-314px 0}
+.mir-scorched-earth{width:36px;height:36px;background-position:-352px 0}
+.mir-fire-wall{width:36px;height:36px;background-position:-390px 0}
+.mir-fire-storm{width:36px;height:36px;background-position:-428px 0}
+.mir-close{width:32px;height:32px;background-position:-466px 0}
 .magic-window{
   left:50%;
   top:72px;
@@ -102,7 +102,9 @@
   background:transparent;
   opacity:.75
 }
-.origins-school-tab .mir-magic-asset{display:block}
+.origins-school-tab .mir-magic-asset{
+  display:block
+}
 .origins-school-tab.is-active{opacity:1}
 .origins-school-tab:disabled{cursor:default}
 .origins-magic-content{
