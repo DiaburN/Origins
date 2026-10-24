@@ -65,6 +65,15 @@ G.CharacterAppearance = (() => {
     return Number.isFinite(base) ? base + hairType - 1 : null;
   }
 
+  function needsAssassinFemalePreLayer(character, equipment) {
+    const className = String(character?.className || '').toLowerCase();
+    const gender = String(character?.gender || 'male').toLowerCase();
+    const hairType = Number(character?.hairType ?? 0) || 0;
+    const hasHelmet = Boolean(equipment?.helmet);
+    const hasCostume = Boolean(equipment?.costume);
+    return className === 'assassin' && gender === 'female' && hairType === 1 && !hasHelmet && !hasCostume;
+  }
+
   async function render(origin, character, equipment = null) {
     if (!origin) return;
     origin.replaceChildren();
@@ -77,17 +86,29 @@ G.CharacterAppearance = (() => {
 
     origin.dataset.paperdollState = 'ready';
     const gender = String(character?.gender || 'male').toLowerCase();
-    const baseIndex = gender === 'female' ? a.baseBody?.female : a.baseBody?.male;
-    await addProgUseLayer(origin, baseIndex, 'paperdoll-base-body');
+
+    // Exact CharacterDialog order: Assassin female HairType 1 special ProgUse
+    // layer is drawn before the base body when no helmet is equipped.
+    if (needsAssassinFemalePreLayer(character, equipment)) {
+      const special = a.hair?.assassinFemaleSpecial;
+      if (special != null) await addProgUseLayer(origin, special, 'paperdoll-assassin-female-prelayer');
+    }
+
+    const hasCostume = Boolean(equipment?.costume);
+    if (!hasCostume) {
+      const baseIndex = gender === 'female' ? a.baseBody?.female : a.baseBody?.male;
+      await addProgUseLayer(origin, baseIndex, 'paperdoll-base-body');
+    }
 
     // Equipment layers are intentionally not faked. Zircon uses Equip.Zl image
     // indices from the actual equipped ClientUserItems. When that runtime is
     // available, armour/costume -> weapon -> shield -> helmet will be inserted
     // here in the verified CharacterDialog order.
-    void equipment;
 
-    const hair = hairIndex(character);
-    if (hair != null) await addProgUseLayer(origin, hair, 'paperdoll-hair');
+    if (!hasCostume && !equipment?.helmet) {
+      const hair = hairIndex(character);
+      if (hair != null) await addProgUseLayer(origin, hair, 'paperdoll-hair');
+    }
   }
 
   return Object.freeze({ ready, render, addProgUseLayer, hairIndex });
