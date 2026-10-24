@@ -1,0 +1,76 @@
+:root{
+  --zircon-ui-scale:1;
+  --zircon-logical-width:100vw;
+  --zircon-logical-height:100vh;
+}
+
+/* Browser equivalent of Zircon GameScene.UIScale / UISize. */
+.zircon-game-hud{
+  left:50%;
+  bottom:0;
+  width:1024px;
+  height:68px;
+  transform:translateX(-50%) scale(var(--zircon-ui-scale)) !important;
+  transform-origin:bottom center;
+}
+
+.ingame-minimap{
+  right:0;
+  top:0;
+  transform:scale(var(--zircon-ui-scale));
+  transform-origin:top right;
+}
+
+.ui-window-layer{
+  left:0;
+  top:0;
+  right:auto;
+  bottom:auto;
+  width:var(--zircon-logical-width);
+  height:var(--zircon-logical-height);
+  transform:scale(var(--zircon-ui-scale));
+  transform-origin:top left;
+}
+
+.zircon-game-hud,
+.ingame-minimap,
+.ui-window-layer{
+  will-change:transform;
+}
+
+/* MainPanel pieces are now read directly from GameInter.Zl. */
+.hud-sprite{
+  background-image:none;
+  background-repeat:no-repeat;
+  image-rendering:pixelated;
+}
+
+.hud-exp-frame{left:17px;top:3px;width:992px;height:10px}
+.hud-exp-fill{left:23px;top:5px;height:4px}
+.hud-hp-fill{left:35px;top:22px;height:8px}
+.hud-mp-fill{left:35px;top:36px;height:8px}
+.hud-focus-fill{left:35px;top:50px;height:8px}
+
+.hud-icon-class{left:277px;top:25px}
+.hud-icon-level{left:277px;top:45px}
+.hud-icon-fp{left:362px;top:25px}
+.hud-icon-cp{left:362px;top:45px}
+.hud-icon-ac{left:445px;top:25px}
+.hud-icon-dc{left:445px;top:45px}
+.hud-icon-mac{left:531px;top:25px}
+.hud-icon-mc{left:541px;top:45px}
+.hud-icon-sc{left:547px;top:45px}
+
+/* Zircon places the minimap flush with the top-right edge. */
+.minimap-tools{right:3px}
+
+.mainpanel-alert{
+  position:absolute;
+  left:2px;
+  top:2px;
+  z-index:5;
+  pointer-events:none;
+  image-rendering:pixelated;
+}
+.mainpanel-alert.quest-complete{top:auto;bottom:2px}
+.mainpanel-alert[hidden]{display:none}
