@@ -30,11 +30,6 @@ G.CharacterUI = (() => {
     return String(value ?? '').replace(/[&<>'"]/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' })[ch]);
   }
 
-  function hudValue(id, fallback = '0') {
-    const value = document.getElementById(id)?.textContent?.trim();
-    return value || fallback;
-  }
-
   function regularRows(rows) {
     return rows.map(([label, value, side, row]) => {
       const x = side === 'left' ? 15 : 168;
@@ -45,15 +40,12 @@ G.CharacterUI = (() => {
   }
 
   function attackStatsHtml() {
-    const dc = hudValue('panel-dc');
-    const mc = hudValue('panel-mc');
-    const sc = hudValue('panel-sc');
     return regularRows([
-      ['DC:', `0-${dc}`, 'left', 0],
-      ['MC:', `0-${mc}`, 'left', 1],
-      ['SC:', `0-${sc}`, 'left', 2],
+      ['DC:', '0-0', 'left', 0],
+      ['MC:', '0-0', 'left', 1],
+      ['SC:', '0-0', 'left', 2],
       ['Crit. Damage:', '0', 'left', 3],
-      ['Accuracy:', '5', 'right', 0],
+      ['Accuracy:', '0', 'right', 0],
       ['A. Speed:', '0', 'right', 1],
       ['Luck:', '0', 'right', 2],
       ['Crit. Chance:', '0', 'right', 3]
@@ -62,7 +54,7 @@ G.CharacterUI = (() => {
 
   function defenseStatsHtml() {
     return regularRows([
-      ['AC:', `0-${hudValue('panel-ac')}`, 'left', 0],
+      ['AC:', '0-0', 'left', 0],
       ['MR:', '0-0', 'left', 1],
       ['Agility:', '0', 'right', 0],
       ['Life Steal:', '0', 'right', 1]
@@ -104,8 +96,7 @@ G.CharacterUI = (() => {
       const y = 6 + row * 22;
       const iconX = x + 75;
       const width = elementIconWidth(name);
-      const value = '0';
-      const valueHtml = width == null ? '' : `<span class="character-element-value" style="left:${iconX + width}px;top:${y}px">${value}</span>`;
+      const valueHtml = width == null ? '' : `<span class="character-element-value" style="left:${iconX + width}px;top:${y}px">0</span>`;
       return `<span class="character-stat-label" style="left:${x}px;top:${y}px">${name}:</span>${valueHtml}`;
     }).join('');
   }
