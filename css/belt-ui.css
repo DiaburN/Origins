@@ -1,0 +1,4 @@
+.belt-window{filter:drop-shadow(0 5px 8px rgba(0,0,0,.55))}
+.belt-exact-grid{position:absolute;background:rgb(24,12,12);border:1px solid rgb(99,83,50);box-sizing:border-box;z-index:3}
+.belt-exact-cell{position:absolute;width:36px;height:36px;border:1px solid rgb(99,83,50);box-sizing:border-box;background:transparent}
+.belt-exact-cell>span{position:absolute;left:-2px;top:-1px;color:#fff;font:italic 8px/1 "Microsoft Sans Serif",Arial,sans-serif;text-shadow:1px 1px #000;pointer-events:none}
