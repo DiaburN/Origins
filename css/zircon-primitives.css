@@ -1,0 +1,10 @@
+.zircon-primitive-button{position:relative;border:0;padding:0;background:transparent;cursor:pointer;color:#fff;font:8px/1 "Microsoft Sans Serif",Arial,sans-serif;text-shadow:1px 1px #000;box-sizing:border-box}
+.zircon-primitive-button-art{position:absolute;left:0;top:0;width:100%;height:100%;image-rendering:pixelated;pointer-events:none}
+.zircon-primitive-button-label{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;white-space:nowrap;pointer-events:none}
+.zircon-primitive-button:not(:hover):not(:active){color:rgb(217,217,217)}
+.zircon-primitive-button:hover,.zircon-primitive-button:active{color:#fff}
+.zircon-primitive-button[data-gold="1"] .zircon-primitive-button-label{color:#e8bb55}
+.zircon-primitive-window-art{position:absolute;left:0;top:0;image-rendering:pixelated;pointer-events:none}
+.zircon-item-cell{position:absolute;box-sizing:border-box;background:transparent;border:1px solid rgb(99,83,50)}
+.zircon-item-cell.is-selected{border-color:#fff}
+.zircon-item-cell.is-disabled{opacity:.45}
