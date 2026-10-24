@@ -30,12 +30,6 @@ G.CharacterUI = (() => {
     return value || fallback;
   }
 
-  function previewPath(character) {
-    const className = String(character?.className || 'warrior').toLowerCase();
-    const gender = String(character?.gender || 'male').toLowerCase();
-    return `assets/ui/zircon/characters/${className}-${gender}.webp`;
-  }
-
   function attackStatsHtml() {
     const dc = hudValue('panel-dc');
     const mc = hudValue('panel-mc');
@@ -85,9 +79,9 @@ G.CharacterUI = (() => {
         <span class="exact-character-rank"></span>
       </div>
 
-      <div class="character-paperdoll-origin" aria-hidden="true">
-        <img class="character-paperdoll" src="${previewPath(character)}" alt="">
-      </div>
+      <!-- Zircon draws this area from ProgUse + Equip layers at source origin 130,270.
+           Do not substitute a pre-rendered class preview. -->
+      <div class="character-paperdoll-origin" data-character-paperdoll-origin aria-hidden="true"></div>
 
       <div class="character-stats-tabs">
         ${statTab('Att', true)}
