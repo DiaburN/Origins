@@ -104,7 +104,7 @@ G.ZirconLayout = (() => {
     place('character', 0, 0);
     place('inventory', logicalWidth - 264, minimapHeight);
     place('magic', logicalWidth - 420, 0);
-    place('quest', (logicalWidth - 732) / 2, (logicalHeight - 480) / 2);
+    place('quest', 0, 0);
     place('mail', (logicalWidth - 296) / 2, (logicalHeight - 424) / 2);
     place('belt', panelX + PANEL_WIDTH - 239, panelY - 54);
 
@@ -166,6 +166,8 @@ G.ZirconLayout = (() => {
     if (mailButton && !mailButton.querySelector('[data-mainpanel-alert="mail"]')) {
       mailButton.appendChild(makeAlert('mail', 'gameinter-240', 'mail'));
     }
+
+    syncQuestAlertPositions();
   }
 
   function makeAlert(key, asset, className) {
@@ -180,6 +182,25 @@ G.ZirconLayout = (() => {
   function setAlert(key, visible) {
     const node = document.querySelector(`[data-mainpanel-alert="${key}"]`);
     if (node) node.hidden = !visible;
+    syncQuestAlertPositions();
+  }
+
+  function syncQuestAlertPositions() {
+    const button = document.querySelector('.panel-button[data-window="quest"]');
+    const available = document.querySelector('[data-mainpanel-alert="quest-available"]');
+    const complete = document.querySelector('[data-mainpanel-alert="quest-complete"]');
+    if (!button || !available || !complete) return;
+
+    available.style.top = '2px';
+    available.style.bottom = 'auto';
+
+    if (!complete.hidden && !available.hidden) {
+      complete.style.top = `${button.offsetHeight - complete.offsetHeight - 2}px`;
+      complete.style.bottom = 'auto';
+    } else {
+      complete.style.top = '2px';
+      complete.style.bottom = 'auto';
+    }
   }
 
   function updateFocusGlow() {
