@@ -6,8 +6,8 @@ G.CharacterUI = (() => {
   const EQUIPMENT_SLOTS = [
     { id:'weapon', x:58, y:122, w:65, h:90, hidden:true },
     { id:'armour', x:120, y:123, w:70, h:150, hidden:true },
-    { id:'shield', x:170, y:170, w:36, h:36, hidden:true },
-    { id:'helmet', x:140, y:90, w:35, h:35, hidden:true },
+    { id:'shield', x:170, y:170, w:36, h:36, hidden:true, fixedBorder:true },
+    { id:'helmet', x:140, y:90, w:35, h:35, hidden:true, fixedBorder:true },
     { id:'emblem', x:244, y:118, art:104 },
     { id:'horseArmour', x:283, y:118, art:82 },
     { id:'torch', x:10, y:196, art:38 },
@@ -104,7 +104,7 @@ G.CharacterUI = (() => {
       const y = 6 + row * 22;
       const iconX = x + 75;
       const width = elementIconWidth(name);
-      const value = mode === 'advantage' ? '0' : mode === 'disadvantage' ? '0' : '0';
+      const value = '0';
       const valueHtml = width == null ? '' : `<span class="character-element-value" style="left:${iconX + width}px;top:${y}px">${value}</span>`;
       return `<span class="character-stat-label" style="left:${x}px;top:${y}px">${name}:</span>${valueHtml}`;
     }).join('');
@@ -129,7 +129,6 @@ G.CharacterUI = (() => {
       const button = G.ZirconPrimitives?.makeButton?.({
         type: index === 0 ? 'selected-tab' : 'deselected-tab',
         width:60,
-        height:24,
         label,
         className:'character-top-tab',
         selected:index === 0
@@ -151,7 +150,6 @@ G.CharacterUI = (() => {
       const button = G.ZirconPrimitives?.makeButton?.({
         type:selected ? 'selected-tab' : 'deselected-tab',
         width:40,
-        height:24,
         label,
         className:'character-stat-tab',
         selected
@@ -201,16 +199,24 @@ G.CharacterUI = (() => {
     for (const slot of EQUIPMENT_SLOTS) {
       const w = slot.w || 36;
       const h = slot.h || 36;
-      const cell = document.createElement('div');
-      cell.className = `character-equipment-cell${slot.hidden ? ' is-hidden-region' : ''}`;
+      const cell = G.ZirconPrimitives?.makeItemCell?.({
+        width:w,
+        height:h,
+        hidden:slot.hidden === true,
+        fixedBorder:slot.fixedBorder === true,
+        className:'character-equipment-cell'
+      });
+      if (!cell) continue;
+
       cell.dataset.equipmentSlot = slot.id;
       cell.style.left = `${slot.x}px`;
       cell.style.top = `${CHARACTER_TAB_Y + slot.y}px`;
-      cell.style.width = `${w}px`;
-      cell.style.height = `${h}px`;
+
+      // CharacterDialog.Draw(cell,index): placeholder art is only drawn while
+      // the equipment cell is empty and is centered at 20% opacity.
       if (!slot.hidden && slot.art != null) {
         const art = slotArt(slot.art, w, h);
-        if (art) cell.appendChild(art);
+        if (art) cell.insertBefore(art, cell.firstChild);
       }
       host.appendChild(cell);
     }
