@@ -78,8 +78,6 @@ G.CharacterUI = (() => {
         <span class="exact-character-rank"></span>
       </div>
 
-      <!-- Zircon draws this area from ProgUse + Equip layers at source origin 130,270.
-           Do not substitute a pre-rendered class preview. -->
       <div class="character-paperdoll-origin" data-character-paperdoll-origin aria-hidden="true"></div>
 
       <div class="character-stats-tabs" data-character-stat-tabs></div>
@@ -89,6 +87,7 @@ G.CharacterUI = (() => {
       </div>`;
 
     mountTabs(body);
+    G.CharacterAppearance?.render?.(body.querySelector('[data-character-paperdoll-origin]'), character);
   }
 
   function scheduleRender() {
