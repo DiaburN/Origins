@@ -61,6 +61,12 @@
 .hud-icon-mc{left:541px;top:45px}
 .hud-icon-sc{left:547px;top:45px}
 
+/* DXButton uses #D9D9D9 normally and white while hovered/pressed. */
+.panel-button{filter:none !important}
+.panel-button .panel-button-art{filter:brightness(.85)}
+.panel-button:hover .panel-button-art,
+.panel-button:active .panel-button-art{filter:brightness(1)}
+
 /* Zircon places the minimap flush with the top-right edge. */
 .minimap-tools{right:3px}
 
@@ -72,5 +78,4 @@
   pointer-events:none;
   image-rendering:pixelated;
 }
-.mainpanel-alert.quest-complete{top:auto;bottom:2px}
 .mainpanel-alert[hidden]{display:none}
