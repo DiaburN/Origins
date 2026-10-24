@@ -2,7 +2,7 @@
 """Build exact browser UI primitive assets from Zircon Interface.Zl.
 
 The browser uses these raw source parts to reproduce DXWindow, DXButton,
-DXTab and scroll controls at arbitrary sizes. No artwork is redrawn.
+DXTab, DXItemCell decorations and scroll controls. No artwork is redrawn.
 """
 from __future__ import annotations
 
@@ -12,15 +12,18 @@ from pathlib import Path
 
 from build_full_zircon_ui import ZLLibrary, find_library, pack
 
-# Exact Interface.Zl parts referenced by DXWindow / DXButton / common scroll controls.
+# Exact Interface.Zl parts referenced by DXWindow / DXButton / common controls
+# plus CharacterDialog's empty equipment-slot artwork.
 INTERFACE_INDICES = [
     *range(0, 13),
     15,
     16, 17, 18, 19,
     25, 26,
+    31, 32, 33, 34, 36, 38, 39, 40,
     41, 42, 43,
     53, 54, 55, 56, 57, 58,
-    60, 61, 62,
+    60, 61, 62, 65,
+    81, 82, 104,
     126,
     241, 242, 243, 245,
 ]
