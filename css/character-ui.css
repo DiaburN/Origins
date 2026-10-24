@@ -7,7 +7,11 @@
 .exact-character-guild{top:18px;color:rgb(255,255,181)}
 .exact-character-rank{top:31px;color:rgb(255,206,148)}
 
-.character-paperdoll-origin{position:absolute;left:130px;top:270px;width:1px;height:1px;z-index:3;pointer-events:none}
+/* CharacterTab lives at window Y = TabControl(19) + CharacterTab(26) = 45. */
+.character-paperdoll-origin{position:absolute;left:130px;top:315px;width:1px;height:1px;z-index:3;pointer-events:none}
+.character-equipment-cell{position:absolute;z-index:4;background:transparent;border:1px solid rgb(99,83,50);box-sizing:border-box}
+.character-equipment-cell.is-hidden-region{border:0;pointer-events:none}
+.character-slot-art{position:absolute;opacity:.2;image-rendering:pixelated;pointer-events:none}
 
 .character-stats-tabs{position:absolute;left:21px;top:364px;width:289px;height:24px;display:flex;gap:1px;z-index:5;overflow:visible}
 .character-stat-tab{flex:0 0 40px;width:40px!important;height:24px!important;margin:0;color:rgb(123,105,66)}
