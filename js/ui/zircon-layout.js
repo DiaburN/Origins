@@ -74,7 +74,25 @@ G.ZirconLayout = (() => {
 
   function updateScaleAndLayout() {
     computeScale();
+    syncClassSpecificStats();
     applyExactWindowLayout();
+  }
+
+  function syncClassSpecificStats() {
+    const character = G.Session?.currentCharacter?.();
+    const className = String(character?.className || '').toLowerCase();
+    const showMC = className === 'wizard' || className === 'warrior';
+    const showSC = className === 'taoist' || className === 'assassin';
+
+    setVisible('hud-icon-mc', showMC);
+    setVisible('panel-mc', showMC);
+    setVisible('hud-icon-sc', showSC);
+    setVisible('panel-sc', showSC);
+  }
+
+  function setVisible(id, visible) {
+    const node = el(id);
+    if (node) node.style.display = visible ? '' : 'none';
   }
 
   function applyExactWindowLayout() {
