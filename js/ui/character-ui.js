@@ -1,28 +1,10 @@
 window.G = window.G || {};
 
 G.CharacterUI = (() => {
-  const A = () => G.GameUiAssets || { sheets: {}, sprites: {} };
   let scheduled = false;
 
   function esc(value) {
     return String(value ?? '').replace(/[&<>'"]/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' })[ch]);
-  }
-
-  function spriteHtml(name, className = '') {
-    const assets = A();
-    const s = assets.sprites?.[name];
-    if (!s) return '';
-    const sheet = assets.sheets?.[s.sheet];
-    if (!sheet) return '';
-    return `<i class="zircon-sprite ${className}" style="width:${s.w}px;height:${s.h}px;background-image:url('${sheet}');background-position:-${s.x}px -${s.y}px"></i>`;
-  }
-
-  function topTab(label, selected = false) {
-    return `<button class="zircon-tab-button${selected ? ' is-selected' : ''}" type="button">${spriteHtml(selected ? 'tab-selected-60' : 'tab-deselected-60', 'tab-bg')}<span>${esc(label)}</span></button>`;
-  }
-
-  function statTab(label, selected = false) {
-    return `<button class="character-stat-tab${selected ? ' is-selected' : ''}" type="button"><span class="character-stat-tab-art">${spriteHtml(selected ? 'tab-selected-60' : 'tab-deselected-60')}</span><span class="character-stat-tab-label">${esc(label)}</span></button>`;
   }
 
   function hudValue(id, fallback = '0') {
@@ -53,6 +35,28 @@ G.CharacterUI = (() => {
     }).join('');
   }
 
+  function appendTabs(container, labels, width) {
+    if (!container) return;
+    container.replaceChildren();
+    labels.forEach((label, index) => {
+      const selected = index === 0;
+      const button = G.ZirconPrimitives?.makeButton?.({
+        type: selected ? 'selected-tab' : 'deselected-tab',
+        width,
+        height: 24,
+        label,
+        className: width === 40 ? 'character-stat-tab' : 'character-top-tab',
+        selected
+      });
+      if (button) container.appendChild(button);
+    });
+  }
+
+  function mountTabs(body) {
+    appendTabs(body.querySelector('[data-character-top-tabs]'), ['Character', 'Discipline', 'Hermit', 'Crafting'], 60);
+    appendTabs(body.querySelector('[data-character-stat-tabs]'), ['Att', 'Def', 'Wt', 'Oth', 'E.Att', 'E.Adv', 'E.Dis'], 40);
+  }
+
   function render() {
     const windowEl = document.getElementById('ui-window-character');
     if (!windowEl || windowEl.hidden) return;
@@ -66,12 +70,7 @@ G.CharacterUI = (() => {
     body.dataset.exactCharacter = '1';
     body.dataset.characterName = expectedName;
     body.innerHTML = `
-      <div class="character-tabs exact-character-tabs">
-        ${topTab('Character', true)}
-        ${topTab('Discipline')}
-        ${topTab('Hermit')}
-        ${topTab('Crafting')}
-      </div>
+      <div class="character-tabs exact-character-tabs" data-character-top-tabs></div>
 
       <div class="exact-character-name-panel">
         <strong>${esc(character.name || '')}</strong>
@@ -83,19 +82,13 @@ G.CharacterUI = (() => {
            Do not substitute a pre-rendered class preview. -->
       <div class="character-paperdoll-origin" data-character-paperdoll-origin aria-hidden="true"></div>
 
-      <div class="character-stats-tabs">
-        ${statTab('Att', true)}
-        ${statTab('Def')}
-        ${statTab('Wt')}
-        ${statTab('Oth')}
-        ${statTab('E.Att')}
-        ${statTab('E.Adv')}
-        ${statTab('E.Dis')}
-      </div>
+      <div class="character-stats-tabs" data-character-stat-tabs></div>
 
       <div class="character-stats-content character-stats-attack">
         ${attackStatsHtml()}
       </div>`;
+
+    mountTabs(body);
   }
 
   function scheduleRender() {
