@@ -38,26 +38,45 @@
     },
     "moon": {
       "status": "locked-direction",
-      "evolution": ["HalfMoon", "DragonRise", "FullMoon", "FireSword"],
+      "evolution": ["HalfMoon", "DragonRise", "DestructiveSurge", "FireSword"],
       "stages": [
-        {"stage": 1, "sourceMagic": "HalfMoon", "sourceMagicId": 104, "role": "toggle frontal sweep"},
-        {"stage": 2, "sourceMagic": "DragonRise", "sourceMagicId": 107, "role": "charged wider sweep"},
+        {
+          "stage": 1,
+          "sourceMagic": "HalfMoon",
+          "sourceMagicId": 104,
+          "role": "toggle frontal sweep"
+        },
+        {
+          "stage": 2,
+          "sourceMagic": "DragonRise",
+          "sourceMagicId": 107,
+          "role": "charged wider sweep"
+        },
         {
           "stage": 3,
           "sourceMagic": "DestructiveSurge",
           "sourceMagicId": 109,
-          "originsName": "FullMoon",
           "role": "360-degree sword sweep",
-          "originsBehavior": "Destructive Surge supplies the mechanics for the ORIGINS FullMoon stage: a complete circular attack around the Warrior."
+          "originsBehavior": "DestructiveSurge remains DestructiveSurge in ORIGINS and performs a complete circular attack around the Warrior."
         },
-        {"stage": 4, "sourceMagic": "FireSword", "sourceMagicId": 136, "role": "fire-enhanced circular final evolution"}
+        {
+          "stage": 4,
+          "sourceMagic": "FireSword",
+          "sourceMagicId": 136,
+          "role": "fire-enhanced circular final evolution"
+        }
       ]
     },
     "dash": {
       "status": "locked-direction",
       "evolution": ["ShoulderDash", "Assault", "HundredFist"],
       "stages": [
-        {"stage": 1, "sourceMagic": "ShoulderDash", "sourceMagicId": 105, "role": "dash and push"},
+        {
+          "stage": 1,
+          "sourceMagic": "ShoulderDash",
+          "sourceMagicId": 105,
+          "role": "dash and push"
+        },
         {
           "stage": 2,
           "sourceMagic": "Assault",
@@ -65,15 +84,30 @@
           "role": "enhanced dash/control",
           "originsBehavior": "Promote Zircon's ShoulderDash augment into a real ORIGINS evolution stage, preserving its paralysis/silence control concept."
         },
-        {"stage": 3, "sourceMagic": "HundredFist", "sourceMagicId": 133, "role": "advanced target rush and heavy displacement"}
+        {
+          "stage": 3,
+          "sourceMagic": "HundredFist",
+          "sourceMagicId": 133,
+          "role": "advanced target rush and heavy displacement"
+        }
       ]
     },
     "powerStrike": {
       "status": "locked-direction",
       "evolution": ["FlamingSword", "DefensiveBlow", "BladeStorm"],
       "stages": [
-        {"stage": 1, "sourceMagic": "FlamingSword", "sourceMagicId": 106, "role": "charged heavy strike"},
-        {"stage": 2, "sourceMagic": "DefensiveBlow", "sourceMagicId": 130, "role": "charged strike with defence reduction"},
+        {
+          "stage": 1,
+          "sourceMagic": "FlamingSword",
+          "sourceMagicId": 106,
+          "role": "charged heavy strike"
+        },
+        {
+          "stage": 2,
+          "sourceMagic": "DefensiveBlow",
+          "sourceMagicId": 130,
+          "role": "charged strike with defence reduction"
+        },
         {
           "stage": 3,
           "sourceMagic": "BladeStorm",
