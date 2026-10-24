@@ -18,5 +18,6 @@
 .character-stat-tab[data-selected="1"]{color:#fff}
 
 .character-stats-content{position:absolute;left:0;top:386px;width:331px;height:102px;z-index:4;color:#fff;font-family:"Microsoft Sans Serif",Arial,sans-serif;font-size:8px;line-height:16px;pointer-events:none}
-.character-stat-label,.character-stat-value{position:absolute;height:16px;color:#fff;line-height:16px;white-space:nowrap;text-shadow:1px 1px #000}
+.character-stat-label,.character-stat-value,.character-element-value{position:absolute;height:16px;color:#fff;line-height:16px;white-space:nowrap;text-shadow:1px 1px #000}
 .character-stat-value{width:100px;text-align:right}
+.character-element-value{color:rgb(60,60,60)}
