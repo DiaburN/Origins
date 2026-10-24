@@ -5,6 +5,14 @@
 .zircon-primitive-button:hover,.zircon-primitive-button:active{color:#fff}
 .zircon-primitive-button[data-gold="1"] .zircon-primitive-button-label{color:#e8bb55}
 .zircon-primitive-window-art{position:absolute;left:0;top:0;image-rendering:pixelated;pointer-events:none}
-.zircon-item-cell{position:absolute;box-sizing:border-box;background:transparent;border:1px solid rgb(99,83,50)}
-.zircon-item-cell.is-selected{border-color:#fff}
-.zircon-item-cell.is-disabled{opacity:.45}
+
+/* DXItemCell: transparent by default. Zircon only draws a border when the
+   runtime state requires it (hover/selected/locked/link/fixed border). */
+.zircon-item-cell{position:absolute;box-sizing:border-box;background:transparent;border:0;overflow:visible}
+.zircon-item-cell.is-border-visible{border:1px solid rgb(99,83,50)}
+.zircon-item-cell.is-active-border{border-color:lime}
+.zircon-item-cell.is-state-tinted{background:rgba(255,125,125,.49)}
+.zircon-item-cell.is-disabled-tint{background:rgba(0,125,125,.49)}
+.zircon-item-cell.is-hidden-cell{border:0!important;background:transparent!important}
+.zircon-item-cell-overlay{position:absolute;display:block;image-rendering:pixelated;pointer-events:none;z-index:8}
+.zircon-item-cell-count{position:absolute;right:0;bottom:0;color:#ff0;font:8px/1 "Microsoft Sans Serif",Arial,sans-serif;text-shadow:1px 1px #000;white-space:nowrap;pointer-events:none;z-index:9}
