@@ -1,0 +1,318 @@
+{
+  "source": {
+    "repository": "Suprcode/Zircon",
+    "commit": "c6e6804d012734f64f9e3cb0b2f21806b1a8ed5e",
+    "auditedAt": "2026-10-24"
+  },
+  "font": {
+    "family": "Microsoft Sans Serif",
+    "defaultSize": 8,
+    "outline": true
+  },
+  "constants": {
+    "itemCell": { "width": 36, "height": 36 },
+    "colours": {
+      "activeTab": [255,255,255],
+      "inactiveTab": [123,105,66],
+      "text": [255,255,255],
+      "primary": [198,166,99],
+      "rowBackground": [25,20,0],
+      "inactiveBorder": [99,83,50],
+      "windowBackground": [16,8,8]
+    }
+  },
+  "dxWindow": {
+    "library": "Interface",
+    "indices": {
+      "header": 0,
+      "side": 1,
+      "borderStrip": 2,
+      "titleInner": 3,
+      "titleCornerLeft": 4,
+      "titleCornerRight": 5,
+      "bottomCornerLeft": 8,
+      "bottomCornerRight": 9,
+      "footerInner": 10,
+      "topCornerLeft": 11,
+      "topCornerRight": 12,
+      "close": 15,
+      "noHeaderCornerLeft": 25,
+      "noHeaderCornerRight": 26,
+      "footer": 126
+    }
+  },
+  "mainPanel": {
+    "status": "verified",
+    "source": "Client/Scenes/Views/MainPanel.cs",
+    "library": "GameInter",
+    "background": 50,
+    "size": [1024,68],
+    "bars": {
+      "experienceFrame": { "index": 51, "location": [17,3] },
+      "experienceFill": { "index": 56, "location": [23,5] },
+      "hp": { "index": 52, "location": [35,22] },
+      "mp": { "index": 54, "location": [35,36] },
+      "focus": { "index": 58, "glowIndex": 59, "location": [35,50] }
+    },
+    "buttons": {
+      "character": { "index": 82, "location": [650,23] },
+      "inventory": { "index": 87, "location": [689,23] },
+      "magic": { "index": 92, "location": [728,23] },
+      "quest": { "index": 112, "location": [767,23] },
+      "mail": { "index": 97, "location": [806,23] },
+      "belt": { "index": 107, "location": [845,23] },
+      "group": { "index": 102, "location": [884,23] },
+      "menu": { "index": 117, "location": [923,23] },
+      "store": { "index": 122, "location": [972,16] }
+    },
+    "alerts": { "available": 240, "complete": 241 },
+    "stats": {
+      "class": { "index": 70, "icon": [277,25], "label": [300,20], "labelSize": [60,16] },
+      "level": { "index": 71, "icon": [277,45], "label": [300,40], "labelSize": [60,16] },
+      "fp": { "index": 72, "icon": [362,25], "label": [385,20], "labelSize": [60,16] },
+      "cp": { "index": 73, "icon": [362,45], "label": [385,40], "labelSize": [60,16] },
+      "ac": { "index": 66, "icon": [445,25], "label": [470,20], "labelSize": [60,16] },
+      "dc": { "index": 65, "icon": [445,45], "label": [470,40], "labelSize": [60,16] },
+      "mac": { "index": 63, "icon": [531,25], "label": [567,20], "labelSize": [60,16] },
+      "mc": { "index": 62, "icon": [541,45], "label": [567,40], "labelSize": [60,16], "classes": ["Warrior","Wizard"] },
+      "sc": { "index": 64, "icon": [547,45], "label": [567,40], "labelSize": [60,16], "classes": ["Taoist","Assassin"] }
+    }
+  },
+  "character": {
+    "status": "verified-core",
+    "source": "Client/Scenes/Views/CharacterDialog.cs",
+    "library": "Interface",
+    "background": 110,
+    "inspectBackground": 115,
+    "close": 15,
+    "tabs": {
+      "controlLocation": [0,19],
+      "marginLeft": 18,
+      "contentLocation": [0,26],
+      "labels": ["Character","Discipline","Hermit","Crafting"]
+    },
+    "namePanel": {
+      "size": [137,68],
+      "locationRule": "(((characterTabWidth - 135) / 2) - 5, 51)",
+      "name": { "size": [137,20], "fontSize": 9, "bold": true, "colour": [222,255,222], "align": "center" },
+      "guild": { "location": [0,18], "size": [137,15], "colour": [255,255,181], "align": "center" },
+      "rank": { "location": [0,31], "size": [137,15], "colour": [255,206,148], "align": "center" }
+    },
+    "paperdoll": {
+      "origin": [130,270],
+      "mode": "layered",
+      "requiredLibraries": ["ProgUse","Equip"],
+      "baseBody": { "male": 0, "female": 1 },
+      "hair": {
+        "standardMaleBase": 60,
+        "standardFemaleBase": 80,
+        "assassinMaleBase": 1100,
+        "assassinFemaleBase": 1120,
+        "assassinFemaleSpecial": 1160
+      },
+      "layerOrder": ["fameEffect","armourEffect","baseBody","costumeOrArmour","weapon","weaponEffect","shield","shieldEffect","helmetOrHair"]
+    },
+    "equipmentCells": {
+      "weapon": { "location": [58,122], "size": [65,90], "hidden": true },
+      "armour": { "location": [120,123], "size": [70,150], "hidden": true },
+      "shield": { "location": [170,170], "hidden": true },
+      "helmet": { "location": [140,90], "size": [35,35], "hidden": true },
+      "emblem": { "location": [244,118] },
+      "horseArmour": { "location": [283,118] },
+      "torch": { "location": [10,196] },
+      "necklace": { "location": [10,157] },
+      "braceletL": { "location": [244,157] },
+      "braceletR": { "location": [283,157] },
+      "ringL": { "location": [244,196] },
+      "ringR": { "location": [283,196] },
+      "flower": { "location": [244,235] },
+      "poison": { "location": [244,274] },
+      "amulet": { "location": [283,235], "size": [36,75] },
+      "shoes": { "location": [10,235], "size": [36,75] },
+      "costume": { "location": [10,118] }
+    },
+    "stats": {
+      "controlLocation": [0,319],
+      "height": 120,
+      "marginLeft": 21,
+      "contentY": 22,
+      "minimumTabWidth": 40,
+      "tabs": ["Att","Def","Wt","Oth","E.Att","E.Adv","E.Dis"],
+      "layout": { "yStart": 6, "left": 15, "right": 168, "rowSpacing": 22, "valueSize": [100,16] },
+      "attack": {
+        "left": ["DC","MC","SC","Crit. Damage"],
+        "right": ["Accuracy","A. Speed","Luck","Crit. Chance"]
+      }
+    }
+  },
+  "inventory": {
+    "status": "verified",
+    "source": "Client/Scenes/Views/InventoryDialog.cs",
+    "library": "Interface",
+    "background": 130,
+    "grid": { "columns": 6, "rows": 8, "location": [20,39], "padding": 1, "cellSize": [36,36] },
+    "weightBar": { "library": "GameInter", "index": 360, "location": [53,355] },
+    "currency1Y": 381,
+    "currency2Y": 400,
+    "sort": { "library": "GameInter", "index": 364, "location": [180,384] },
+    "trash": { "library": "GameInter", "index": 358, "location": [218,384] },
+    "sell": { "library": "GameInter", "index": 354, "location": [218,384] },
+    "walletHitbox": { "location": [8,380], "size": [45,40] }
+  },
+  "belt": {
+    "status": "verified",
+    "source": "Client/Scenes/Views/BeltDialog.cs",
+    "type": "DXWindow",
+    "hasTitle": false,
+    "hasFooter": false,
+    "hasTopBorder": false,
+    "allowResize": true,
+    "gridRule": "cols=floor(clientWidth/(cellWidth-1)); rows=floor(clientHeight/(cellHeight-1))",
+    "slotLabel": { "location": [-2,-1], "fontSize": 8, "italic": true }
+  },
+  "magic": {
+    "status": "verified-shell",
+    "source": "Client/Scenes/Views/MagicDialog.cs",
+    "type": "DXWindow",
+    "size": [419,511],
+    "hasFooter": false,
+    "headerByClass": { "Warrior":160, "Wizard":161, "Taoist":162, "Assassin":163 },
+    "background": { "library":"Interface", "index":164, "location":[0,66] },
+    "tabControl": { "location":[0,40], "size":[420,448], "marginLeft":56, "padding":2 },
+    "cell": { "library":"Interface", "index":165, "size":[369,54] },
+    "scroll": [60,61,62],
+    "experience": { "library":"GameInter2", "index":812, "location":[110,36] },
+    "schools": {
+      "Active":[166,167], "Passive":[168,169], "Toggle":[170,171], "Horse":[172,173],
+      "Fire":[174,175], "Ice":[176,177], "Lightning":[178,179], "Wind":[180,181],
+      "Phantom":[182,183], "Holy":[184,185], "Dark":[186,187], "Physical":[188,189],
+      "Atrocity":[190,191], "Kill":[192,193], "Assassination":[194,195]
+    }
+  },
+  "quest": {
+    "status": "verified-shell",
+    "source": "Client/Scenes/Views/QuestDialog.cs",
+    "backgrounds": { "default":291, "milestone":292, "mission":293 },
+    "tabControl": { "location":[0,21], "size":[732,459], "marginLeft":18, "contentY":22 }
+  },
+  "communication": {
+    "status": "verified-shell",
+    "source": "Client/Scenes/Views/CommunicationDialog.cs",
+    "background": 200,
+    "tabControl": { "location":[0,37], "size":[296,340], "marginLeft":10 },
+    "views": { "friends":201, "received":202, "send":203, "blocked":204, "read":205 }
+  },
+  "group": {
+    "status": "verified",
+    "source": "Client/Scenes/Views/GroupDialog.cs",
+    "background": 240,
+    "members": { "location":[13,60], "size":[214,148] },
+    "buttons": { "add":[35,217], "remove":[81,217], "lfg":[127,217], "bag":[173,217] },
+    "bagIndex": 87,
+    "headingY": 272,
+    "lfgRows": { "count":5, "startY":293, "step":21 }
+  },
+  "groupBag": {
+    "status": "verified",
+    "source": "Client/Scenes/Views/GroupLootDialogs.cs",
+    "background": 246,
+    "grid": { "columns":6, "rows":6, "location":[20,39] },
+    "weightBar": { "library":"GameInter", "index":360, "location":[53,280] },
+    "weightLabel": { "location":[53,276], "size":[196,16] },
+    "options": [178,309],
+    "share": { "library":"GameInter", "index":364, "location":[218,309] }
+  },
+  "menu": {
+    "status": "verified",
+    "source": "Client/Scenes/Views/MenuDialog.cs",
+    "background": 279,
+    "buttonX": 26,
+    "buttonWidth": 100,
+    "buttons": {
+      "settings":40, "help":70, "guild":100, "storage":130, "ranking":160, "companion":190, "leave":220
+    }
+  },
+  "config": {
+    "status": "verified-shell",
+    "source": "Client/Controls/DXConfigWindow.cs",
+    "background": 282,
+    "tabControl": { "location":[0,37], "size":[357,365], "marginLeft":10 },
+    "tabs": ["Graphics","Sound","Game","Network","UI"]
+  },
+  "guild": {
+    "status": "verified-shell",
+    "source": "Client/Scenes/Views/GuildDialog.cs",
+    "background": 260,
+    "size": [456,556],
+    "tabControl": { "location":[0,39], "size":[456,464], "marginLeft":15 },
+    "tabBackground": { "index":261, "location":[0,23], "size":[456,440] },
+    "tabs": ["Create","Home","Member","Storage","War","Style","Castle"]
+  },
+  "storage": {
+    "status": "verified-shell",
+    "source": "Client/Scenes/Views/StorageDialog.cs",
+    "background": 121,
+    "tabControl": { "location":[0,61], "size":[410,420], "marginLeft":10 },
+    "gridLocation": [19,11],
+    "visibleRows": 10
+  },
+  "ranking": {
+    "status": "verified-core",
+    "source": "Client/Scenes/Views/RankingDialog.cs",
+    "background": { "normal":210, "full":211 },
+    "size": { "normal":[330,456], "full":[576,456] },
+    "requiresLayeredPaperdoll": true
+  },
+  "companion": {
+    "status": "verified-core",
+    "source": "Client/Scenes/Views/CompanionDialog.cs",
+    "background": 141,
+    "tabControlLocation": [0,38],
+    "displayPoint": [90,140],
+    "subviews": ["Bonus","Filter","Bag"]
+  },
+  "exit": {
+    "status": "verified",
+    "source": "Client/Scenes/Views/ExitDialog.cs",
+    "background": 281,
+    "modal": true,
+    "selectButton": { "location":[61,45], "width":130 },
+    "exitButton": { "locationRule":"(61,55+DefaultHeight)", "width":130 }
+  },
+  "store": {
+    "status": "verified-core",
+    "source": "Client/Scenes/Views/GameStoreDialog.cs",
+    "background": 310,
+    "folderTree": { "location":[10,38], "size":[170,305] },
+    "sortCombo": { "location":[270,41], "width":108 },
+    "searchBox": { "location":[385,42], "width":132 },
+    "searchButton": { "location":[530,40], "width":68 },
+    "itemList": { "location":[199,67], "size":[409,432] },
+    "currencyTitle": { "location":[10,354], "size":[172,20] },
+    "currencyAmount": { "location":[14,375], "size":[164,18] },
+    "recharge": { "location":[10,410], "size":[172,27] },
+    "currencyToggle": { "location":[10,438], "size":[172,27] },
+    "topItems": { "location":[614,65], "size":[174,425] }
+  },
+  "minimap": {
+    "status": "verified-behaviour-blocked-asset",
+    "source": "Client/Scenes/Views/MiniMapDialog.cs",
+    "type": "DXWindow",
+    "sizes": { "default":[200,200], "large":[300,300], "noMapHeight":32 },
+    "hasFooter": false,
+    "closeVisible": false,
+    "backColour": [0,0,0],
+    "library": "MiniMap",
+    "map3Index": 145,
+    "controls": { "transparency":[130,131], "size":132, "bigMap":137 }
+  },
+  "bigMap": {
+    "status": "verified-behaviour-blocked-asset",
+    "source": "Client/Scenes/Views/BigMapDialog.cs",
+    "type": "DXWindow",
+    "sidePanelWidth": 220,
+    "gap": 6,
+    "maxMapSize": [740,520],
+    "requiresLibrary": "MiniMap"
+  }
+}
