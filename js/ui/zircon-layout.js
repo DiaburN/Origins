@@ -56,7 +56,6 @@ G.ZirconLayout = (() => {
     }
 
     el('minimap-size')?.addEventListener('click', () => setTimeout(updateScaleAndLayout, 0));
-
     setInterval(updateFocusGlow, 250);
   }
 
@@ -100,13 +99,16 @@ G.ZirconLayout = (() => {
     const minimapHeight = minimap?.classList.contains('is-large') ? 300 : 200;
     const panelX = (logicalWidth - PANEL_WIDTH) / 2;
     const panelY = logicalHeight - PANEL_HEIGHT;
+    const belt = el('ui-window-belt');
+    const beltWidth = belt?.offsetWidth || 0;
+    const beltHeight = belt?.offsetHeight || 0;
 
     place('character', 0, 0);
     place('inventory', logicalWidth - 264, minimapHeight);
     place('magic', logicalWidth - 420, 0);
     place('quest', 0, 0);
     place('mail', (logicalWidth - 296) / 2, (logicalHeight - 424) / 2);
-    place('belt', panelX + PANEL_WIDTH - 239, panelY - 54);
+    place('belt', panelX + PANEL_WIDTH - beltWidth, panelY - beltHeight);
 
     // Zircon centres GroupBox together with the 264 px GroupBagBox, even when the bag is hidden.
     place('group', (logicalWidth - 240 - 264 - 4) / 2, (logicalHeight - 424) / 2);
