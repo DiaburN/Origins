@@ -1,8 +1,3 @@
 window.G = window.G || {};
 
-// Overwritten by tools/mir3/build_mainpanel_runtime.py from the original GameInter.Zl.
-G.MainPanelAssets = Object.freeze({
-  sheet: 'assets/ui/zircon/gameinter-mainpanel.webp',
-  sprites: {},
-  design: { width: 1024, height: 768, panelWidth: 1024, panelHeight: 68 }
-});
+G.MainPanelAssets = Object.freeze({"sheet":"assets/ui/zircon/gameinter-mainpanel.webp","sprites":{"gameinter-50":{"x":0,"y":0,"w":1024,"h":68},"gameinter-51":{"x":1026,"y":0,"w":992,"h":10},"gameinter-52":{"x":0,"y":70,"w":220,"h":8},"gameinter-54":{"x":222,"y":70,"w":220,"h":8},"gameinter-56":{"x":444,"y":70,"w":980,"h":4},"gameinter-58":{"x":1426,"y":70,"w":220,"h":8},"gameinter-59":{"x":1648,"y":70,"w":220,"h":8},"gameinter-62":{"x":1870,"y":70,"w":24,"h":12},"gameinter-63":{"x":1896,"y":70,"w":36,"h":12},"gameinter-64":{"x":1934,"y":70,"w":20,"h":12},"gameinter-65":{"x":1956,"y":70,"w":20,"h":12},"gameinter-66":{"x":1978,"y":70,"w":20,"h":12},"gameinter-70":{"x":2000,"y":70,"w":20,"h":12},"gameinter-71":{"x":2022,"y":70,"w":20,"h":12},"gameinter-72":{"x":0,"y":84,"w":20,"h":12},"gameinter-73":{"x":22,"y":84,"w":20,"h":12},"gameinter-82":{"x":44,"y":84,"w":36,"h":34},"gameinter-87":{"x":82,"y":84,"w":36,"h":34},"gameinter-92":{"x":120,"y":84,"w":36,"h":34},"gameinter-97":{"x":158,"y":84,"w":36,"h":34},"gameinter-102":{"x":196,"y":84,"w":36,"h":34},"gameinter-107":{"x":234,"y":84,"w":36,"h":34},"gameinter-112":{"x":272,"y":84,"w":36,"h":34},"gameinter-117":{"x":310,"y":84,"w":36,"h":34},"gameinter-122":{"x":348,"y":84,"w":48,"h":48},"gameinter-130":{"x":398,"y":84,"w":20,"h":20},"gameinter-131":{"x":420,"y":84,"w":20,"h":20},"gameinter-132":{"x":442,"y":84,"w":20,"h":20},"gameinter-137":{"x":464,"y":84,"w":20,"h":20},"gameinter-240":{"x":486,"y":84,"w":16,"h":14},"gameinter-241":{"x":504,"y":84,"w":16,"h":14}},"design":{"width":1024,"height":768,"panelWidth":1024,"panelHeight":68}});
