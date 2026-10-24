@@ -2,6 +2,7 @@ window.G = window.G || {};
 
 G.CharacterUI = (() => {
   const CHARACTER_TAB_Y = 19 + 26;
+  const STAT_TABS = ['Att','Def','Wt','Oth','E.Att','E.Adv','E.Dis'];
   const EQUIPMENT_SLOTS = [
     { id:'weapon', x:58, y:122, w:65, h:90, hidden:true },
     { id:'armour', x:120, y:123, w:70, h:150, hidden:true },
@@ -23,6 +24,7 @@ G.CharacterUI = (() => {
   ];
 
   let scheduled = false;
+  let selectedStatTab = 'Att';
 
   function esc(value) {
     return String(value ?? '').replace(/[&<>'"]/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' })[ch]);
@@ -33,21 +35,7 @@ G.CharacterUI = (() => {
     return value || fallback;
   }
 
-  function attackStatsHtml() {
-    const dc = hudValue('panel-dc');
-    const mc = hudValue('panel-mc');
-    const sc = hudValue('panel-sc');
-    const rows = [
-      ['DC:', `0-${dc}`, 'left', 0],
-      ['MC:', `0-${mc}`, 'left', 1],
-      ['SC:', `0-${sc}`, 'left', 2],
-      ['Crit. Damage:', '0', 'left', 3],
-      ['Accuracy:', '5', 'right', 0],
-      ['A. Speed:', '0', 'right', 1],
-      ['Luck:', '0', 'right', 2],
-      ['Crit. Chance:', '0', 'right', 3]
-    ];
-
+  function regularRows(rows) {
     return rows.map(([label, value, side, row]) => {
       const x = side === 'left' ? 15 : 168;
       const valueX = x + 45;
@@ -56,26 +44,137 @@ G.CharacterUI = (() => {
     }).join('');
   }
 
-  function appendTabs(container, labels, width) {
+  function attackStatsHtml() {
+    const dc = hudValue('panel-dc');
+    const mc = hudValue('panel-mc');
+    const sc = hudValue('panel-sc');
+    return regularRows([
+      ['DC:', `0-${dc}`, 'left', 0],
+      ['MC:', `0-${mc}`, 'left', 1],
+      ['SC:', `0-${sc}`, 'left', 2],
+      ['Crit. Damage:', '0', 'left', 3],
+      ['Accuracy:', '5', 'right', 0],
+      ['A. Speed:', '0', 'right', 1],
+      ['Luck:', '0', 'right', 2],
+      ['Crit. Chance:', '0', 'right', 3]
+    ]);
+  }
+
+  function defenseStatsHtml() {
+    return regularRows([
+      ['AC:', `0-${hudValue('panel-ac')}`, 'left', 0],
+      ['MR:', '0-0', 'left', 1],
+      ['Agility:', '0', 'right', 0],
+      ['Life Steal:', '0', 'right', 1]
+    ]);
+  }
+
+  function weightStatsHtml() {
+    return regularRows([
+      ['Body W:', '0 / 0', 'left', 0],
+      ['Hand W:', '0 / 0', 'left', 1]
+    ]);
+  }
+
+  function otherStatsHtml() {
+    return regularRows([
+      ['Comfort:', '0', 'left', 0],
+      ['Pickup Radius:', '0', 'left', 1],
+      ['Gold Rate:', '0', 'right', 0],
+      ['Drop Rate:', '0', 'right', 1],
+      ['Exp Rate:', '0', 'right', 2]
+    ]);
+  }
+
+  function elementIconWidth(name) {
+    if (name === 'Physical') return G.MainPanelAssets?.sprites?.['gameinter-1517']?.w ?? null;
+    const index = G.CharacterPaperdollAssets?.elementIcons?.[name];
+    if (index == null) return null;
+    return G.CharacterPaperdollAssets?.frames?.[String(index)]?.w ?? null;
+  }
+
+  function elementRows(mode) {
+    const left = [['Fire',0],['Ice',1],['Lightning',2],['Wind',3]];
+    const right = [['Holy',0],['Dark',1],['Phantom',2]];
+    if (mode !== 'attack') right.push(['Physical',3]);
+    const rows = [...left.map(([name,row]) => [name,'left',row]), ...right.map(([name,row]) => [name,'right',row])];
+
+    return rows.map(([name, side, row]) => {
+      const x = side === 'left' ? 15 : 168;
+      const y = 6 + row * 22;
+      const iconX = x + 75;
+      const width = elementIconWidth(name);
+      const value = mode === 'advantage' ? '0' : mode === 'disadvantage' ? '0' : '0';
+      const valueHtml = width == null ? '' : `<span class="character-element-value" style="left:${iconX + width}px;top:${y}px">${value}</span>`;
+      return `<span class="character-stat-label" style="left:${x}px;top:${y}px">${name}:</span>${valueHtml}`;
+    }).join('');
+  }
+
+  function statsHtml(tab) {
+    switch (tab) {
+      case 'Def': return defenseStatsHtml();
+      case 'Wt': return weightStatsHtml();
+      case 'Oth': return otherStatsHtml();
+      case 'E.Att': return elementRows('attack');
+      case 'E.Adv': return elementRows('advantage');
+      case 'E.Dis': return elementRows('disadvantage');
+      default: return attackStatsHtml();
+    }
+  }
+
+  function appendTopTabs(container) {
     if (!container) return;
     container.replaceChildren();
-    labels.forEach((label, index) => {
-      const selected = index === 0;
+    ['Character','Discipline','Hermit','Crafting'].forEach((label, index) => {
       const button = G.ZirconPrimitives?.makeButton?.({
-        type: selected ? 'selected-tab' : 'deselected-tab',
-        width,
-        height: 24,
+        type: index === 0 ? 'selected-tab' : 'deselected-tab',
+        width:60,
+        height:24,
         label,
-        className: width === 40 ? 'character-stat-tab' : 'character-top-tab',
-        selected
+        className:'character-top-tab',
+        selected:index === 0
       });
       if (button) container.appendChild(button);
     });
   }
 
+  function refreshStatsContent(body) {
+    const content = body.querySelector('[data-character-stats-content]');
+    if (content) content.innerHTML = statsHtml(selectedStatTab);
+  }
+
+  function appendStatTabs(container, body) {
+    if (!container) return;
+    container.replaceChildren();
+    STAT_TABS.forEach(label => {
+      const selected = label === selectedStatTab;
+      const button = G.ZirconPrimitives?.makeButton?.({
+        type:selected ? 'selected-tab' : 'deselected-tab',
+        width:40,
+        height:24,
+        label,
+        className:'character-stat-tab',
+        selected
+      });
+      if (!button) return;
+      button.dataset.statTab = label;
+      button.addEventListener('click', async () => {
+        if (selectedStatTab === label) return;
+        selectedStatTab = label;
+        for (const sibling of container.querySelectorAll('[data-stat-tab]')) {
+          const isSelected = sibling.dataset.statTab === selectedStatTab;
+          sibling.dataset.selected = isSelected ? '1' : '0';
+          await G.ZirconPrimitives?.repaintButton?.(sibling, isSelected ? 'selected-tab' : 'deselected-tab');
+        }
+        refreshStatsContent(body);
+      });
+      container.appendChild(button);
+    });
+  }
+
   function mountTabs(body) {
-    appendTabs(body.querySelector('[data-character-top-tabs]'), ['Character', 'Discipline', 'Hermit', 'Crafting'], 60);
-    appendTabs(body.querySelector('[data-character-stat-tabs]'), ['Att', 'Def', 'Wt', 'Oth', 'E.Att', 'E.Adv', 'E.Dis'], 40);
+    appendTopTabs(body.querySelector('[data-character-top-tabs]'));
+    appendStatTabs(body.querySelector('[data-character-stat-tabs]'), body);
   }
 
   function slotArt(index, cellWidth, cellHeight) {
@@ -131,21 +230,15 @@ G.CharacterUI = (() => {
     body.dataset.characterName = expectedName;
     body.innerHTML = `
       <div class="character-tabs exact-character-tabs" data-character-top-tabs></div>
-
       <div class="exact-character-name-panel">
         <strong>${esc(character.name || '')}</strong>
         <span class="exact-character-guild"></span>
         <span class="exact-character-rank"></span>
       </div>
-
       <div class="character-equipment-layer" data-character-equipment></div>
       <div class="character-paperdoll-origin" data-character-paperdoll-origin aria-hidden="true"></div>
-
       <div class="character-stats-tabs" data-character-stat-tabs></div>
-
-      <div class="character-stats-content character-stats-attack">
-        ${attackStatsHtml()}
-      </div>`;
+      <div class="character-stats-content" data-character-stats-content>${statsHtml(selectedStatTab)}</div>`;
 
     mountTabs(body);
     mountEquipmentCells(body);
@@ -164,7 +257,6 @@ G.CharacterUI = (() => {
   function init() {
     const layer = document.getElementById('ui-window-layer');
     if (!layer) return;
-
     const observer = new MutationObserver(mutations => {
       for (const mutation of mutations) {
         const target = mutation.target instanceof Element ? mutation.target : mutation.target?.parentElement;
@@ -176,12 +268,11 @@ G.CharacterUI = (() => {
         }
       }
     });
-
-    observer.observe(layer, { childList: true, subtree: true, attributes: true, attributeFilter: ['hidden'] });
+    observer.observe(layer, { childList:true, subtree:true, attributes:true, attributeFilter:['hidden'] });
     scheduleRender();
   }
 
   return Object.freeze({ init, render });
 })();
 
-addEventListener('DOMContentLoaded', () => G.CharacterUI.init(), { once: true });
+addEventListener('DOMContentLoaded', () => G.CharacterUI.init(), { once:true });
