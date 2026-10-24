@@ -21,9 +21,13 @@ INTERFACE_INDICES = [
     25, 26,
     31, 32, 33, 34, 36, 38, 39, 40,
     41, 42, 43,
+    # DXItemCell state overlays: New / Locked / CannotUse.
+    47, 48, 49,
     53, 54, 55, 56, 57, 58,
     60, 61, 62, 65,
-    81, 82, 104,
+    81, 82,
+    # DXItemCell ItemPart marker + Character Emblem placeholder.
+    103, 104,
     126,
     241, 242, 243, 245,
 ]
