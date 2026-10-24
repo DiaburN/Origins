@@ -2,14 +2,11 @@
 """Build the full ORIGINS X in-game Zircon UI from original MIR3 .Zl libraries.
 
 No artwork is generated or redrawn. Every visual is decoded from Interface.Zl,
-GameInter.Zl or GameInter2.Zl and packed losslessly for the browser. The only
-compositing performed mirrors Zircon's own DXButton/DXWindow assembly logic.
+GameInter.Zl or GameInter2.Zl and packed losslessly for the browser.
 
-Typical use:
-    py tools/mir3/build_full_zircon_ui.py
-
-If auto-discovery cannot find the libraries:
-    py tools/mir3/build_full_zircon_ui.py --source "C:\\path\\to\\Zircon\\Data"
+NOTE: legacy precomposed button/tab sprites remain temporarily for old modules,
+but all new code must use zircon-primitives.js, which mirrors MirLibrary's
+source-crop behavior instead of stretching source artwork.
 """
 from __future__ import annotations
 
@@ -81,24 +78,9 @@ def parse_legacy(data: bytes):
         pos += 1
         sw, sh, sox, soy, ow, oh = struct.unpack_from("<hhhhhh", header, pos)
         pos += 12
-        images.append(
-            ZLImage(
-                idx,
-                pos=payload_pos,
-                w=width,
-                h=height,
-                ox=ox,
-                oy=oy,
-                shadow_type=shadow_type,
-                sw=sw,
-                sh=sh,
-                sox=sox,
-                soy=soy,
-                ow=ow,
-                oh=oh,
-                version=version,
-            )
-        )
+        images.append(ZLImage(idx, pos=payload_pos, w=width, h=height, ox=ox, oy=oy,
+                              shadow_type=shadow_type, sw=sw, sh=sh, sox=sox, soy=soy,
+                              ow=ow, oh=oh, version=version))
     return version, images
 
 
@@ -158,30 +140,11 @@ def parse_zl2(data: bytes):
         pos += 3
         sizes = struct.unpack_from("<9i", metadata, pos)
         pos += 36
-        images.append(
-            ZLImage(
-                idx,
-                pos=payload_pos,
-                w=width,
-                h=height,
-                ox=ox,
-                oy=oy,
-                shadow_type=shadow_type,
-                sw=sw,
-                sh=sh,
-                sox=sox,
-                soy=soy,
-                ow=ow,
-                oh=oh,
-                version=metadata_version,
-                atlas=atlas,
-                src=source_rect,
-                vis=visible_bounds,
-                codecs=codecs,
-                prefs=preferences,
-                sizes=sizes,
-            )
-        )
+        images.append(ZLImage(idx, pos=payload_pos, w=width, h=height, ox=ox, oy=oy,
+                              shadow_type=shadow_type, sw=sw, sh=sh, sox=sox, soy=soy,
+                              ow=ow, oh=oh, version=metadata_version, atlas=atlas,
+                              src=source_rect, vis=visible_bounds, codecs=codecs,
+                              prefs=preferences, sizes=sizes))
     return version, images, entries
 
 
@@ -280,6 +243,7 @@ def save_lossless(image: Image.Image, path: Path):
 
 
 def stretch_three(left: Image.Image, middle: Image.Image, right: Image.Image, width: int, height: int) -> Image.Image:
+    """LEGACY compatibility only. New UI code must use source-crop primitives."""
     left = left.convert("RGBA")
     middle = middle.convert("RGBA")
     right = right.convert("RGBA")
@@ -294,49 +258,34 @@ def stretch_three(left: Image.Image, middle: Image.Image, right: Image.Image, wi
 
 
 def build_belt_frame(interface: ZLLibrary, width: int = 239, height: int = 54) -> Image.Image:
+    """LEGACY compatibility only; exact BeltDialog now uses zircon-primitives.js."""
     canvas = Image.new("RGBA", (width, height), (16, 8, 8, 255))
-    top = interface.decode(2)
-    side = interface.decode(1)
-    top_left = interface.decode(25)
-    top_right = interface.decode(26)
-    bottom_left = interface.decode(8)
-    bottom_right = interface.decode(9)
-
+    top = interface.decode(2); side = interface.decode(1)
+    top_left = interface.decode(25); top_right = interface.decode(26)
+    bottom_left = interface.decode(8); bottom_right = interface.decode(9)
     def stretch(image: Image.Image, w: int, h: int) -> Image.Image:
         return image.resize((w, h), Image.Resampling.NEAREST)
-
     canvas.alpha_composite(stretch(top, width, top.height), (0, 0))
-    y = top.height
-    side_height = max(0, height - y)
+    y = top.height; side_height = max(0, height - y)
     canvas.alpha_composite(stretch(side, side.width, side_height), (0, y))
     canvas.alpha_composite(stretch(side, side.width, side_height), (width - side.width, y))
-    canvas.alpha_composite(top_left, (0, 0))
-    canvas.alpha_composite(top_right, (width - top_right.width, 0))
+    canvas.alpha_composite(top_left, (0, 0)); canvas.alpha_composite(top_right, (width - top_right.width, 0))
     canvas.alpha_composite(stretch(top, width, top.height), (0, height - top.height))
-    canvas.alpha_composite(bottom_left, (0, height - bottom_left.height))
-    canvas.alpha_composite(bottom_right, (width - bottom_right.width, height - bottom_right.height))
+    canvas.alpha_composite(bottom_left, (0, height - bottom_left.height)); canvas.alpha_composite(bottom_right, (width - bottom_right.width, height - bottom_right.height))
     return canvas
 
 
 def pack(items: list[tuple[str, Image.Image]], path: Path, max_width: int):
-    x = y = row_height = 0
-    placements = {}
-    placed = []
+    x = y = row_height = 0; placements = {}; placed = []
     for name, image in items:
-        image = image.convert("RGBA")
-        width, height = image.size
+        image = image.convert("RGBA"); width, height = image.size
         if x and x + width > max_width:
-            y += row_height + 2
-            x = 0
-            row_height = 0
-        placements[name] = (x, y, width, height)
-        placed.append((image, x, y))
-        x += width + 2
-        row_height = max(row_height, height)
+            y += row_height + 2; x = 0; row_height = 0
+        placements[name] = (x, y, width, height); placed.append((image, x, y))
+        x += width + 2; row_height = max(row_height, height)
     atlas_height = max(1, y + row_height)
     atlas = Image.new("RGBA", (max_width, atlas_height), (0, 0, 0, 0))
-    for image, px, py in placed:
-        atlas.alpha_composite(image, (px, py))
+    for image, px, py in placed: atlas.alpha_composite(image, (px, py))
     save_lossless(atlas, path)
     return placements
 
@@ -345,19 +294,12 @@ def build(repo: Path, source: Path | None):
     interface_path = find_library(repo, source, ["Interface.Zl", "Interface(1).Zl"])
     gameinter_path = find_library(repo, source, ["GameInter.Zl", "GameInter(1).Zl"])
     gameinter2_path = find_library(repo, source, ["GameInter2.Zl"])
+    print(f"Interface : {interface_path}"); print(f"GameInter : {gameinter_path}"); print(f"GameInter2: {gameinter2_path}")
+    interface = ZLLibrary(interface_path); gameinter = ZLLibrary(gameinter_path); gameinter2 = ZLLibrary(gameinter2_path)
 
-    print(f"Interface : {interface_path}")
-    print(f"GameInter : {gameinter_path}")
-    print(f"GameInter2: {gameinter2_path}")
-
-    interface = ZLLibrary(interface_path)
-    gameinter = ZLLibrary(gameinter_path)
-    gameinter2 = ZLLibrary(gameinter2_path)
-
-    interface_fixed = [15, 60, 61, 62, 160, 161, 162, 163, 164, 165, *range(166, 196), 241, 242, 243]
-    gameinter_fixed = [82, 87, 92, 97, 102, 107, 112, 117, 122, 130, 131, 132, 137, 240, 241, 354, 358, 360, 364]
-    gameinter2_fixed = [812, 815, 816]
-
+    interface_fixed = [15,60,61,62,160,161,162,163,164,165,*range(166,196),241,242,243]
+    gameinter_fixed = [82,87,92,97,102,107,112,117,122,130,131,132,137,240,241,354,358,360,364]
+    gameinter2_fixed = [812,815,816]
     fixed_items = [(f"interface-{idx}", interface.decode(idx)) for idx in interface_fixed]
     fixed_items += [(f"gameinter-{idx}", gameinter.decode(idx)) for idx in gameinter_fixed]
     fixed_items += [(f"gameinter2-{idx}", gameinter2.decode(idx)) for idx in gameinter2_fixed]
@@ -372,29 +314,36 @@ def build(repo: Path, source: Path | None):
 
     out_dir = repo / "assets" / "ui" / "zircon"
     fixed = pack(fixed_items, out_dir / "ui-full-fixed.webp", 2048)
-    core_ids = [110, 130, 200, 201, 202, 203, 204, 205, 240, 279]
+
+    # Full-image Interface dialogs required by the main HUD and Menu subtree.
+    core_ids = [
+        110, 121, 130, 141,
+        200,201,202,203,204,205,
+        210,211,
+        240,246,
+        260,261,
+        279,281,282,
+    ]
     core = pack([(f"interface-{idx}", interface.decode(idx)) for idx in core_ids], out_dir / "ui-windows-core.webp", 2048)
-    quest_ids = [291, 292, 293]
-    quest = pack([(f"interface-{idx}", interface.decode(idx)) for idx in quest_ids], out_dir / "ui-windows-quest.webp", 2048)
+    quest = pack([(f"interface-{idx}", interface.decode(idx)) for idx in [291,292,293]], out_dir / "ui-windows-quest.webp", 2048)
     store = pack([("interface-310", interface.decode(310))], out_dir / "ui-window-store.webp", 800)
+    help_ui = pack([(f"gameinter-{idx}", gameinter.decode(idx)) for idx in [9300,9310,9311,9315]], out_dir / "ui-window-help.webp", 2048)
 
     sheets = {
-        "fixed": "assets/ui/zircon/ui-full-fixed.webp",
-        "core": "assets/ui/zircon/ui-windows-core.webp",
-        "quest": "assets/ui/zircon/ui-windows-quest.webp",
-        "store": "assets/ui/zircon/ui-window-store.webp",
+        "fixed":"assets/ui/zircon/ui-full-fixed.webp",
+        "core":"assets/ui/zircon/ui-windows-core.webp",
+        "quest":"assets/ui/zircon/ui-windows-quest.webp",
+        "store":"assets/ui/zircon/ui-window-store.webp",
+        "help":"assets/ui/zircon/ui-window-help.webp",
     }
     sprites = {}
-    for sheet, placements in [("fixed", fixed), ("core", core), ("quest", quest), ("store", store)]:
-        for name, (x, y, width, height) in placements.items():
-            sprites[name] = {"sheet": sheet, "x": x, "y": y, "w": width, "h": height}
+    for sheet, placements in [("fixed",fixed),("core",core),("quest",quest),("store",store),("help",help_ui)]:
+        for name,(x,y,width,height) in placements.items():
+            sprites[name] = {"sheet":sheet,"x":x,"y":y,"w":width,"h":height}
 
-    asset_js = "window.G = window.G || {};\n\nG.GameUiAssets = Object.freeze(" + json.dumps(
-        {"sheets": sheets, "sprites": sprites}, separators=(",", ":")
-    ) + ");\n"
+    asset_js = "window.G = window.G || {};\n\nG.GameUiAssets = Object.freeze(" + json.dumps({"sheets":sheets,"sprites":sprites}, separators=(",",":")) + ");\n"
     asset_js_path = repo / "js" / "ui" / "game-ui-assets.js"
-    asset_js_path.parent.mkdir(parents=True, exist_ok=True)
-    asset_js_path.write_text(asset_js, encoding="utf-8")
+    asset_js_path.parent.mkdir(parents=True, exist_ok=True); asset_js_path.write_text(asset_js, encoding="utf-8")
 
     save_lossless(gameinter.decode(50), out_dir / "main-panel.webp")
     save_lossless(gameinter.decode(130), out_dir / "minimap-opacity.webp")
@@ -402,9 +351,8 @@ def build(repo: Path, source: Path | None):
     save_lossless(gameinter.decode(137), out_dir / "minimap-bigmap.webp")
 
     print("Generated exact Zircon browser UI:")
-    for name in ["ui-full-fixed.webp", "ui-windows-core.webp", "ui-windows-quest.webp", "ui-window-store.webp"]:
-        path = out_dir / name
-        print(f"  {path.relative_to(repo)} ({path.stat().st_size:,} bytes)")
+    for name in ["ui-full-fixed.webp","ui-windows-core.webp","ui-windows-quest.webp","ui-window-store.webp","ui-window-help.webp"]:
+        path = out_dir / name; print(f"  {path.relative_to(repo)} ({path.stat().st_size:,} bytes)")
     print("  js/ui/game-ui-assets.js")
 
 
@@ -413,14 +361,10 @@ def main():
     parser.add_argument("--source", type=Path, help="Directory containing Interface.Zl, GameInter.Zl and GameInter2.Zl")
     parser.add_argument("--repo", type=Path, default=Path(__file__).resolve().parents[2], help=argparse.SUPPRESS)
     args = parser.parse_args()
-    try:
-        build(args.repo.resolve(), args.source)
+    try: build(args.repo.resolve(), args.source)
     except FileNotFoundError as exc:
-        print("\nCould not find one of the original Zircon libraries:")
-        print(f"  {exc}")
-        print("Run again with --source pointing to the folder that contains the .Zl files.")
-        raise SystemExit(2)
+        print("\nCould not find one of the original Zircon libraries:"); print(f"  {exc}")
+        print("Run again with --source pointing to the folder that contains the .Zl files."); raise SystemExit(2)
 
 
-if __name__ == "__main__":
-    main()
+if __name__ == "__main__": main()
