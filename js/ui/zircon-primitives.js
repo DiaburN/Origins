@@ -241,11 +241,81 @@ G.ZirconPrimitives = (() => {
     return { x, y, width: w, height: h };
   }
 
-  function makeItemCell({ width = 36, height = 36, className = '' } = {}) {
+  function spriteNode(index, className = '') {
+    const s = sprite(`interface-${index}`);
+    if (!s || !A().sheet) return null;
+    const node = document.createElement('i');
+    node.className = `zircon-item-cell-overlay ${className}`.trim();
+    node.style.width = `${s.w}px`;
+    node.style.height = `${s.h}px`;
+    node.style.backgroundImage = `url('${A().sheet}')`;
+    node.style.backgroundPosition = `-${s.x}px -${s.y}px`;
+    node.style.backgroundRepeat = 'no-repeat';
+    return node;
+  }
+
+  function refreshItemCell(cell) {
+    if (!cell) return;
+    const state = cell._zirconItemState || {};
+    const hidden = state.hidden === true;
+    const enabled = state.enabled !== false;
+    const activeBorder = !hidden && (cell.matches(':hover') || state.locked === true || state.selected === true || state.linkTarget === true);
+    const borderVisible = !hidden && (state.fixedBorder === true || activeBorder);
+
+    cell.classList.toggle('is-hidden-cell', hidden);
+    cell.classList.toggle('is-disabled', !enabled);
+    cell.classList.toggle('is-border-visible', borderVisible);
+    cell.classList.toggle('is-active-border', activeBorder && state.fixedBorderColour !== true);
+    cell.classList.toggle('is-state-tinted', !hidden && (!enabled || state.locked === true || state.selected === true || state.linkTarget === true));
+    cell.classList.toggle('is-disabled-tint', !hidden && !enabled);
+
+    cell.querySelectorAll('.zircon-item-cell-overlay').forEach(node => node.remove());
+    const hasItem = state.hasItem === true;
+    if (hasItem) {
+      const overlays = [];
+      if (state.isNew === true) overlays.push([47, 1, 1, 'is-new']);
+      if (state.itemLocked === true && !hidden && state.inspect !== true) overlays.push([48, 1, 1, 'is-locked']);
+      if (state.canUse === false && !hidden && state.inspect !== true) overlays.push([49, cell.clientWidth - 12, 1, 'is-cannot-use']);
+      if (state.itemPart === true) overlays.push([103, cell.clientWidth - 16, 1, 'is-item-part']);
+      for (const [index, left, top, className] of overlays) {
+        const node = spriteNode(index, className);
+        if (!node) continue;
+        node.style.left = `${left}px`;
+        node.style.top = `${top}px`;
+        cell.appendChild(node);
+      }
+    }
+
+    const count = cell.querySelector('.zircon-item-cell-count');
+    if (count) {
+      const visible = state.showCount === true && !hidden && hasItem && state.count != null;
+      count.hidden = !visible;
+      count.textContent = visible ? String(state.count) : '';
+    }
+  }
+
+  function updateItemCell(cell, state = {}) {
+    if (!cell) return null;
+    cell._zirconItemState = { ...(cell._zirconItemState || {}), ...state };
+    refreshItemCell(cell);
+    return cell;
+  }
+
+  function makeItemCell({ width = 36, height = 36, className = '', hidden = false, fixedBorder = false, fixedBorderColour = false, enabled = true, inspect = false } = {}) {
     const cell = document.createElement('div');
     cell.className = `zircon-item-cell ${className}`.trim();
     cell.style.width = `${width}px`;
     cell.style.height = `${height}px`;
+
+    const count = document.createElement('span');
+    count.className = 'zircon-item-cell-count';
+    count.hidden = true;
+    cell.appendChild(count);
+
+    cell._zirconItemState = { hidden, fixedBorder, fixedBorderColour, enabled, inspect };
+    cell.addEventListener('mouseenter', () => refreshItemCell(cell));
+    cell.addEventListener('mouseleave', () => refreshItemCell(cell));
+    refreshItemCell(cell);
     return cell;
   }
 
@@ -258,6 +328,7 @@ G.ZirconPrimitives = (() => {
     makeWindowChrome,
     paintWindow,
     getClientArea,
-    makeItemCell
+    makeItemCell,
+    updateItemCell
   });
 })();
