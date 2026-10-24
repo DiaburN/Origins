@@ -1,0 +1,15 @@
+.inventory-exact-grid{position:absolute;left:20px;top:39px;width:223px;height:297px;pointer-events:auto}
+.inventory-exact-cell{position:absolute;width:36px;height:36px;box-sizing:border-box;background:transparent}
+.inventory-exact-weight{position:absolute;left:53px;top:355px;width:196px;height:8px;z-index:4}
+.inventory-exact-weight-fill{position:absolute;left:0;top:0;width:196px;height:8px;overflow:hidden}
+.inventory-weight-source{position:absolute;left:0;top:0;display:block}
+.inventory-exact-weight-text{position:absolute;left:0;top:-5px;width:196px;height:18px;display:flex;align-items:center;justify-content:center;color:#fff;font:8px/18px "Microsoft Sans Serif",Arial,sans-serif;text-shadow:1px 1px #000;pointer-events:none}
+.inventory-exact-currency-title,.inventory-exact-currency-value{position:absolute;height:20px;display:flex;align-items:center;font:8px/20px "Microsoft Sans Serif",Arial,sans-serif;text-shadow:1px 1px #000;box-sizing:border-box}
+.inventory-exact-currency-title{left:55px;width:97px;font-weight:700;justify-content:flex-start}
+.inventory-exact-currency-value{left:80px;width:97px;color:#fff;justify-content:flex-end}
+.inventory-exact-currency-title.primary,.inventory-exact-currency-value.primary{top:381px}.inventory-exact-currency-title.primary{color:goldenrod}
+.inventory-exact-currency-title.secondary,.inventory-exact-currency-value.secondary{top:400px}.inventory-exact-currency-title.secondary{color:darkorange}
+.inventory-exact-icon{position:absolute;width:36px;height:36px;border:0;padding:0;background:transparent;cursor:pointer}
+.inventory-exact-icon>.inventory-source-sprite{position:absolute;left:0;top:0;display:block}
+.inventory-exact-sort{left:180px;top:384px}.inventory-exact-trash{left:218px;top:384px}
+.inventory-wallet-hitbox{position:absolute;left:8px;top:380px;width:45px;height:40px;border:0;background:transparent;padding:0;cursor:pointer}
