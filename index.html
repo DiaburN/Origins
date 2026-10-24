@@ -98,7 +98,7 @@
     <div id="game-hud" class="zircon-game-hud" aria-label="Panel principal">
       <img class="main-panel-image" src="assets/ui/zircon/main-panel.webp" alt="">
 
-      <i class="hud-sprite hud-exp-frame"></i>
+      <i id="hud-exp-frame" class="hud-sprite hud-exp-frame"></i>
       <i id="hud-exp-fill" class="hud-sprite hud-exp-fill"></i>
       <i id="hud-hp-fill" class="hud-sprite hud-hp-fill"></i>
       <i id="hud-mp-fill" class="hud-sprite hud-mp-fill"></i>
@@ -108,15 +108,15 @@
       <span id="hud-mp-text" class="hud-value hud-value-mp">75/75</span>
       <span id="hud-focus-text" class="hud-value hud-value-focus"></span>
 
-      <i class="hud-sprite hud-icon hud-icon-class"></i>
-      <i class="hud-sprite hud-icon hud-icon-level"></i>
-      <i class="hud-sprite hud-icon hud-icon-fp"></i>
-      <i class="hud-sprite hud-icon hud-icon-cp"></i>
-      <i class="hud-sprite hud-icon hud-icon-ac"></i>
-      <i class="hud-sprite hud-icon hud-icon-dc"></i>
-      <i class="hud-sprite hud-icon hud-icon-mac"></i>
-      <i class="hud-sprite hud-icon hud-icon-mc"></i>
-      <i class="hud-sprite hud-icon hud-icon-sc"></i>
+      <i id="hud-icon-class" class="hud-sprite hud-icon hud-icon-class"></i>
+      <i id="hud-icon-level" class="hud-sprite hud-icon hud-icon-level"></i>
+      <i id="hud-icon-fp" class="hud-sprite hud-icon hud-icon-fp"></i>
+      <i id="hud-icon-cp" class="hud-sprite hud-icon hud-icon-cp"></i>
+      <i id="hud-icon-ac" class="hud-sprite hud-icon hud-icon-ac"></i>
+      <i id="hud-icon-dc" class="hud-sprite hud-icon hud-icon-dc"></i>
+      <i id="hud-icon-mac" class="hud-sprite hud-icon hud-icon-mac"></i>
+      <i id="hud-icon-mc" class="hud-sprite hud-icon hud-icon-mc"></i>
+      <i id="hud-icon-sc" class="hud-sprite hud-icon hud-icon-sc"></i>
 
       <span id="panel-class" class="hud-label hud-label-class"></span>
       <span id="panel-level" class="hud-label hud-label-level"></span>
@@ -149,6 +149,7 @@
   <script src="js/entities/player.js"></script>
   <script src="js/game.js"></script>
   <script src="js/ui/game-ui-assets.js"></script>
+  <script src="js/ui/mainpanel-assets.js"></script>
   <script src="js/ui/ingame.js"></script>
   <script src="js/ui/magic-ui.js"></script>
   <script src="js/ui/flow.js"></script>
