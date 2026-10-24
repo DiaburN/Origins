@@ -4,6 +4,15 @@
   --zircon-logical-height:100vh;
 }
 
+/* Zircon Config.FontName default is Microsoft Sans Serif. */
+#ingame-ui,
+#ingame-ui button,
+#ingame-ui span,
+#ingame-ui div,
+#ingame-ui strong{
+  font-family:"Microsoft Sans Serif", Arial, sans-serif;
+}
+
 /* Browser equivalent of Zircon GameScene.UIScale / UISize. */
 .zircon-game-hud{
   left:50%;
