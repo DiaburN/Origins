@@ -15,8 +15,11 @@ Origins/
 │   ├── ui/          # flow + ingame HUD/windows/minimap
 │   └── game.js
 ├── data/
+│   ├── ui/zircon-ui-spec.json   # geometría/índices UI verificados
 │   ├── players/
 │   └── magics/
+├── docs/
+│   └── ZIRCON_UI_REFERENCE.md   # fuente de verdad de interfaz/menús/submenús
 ├── tools/mir3/
 │   ├── build_map_runtime.py
 │   ├── build_player_runtime.py
@@ -36,6 +39,7 @@ Origins/
 4. Assets y lógica separados; `.Zl` solo fuente de conversión, nunca runtime web.
 5. Movimiento continuo; direcciones/acciones/frames MIR3/Zircon.
 6. Clases, mapas, monstruos, magias, items y spawns deben ser data-driven.
+7. Para UI: consultar primero `docs/ZIRCON_UI_REFERENCE.md` y `data/ui/zircon-ui-spec.json`. No inventar posiciones, cajas, capas o assets.
 
 ## Flujo actual
 
@@ -44,11 +48,10 @@ Origins/
 - Cuenta/personajes temporales en `localStorage`.
 - Clases: Warrior, Wizard, Taoist, Assassin; hombre/mujer.
 - Login/Select/Create reconstruidos con assets reales de Zircon.
-- `js/ui/ingame.js`: panel principal, ventanas y minimapa.
-- Panel inferior basado en `GameInter` index `50`.
-- Hotspots reales: Character 82, Bag 87, Magic 92, Quest 112, Mail 97, Belt 107, Group 102, Menu 117, Store 122.
-- Minimapa basado en `MiniMapDialog`; controles reales GameInter 130/132/137.
-- Ventanas ya preparadas: Personaje, Bolsa, Magias, Misiones, Correo, Cinturón, Grupo, Menú, Tienda y mapa grande.
+- Panel inferior basado en `GameInter[50]`; hotspots originales 82/87/92/112/97/107/102/117/122.
+- La interfaz ingame está en reconstrucción fuente-a-fuente contra Zircon. No considerar una ventana terminada hasta que figure `VERIFIED-IMPLEMENTED` en la referencia UI.
+- Character debe usar paperdoll por capas `ProgUse + Equip`; nunca una preview estática equipada.
+- MiniMap real de `3.map` requiere `MiniMap.Zl` (índice 145); no inventar su interior.
 
 ## Mapa inicial
 
@@ -58,14 +61,13 @@ Manifest: `assets/maps/start-3/manifest.json`.
 
 - `game.js` apunta directamente a este manifest.
 - Runtime todavía `ready:false`; cuando se genere `3.map + render-pack + atlas`, arrancará automáticamente ahí.
-- Tutorial inicial futuro: isla/minitutorial antes o alrededor del inicio; no bloquear la implementación actual.
 - `01.map` / Border Village se conserva como mapa técnico ya validado y referencia del parser/renderer.
 
 ## Player / mapas
 
 - `js/core/mir-animation.js`: FrameSets/timings Zircon.
 - `js/core/mir-sprites.js`: atlas + offsets MIR.
-- `js/entities/player.js`: personaje continuo con renderer MIR.
+- `js/entities/player.js`: personaje continuo con renderer MIR; todavía no implementa todas las capas de equipamiento.
 - `js/core/mir-map.js`: parser `.map`.
 - `js/core/mir-map-renderer.js`: capas/profundidad/animación.
 - `js/systems/map-world.js`: carga, spawn, límites y colisión.
@@ -75,12 +77,10 @@ Manifest: `assets/maps/start-3/manifest.json`.
 
 Drive conserva fuentes/runtimes pesados; GitHub conserva código, manifests y assets web pequeños.
 
-Pendiente: publicar el runtime real de `3.map` y el player en una ruta HTTP/CORS estable o incorporarlo al flujo local de desarrollo.
-
 ## Siguiente paso
 
-1. Probar HUD/minimapa/ventanas desde localhost.
-2. Abrir el editor/conversor de mapas.
-3. Importar y preparar `3.map` como primer mapa jugable.
-4. Definir spawn inicial, regiones y después minitutorial de isla.
-5. Continuar con monstruos, combate, drops y magias.
+1. Reconstruir primitives UI: DXWindow, DXButton/DXTab, DXItemCell.
+2. Cerrar MainPanel exacto.
+3. Crear renderer compartido de personaje por capas `ProgUse + Equip`.
+4. Completar CharacterDialog e InventoryDialog.
+5. Seguir el orden de `docs/ZIRCON_UI_REFERENCE.md` para todos los menús/submenús.
