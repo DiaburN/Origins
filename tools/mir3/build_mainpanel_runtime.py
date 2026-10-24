@@ -8,15 +8,15 @@ from pathlib import Path
 
 from build_full_zircon_ui import ZLLibrary, find_library, pack, save_lossless
 
-# Exact GameInter indexes used by Zircon Client/Scenes/Views/MainPanel.cs
-# plus the MiniMap controls that sit in the same in-game UI layer.
-# GameInter[0] is intentionally omitted because it is blank in the supplied library.
+# Exact GameInter indexes used by Zircon MainPanel/MiniMap plus CharacterDialog's
+# physical elemental icon. GameInter[0] is blank in the supplied library.
 MAIN_PANEL_INDICES = [
     50, 51, 52, 54, 56, 58, 59,
     62, 63, 64, 65, 66, 70, 71, 72, 73,
     82, 87, 92, 97, 102, 107, 112, 117, 122,
     130, 131, 132, 137,
     240, 241,
+    1517,
 ]
 
 
@@ -50,7 +50,6 @@ def build(repo: Path, source: Path | None):
         encoding="utf-8",
     )
 
-    # Keep the standalone background in sync with the exact source library.
     save_lossless(library.decode(50), out_dir / "main-panel.webp")
 
     print("Generated exact Zircon MainPanel runtime:")
