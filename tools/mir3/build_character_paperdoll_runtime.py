@@ -1,14 +1,11 @@
 #!/usr/bin/env python3
-"""Build CharacterDialog paperdoll runtime from original ProgUse.Zl.
+"""Build CharacterDialog ProgUse runtime from original ProgUse.Zl.
 
-Zircon CharacterDialog does not use the world player sprite or a class preview.
-It draws a base body from ProgUse and then overlays hair/equipment/effects at
-one shared origin. This builder exports the verified base/hair source frames
-with their original offsets. Equip layers will be exported on demand once
-actual equipment image indices are known.
+Exports the exact CharacterDialog base body, hair families and elemental stat
+icons with original offsets/dimensions. Equipment layers remain separate and
+will come from Equip.Zl when actual equipped item image indices are available.
 
-Missing ProgUse.Zl is NOT fatal: the browser must simply leave the paperdoll
-empty instead of inventing replacement art.
+Missing ProgUse.Zl is NOT fatal: the browser leaves those visuals empty.
 """
 from __future__ import annotations
 
@@ -18,16 +15,20 @@ from pathlib import Path
 
 from build_full_zircon_ui import ZLLibrary, find_library, pack
 
-# CharacterDialog.cs verified ranges. Standard hair uses 60/80 bases and
-# Assassin hair uses 1100/1120 bases, implying 20 slots per family.
-PROGUSE_INDICES = [0, 1, *range(60, 100), *range(1100, 1140), 1160]
+PROGUSE_INDICES = [
+    0, 1,
+    *range(60, 100),
+    *range(600, 607),
+    *range(1100, 1140),
+    1160,
+]
 
 
 def build(repo: Path, source: Path | None) -> bool:
     try:
         path = find_library(repo, source, ["ProgUse.Zl", "ProgUse(1).Zl"])
     except FileNotFoundError:
-        print("ProgUse.Zl not found; Character paperdoll remains intentionally empty.")
+        print("ProgUse.Zl not found; Character ProgUse visuals remain intentionally empty.")
         return False
 
     print(f"ProgUse: {path}")
@@ -70,14 +71,18 @@ def build(repo: Path, source: Path | None) -> bool:
         "origin": [130, 270],
         "frames": metadata,
         "baseBody": {"male": 0, "female": 1},
+        "elementIcons": {
+            "Fire": 600, "Ice": 601, "Lightning": 602, "Wind": 603,
+            "Holy": 604, "Dark": 605, "Phantom": 606
+        },
         "hair": {
             "standardMaleBase": 60,
             "standardFemaleBase": 80,
             "assassinMaleBase": 1100,
             "assassinFemaleBase": 1120,
-            "assassinFemaleSpecial": 1160,
+            "assassinFemaleSpecial": 1160
         },
-        "equipmentReady": False,
+        "equipmentReady": False
     }
 
     js_path = repo / "js" / "ui" / "character-paperdoll-assets.js"
